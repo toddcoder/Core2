@@ -1,0 +1,10 @@
+C:\Users\tebennett\source\repos\toddcoder\Core\Core.Data\bin\Release\Core.Data.dll.config
+C:\Users\tebennett\source\repos\toddcoder\Core\Core.Data\bin\Release\Core.Data.dll
+C:\Users\tebennett\source\repos\toddcoder\Core\Core.Data\bin\Release\Core.Data.pdb
+C:\Users\tebennett\source\repos\toddcoder\Core\Core.Data\bin\Release\Core.dll
+C:\Users\tebennett\source\repos\toddcoder\Core\Core.Data\bin\Release\Core.pdb
+C:\Users\tebennett\source\repos\toddcoder\Core\Core.Data\obj\Release\Core.Data.csproj.AssemblyReference.cache
+C:\Users\tebennett\source\repos\toddcoder\Core\Core.Data\obj\Release\Core.Data.csproj.CoreCompileInputs.cache
+C:\Users\tebennett\source\repos\toddcoder\Core\Core.Data\obj\Release\Core.Data.csproj.CopyComplete
+C:\Users\tebennett\source\repos\toddcoder\Core\Core.Data\obj\Release\Core.Data.dll
+C:\Users\tebennett\source\repos\toddcoder\Core\Core.Data\obj\Release\Core.Data.pdb
