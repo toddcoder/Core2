@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "XPrIj9x4mlXSBRoTV8FpL8mOiC8PlFKP2Fm7UOB7jVDR0+asL/Gm1jSz3XfPwy067FhAFZdE3NzTrFUeFHOaJA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\tebennett\\source\\repos\\toddcoder\\Core\\Core.Git\\Core.Git.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\tebennett\\.nuget\\packages\\libgit2sharp\\0.26.2\\libgit2sharp.0.26.2.nupkg.sha512",
+    "C:\\Users\\tebennett\\.nuget\\packages\\libgit2sharp.nativebinaries\\2.0.306\\libgit2sharp.nativebinaries.2.0.306.nupkg.sha512"
+  ],
+  "logs": []
+}
