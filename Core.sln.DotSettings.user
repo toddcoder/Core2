@@ -1,0 +1,26 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=37c61d89_002D4c28_002D405e_002Da209_002Dbe8c1ed8e637/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="LateLazyTest" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;MSTest::77228C9D-168E-4959-9A5C-361625803672::.NETFramework,Version=v4.7.2::Core.Tests.ObjectTests.LateLazyTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::77228C9D-168E-4959-9A5C-361625803672::.NETFramework,Version=v4.7.2::Core.Tests.CollectionTest.HeapTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::77228C9D-168E-4959-9A5C-361625803672::.NETFramework,Version=v4.7.2::Core.Tests.MonadTests.MapOfOperatorTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::77228C9D-168E-4959-9A5C-361625803672::.NETFramework,Version=v4.7.2::Core.Tests.MonadTests.ItemTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::77228C9D-168E-4959-9A5C-361625803672::.NETFramework,Version=v4.7.2::Core.Tests.EnumerableTests.MergeTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::77228C9D-168E-4959-9A5C-361625803672::.NETFramework,Version=v4.7.2::Core.Tests.JsonTests.Deserialization2Test&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::77228C9D-168E-4959-9A5C-361625803672::.NETFramework,Version=v4.7.2::Core.Tests.DateTimeTests.WorkingTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::77228C9D-168E-4959-9A5C-361625803672::.NETFramework,Version=v4.7.2::Core.Tests.MatchingTests.SimpleMatchTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::77228C9D-168E-4959-9A5C-361625803672::.NETFramework,Version=v4.7.2::Core.Tests.JsonTests.WriterTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::77228C9D-168E-4959-9A5C-361625803672::.NETFramework,Version=v4.7.2::Core.Tests.JsonTests.PatchTest&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;MSTest::77228C9D-168E-4959-9A5C-361625803672::.NETFramework,Version=v4.7.2::Core.Tests.WinFormsTests.FloatingFailureTest&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Clickable/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Emoji/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Memoize/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=NCACTIVATE/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Pilcrow/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=scroller/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=toggler/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Unfriend/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Unjoin/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Unregister/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
