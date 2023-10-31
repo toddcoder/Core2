@@ -5,31 +5,31 @@ VisualStudioVersion = 17.2.32616.157
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core.csproj", "{FE997A92-D183-4C85-9A1A-FB032311EF62}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.WinForms", "Core.WinForms\Core.WinForms.csproj", "{EFE14F0B-4F5C-45A9-9C74-615CB236BF0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.WinForms", "Core.WinForms\Core.WinForms.csproj", "{EFE14F0B-4F5C-45A9-9C74-615CB236BF0B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Tests", "Core.Tests\Core.Tests.csproj", "{77228C9D-168E-4959-9A5C-361625803672}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Tests", "Core.Tests\Core.Tests.csproj", "{77228C9D-168E-4959-9A5C-361625803672}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Internet", "Core.Internet\Core.Internet.csproj", "{38FFC55B-FE73-4618-86CF-05A3EF9CECAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Internet", "Core.Internet\Core.Internet.csproj", "{38FFC55B-FE73-4618-86CF-05A3EF9CECAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Io", "Core.Io\Core.Io.csproj", "{57AA31E6-00C7-4C62-A045-3B51BD61D685}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Io", "Core.Io\Core.Io.csproj", "{57AA31E6-00C7-4C62-A045-3B51BD61D685}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Data", "Core.Data\Core.Data.csproj", "{5D564FEF-44E1-47A1-AD5C-B0F3CA6BE2C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data", "Core.Data\Core.Data.csproj", "{5D564FEF-44E1-47A1-AD5C-B0F3CA6BE2C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Zip", "Core.Zip\Core.Zip.csproj", "{5FE6A366-B033-4072-B041-12255F83D139}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Zip", "Core.Zip\Core.Zip.csproj", "{5FE6A366-B033-4072-B041-12255F83D139}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Markup", "Core.Markup\Core.Markup.csproj", "{F8A07AC2-AE74-4681-AE71-784DC4E75D97}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Markup", "Core.Markup\Core.Markup.csproj", "{F8A07AC2-AE74-4681-AE71-784DC4E75D97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Json", "Core.Json\Core.Json.csproj", "{787B6F39-BCB0-425E-99CB-091BC0FED0CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Json", "Core.Json\Core.Json.csproj", "{787B6F39-BCB0-425E-99CB-091BC0FED0CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Git", "Core.Git\Core.Git.csproj", "{49B8BEA0-9293-4438-B21B-5A90890B3F74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Git", "Core.Git\Core.Git.csproj", "{49B8BEA0-9293-4438-B21B-5A90890B3F74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Services", "Core.Services\Core.Services.csproj", "{DC7C3D31-254C-4D36-8A45-3CEFF224BB50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Services", "Core.Services\Core.Services.csproj", "{DC7C3D31-254C-4D36-8A45-3CEFF224BB50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Test", "Core.Test\Core.Test.csproj", "{DE184979-E19E-4938-BDD0-B126B7905CA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Test", "Core.Test\Core.Test.csproj", "{DE184979-E19E-4938-BDD0-B126B7905CA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Data.Sqlite", "Core.Data.Sqlite\Core.Data.Sqlite.csproj", "{B4371C23-FC5D-400A-819A-236417D0C917}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data.Sqlite", "Core.Data.Sqlite\Core.Data.Sqlite.csproj", "{B4371C23-FC5D-400A-819A-236417D0C917}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsTest", "WinFormsTest\WinFormsTest.csproj", "{8ACE5255-EDEF-4570-A6ED-7150ADA2E4D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WinFormsTest", "WinFormsTest\WinFormsTest.csproj", "{8ACE5255-EDEF-4570-A6ED-7150ADA2E4D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
