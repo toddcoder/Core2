@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Data;
-using System.Linq;
 using Core.Assertions;
 using Core.Data.DataSources;
 using Core.Data.Setups;
@@ -33,7 +30,7 @@ public class Adapter<T> : IEnumerable<T> where T : class
    }
 
    protected T entity;
-   protected Func<T> newFunc;
+   protected Func<T> newFunc = null!;
 
    public Adapter(T entity, ISetup setup)
    {
@@ -69,7 +66,7 @@ public class Adapter<T> : IEnumerable<T> where T : class
       var entityType = entity.GetType();
       if (entityType.GetConstructors().Any(c => c.GetParameters().Length == 0))
       {
-         newFunc = () => (T)Activator.CreateInstance(entityType);
+         newFunc = () => (T)Activator.CreateInstance(entityType)!;
       }
       else
       {

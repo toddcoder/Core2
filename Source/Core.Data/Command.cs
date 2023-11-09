@@ -1,11 +1,10 @@
-﻿using System;
-using Core.Computers;
+﻿using Core.Computers;
 using Core.Configurations;
 using Core.Dates.DateIncrements;
 using Core.Monads;
+using Core.Objects;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
-using static Core.Objects.ConversionFunctions;
 
 namespace Core.Data;
 
@@ -40,7 +39,7 @@ public class Command
             return fail("Require 'text' or 'file' values");
          }
 
-         var timeout = commandSetting.Maybe.String("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
+         var timeout = commandSetting.Maybe.String("timeout").Map(t => t.Maybe().TimeSpan()) | (() => 30.Seconds());
 
          return (command, timeout);
       }
@@ -69,7 +68,7 @@ public class Command
          throw fail("Require 'text' or 'file' values");
       }
 
-      CommandTimeout = commandSetting.Maybe.String("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
+      CommandTimeout = commandSetting.Maybe.String("timeout").Map(t => t.Maybe().TimeSpan()) | (() => 30.Seconds());
    }
 
    internal Command()

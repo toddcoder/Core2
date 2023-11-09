@@ -87,7 +87,7 @@ public class OleDbDataSource : DataSource
          }
          else
          {
-            var value = parameter.GetValue(entity).Required($"Parameter {parameter.Name}'s value couldn't be determined");
+            var value = parameter.GetValue(entity);//.Required($"Parameter {parameter.Name}'s value couldn't be determined");
             if (value is null && parameter.Default is (true, var defaultValue))
             {
                value = parameter.Type.Map(t => ChangeType(defaultValue, t)) | (object)defaultValue;

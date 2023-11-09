@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Data;
-using System.Linq;
 using Core.Data.DataSources;
 using Core.Monads;
 using static Core.Monads.Lazy.LazyRepeatingMonads;
 
 namespace Core.Data;
 
-public class Reader<T> : IDisposable, IEnumerable<T>
+public class Reader<T> : IDisposable, IEnumerable<T> where T : notnull
 {
    protected DataSource dataSource;
    protected Func<T> entityFunc;

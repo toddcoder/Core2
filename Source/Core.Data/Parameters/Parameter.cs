@@ -1,11 +1,9 @@
-﻿using System;
-using Core.Configurations;
+﻿using Core.Configurations;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
-using static Core.Objects.ConversionFunctions;
 
 namespace Core.Data.Parameters;
 
@@ -25,7 +23,7 @@ public class Parameter : PropertyInterface
 
          var typeName = fixTypeName(result.ThirdGroup);
          var _type = getType(typeName);
-         var _size = Maybe.Int32(result.FourthGroup);
+         var _size = result.FourthGroup.Maybe().Int32();
          var output = result.FifthGroup.Same("output");
 
          return new Parameter(name, signature)
@@ -67,7 +65,7 @@ public class Parameter : PropertyInterface
 
    protected static Maybe<Type> getType(string typeName)
    {
-      return maybe(typeName.IsNotEmpty(), () => System.Type.GetType(typeName, true, true));
+      return maybe(typeName.IsNotEmpty(), () => System.Type.GetType(typeName, true, true)!);
    }
 
    protected static string fixTypeName(string typeName)
@@ -78,6 +76,11 @@ public class Parameter : PropertyInterface
 
    public Parameter(string name, string signature) : base(name, signature)
    {
+      Type = nil;
+      Size = nil;
+      Output = false;
+      Value = nil;
+      Default = nil;
    }
 
    public Parameter(string name, string signature, Type type) : base(name, signature)

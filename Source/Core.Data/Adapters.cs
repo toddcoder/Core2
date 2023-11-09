@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Data.SqlClient;
-using System.Linq;
 using Core.Assertions;
 using Core.Collections;
 using Core.Data.Configurations;
@@ -80,11 +77,9 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
 
    public Result<Adapter<T>> Adapter(string adapterName, T entity, string setupType = "sql")
    {
-      if (adapters.ContainsKey(adapterName))
+      if (adapters.Maybe[adapterName] is (true, var adapter))
       {
-         var adapter = adapters[adapterName];
          adapter.Entity = entity;
-
          return adapter;
       }
 
@@ -92,8 +87,8 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
          from name in validAdapterName(adapterName)
          from childName in adapterExists(name)
          from setup in Setup(setupType)
-         from adapter in getAdapter(entity, childName, setup)
-         select adapter;
+         from adapter1 in getAdapter(entity, childName, setup)
+         select adapter1;
    }
 
    protected Result<Adapter<T>> getAdapter(T entity, string child, Func<DataSettings, string, ISetup> setup) => tryTo(() =>
@@ -109,50 +104,44 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
       return tryTo(() => adapters.Find(child, an => new Adapter<T>(alwaysUse(), setup(dataSettings, an)), true));
    }
 
-   public Result<TResult> Execute<TResult>(string adapterName, T entity, Func<T, TResult> map, string setupType = "sql")
+   public Result<TResult> Execute<TResult>(string adapterName, T entity, Func<T, TResult> map, string setupType = "sql") where TResult : notnull
    {
-      if (adapters.ContainsKey(adapterName))
+      if (adapters.Maybe[adapterName] is (true, var adapter))
       {
-         var adapter = adapters[adapterName];
          adapter.Entity = entity;
-
          return adapter.TryTo.Execute().Map(map);
       }
 
       return
          from name in validAdapterName(adapterName)
          from childName in adapterExists(name)
-         from adapter in Adapter(childName, entity, setupType)
-         from obj in adapter.TryTo.Execute()
+         from adapter1 in Adapter(childName, entity, setupType)
+         from obj in adapter1.TryTo.Execute()
          from result in map(obj).Success()
          select result;
    }
 
    public Result<T> Execute(string adapterName, T entity, string setupType = "sql")
    {
-      if (adapters.ContainsKey(adapterName))
+      if (adapters.Maybe[adapterName] is (true, var adapter))
       {
-         var adapter = adapters[adapterName];
          adapter.Entity = entity;
-
          return adapter.TryTo.Execute();
       }
 
       return
          from name in validAdapterName(adapterName)
          from childName in adapterExists(name)
-         from adapter in Adapter(childName, entity, setupType)
-         from obj in adapter.TryTo.Execute()
+         from adapter1 in Adapter(childName, entity, setupType)
+         from obj in adapter1.TryTo.Execute()
          select obj;
    }
 
    public Result<Adapter<T>> Adapter(string adapterName, Func<T> entityFunc, string setupType = "sql")
    {
-      if (adapters.ContainsKey(adapterName))
+      if (adapters.Maybe[adapterName] is (true, var adapter))
       {
-         var adapter = adapters[adapterName];
          adapter.Entity = entityFunc();
-
          return adapter;
       }
 
@@ -160,25 +149,23 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
          from name in validAdapterName(adapterName)
          from childName in adapterExists(name)
          from setup in Setup(setupType)
-         from adapter in getAdapter(entityFunc(), childName, setup)
-         select adapter;
+         from adapter1 in getAdapter(entityFunc(), childName, setup)
+         select adapter1;
    }
 
    public Result<T> Execute(string adapterName, Func<T> entityFunc, string setupType = "sql")
    {
-      if (adapters.ContainsKey(adapterName))
+      if (adapters.Maybe[adapterName] is (true, var adapter))
       {
-         var adapter = adapters[adapterName];
          adapter.Entity = entityFunc();
-
          return adapter.TryTo.Execute();
       }
 
       return
          from name in validAdapterName(adapterName)
          from childName in adapterExists(name)
-         from adapter in Adapter(childName, entityFunc(), setupType)
-         from obj in adapter.TryTo.Execute()
+         from adapter1 in Adapter(childName, entityFunc(), setupType)
+         from obj in adapter1.TryTo.Execute()
          select obj;
    }
 

@@ -1,9 +1,8 @@
-﻿using System;
-using Core.Collections;
+﻿using Core.Collections;
 using Core.Configurations;
 using Core.Dates.DateIncrements;
 using Core.Monads;
-using static Core.Objects.ConversionFunctions;
+using Core.Objects;
 
 namespace Core.Data;
 
@@ -16,7 +15,7 @@ public class Connection : IHash<string, string>
       data = new StringHash(true);
       Name = connectionSetting.Key;
       Type = connectionSetting.Maybe.String("type") | "sql";
-      Timeout = connectionSetting.Maybe.String("timeout").Map(Maybe.TimeSpan) | (() => 30.Seconds());
+      Timeout = connectionSetting.Maybe.String("timeout").Map(t => t.Maybe().TimeSpan()) | (() => 30.Seconds());
       ReadOnly = connectionSetting.Maybe.Boolean("read-only") | false;
       foreach (var (key, value) in connectionSetting.Items())
       {

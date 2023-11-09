@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 using Core.Assertions;
 using Core.Collections;
@@ -34,7 +33,7 @@ public abstract class DataSource
    protected Fields.Fields fields;
    protected Maybe<IActive> _activeObject;
 
-   public event EventHandler<CancelEventArgs> NextRow;
+   public event EventHandler<CancelEventArgs>? NextRow;
 
    public DataSource(string connectionString, TimeSpan commandTimeout)
    {
@@ -44,6 +43,8 @@ public abstract class DataSource
       Command = nil;
       _connection = nil;
       Reader = nil;
+      fields = new Fields.Fields();
+      _activeObject = nil;
    }
 
    public bool Deallocated { get; set; }
@@ -70,7 +71,7 @@ public abstract class DataSource
       {
          var name = signature.Name;
          var pattern = $"'{{{name}}}'; f";
-         var value = evaluator[signature].ToNonNullString().Replace("'", "''");
+         var value = evaluator[signature]!.ToNonNullString().Replace("'", "''");
          var _result = text.Matches(pattern);
          if (_result is (true, var result))
          {
@@ -98,7 +99,7 @@ public abstract class DataSource
       AddParameters(entity, parameters);
 
       setCommand(entity, command);
-      IDataReader reader = null;
+      IDataReader reader = null!;
       HasRows = false;
 
       try
@@ -166,7 +167,7 @@ public abstract class DataSource
       }
       finally
       {
-         reader?.Dispose();
+         reader.Dispose();
          deallocateObjects();
       }
    }
@@ -180,7 +181,7 @@ public abstract class DataSource
       _activeObject = entity.IfCast<IActive>();
       fields = inFields;
 
-      IDataReader reader = null;
+      IDataReader reader = null!;
 
       try
       {
@@ -217,7 +218,7 @@ public abstract class DataSource
       }
       catch
       {
-         reader?.Dispose();
+         reader.Dispose();
          deallocateObjects();
          throw;
       }
@@ -417,11 +418,7 @@ public abstract class DataSource
       allocateConnection();
       allocateCommand();
 
-      if (entity != null)
-      {
-         AddParameters(entity, parameters);
-      }
-
+      AddParameters(entity, parameters);
       setCommand(entity, command);
 
       if (Command is (true, var dbCommand))

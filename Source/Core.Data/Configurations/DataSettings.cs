@@ -6,19 +6,26 @@ namespace Core.Data.Configurations;
 
 public class DataSettings
 {
-   public Setting ConnectionsSetting { get; set; }
+   public DataSettings()
+   {
+      ConnectionsSetting = nil;
+      CommandsSetting = nil;
+      AdaptersSetting = nil;
+   }
 
-   public Setting CommandsSetting { get; set; }
+   public Maybe<Setting> ConnectionsSetting { get; set; }
 
-   public Setting AdaptersSetting { get; set; }
+   public Maybe<Setting> CommandsSetting { get; set; }
+
+   public Maybe<Setting> AdaptersSetting { get; set; }
 
    public Result<string> Command(string adapterName)
    {
-      var _adapterSetting = AdaptersSetting.Maybe.Setting(adapterName);
+      var _adapterSetting = AdaptersSetting.Map(s => s.Maybe.Setting(adapterName));
       if (_adapterSetting is (true, var adapterSetting))
       {
          var commandName = adapterSetting.Maybe.String("command") | adapterName;
-         var _commandSetting = CommandsSetting.Maybe.Setting(commandName);
+         var _commandSetting = CommandsSetting.Map(s => s.Maybe.Setting(commandName));
          if (_commandSetting is (true, var commandSetting))
          {
             var command = new Command(commandSetting);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
@@ -9,9 +8,9 @@ using Core.Data.ConnectionStrings;
 using Core.Data.DataSources;
 using Core.Dates.DateIncrements;
 using Core.Monads;
+using Core.Objects;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
-using static Core.Objects.ConversionFunctions;
 
 namespace Core.Data.Setups;
 
@@ -98,6 +97,10 @@ public class SqlSetup : ISetup, ISetupWithInfo
    {
       attributes = new StringHash(true);
       Handler = nil;
+      CommandText = string.Empty;
+      ConnectionString = null!;
+      Fields = null!;
+      Parameters = null!;
       loadAttributes(attributesSetting);
    }
 
@@ -106,16 +109,24 @@ public class SqlSetup : ISetup, ISetupWithInfo
       var connectionString = setupData.Must().HaveValueAt("connectionString").Value;
       ConnectionString = new SqlConnectionString(connectionString, 30.Seconds());
       CommandText = setupData.Must().HaveValueAt("commandText").Value;
-      CommandTimeout = setupData.Items["commandTimeout"].Map(Maybe.TimeSpan) | (() => 30.Seconds());
+      CommandTimeout = setupData.Items["commandTimeout"].Map(t => t.Maybe().TimeSpan()) | (() => 30.Seconds());
 
       if (parameterSpecifiers.IsNotEmpty())
       {
          Parameters = new Parameters.Parameters(Data.Parameters.Parameters.ParametersFromString(parameterSpecifiers));
       }
+      else
+      {
+         Parameters = new Parameters.Parameters();
+      }
 
       if (fieldSpecifiers.IsNotEmpty())
       {
          Fields = new Fields.Fields(Data.Fields.Fields.FieldsFromString(fieldSpecifiers));
+      }
+      else
+      {
+         Fields = new Fields.Fields();
       }
 
       attributes = new StringHash(true);
@@ -126,6 +137,10 @@ public class SqlSetup : ISetup, ISetupWithInfo
    {
       attributes = new StringHash(true);
       Handler = nil;
+      ConnectionString = null!;
+      CommandText = null!;
+      Fields = null!;
+      Parameters = null!;
    }
 
    protected void loadAttributes(Maybe<Setting> _attributesSetting)
