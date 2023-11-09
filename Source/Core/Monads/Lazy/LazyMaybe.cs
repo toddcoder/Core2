@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads.Lazy;
 
-public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
+public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>> where T : notnull
 {
    public static implicit operator bool(LazyMaybe<T> maybe)
    {
@@ -101,7 +101,7 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       return this;
    }
 
-   public LazyMaybe<TNext> Then<TNext>(Func<T, Maybe<TNext>> func)
+   public LazyMaybe<TNext> Then<TNext>(Func<T, Maybe<TNext>> func) where TNext : notnull
    {
       var _next = new LazyMaybe<TNext>();
       ensureValue();
@@ -116,9 +116,9 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       }
    }
 
-   public LazyMaybe<TNext> Then<TNext>(Maybe<TNext> next) => Then(_ => next);
+   public LazyMaybe<TNext> Then<TNext>(Maybe<TNext> next) where TNext : notnull => Then(_ => next);
 
-   public LazyMaybe<TNext> Then<TNext>(Func<T, TNext> func)
+   public LazyMaybe<TNext> Then<TNext>(Func<T, TNext> func) where TNext : notnull
    {
       var _next = new LazyMaybe<TNext>();
       ensureValue();
@@ -190,13 +190,6 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
    {
       ensureValue();
       _value.Deconstruct(out isSome, out value);
-   }
-
-   [Obsolete("Use if")]
-   public override Maybe<T> IfThen(Action<T> action)
-   {
-      ensureValue();
-      return _value.IfThen(action);
    }
 
    public override void MapOf(Action<T> action)
@@ -271,13 +264,13 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
       return _value.ToObject();
    }
 
-   public bool Equals(LazyMaybe<T> other)
+   public bool Equals(LazyMaybe<T>? other)
    {
       ensureValue();
-      return _value == other._value;
+      return other is not null && _value == other._value;
    }
 
-   public override bool Equals(object obj)
+   public override bool Equals(object? obj)
    {
       ensureValue();
       return obj is LazyMaybe<T> other && Equals(other);
@@ -293,5 +286,5 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>>
 
    public static bool operator !=(LazyMaybe<T> left, LazyMaybe<T> right) => !Equals(left, right);
 
-   public override string ToString() => _value.ToString();
+   public override string ToString() => _value.ToString() ?? "";
 }

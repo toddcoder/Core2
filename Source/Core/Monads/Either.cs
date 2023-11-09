@@ -2,7 +2,7 @@
 
 namespace Core.Monads;
 
-public abstract class Either<TLeft, TRight>
+public abstract class Either<TLeft, TRight> where TLeft : notnull where TRight : notnull
 {
    public static implicit operator Either<TLeft, TRight>(TLeft value) => new Left<TLeft, TRight>(value);
 
@@ -20,10 +20,10 @@ public abstract class Either<TLeft, TRight>
    }
 
    public abstract Either<TLeftResult, TRightResult> Map<TLeftResult, TRightResult>(Func<TLeft, TLeftResult> leftMap,
-      Func<TRight, TRightResult> rightMap);
+      Func<TRight, TRightResult> rightMap) where TLeftResult : notnull where TRightResult : notnull;
 
    public abstract Either<TLeftResult, TRightResult> Map<TLeftResult, TRightResult>(Func<TLeft, Either<TLeftResult, TRightResult>> leftMap,
-      Func<TRight, Either<TLeftResult, TRightResult>> rightMap);
+      Func<TRight, Either<TLeftResult, TRightResult>> rightMap) where TLeftResult : notnull where TRightResult : notnull;
 
    public abstract void Deconstruct(out bool isLeft, out TLeft left, out TRight right);
 }

@@ -28,6 +28,11 @@ public class ReflectorReplacement
             _ => nil
          };
       }
+      else
+      {
+         memberName = string.Empty;
+         _formatter = nil;
+      }
    }
 
    public string MemberName => memberName;
@@ -35,6 +40,9 @@ public class ReflectorReplacement
    public void Replace(object obj, IGetter getter, Slicer slicer)
    {
       var value = getter.GetValue(obj);
-      slicer[index, length] = _formatter.Map(f => f.Format(value)) | (() => value.ToNonNullString());
+      if (value is not null)
+      {
+         slicer[index, length] = _formatter.Map(f => f.Format(value)) | (() => value.ToNonNullString());
+      }
    }
 }

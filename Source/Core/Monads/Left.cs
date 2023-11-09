@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Core.Monads;
 
-public class Left<TLeft, TRight> : Either<TLeft, TRight>, IEquatable<Left<TLeft, TRight>>
+public class Left<TLeft, TRight> : Either<TLeft, TRight>, IEquatable<Left<TLeft, TRight>> where TLeft : notnull where TRight : notnull
 {
    protected TLeft value;
 
@@ -27,17 +27,14 @@ public class Left<TLeft, TRight> : Either<TLeft, TRight>, IEquatable<Left<TLeft,
    {
       isLeft = true;
       left = value;
-      right = default;
+      right = default!;
    }
 
-   public bool Equals(Left<TLeft, TRight> other)
-   {
-      return other is not null && (ReferenceEquals(this, other) || EqualityComparer<TLeft>.Default.Equals(value, other.value));
-   }
+   public bool Equals(Left<TLeft, TRight>? other) => other is not null && EqualityComparer<TLeft>.Default.Equals(value, other.value);
 
-   public override bool Equals(object obj) => obj is Left<TLeft, TRight> other && Equals(other);
+   public override bool Equals(object? obj) => obj is Left<TLeft, TRight> other && Equals(other);
 
    public override int GetHashCode() => EqualityComparer<TLeft>.Default.GetHashCode(value);
 
-   public override string ToString() => value.ToString();
+   public override string ToString() => value.ToString() ?? "";
 }

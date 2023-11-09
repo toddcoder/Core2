@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-public abstract class Optional<T>
+public abstract class Optional<T> where T : notnull
 {
    public class If
    {
@@ -144,12 +144,12 @@ public abstract class Optional<T>
 
    public abstract Maybe<Exception> Exception { get; }
 
-   public abstract Optional<TResult> Map<TResult>(Func<T, Optional<TResult>> ifJust);
+   public abstract Optional<TResult> Map<TResult>(Func<T, Optional<TResult>> ifJust) where TResult : notnull;
 
-   public abstract Optional<TResult> Map<TResult>(Func<T, TResult> ifJust);
+   public abstract Optional<TResult> Map<TResult>(Func<T, TResult> ifJust) where TResult : notnull;
 
    public abstract Optional<TResult> Map<TResult>(Func<T, Optional<TResult>> ifJust, Func<Optional<TResult>> ifEmpty,
-      Func<Exception, Optional<TResult>> ifFailed);
+      Func<Exception, Optional<TResult>> ifFailed) where TResult : notnull;
 
    public abstract Optional<T> OnJust(Action<T> action);
 
@@ -157,25 +157,25 @@ public abstract class Optional<T>
 
    public abstract Optional<T> OnFailed(Action<Exception> action);
 
-   public abstract Optional<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection);
+   public abstract Optional<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection) where TResult : notnull;
 
-   public abstract Optional<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection);
+   public abstract Optional<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection) where TResult : notnull;
 
-   public abstract Optional<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection);
+   public abstract Optional<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection) where TResult : notnull;
 
-   public abstract Optional<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection);
+   public abstract Optional<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) where TResult : notnull;
 
-   public abstract Optional<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection);
+   public abstract Optional<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection) where T1 : notnull where T2 : notnull;
 
-   public abstract Optional<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection);
+   public abstract Optional<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection) where T1 : notnull where T2 : notnull;
 
-   public abstract Optional<T2> SelectMany<T1, T2>(Func<T, Result<T1>> func, Func<T, T1, T2> projection);
+   public abstract Optional<T2> SelectMany<T1, T2>(Func<T, Result<T1>> func, Func<T, T1, T2> projection) where T1 : notnull where T2 : notnull;
 
-   public abstract Optional<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection);
+   public abstract Optional<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection) where T1 : notnull where T2 : notnull;
 
-   public abstract Optional<TResult> SelectMany<TResult>(Func<T, TResult> func);
+   public abstract Optional<TResult> SelectMany<TResult>(Func<T, TResult> func) where TResult : notnull;
 
-   public abstract Optional<TResult> Select<TResult>(Optional<T> result, Func<T, TResult> func);
+   public abstract Optional<TResult> Select<TResult>(Optional<T> result, Func<T, TResult> func) where TResult : notnull;
 
    public abstract bool IfEmpty();
 

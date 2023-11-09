@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
 
-public class HashInterfaceMaybe<TKey, TValue>
+public class HashInterfaceMaybe<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    protected IHash<TKey, TValue> hash;
 

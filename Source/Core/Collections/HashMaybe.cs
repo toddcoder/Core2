@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
 
-public class HashMaybe<TKey, TValue>
+public class HashMaybe<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    protected Hash<TKey, TValue> hash;
 

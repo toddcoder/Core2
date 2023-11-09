@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads.Lazy;
 
-public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
+public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>> where T : notnull
 {
    public static implicit operator bool(LazyResult<T> result)
    {
@@ -108,7 +108,7 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       return this;
    }
 
-   public LazyResult<TNext> Then<TNext>(Func<T, Result<TNext>> func)
+   public LazyResult<TNext> Then<TNext>(Func<T, Result<TNext>> func) where TNext : notnull
    {
       var _next = new LazyResult<TNext>();
       ensureValue();
@@ -123,9 +123,9 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       }
    }
 
-   public LazyResult<TNext> Then<TNext>(Result<TNext> next) => Then(_ => next);
+   public LazyResult<TNext> Then<TNext>(Result<TNext> next) where TNext : notnull => Then(_ => next);
 
-   public LazyResult<TNext> Then<TNext>(Func<T, TNext> func)
+   public LazyResult<TNext> Then<TNext>(Func<T, TNext> func) where TNext : notnull
    {
       var _next = new LazyResult<TNext>();
       ensureValue();
@@ -330,13 +330,13 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
       _value.MapOf(action);
    }
 
-   public bool Equals(LazyResult<T> other)
+   public bool Equals(LazyResult<T>? other)
    {
       ensureValue();
-      return _value == other._value;
+      return other is not null && _value == other._value;
    }
 
-   public override bool Equals(object obj)
+   public override bool Equals(object? obj)
    {
       ensureValue();
       return obj is LazyResult<T> other && Equals(other);
@@ -352,5 +352,5 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>>
 
    public static bool operator !=(LazyResult<T> left, LazyResult<T> right) => !Equals(left, right);
 
-   public override string ToString() => _value.ToString();
+   public override string ToString() => _value.ToString() ?? "";
 }

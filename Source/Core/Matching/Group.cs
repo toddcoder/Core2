@@ -10,7 +10,7 @@ public class Group
 
    public int Length { get; set; }
 
-   public virtual string Text { get; set; }
+   public virtual string Text { get; set; } = string.Empty;
 
    public int Which { get; set; }
 

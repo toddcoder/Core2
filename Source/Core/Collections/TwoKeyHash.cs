@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace Core.Collections;
 
-public class TwoKeyHash<TKey1, TKey2, TValue> : Hash<TKey1, TValue>
+public class TwoKeyHash<TKey1, TKey2, TValue> : Hash<TKey1, TValue> where TKey1 : notnull where TKey2 : notnull where TValue : notnull
 {
    protected BackHash<TKey1, TKey2> backHash;
 

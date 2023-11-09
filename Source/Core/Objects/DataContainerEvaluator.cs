@@ -15,7 +15,9 @@ public class DataContainerEvaluator : IEvaluator, IHash<string, object>, IHash<S
    object IEvaluator.this[string signature]
    {
       get => data[signature];
+#pragma warning disable CS8769 // Nullability of reference types in type of parameter doesn't match implemented member (possibly because of nullability attributes).
       set => data[signature] = value;
+#pragma warning restore CS8769 // Nullability of reference types in type of parameter doesn't match implemented member (possibly because of nullability attributes).
    }
 
    public bool ContainsKey(string key) => data.ContainsKey(key);
@@ -32,7 +34,9 @@ public class DataContainerEvaluator : IEvaluator, IHash<string, object>, IHash<S
    object IEvaluator.this[Signature signature]
    {
       get => data[signature.Name];
+#pragma warning disable CS8769 // Nullability of reference types in type of parameter doesn't match implemented member (possibly because of nullability attributes).
       set => data[signature.Name] = value;
+#pragma warning restore CS8769 // Nullability of reference types in type of parameter doesn't match implemented member (possibly because of nullability attributes).
    }
 
    public bool ContainsKey(Signature key) => data.ContainsKey(key.Name);

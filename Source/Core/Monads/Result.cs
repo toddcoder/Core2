@@ -5,7 +5,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-public abstract class Result<T>
+public abstract class Result<T> where T : notnull
 {
    public class If
    {
@@ -132,15 +132,15 @@ public abstract class Result<T>
       return result;
    }
 
-   public abstract Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful);
+   public abstract Result<TResult> Map<TResult>(Func<T, Result<TResult>> ifSuccessful) where TResult : notnull;
 
-   public abstract Result<TResult> Map<TResult>(Func<T, TResult> ifSuccessful);
+   public abstract Result<TResult> Map<TResult>(Func<T, TResult> ifSuccessful) where TResult : notnull;
 
-   public abstract Result<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection);
+   public abstract Result<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection) where TResult : notnull;
 
-   public abstract Result<T2> SelectMany<T1, T2>(Func<T, Result<T1>> func, Func<T, T1, T2> projection);
+   public abstract Result<T2> SelectMany<T1, T2>(Func<T, Result<T1>> func, Func<T, T1, T2> projection) where T1 : notnull where T2 : notnull;
 
-   public abstract Result<TResult> SelectMany<TResult>(Func<T, TResult> func);
+   public abstract Result<TResult> SelectMany<TResult>(Func<T, TResult> func) where TResult : notnull;
 
    public abstract T Recover(Func<Exception, T> recovery);
 
@@ -174,7 +174,7 @@ public abstract class Result<T>
 
    public abstract Result<T> Otherwise(Func<Exception, Result<T>> func);
 
-   public abstract Result<TResult> CastAs<TResult>();
+   public abstract Result<TResult> CastAs<TResult>() where TResult : notnull;
 
    public abstract Result<T> Where(Predicate<T> predicate, string exceptionMessage);
 

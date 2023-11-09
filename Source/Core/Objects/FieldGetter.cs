@@ -8,5 +8,5 @@ public class FieldGetter : IGetter
 
    public FieldGetter(FieldInfo fieldInfo) => this.fieldInfo = fieldInfo;
 
-   public object GetValue(object obj) => fieldInfo.GetValue(obj);
+   public object? GetValue(object obj) => fieldInfo.GetValue(obj);
 }

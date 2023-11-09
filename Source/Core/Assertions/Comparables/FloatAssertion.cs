@@ -10,8 +10,16 @@ public class FloatAssertion : ComparableAssertion<float>
       var converter = TypeDescriptor.GetConverter(typeof(float));
       if (converter.CanConvertFrom(obj.GetType()))
       {
-         var f2 = (float)converter.ConvertTo(obj, typeof(float));
-         return nearlyEqual(f1, f2, epsilon);
+         var converted = converter.ConvertTo(obj, typeof(float));
+         if (converted is not null)
+         {
+            var f2 = (float)converted;
+            return nearlyEqual(f1, f2, epsilon);
+         }
+         else
+         {
+            return false;
+         }
       }
       else
       {
@@ -34,6 +42,6 @@ public class FloatAssertion : ComparableAssertion<float>
 
    public FloatAssertion BeNearlyEqual(object obj, float epsilon = 0.00001f)
    {
-      return (FloatAssertion)add(obj, c => nearlyEqual(Comparable, obj, epsilon), $"{obj} must $not nearly be equal {comparable}");
+      return (FloatAssertion)add(obj, _ => nearlyEqual(Comparable, obj, epsilon), $"{obj} must $not nearly be equal {comparable}");
    }
 }

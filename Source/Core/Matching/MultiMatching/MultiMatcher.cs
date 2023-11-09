@@ -5,7 +5,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Matching.MultiMatching;
 
-public class MultiMatcher<T>
+public class MultiMatcher<T> where T : notnull
 {
    public class PatternAction
    {

@@ -9,9 +9,8 @@ public class Retrier
    protected Action<Exception, int> exceptionAction;
    protected int attempt;
 
-   public event EventHandler<RetryArgs> Successful;
-
-   public event EventHandler<RetryArgs> Failed;
+   public event EventHandler<RetryArgs>? Successful;
+   public event EventHandler<RetryArgs>? Failed;
 
    public Retrier(int retries, Action<int> action, Action<Exception, int> exceptionAction)
    {

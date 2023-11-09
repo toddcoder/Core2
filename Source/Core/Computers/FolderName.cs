@@ -631,7 +631,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
       return GetDirectories(folder).AsParallel().WithCancellation(token).Select(f => (FolderName)f);
    }
 
-   protected static Maybe<string> getParent(string folder) => GetParent(folder).NotNull().Map(f => f?.FullName ?? "");
+   protected static Maybe<string> getParent(string folder) => GetParent(folder).NotNull().Map(f => f.FullName);
 
    protected static IEnumerable<FileName> getLocalAndParentFiles(Maybe<string> _folder)
    {

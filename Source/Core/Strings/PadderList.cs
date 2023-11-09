@@ -8,13 +8,13 @@ namespace Core.Strings;
 
 public class PadderList
 {
-   protected static void allocate<T>(List<T> list, int index)
+   protected static void allocate<T>(List<T> list, int index, T defaultValue)
    {
       if (index >= list.Count)
       {
          for (var i = list.Count; i <= index; i++)
          {
-            list.Add(default);
+            list.Add(defaultValue);
          }
       }
    }
@@ -27,7 +27,7 @@ public class PadderList
 
       public int Add(int index, string text)
       {
-         allocate(columns, index);
+         allocate(columns, index, "");
          columns[index] = text;
 
          return text.Length;
@@ -58,7 +58,7 @@ public class PadderList
    public void Add(int index, string text)
    {
       var length = rows[currentIndex].Add(index, text);
-      allocate(lengths, index);
+      allocate(lengths, index, 0);
       lengths[index] = lengths[index].MaxOf(length);
    }
 
@@ -74,7 +74,7 @@ public class PadderList
 
    public void AddRow()
    {
-      allocate(rows, ++currentIndex);
+      allocate(rows, ++currentIndex, new Row());
       rows[currentIndex] = new Row();
    }
 

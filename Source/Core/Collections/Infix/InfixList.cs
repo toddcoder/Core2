@@ -5,7 +5,7 @@ using Core.Enumerables;
 
 namespace Core.Collections.Infix;
 
-public class InfixList<TValue, TInfix> : IEnumerable<IInfixData<TValue, TInfix>>
+public class InfixList<TValue, TInfix> : IEnumerable<IInfixData<TValue, TInfix>> where TInfix : notnull
 {
    protected List<IInfixData<TValue, TInfix>> list;
    protected bool stopped;

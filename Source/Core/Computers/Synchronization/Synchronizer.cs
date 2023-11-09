@@ -14,11 +14,11 @@ public class Synchronizer
    protected bool move;
    protected bool recursive;
 
-   public event EventHandler<FileArgs> Success;
-   public event EventHandler<FailedFileArgs> Failure;
-   public event EventHandler<FileArgs> Untouched;
-   public event EventHandler<FolderArgs> NewFolderSuccess;
-   public event EventHandler<FailedFolderArgs> NewFolderFailure;
+   public event EventHandler<FileArgs>? Success;
+   public event EventHandler<FailedFileArgs>? Failure;
+   public event EventHandler<FileArgs>? Untouched;
+   public event EventHandler<FolderArgs>? NewFolderSuccess;
+   public event EventHandler<FailedFolderArgs>? NewFolderFailure;
 
    public Synchronizer(FolderName sourceFolder, FolderName targetFolder, Pattern pattern, bool move = false, bool recursive = true)
    {

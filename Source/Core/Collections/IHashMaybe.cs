@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 namespace Core.Collections;
 
 // ReSharper disable once InconsistentNaming
-public class IHashMaybe<TKey, TValue>
+public class IHashMaybe<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    protected IHash<TKey, TValue> hash;
 

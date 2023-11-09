@@ -10,7 +10,7 @@ public class FolderNameTrying
 {
    protected FolderName folderName;
 
-   public event EventHandler<FileArgs> FileSuccess;
+   public event EventHandler<FileArgs>? FileSuccess;
 
    public FolderNameTrying(FolderName folderName) => this.folderName = folderName;
 

@@ -42,7 +42,7 @@ public class Resources<T>
       var stream = type.Assembly.GetManifestResourceStream(fullName);
       stream.Must().Not.BeNull().OrThrow(message);
 
-      return stream;
+      return stream!;
    }
 
    public byte[] Bytes(string name)

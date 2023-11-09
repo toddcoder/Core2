@@ -24,11 +24,11 @@ public class LazyRepeatingMonads
       }
    }
 
-   public LazyMaybe<T> maybe<T>() => new() { Repeating = true };
+   public LazyMaybe<T> maybe<T>() where T : notnull => new() { Repeating = true };
 
-   public LazyResult<T> result<T>() => new() { Repeating = true };
+   public LazyResult<T> result<T>() where T : notnull => new() { Repeating = true };
 
-   public LazyOptional<T> optional<T>() => new() { Repeating = true };
+   public LazyOptional<T> optional<T>() where T : notnull => new() { Repeating = true };
 
-   public LazyCompletion<T> completion<T>() => new() { Repeating = true };
+   public LazyCompletion<T> completion<T>() where T : notnull => new() { Repeating = true };
 }

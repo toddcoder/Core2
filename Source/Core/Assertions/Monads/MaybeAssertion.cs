@@ -7,7 +7,7 @@ using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Assertions.Monads;
 
-public class MaybeAssertion<T> : IAssertion<T>
+public class MaybeAssertion<T> : IAssertion<T> where T : notnull
 {
    public static implicit operator bool(MaybeAssertion<T> assertion) => assertion.BeEquivalentToTrue();
 

@@ -165,8 +165,8 @@ public class ReflectorFormat
 
    protected Result<object> getValue(MemberInfo info) => info switch
    {
-      FieldInfo fieldInfo => fieldInfo.GetValue(obj),
-      PropertyInfo propertyInfo => propertyInfo.GetValue(obj),
+      FieldInfo fieldInfo => fieldInfo.GetValue(obj)!,
+      PropertyInfo propertyInfo => propertyInfo.GetValue(obj)!,
       _ => fail($"Couldn't invoke member {info.Name}")
    };
 }

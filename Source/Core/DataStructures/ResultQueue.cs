@@ -2,7 +2,7 @@
 
 namespace Core.DataStructures;
 
-public class ResultQueue<T>
+public class ResultQueue<T> where T : notnull
 {
    protected MaybeQueue<T> queue;
 

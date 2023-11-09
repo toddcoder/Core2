@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-public class Just<T> : Optional<T>, IEquatable<Just<T>>
+public class Just<T> : Optional<T>, IEquatable<Just<T>> where T : notnull
 {
    protected T value;
 
@@ -181,9 +181,9 @@ public class Just<T> : Optional<T>, IEquatable<Just<T>>
 
    public override void MapOf(Action<T> action) => action(value);
 
-   public bool Equals(Just<T> other) => value.Equals(other.value);
+   public bool Equals(Just<T>? other) => other is not null && value.Equals(other.value);
 
-   public override bool Equals(object obj) => obj is Just<T> other && Equals(other);
+   public override bool Equals(object? obj) => obj is Just<T> other && Equals(other);
 
    public override int GetHashCode() => EqualityComparer<T>.Default.GetHashCode(value);
 
@@ -191,5 +191,5 @@ public class Just<T> : Optional<T>, IEquatable<Just<T>>
 
    public static bool operator !=(Just<T> left, Just<T> right) => !Equals(left, right);
 
-   public override string ToString() => value.ToString();
+   public override string ToString() => value.ToString() ?? "";
 }

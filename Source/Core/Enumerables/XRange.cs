@@ -42,7 +42,7 @@ public abstract class XRange<TSource, TDistance> : IComparer<TSource>, IEnumerab
 
    public TDistance Distance => distance;
 
-   protected virtual string valueAsString(TSource value) => value.ToString();
+   protected virtual string valueAsString(TSource value) => value!.ToString() ?? "";
 
    protected virtual string rangeStringFormat() => "{0}-{1}";
 
@@ -60,7 +60,7 @@ public abstract class XRange<TSource, TDistance> : IComparer<TSource>, IEnumerab
 
    protected abstract TSource previousValue(TSource currentValue);
 
-   public abstract int Compare(TSource x, TSource y);
+   public abstract int Compare(TSource? x, TSource? y);
 
    protected bool equal(TSource x, TSource y) => Compare(x, y) == 0;
 
@@ -135,7 +135,7 @@ public abstract class XRange<TSource, TDistance> : IComparer<TSource>, IEnumerab
    protected IEnumerable<IEnumerable<TSource>> toContiguousSequences(IEnumerable<TSource> sequence, XRange<TSource, TDistance> range)
    {
       sequence = sequence.OrderBy(x => x);
-      var enumerator = sequence.GetEnumerator();
+      using var enumerator = sequence.GetEnumerator();
       if (!enumerator.MoveNext())
       {
          throw new InvalidOperationException("Sequence is empty");
@@ -146,7 +146,7 @@ public abstract class XRange<TSource, TDistance> : IComparer<TSource>, IEnumerab
       {
          var current = enumerator.Current;
          var textNextValue = range.nextValue(currentList.Last());
-         if (current.Equals(textNextValue))
+         if (current!.Equals(textNextValue))
          {
             currentList.Add(current);
          }

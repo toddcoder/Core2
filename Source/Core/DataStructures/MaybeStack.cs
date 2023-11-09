@@ -10,7 +10,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.DataStructures;
 
-public class MaybeStack<T> : IEnumerable<T>
+public class MaybeStack<T> : IEnumerable<T> where T : notnull
 {
    protected Stack<T> stack;
    protected Maybe<T> _last;
@@ -21,9 +21,17 @@ public class MaybeStack<T> : IEnumerable<T>
       _last = nil;
    }
 
-   public MaybeStack(IEnumerable<T> collection) => stack = new Stack<T>(collection);
+   public MaybeStack(IEnumerable<T> collection)
+   {
+      stack = new Stack<T>(collection);
+      _last = nil;
+   }
 
-   public MaybeStack(int capacity) => stack = new Stack<T>(capacity);
+   public MaybeStack(int capacity)
+   {
+      stack = new Stack<T>(capacity);
+      _last = nil;
+   }
 
    public int Count => stack.Count;
 

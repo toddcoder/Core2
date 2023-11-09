@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace Core.Collections;
 
-public class BackHash<TKey, TValue> : Hash<TKey, TValue>
+public class BackHash<TKey, TValue> : Hash<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    protected Hash<TValue, TKey> backHash;
 
@@ -12,7 +12,7 @@ public class BackHash<TKey, TValue> : Hash<TKey, TValue>
       backHash = new Hash<TValue, TKey>();
    }
 
-   public BackHash(BackHash<TValue, TKey> backHash)
+   public BackHash(BackHash<TValue, TKey> backHash) : this()
    {
       foreach (var item in backHash)
       {

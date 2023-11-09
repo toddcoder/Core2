@@ -15,12 +15,12 @@ namespace Core.Collections;
 
 public static class HashExtensions
 {
-   public static TValue Value<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
+   public static TValue Value<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key) where TKey : notnull where TValue : notnull
    {
       return hash.Value(key, $"Value for key {key} not found");
    }
 
-   public static TValue Value<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, string message)
+   public static TValue Value<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, string message) where TKey : notnull where TValue : notnull
    {
       if (hash.ContainsKey(key))
       {
@@ -32,12 +32,13 @@ public static class HashExtensions
       }
    }
 
-   public static Result<TValue> Require<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key)
+   public static Result<TValue> Require<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key) where TKey : notnull where TValue : notnull
    {
       return hash.Require(key, $"Value for key {key} not found");
    }
 
-   public static Result<TValue> Require<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, string message)
+   public static Result<TValue> Require<TKey, TValue>(this IHash<TKey, TValue> hash, TKey key, string message) where TKey : notnull
+      where TValue : notnull
    {
       if (hash.ContainsKey(key))
       {
@@ -50,11 +51,12 @@ public static class HashExtensions
    }
 
    public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Hash<TKey, TValue> hash, TValue defaultValue) where TKey : notnull
+      where TValue : notnull
    {
       return new AutoHash<TKey, TValue>(hash, hash.Comparer) { DefaultValue = defaultValue };
    }
 
-   public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this StringHash<TValue> hash, TValue defaultValue)
+   public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this StringHash<TValue> hash, TValue defaultValue) where TValue : notnull
    {
       return new AutoStringHash<TValue>(hash.IgnoreCase, hash) { DefaultValue = defaultValue };
    }
@@ -65,12 +67,13 @@ public static class HashExtensions
    }
 
    public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Hash<TKey, TValue> hash,
-      Func<TKey, TValue> defaultLambda) where TKey : notnull
+      Func<TKey, TValue> defaultLambda) where TKey : notnull where TValue : notnull
    {
       return new AutoHash<TKey, TValue>(hash, hash.Comparer) { DefaultLambda = defaultLambda };
    }
 
    public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this StringHash<TValue> hash, Func<string, TValue> defaultLambda)
+      where TValue : notnull
    {
       return new AutoStringHash<TValue>(hash.IgnoreCase, hash) { DefaultLambda = defaultLambda };
    }
@@ -88,12 +91,12 @@ public static class HashExtensions
       value = item.Value;
    }
 
-   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this Dictionary<TKey, TValue> dictionary) where TKey : notnull
+   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this Dictionary<TKey, TValue> dictionary) where TKey : notnull where TValue : notnull
    {
       return new Hash<TKey, TValue>(dictionary);
    }
 
-   public static StringHash<TValue> ToStringHash<TValue>(this Dictionary<string, TValue> dictionary, bool ignoreCase)
+   public static StringHash<TValue> ToStringHash<TValue>(this Dictionary<string, TValue> dictionary, bool ignoreCase) where TValue : notnull
    {
       return new StringHash<TValue>(ignoreCase, dictionary);
    }
@@ -104,12 +107,13 @@ public static class HashExtensions
    }
 
    public static Hash<TKey, TValue> ToHash<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer)
-      where TKey : notnull
+      where TKey : notnull where TValue : notnull
    {
       return new Hash<TKey, TValue>(dictionary, comparer);
    }
 
    public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> keySelector) where TKey : notnull
+      where TValue : notnull
    {
       var result = new Hash<TKey, TValue>();
       foreach (var item in enumerable)
@@ -120,7 +124,7 @@ public static class HashExtensions
       return result;
    }
 
-   public static StringHash<TValue> ToStringHash<TValue>(this IEnumerable<TValue> enumerable, Func<TValue, string> keySelector, bool ignoreCase)
+   public static StringHash<TValue> ToStringHash<TValue>(this IEnumerable<TValue> enumerable, Func<TValue, string> keySelector, bool ignoreCase) where TValue : notnull
    {
       var result = new StringHash<TValue>(ignoreCase);
       foreach (var item in enumerable)
@@ -144,7 +148,7 @@ public static class HashExtensions
    }
 
    public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> keySelector,
-      IEqualityComparer<TKey> comparer) where TKey : notnull
+      IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
    {
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
@@ -156,7 +160,7 @@ public static class HashExtensions
    }
 
    public static Hash<TKey, TValue> ToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
-      Func<T, TValue> valueSelector) where TKey : notnull
+      Func<T, TValue> valueSelector) where TKey : notnull where TValue : notnull
    {
       var result = new Hash<TKey, TValue>();
       foreach (var item in enumerable)
@@ -168,7 +172,7 @@ public static class HashExtensions
    }
 
    public static StringHash<TValue> ToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
-      Func<T, TValue> valueSelector, bool ignoreCase)
+      Func<T, TValue> valueSelector, bool ignoreCase) where TValue : notnull
    {
       var result = new StringHash<TValue>(ignoreCase);
       foreach (var item in enumerable)
@@ -180,7 +184,7 @@ public static class HashExtensions
    }
 
    public static Hash<TKey, TValue> ToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
-      Func<T, TValue> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull
+      Func<T, TValue> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
    {
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
@@ -191,7 +195,7 @@ public static class HashExtensions
       return result;
    }
 
-   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<(TKey, TValue)> enumerable) where TKey : notnull
+   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<(TKey, TValue)> enumerable) where TKey : notnull where TValue : notnull
    {
       var result = new Hash<TKey, TValue>();
       foreach (var (key, value) in enumerable)
@@ -203,7 +207,7 @@ public static class HashExtensions
    }
 
    public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this IEnumerable<(TKey, TValue)> enumerable, Func<TKey, TValue> defaultLambda,
-      bool autoAddDefault = false) where TKey : notnull
+      bool autoAddDefault = false) where TKey : notnull where TValue : notnull
    {
       var result = new AutoHash<TKey, TValue>(defaultLambda, autoAddDefault);
       foreach (var (key, value) in enumerable)
@@ -215,7 +219,7 @@ public static class HashExtensions
    }
 
    public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this IEnumerable<(TKey, TValue)> enumerable, TValue defaultValue,
-      bool autoAddDefault = false) where TKey : notnull
+      bool autoAddDefault = false) where TKey : notnull where TValue : notnull
    {
       var result = new AutoHash<TKey, TValue>(defaultValue, autoAddDefault);
       foreach (var (key, value) in enumerable)
@@ -261,7 +265,7 @@ public static class HashExtensions
       return result;
    }
 
-   public static StringHash<TValue> ToStringHash<TValue>(this IEnumerable<(string, TValue)> enumerable, bool ignoreCase)
+   public static StringHash<TValue> ToStringHash<TValue>(this IEnumerable<(string, TValue)> enumerable, bool ignoreCase) where TValue : notnull
    {
       var result = new StringHash<TValue>(ignoreCase);
       foreach (var (key, value) in enumerable)
@@ -273,7 +277,7 @@ public static class HashExtensions
    }
 
    public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this IEnumerable<(string, TValue)> enumerable, bool ignoreCase,
-      Func<string, TValue> defaultLambda, bool autoAddDefault = false)
+      Func<string, TValue> defaultLambda, bool autoAddDefault = false) where TValue : notnull
    {
       var result = new AutoStringHash<TValue>(ignoreCase, defaultLambda, autoAddDefault);
       foreach (var (key, value) in enumerable)
@@ -285,7 +289,7 @@ public static class HashExtensions
    }
 
    public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this IEnumerable<(string, TValue)> enumerable, bool ignoreCase,
-      TValue defaultValue, bool autoAddDefault = false)
+      TValue defaultValue, bool autoAddDefault = false) where TValue : notnull
    {
       var result = new AutoStringHash<TValue>(ignoreCase, defaultValue, autoAddDefault);
       foreach (var (key, value) in enumerable)
@@ -297,7 +301,7 @@ public static class HashExtensions
    }
 
    public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
-      Func<T, Result<TValue>> valueSelector) where TKey : notnull
+      Func<T, Result<TValue>> valueSelector) where TKey : notnull where TValue : notnull
    {
       var result = new Hash<TKey, TValue>();
       foreach (var item in enumerable)
@@ -317,7 +321,7 @@ public static class HashExtensions
    }
 
    public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
-      Func<T, Result<TValue>> valueSelector, bool ignoreCase)
+      Func<T, Result<TValue>> valueSelector, bool ignoreCase) where TValue : notnull
    {
       var result = new StringHash<TValue>(ignoreCase);
       foreach (var item in enumerable)
@@ -337,7 +341,7 @@ public static class HashExtensions
    }
 
    public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
-      Func<T, Result<TValue>> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull
+      Func<T, Result<TValue>> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
    {
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
@@ -357,7 +361,7 @@ public static class HashExtensions
    }
 
    public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<TKey>> keySelector,
-      Func<T, Result<TValue>> valueSelector) where TKey : notnull
+      Func<T, Result<TValue>> valueSelector) where TKey : notnull where TValue : notnull
    {
       var result = new Hash<TKey, TValue>();
       foreach (var item in enumerable)
@@ -378,7 +382,7 @@ public static class HashExtensions
    }
 
    public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<string>> keySelector,
-      Func<T, Result<TValue>> valueSelector, bool ignoreCase)
+      Func<T, Result<TValue>> valueSelector, bool ignoreCase) where TValue : notnull
    {
       var result = new StringHash<TValue>(ignoreCase);
       foreach (var item in enumerable)
@@ -399,7 +403,7 @@ public static class HashExtensions
    }
 
    public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<TKey>> keySelector,
-      Func<T, Result<TValue>> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull
+      Func<T, Result<TValue>> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
    {
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
@@ -420,7 +424,7 @@ public static class HashExtensions
    }
 
    public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
-      Func<T, TValue> valueSelector) where TKey : notnull
+      Func<T, TValue> valueSelector) where TKey : notnull where TValue : notnull
    {
       var result = new Hash<TKey, TValue>();
       foreach (var item in enumerable)
@@ -440,7 +444,7 @@ public static class HashExtensions
    }
 
    public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
-      Func<T, TValue> valueSelector, bool ignoreCase)
+      Func<T, TValue> valueSelector, bool ignoreCase) where TValue : notnull
    {
       var result = new StringHash<TValue>(ignoreCase);
       foreach (var item in enumerable)
@@ -460,7 +464,7 @@ public static class HashExtensions
    }
 
    public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
-      Func<T, TValue> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull
+      Func<T, TValue> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
    {
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
@@ -582,7 +586,7 @@ public static class HashExtensions
    }
 
    public static Result<Hash<TKey, TValue>> GroupToHash<T, TKey, TValue>(this IEnumerable<T> enumerable, Func<T, TKey> keyFunc,
-      Func<Maybe<TValue>, T, TValue> valueFunc) where TKey : notnull
+      Func<Maybe<TValue>, T, TValue> valueFunc) where TKey : notnull where TValue : notnull
    {
       try
       {
@@ -617,5 +621,5 @@ public static class HashExtensions
       return nil;
    }
 
-   public static IHashMaybe<TKey, TValue> Maybe<TKey, TValue>(this IHash<TKey, TValue> hash) => new(hash);
+   public static IHashMaybe<TKey, TValue> Maybe<TKey, TValue>(this IHash<TKey, TValue> hash) where TKey : notnull where TValue : notnull => new(hash);
 }

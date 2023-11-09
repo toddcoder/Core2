@@ -37,20 +37,24 @@ public static class Deep
             var frameText = new Formatter();
 
             var frame = stack.GetFrame(i);
-            frameText["line"] = frame.GetFileLineNumber().ToString();
-            frameText["column"] = frame.GetFileColumnNumber().ToString();
-            frameText["col"] = frame.GetFileColumnNumber().ToString();
-            frameText["file"] = frame.GetFileName();
+            if (frame is not null)
+            {
+               frameText["line"] = frame.GetFileLineNumber().ToString();
+               frameText["column"] = frame.GetFileColumnNumber().ToString();
+               frameText["col"] = frame.GetFileColumnNumber().ToString();
+               var fileName = frame.GetFileName();
+               frameText["file"] = fileName ?? "";
 
-            var method = frame.GetMethod();
-            frameText["method"] = method.ToNonNullString();
+               var method = frame.GetMethod();
+               frameText["method"] = method?.ToString() ?? "";
 
-            frameText["class"] = method.DeclaringType?.Name ?? "";
-            frameText["namespace"] = method.DeclaringType?.Namespace ?? "";
+               frameText["class"] = method?.DeclaringType?.Name ?? "";
+               frameText["namespace"] = method?.DeclaringType?.Namespace ?? "";
 
-            frameText["string"] = frame.ToNonNullString();
+               frameText["string"] = frame.ToNonNullString();
 
-            stackArray[i] = frameText.Format(format);
+               stackArray[i] = frameText.Format(format);
+            }
          }
 
          return stackArray;
@@ -88,8 +92,11 @@ public static class Deep
 
          formatter["level"] = level.ToString();
          var stack = exception.StackTrace;
-         formatter["stack"] = stack.IsNotEmpty() ? stack : "(no stack)";
-         formatter["inner"] = exception.InnerException.DeepStack(format, level + 1);
+         if (stack is not null)
+         {
+            formatter["stack"] = stack.IsNotEmpty() ? stack : "(no stack)";
+            formatter["inner"] = exception.InnerException.DeepStack(format, level + 1);
+         }
 
          return formatter.Format(format);
       }
@@ -99,7 +106,7 @@ public static class Deep
       }
       else
       {
-         return exception.StackTrace;
+         return exception.StackTrace ?? "";
       }
    }
 

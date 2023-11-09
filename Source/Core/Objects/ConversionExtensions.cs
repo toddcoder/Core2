@@ -318,7 +318,7 @@ public static class ConversionExtensions
 
    public class MaybeCaster(object obj)
    {
-      public Maybe<T> Cast<T>() => obj is T t ? t : nil;
+      public Maybe<T> Cast<T>() where T : notnull => obj is T t ? t : nil;
    }
 
    public class ResultConverter(string source)
@@ -374,7 +374,7 @@ public static class ConversionExtensions
 
    public class ResultCaster(object obj)
    {
-      public Result<T> Cast<T>() => (T)obj;
+      public Result<T> Cast<T>() where T : notnull => (T)obj;
    }
 
    public static ValueConverter Value(this string source) => new(source);

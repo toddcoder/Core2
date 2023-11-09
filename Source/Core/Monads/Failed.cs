@@ -3,7 +3,7 @@ using Core.Strings;
 
 namespace Core.Monads;
 
-public class Failed<T> : Optional<T>, IEquatable<Failed<T>>
+public class Failed<T> : Optional<T>, IEquatable<Failed<T>> where T : notnull
 {
    internal readonly Exception exception;
 

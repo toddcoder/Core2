@@ -3,20 +3,19 @@ using System.Collections.Generic;
 
 namespace Core.Monads;
 
-public class OptionalIterator<T>
+public class OptionalIterator<T> where T : notnull
 {
    protected IEnumerable<Optional<T>> enumerable;
    protected Maybe<Action<T>> _just;
    protected Maybe<Action> _empty;
    protected Maybe<Action<Exception>> _failed;
 
-   public OptionalIterator(IEnumerable<Optional<T>> enumerable, Action<T> response = null, Action noResponse = null,
-      Action<Exception> failure = null)
+   public OptionalIterator(IEnumerable<Optional<T>> enumerable, Maybe<Action<T>> response, Maybe<Action> noResponse, Maybe<Action<Exception>> failure)
    {
       this.enumerable = enumerable;
-      _just = response.Some();
-      _empty = noResponse.Some();
-      _failed = failure.Some();
+      _just = response;
+      _empty = noResponse;
+      _failed = failure;
    }
 
    protected void handle(Optional<T> optional)

@@ -60,22 +60,22 @@ public static class AssertionFunctions
       return keys.Select(k => $"[{k}] = {dictionary[k]}").ToString(", ");
    }
 
-   public static string hashImage<TKey, TValue>(IHash<TKey, TValue> hash) where TKey : notnull
+   public static string hashImage<TKey, TValue>(IHash<TKey, TValue> hash) where TKey : notnull where TValue : notnull
    {
       return hash.AnyHash().Map(dictionaryImage) | (() => hash.ToString() ?? "");
    }
 
-   public static string maybeImage<T>(Maybe<T> maybe)
+   public static string maybeImage<T>(Maybe<T> maybe) where T : notnull
    {
-      return maybe.Map(v => v!.ToNonNullString()) | (() => $"none<{typeof(T).Name}>");
+      return maybe.Map(v => v.ToNonNullString()) | (() => $"none<{typeof(T).Name}>");
    }
 
-   public static string resultImage<T>(Result<T> result)
+   public static string resultImage<T>(Result<T> result) where T : notnull
    {
-      return result.Map(v => v!.ToNonNullString()).Recover(e => $"failure<{typeof(T).Name}>({e.Message})");
+      return result.Map(v => v.ToNonNullString()).Recover(e => $"failure<{typeof(T).Name}>({e.Message})");
    }
 
-   public static string optionalImage<T>(Optional<T> optional)
+   public static string optionalImage<T>(Optional<T> optional) where T : notnull
    {
       if (optional is (true, var optionalValue))
       {
@@ -91,7 +91,7 @@ public static class AssertionFunctions
       }
    }
 
-   public static string completionImage<T>(Completion<T> completion)
+   public static string completionImage<T>(Completion<T> completion) where T : notnull
    {
       if (completion is (true, var completionValue))
       {
@@ -111,9 +111,9 @@ public static class AssertionFunctions
 
    public static bool or(ICanBeTrue x, ICanBeTrue y) => x.BeEquivalentToTrue() || y.BeEquivalentToTrue();
 
-   public static bool beEquivalentToTrue<T>(IAssertion<T> assertion) => assertion.Constraints.All(c => c.IsTrue());
+   public static bool beEquivalentToTrue<T>(IAssertion<T> assertion) where T : notnull => assertion.Constraints.All(c => c.IsTrue());
 
-   public static void orThrow<T>(IAssertion<T> assertion)
+   public static void orThrow<T>(IAssertion<T> assertion) where T : notnull
    {
       var _constraint = assertion.Constraints.FirstOrNone(c => !c.IsTrue());
       if (_constraint is (true, var constraint))
@@ -122,7 +122,7 @@ public static class AssertionFunctions
       }
    }
 
-   public static void orThrow<T>(IAssertion<T> assertion, string message)
+   public static void orThrow<T>(IAssertion<T> assertion, string message) where T : notnull
    {
       if (assertion.Constraints.Any(c => !c.IsTrue()))
       {
@@ -130,7 +130,7 @@ public static class AssertionFunctions
       }
    }
 
-   public static void orThrow<T>(IAssertion<T> assertion, Func<string> messageFunc)
+   public static void orThrow<T>(IAssertion<T> assertion, Func<string> messageFunc) where T : notnull
    {
       if (assertion.Constraints.Any(c => !c.IsTrue()))
       {
@@ -138,7 +138,7 @@ public static class AssertionFunctions
       }
    }
 
-   public static void orThrow<TException, T>(IAssertion<T> assertion, params object[] args) where TException : Exception
+   public static void orThrow<TException, T>(IAssertion<T> assertion, params object[] args) where TException : Exception where T : notnull
    {
       if (assertion.Constraints.Any(c => !c.IsTrue()))
       {
@@ -146,81 +146,82 @@ public static class AssertionFunctions
       }
    }
 
-   public static T force<T>(IAssertion<T> assertion)
+   public static T force<T>(IAssertion<T> assertion) where T : notnull
    {
       orThrow(assertion);
       return assertion.Value;
    }
 
-   public static T force<T>(IAssertion<T> assertion, string message)
+   public static T force<T>(IAssertion<T> assertion, string message) where T : notnull
    {
       orThrow(assertion, message);
       return assertion.Value;
    }
 
-   public static T force<T>(IAssertion<T> assertion, Func<string> messageFunc)
+   public static T force<T>(IAssertion<T> assertion, Func<string> messageFunc) where T : notnull
    {
       orThrow(assertion, messageFunc);
       return assertion.Value;
    }
 
-   public static T force<TException, T>(IAssertion<T> assertion, params object[] args) where TException : Exception
+   public static T force<TException, T>(IAssertion<T> assertion, params object[] args) where TException : Exception where T : notnull
    {
       orThrow<TException, T>(assertion, args);
       return assertion.Value;
    }
 
-   private static TResult convert<T, TResult>(IAssertion<T> assertion)
+   private static TResult convert<T, TResult>(IAssertion<T> assertion) where T : notnull
    {
       var converter = TypeDescriptor.GetConverter(typeof(T));
       return (TResult)converter.ConvertTo(assertion.Value, typeof(TResult))!;
    }
 
-   public static TResult forceConvert<T, TResult>(IAssertion<T> assertion)
+   public static TResult forceConvert<T, TResult>(IAssertion<T> assertion) where T : notnull
    {
       orThrow(assertion);
       return convert<T, TResult>(assertion);
    }
 
-   public static TResult forceConvert<T, TResult>(IAssertion<T> assertion, string message)
+   public static TResult forceConvert<T, TResult>(IAssertion<T> assertion, string message) where T : notnull
    {
       orThrow(assertion, message);
       return convert<T, TResult>(assertion);
    }
 
-   public static TResult forceConvert<T, TResult>(IAssertion<T> assertion, Func<string> messageFunc)
+   public static TResult forceConvert<T, TResult>(IAssertion<T> assertion, Func<string> messageFunc) where T : notnull
    {
       orThrow(assertion, messageFunc);
       return convert<T, TResult>(assertion);
    }
 
    public static TResult forceConvert<T, TException, TResult>(IAssertion<T> assertion, params object[] args) where TException : Exception
+      where T : notnull
    {
       orThrow<TException, T>(assertion, args);
       return convert<T, TResult>(assertion);
    }
 
-   public static Result<T> orFailure<T>(IAssertion<T> assertion)
+   public static Result<T> orFailure<T>(IAssertion<T> assertion) where T : notnull
    {
       return assertion.Constraints.FirstOrNone(c => !c.IsTrue()).Map(c => c.Message.Failure<T>()) | (() => assertion.Value);
    }
 
-   public static Result<T> orFailure<T>(IAssertion<T> assertion, string message)
+   public static Result<T> orFailure<T>(IAssertion<T> assertion, string message) where T : notnull
    {
       return assertion.Constraints.Any(c => !c.IsTrue()) ? message.Failure<T>() : assertion.Value;
    }
 
-   public static Result<T> orFailure<T>(IAssertion<T> assertion, Func<string> messageFunc)
+   public static Result<T> orFailure<T>(IAssertion<T> assertion, Func<string> messageFunc) where T : notnull
    {
       return assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Failure<T>() : assertion.Value;
    }
 
-   public static Maybe<T> orNone<T>(IAssertion<T> assertion)
+   public static Maybe<T> orNone<T>(IAssertion<T> assertion) where T : notnull
    {
       return maybe(assertion.Constraints.All(c => c.IsTrue()), () => assertion.Value);
    }
 
-   public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token)
+   public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token) where T : notnull
    {
       return await runAsync(t =>
          assertion.Constraints
@@ -228,23 +229,24 @@ public static class AssertionFunctions
             .Map(c => c.Message.Interrupted<T>()) | (() => assertion.Value.Completed(t)), token);
    }
 
-   public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token)
+   public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, string message, CancellationToken token) where T : notnull
    {
       return await runAsync(t => assertion.Constraints.Any(c => !c.IsTrue()) ? message.Interrupted<T>() : assertion.Value.Completed(t), token);
    }
 
    public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, Func<string> messageFunc, CancellationToken token)
+      where T : notnull
    {
       return await runAsync(t => assertion.Constraints.Any(c => !c.IsTrue()) ? messageFunc().Interrupted<T>() : assertion.Value.Completed(t),
          token);
    }
 
-   public static Optional<T> orEmpty<T>(IAssertion<T> assertion)
+   public static Optional<T> orEmpty<T>(IAssertion<T> assertion) where T : notnull
    {
-      return optional<T>() & assertion.Constraints.All(c => c.IsTrue()) & assertion.Value!;
+      return optional<T>() & assertion.Constraints.All(c => c.IsTrue()) & assertion.Value;
    }
 
-   public static Optional<T> orFailed<T>(IAssertion<T> assertion)
+   public static Optional<T> orFailed<T>(IAssertion<T> assertion) where T : notnull
    {
       var _failedConstraint = assertion.Constraints.FirstOrNone(c => !c.IsTrue());
       if (_failedConstraint is (true, var failedConstraint))
@@ -257,7 +259,7 @@ public static class AssertionFunctions
       }
    }
 
-   public static Optional<T> orFailed<T>(IAssertion<T> assertion, string message)
+   public static Optional<T> orFailed<T>(IAssertion<T> assertion, string message) where T : notnull
    {
       var _failedConstraint = assertion.Constraints.FirstOrNone(c => !c.IsTrue());
       if (_failedConstraint)
@@ -270,7 +272,7 @@ public static class AssertionFunctions
       }
    }
 
-   public static Optional<T> orFailed<T>(IAssertion<T> assertion, Func<string> messageFunc)
+   public static Optional<T> orFailed<T>(IAssertion<T> assertion, Func<string> messageFunc) where T : notnull
    {
       var _failedConstraint = assertion.Constraints.FirstOrNone(c => !c.IsTrue());
       if (_failedConstraint)
@@ -283,10 +285,7 @@ public static class AssertionFunctions
       }
    }
 
-   public static bool orReturn<T>(IAssertion<T> assertion) => !assertion.BeEquivalentToTrue();
-
-   [Obsolete("Use Named extension")]
-   public static Expression<Func<T>> assert<T>(Expression<Func<T>> func) => func;
+   public static bool orReturn<T>(IAssertion<T> assertion) where T : notnull => !assertion.BeEquivalentToTrue();
 
    public static Expression<Func<object>> asObject(Expression<Func<object>> func) => func;
 

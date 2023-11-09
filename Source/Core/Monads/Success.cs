@@ -6,7 +6,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-public class Success<T> : Result<T>, IEquatable<Success<T>>
+public class Success<T> : Result<T>, IEquatable<Success<T>> where T : notnull
 {
    public static implicit operator bool(Success<T> _) => true;
 
@@ -156,14 +156,11 @@ public class Success<T> : Result<T>, IEquatable<Success<T>>
 
    public override void MapOf(Action<T> action) => action(value);
 
-   public bool Equals(Success<T> other)
-   {
-      return other is not null && ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);
-   }
+   public bool Equals(Success<T>? other) => other is not null && EqualityComparer<T>.Default.Equals(value, other.value);
 
-   public override bool Equals(object obj) => obj is Success<T> other && Equals(other);
+   public override bool Equals(object? obj) => obj is Success<T> other && Equals(other);
 
    public override int GetHashCode() => value.GetHashCode();
 
-   public override string ToString() => value.ToString();
+   public override string ToString() => value.ToString() ?? "";
 }

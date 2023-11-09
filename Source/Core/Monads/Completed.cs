@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
+public class Completed<T> : Completion<T>, IEquatable<Completed<T>> where T : notnull
 {
    public static implicit operator bool(Completed<T> _) => true;
 
@@ -168,9 +168,9 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
 
    public override bool ValueEqualTo(Completion<T> otherCompletion) => otherCompletion.Map(EqualToValueOf) | false;
 
-   public override bool EqualToValueOf(T otherValue) => value!.Equals(otherValue);
+   public override bool EqualToValueOf(T otherValue) => value.Equals(otherValue);
 
-   public Completion<object> AsObject() => value!.Completed<object>();
+   public Completion<object> AsObject() => value.Completed<object>();
 
    public override Completion<TResult> CastAs<TResult>()
    {
@@ -206,7 +206,7 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
 
    public override Maybe<Exception> Exception => nil;
 
-   public override object ToObject() => value!;
+   public override object ToObject() => value;
 
    public override Completion<T> Initialize(Func<T> initializer) => this;
 
@@ -219,7 +219,7 @@ public class Completed<T> : Completion<T>, IEquatable<Completed<T>>
 
    public override bool Equals(object? obj) => obj is Completed<T> other && Equals(other);
 
-   public override int GetHashCode() => value!.GetHashCode();
+   public override int GetHashCode() => value.GetHashCode();
 
-   public override string ToString() => value!.ToString() ?? "";
+   public override string ToString() => value.ToString() ?? "";
 }

@@ -5,7 +5,7 @@ namespace Core.Monads;
 
 public static class AttemptFunctions
 {
-   public static Result<T> tryTo<T>(Func<T> func)
+   public static Result<T> tryTo<T>(Func<T> func) where T : notnull
    {
       try
       {
@@ -17,7 +17,7 @@ public static class AttemptFunctions
       }
    }
 
-   public static Completion<T> tryToComplete<T>(Func<T> func)
+   public static Completion<T> tryToComplete<T>(Func<T> func) where T : notnull
    {
       try
       {
@@ -29,9 +29,9 @@ public static class AttemptFunctions
       }
    }
 
-   public static Completion<T> tryToComplete<T>(Func<Result<T>> func) => func().Completion();
+   public static Completion<T> tryToComplete<T>(Func<Result<T>> func) where T : notnull => func().Completion();
 
-   public static Result<T> tryTo<T>(Func<Result<T>> func)
+   public static Result<T> tryTo<T>(Func<Result<T>> func) where T : notnull
    {
       try
       {
@@ -43,7 +43,7 @@ public static class AttemptFunctions
       }
    }
 
-   public static Completion<T> tryToComplete<T>(Func<Completion<T>> func)
+   public static Completion<T> tryToComplete<T>(Func<Completion<T>> func) where T : notnull
    {
       try
       {

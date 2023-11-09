@@ -184,15 +184,15 @@ public static class ArrayExtensions
       return index.Between(0).Until(array.Length) ? array[index] : defaultValue;
    }
 
-   public static Maybe<T> Of<T>(this T[] array, int index) => maybe(index.Between(0).Until(array.Length), () => array[index]);
+   public static Maybe<T> Of<T>(this T[] array, int index) where T : notnull => maybe(index.Between(0).Until(array.Length), () => array[index]);
 
    public static T First<T>(this T[] array, T defaultValue) => array.IsEmpty() ? defaultValue : array[0];
 
-   public static Maybe<T> First<T>(this T[] array) => maybe(array.IsNotEmpty(), () => array[0]);
+   public static Maybe<T> First<T>(this T[] array) where T : notnull => maybe(array.IsNotEmpty(), () => array[0]);
 
    public static T Last<T>(this T[] array, T defaultValue) => array.IsEmpty() ? defaultValue : array[^1];
 
-   public static Maybe<T> Last<T>(this T[] array) => maybe(array.IsNotEmpty(), () => array[^1]);
+   public static Maybe<T> Last<T>(this T[] array) where T : notnull => maybe(array.IsNotEmpty(), () => array[^1]);
 
    public static T[] Tail<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Skip(1).ToArray();
 
@@ -536,7 +536,7 @@ public static class ArrayExtensions
       }
    }
 
-   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this (TKey, TValue)[] array) where TKey : notnull
+   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this (TKey, TValue)[] array) where TKey : notnull where TValue : notnull
    {
       var hash = new Hash<TKey, TValue>();
       foreach (var (key, value) in array)

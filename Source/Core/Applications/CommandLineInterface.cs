@@ -481,8 +481,8 @@ public abstract class CommandLineInterface : IDisposable
    protected void useWithParameters(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
    {
       var _arguments = methodInfo.GetParameters()
-         .Select(p => (p.Name, p.ParameterType, defaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue)))
-         .Select(t => retrieveItem(t.Name!, t.ParameterType, t.defaultValue!, prefix, suffix, commandLine))
+         .Select(p => (p.Name, p.ParameterType, defaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue!)))
+         .Select(t => retrieveItem(t.Name!, t.ParameterType, t.defaultValue, prefix, suffix, commandLine))
          .ToArray();
       var _failure = _arguments.FirstOrNone(p => !p);
       if (_failure is (true, var failure))

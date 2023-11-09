@@ -256,7 +256,7 @@ public static class User32
       {
          if (z == ix)
          {
-            return Enum.GetName(messagesType, ix);
+            return Enum.GetName(messagesType, ix)!;
          }
       }
 

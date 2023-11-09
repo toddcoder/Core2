@@ -13,11 +13,11 @@ namespace Core.Objects;
 
 public static class TypeExtensions
 {
-   public static Maybe<object> DefaultValue(this Type type)
+   public static Maybe<object> DefaultValue(this Type? type)
    {
       return maybe(type is not null, () =>
       {
-         var expression = Lambda<Func<object>>(Convert(Default(type), typeof(object)));
+         var expression = Lambda<Func<object>>(Convert(Default(type!), typeof(object)));
          return expression.Compile()();
       });
    }
@@ -39,7 +39,7 @@ public static class TypeExtensions
       }
    }
 
-   public static object DefaultOf(this Type type)
+   public static object? DefaultOf(this Type? type)
    {
       if (type is not null)
       {
@@ -67,15 +67,15 @@ public static class TypeExtensions
          var _genericResult = lazy.maybe<MatchResult>();
          if (_ungenericResult.ValueOf(source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} $; f")) is (true, var ungenericResult))
          {
-            return getUngenericType(ungenericResult.FirstGroup, ungenericResult.SecondGroup);
+            return getUngenericType(ungenericResult.FirstGroup, ungenericResult.SecondGroup)!;
          }
          else if (_genericResult.ValueOf(source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} '<' -/{,} ',' -/{>} '>' $; f")) is (true, var genericResult))
          {
-            return getGenericType(genericResult.FirstGroup, genericResult.SecondGroup, genericResult.ThirdGroup, genericResult.FourthGroup);
+            return getGenericType(genericResult.FirstGroup, genericResult.SecondGroup, genericResult.ThirdGroup, genericResult.FourthGroup)!;
          }
          else
          {
-            return Type.GetType(source);
+            return Type.GetType(source)!;
          }
       }
       catch (Exception exception)
@@ -84,7 +84,7 @@ public static class TypeExtensions
       }
    }
 
-   private static Type getUngenericType(string assemblyPath, string typeName)
+   private static Type? getUngenericType(string assemblyPath, string typeName)
    {
       if (assemblyPath.IsEmpty())
       {
@@ -96,7 +96,7 @@ public static class TypeExtensions
       }
    }
 
-   private static Type getGenericType(string genericAssemblyPath, string genericTypeName, string specificAssemblyPath, string specificTypeName)
+   private static Type? getGenericType(string genericAssemblyPath, string genericTypeName, string specificAssemblyPath, string specificTypeName)
    {
       var specificType = getUngenericType(specificAssemblyPath, specificTypeName);
       if (specificType is not null)
@@ -110,5 +110,5 @@ public static class TypeExtensions
       }
    }
 
-   public static Result<object> New(this Type type, params object[] args) => tryTo(() => Activator.CreateInstance(type, array(args)));
+   public static Result<object> New(this Type type, params object[] args) => tryTo(() => Activator.CreateInstance(type, array(args))!);
 }

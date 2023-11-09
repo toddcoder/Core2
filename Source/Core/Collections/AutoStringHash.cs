@@ -4,7 +4,7 @@ using static Core.Collections.CollectionFunctions;
 
 namespace Core.Collections;
 
-public class AutoStringHash<TValue> : AutoHash<string, TValue>
+public class AutoStringHash<TValue> : AutoHash<string, TValue> where TValue : notnull
 {
    public static implicit operator StringHash<TValue>(AutoStringHash<TValue> autoStringHash)
    {

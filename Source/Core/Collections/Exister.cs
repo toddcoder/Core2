@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
 
-public class Exister<T>
+public class Exister<T> where T : notnull
 {
    protected Hash<T, Unit> content;
 

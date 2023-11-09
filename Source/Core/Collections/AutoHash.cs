@@ -6,7 +6,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
 
-public class AutoHash<TKey, TValue> : Hash<TKey, TValue> where TKey : notnull
+public class AutoHash<TKey, TValue> : Hash<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    protected Maybe<Func<TKey, TValue>> _defaultLambda;
    protected Maybe<TValue> _defaultValue;

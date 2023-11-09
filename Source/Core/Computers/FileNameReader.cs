@@ -125,5 +125,5 @@ public class FileNameReader : IDisposable
       }
    }
 
-   public void Dispose() => reader?.Dispose();
+   public void Dispose() => reader.Dispose();
 }

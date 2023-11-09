@@ -6,7 +6,7 @@ using Core.Monads;
 
 namespace Core.Assertions;
 
-public interface IAssertion<T> : ICanBeTrue
+public interface IAssertion<T> : ICanBeTrue where T : notnull
 {
    T Value { get; }
 

@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
+public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>> where T : notnull
 {
    // ReSharper disable once UnusedParameter.Global
    public static implicit operator bool(Interrupted<T> _) => false;
@@ -98,7 +98,7 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
    public override void Deconstruct(out bool isCompleted, out T value)
    {
       isCompleted = false;
-      value = default;
+      value = default!;
    }
 
    public override Completion<T> OnCompleted(Action<T> action) => this;
@@ -143,14 +143,11 @@ public class Interrupted<T> : Completion<T>, IEquatable<Interrupted<T>>
    {
    }
 
-   public bool Equals(Interrupted<T> other)
-   {
-      return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);
-   }
+   public bool Equals(Interrupted<T>? other) => other is not null && Equals(exception, other.Exception);
 
-   public override bool Equals(object obj) => obj is Interrupted<T> other && Equals(other);
+   public override bool Equals(object? obj) => obj is Interrupted<T> other && Equals(other);
 
-   public override int GetHashCode() => exception?.GetHashCode() ?? 0;
+   public override int GetHashCode() => exception.GetHashCode();
 
    public override string ToString() => $"Interrupted({exception.Message.Elliptical(60, ' ')})";
 }

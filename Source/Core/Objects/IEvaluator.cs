@@ -4,9 +4,9 @@ namespace Core.Objects;
 
 public interface IEvaluator
 {
-   object this[string signature] { get; set; }
+   object? this[string signature] { get; set; }
 
-   object this[Signature signature] { get; set; }
+   object? this[Signature signature] { get; set; }
 
    Type Type(string signature);
 

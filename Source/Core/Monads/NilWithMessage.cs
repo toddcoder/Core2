@@ -13,7 +13,7 @@ public class NilWithMessage : Nil
 
    public bool Equals(NilWithMessage nilWithMessage) => message == nilWithMessage.message;
 
-   public override bool Equals(object obj) => obj is NilWithMessage other && Equals(other);
+   public override bool Equals(object? obj) => obj is NilWithMessage other && Equals(other);
 
    public override int GetHashCode() => base.GetHashCode() ^ message.GetHashCode();
 

@@ -2,7 +2,7 @@
 
 namespace Core.Collections.Infix;
 
-public interface IInfixData<TValue, TInfix>
+public interface IInfixData<TValue, TInfix> where TInfix : notnull
 {
    TValue Value { get; }
 

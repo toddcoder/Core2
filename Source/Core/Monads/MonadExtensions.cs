@@ -18,13 +18,9 @@ namespace Core.Monads;
 
 public static class MonadExtensions
 {
-   public static Maybe<T> Some<T>(this T obj)
+   public static Maybe<T> Some<T>(this T obj) where T : notnull
    {
-      if (obj is null)
-      {
-         return nil;
-      }
-      else if (obj is ITuple tuple)
+      if (obj is ITuple tuple)
       {
          for (var i = 0; i < tuple.Length; i++)
          {
@@ -42,13 +38,9 @@ public static class MonadExtensions
       }
    }
 
-   public static Optional<T> Just<T>(this T obj)
+   public static Optional<T> Just<T>(this T obj) where T : notnull
    {
-      if (obj is null)
-      {
-         return fail("Optional cannot be null");
-      }
-      else if (obj is ITuple tuple)
+      if (obj is ITuple tuple)
       {
          for (var i = 0; i < tuple.Length; i++)
          {
@@ -66,17 +58,30 @@ public static class MonadExtensions
       }
    }
 
-   public static Optional<T> Failed<T>(this string message) => fail(message);
+   public static Optional<T> Failed<T>(this string message) where T : notnull => fail(message);
 
-   public static Maybe<T> NotNull<T>(this T obj) => obj.Some();
+   public static Maybe<T> NotNull<T>(this T? obj) where T : notnull
+   {
+      if (obj is not null)
+      {
+         return obj.Some();
+      }
+      else
+      {
+         return nil;
+      }
+   }
 
    public static Maybe<string> NotEmpty(this string text) => maybe(text.IsNotEmpty(), text.Some);
 
    public static Maybe<int> NotNegative(this int number) => maybe<int>() & number > -1 & number;
 
-   public static Maybe<T> Item<T>(this T[] array, int index) => maybe<T>() & index.Between(0).Until(array.Length) & (() => array[index]);
+   public static Maybe<T> Item<T>(this T[] array, int index) where T : notnull
+   {
+      return maybe<T>() & index.Between(0).Until(array.Length) & (() => array[index]);
+   }
 
-   public static Maybe<Type> UnderlyingType(this object obj)
+   public static Maybe<Type> UnderlyingType(this object? obj)
    {
       if (obj is null)
       {
@@ -102,13 +107,14 @@ public static class MonadExtensions
    }
 
    [DebuggerStepThrough]
-   public static Result<TResult> SelectMany<T, TResult>(this Maybe<T> maybe, Func<T, Result<TResult>> projection)
+   public static Result<TResult> SelectMany<T, TResult>(this Maybe<T> maybe, Func<T, Result<TResult>> projection) where T : notnull
+      where TResult : notnull
    {
       return maybe.Map(projection) | (() => fail("Value not provided"));
    }
 
    [DebuggerStepThrough]
-   public static Result<TResult> Select<T, TResult>(this Result<T> result, Func<T, TResult> func)
+   public static Result<TResult> Select<T, TResult>(this Result<T> result, Func<T, TResult> func) where T : notnull where TResult : notnull
    {
       if (result is (true, var resultValue))
       {
@@ -120,13 +126,9 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> Success<T>(this T value)
+   public static Result<T> Success<T>(this T value) where T : notnull
    {
-      if (value is null)
-      {
-         return fail("Value cannot be null");
-      }
-      else if (value is ITuple tuple)
+      if (value is ITuple tuple)
       {
          for (var i = 0; i < tuple.Length; i++)
          {
@@ -144,17 +146,17 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> Failure<T>(this string message) => fail(message);
+   public static Result<T> Failure<T>(this string message) where T : notnull => fail(message);
 
-   public static Result<T> Failure<T, TException>(this object firstItem, params object[] args) where TException : Exception
+   public static Result<T> Failure<T, TException>(this object firstItem, params object[] args) where T : notnull where TException : Exception
    {
       var list = new List<object> { firstItem };
       list.AddRange(args);
 
-      return (TException)typeof(TException).Create(list.ToArray());
+      return (TException)typeof(TException).Create(list.ToArray())!;
    }
 
-   public static Result<T> Result<T>(this bool test, Func<T> ifFunc, string exceptionMessage)
+   public static Result<T> Result<T>(this bool test, Func<T> ifFunc, string exceptionMessage) where T : notnull
    {
       if (test)
       {
@@ -166,7 +168,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> Result<T>(this bool test, Func<T> ifFunc, Func<string> exceptionMessage)
+   public static Result<T> Result<T>(this bool test, Func<T> ifFunc, Func<string> exceptionMessage) where T : notnull
    {
       if (test)
       {
@@ -178,7 +180,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> Result<T>(this bool test, Func<Result<T>> ifFunc, string exceptionMessage)
+   public static Result<T> Result<T>(this bool test, Func<Result<T>> ifFunc, string exceptionMessage) where T : notnull
    {
       if (test)
       {
@@ -190,8 +192,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> Result<T>(this bool test, Func<Result<T>> ifFunc,
-      Func<string> exceptionMessage)
+   public static Result<T> Result<T>(this bool test, Func<Result<T>> ifFunc, Func<string> exceptionMessage) where T : notnull
    {
       if (test)
       {
@@ -203,7 +204,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<T> WhereIsSome<T>(this IEnumerable<Maybe<T>> enumerable)
+   public static IEnumerable<T> WhereIsSome<T>(this IEnumerable<Maybe<T>> enumerable) where T : notnull
    {
       foreach (var _maybe in enumerable)
       {
@@ -215,6 +216,7 @@ public static class MonadExtensions
    }
 
    public static IEnumerable<(T item, TMaybe maybe)> WhereIsSome<T, TMaybe>(this IEnumerable<T> enumerable, Func<T, Maybe<TMaybe>> predicate)
+      where TMaybe : notnull
    {
       foreach (var item in enumerable)
       {
@@ -226,7 +228,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<T> WhereIsSuccessful<T>(this IEnumerable<Result<T>> enumerable)
+   public static IEnumerable<T> WhereIsSuccessful<T>(this IEnumerable<Result<T>> enumerable) where T : notnull
    {
       foreach (var _result in enumerable)
       {
@@ -238,7 +240,7 @@ public static class MonadExtensions
    }
 
    public static IEnumerable<(T item, TResult result)> WhereIsSuccessful<T, TResult>(this IEnumerable<T> enumerable,
-      Func<T, Result<TResult>> predicate)
+      Func<T, Result<TResult>> predicate) where T : notnull where TResult : notnull
    {
       foreach (var item in enumerable)
       {
@@ -250,7 +252,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<Either<T, Exception>> Successful<T>(this IEnumerable<Result<T>> enumerable)
+   public static IEnumerable<Either<T, Exception>> Successful<T>(this IEnumerable<Result<T>> enumerable) where T : notnull
    {
       foreach (var _result in enumerable)
       {
@@ -265,7 +267,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<T> WhereIsCompleted<T>(this IEnumerable<Completion<T>> enumerable)
+   public static IEnumerable<T> WhereIsCompleted<T>(this IEnumerable<Completion<T>> enumerable) where T : notnull
    {
       foreach (var _completion in enumerable)
       {
@@ -277,7 +279,7 @@ public static class MonadExtensions
    }
 
    public static IEnumerable<(T item, TCompletion completion)> WhereIsCompleted<T, TCompletion>(this IEnumerable<T> enumerable,
-      Func<T, Completion<TCompletion>> predicate)
+      Func<T, Completion<TCompletion>> predicate) where TCompletion : notnull
    {
       foreach (var item in enumerable)
       {
@@ -289,7 +291,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Maybe<IEnumerable<T>> AllAreSome<T>(this IEnumerable<Maybe<T>> enumerable)
+   public static Maybe<IEnumerable<T>> AllAreSome<T>(this IEnumerable<Maybe<T>> enumerable) where T : notnull
    {
       var result = new List<T>();
       foreach (var _value in enumerable)
@@ -307,38 +309,37 @@ public static class MonadExtensions
       return result;
    }
 
-   public static IEnumerable<Result<T>> All<T>(this IEnumerable<Result<T>> enumerable, Action<T> success = null,
-      Action<Exception> failure = null)
+   public static IEnumerable<Result<T>> All<T>(this IEnumerable<Result<T>> enumerable, Maybe<Action<T>> success, Maybe<Action<Exception>> failure)
+      where T : notnull
    {
       return new ResultIterator<T>(enumerable, success, failure).All();
    }
 
-   public static IEnumerable<T> Successes<T>(this IEnumerable<Result<T>> enumerable, Action<T> success = null,
-      Action<Exception> failure = null)
+   public static IEnumerable<T> Successes<T>(this IEnumerable<Result<T>> enumerable, Maybe<Action<T>> success, Maybe<Action<Exception>> failure)
+      where T : notnull
    {
       return new ResultIterator<T>(enumerable, success, failure).SuccessesOnly();
    }
 
-   public static IEnumerable<Exception> Failures<T>(this IEnumerable<Result<T>> enumerable,
-      Action<T> success = null, Action<Exception> failure = null)
+   public static IEnumerable<Exception> Failures<T>(this IEnumerable<Result<T>> enumerable, Maybe<Action<T>> success,
+      Maybe<Action<Exception>> failure) where T : notnull
    {
       return new ResultIterator<T>(enumerable, success, failure).FailuresOnly();
    }
 
    public static (IEnumerable<T> enumerable, Maybe<Exception> exception) SuccessesFirst<T>(this IEnumerable<Result<T>> enumerable,
-      Action<T> success = null, Action<Exception> failure = null)
+      Maybe<Action<T>> success, Maybe<Action<Exception>> failure) where T : notnull
    {
       return new ResultIterator<T>(enumerable, success, failure).SuccessesThenFailure();
    }
 
-   public static Result<IEnumerable<T>> IfAllSuccesses<T>(this IEnumerable<Result<T>> enumerable,
-      Action<T> success = null, Action<Exception> failure = null)
+   public static Result<IEnumerable<T>> IfAllSuccesses<T>(this IEnumerable<Result<T>> enumerable, Maybe<Action<T>> success,
+      Maybe<Action<Exception>> failure) where T : notnull
    {
       return new ResultIterator<T>(enumerable, success, failure).IfAllSuccesses();
    }
 
-   public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
-      Func<TSource, TResult> func)
+   public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> func) where TResult : notnull
    {
       try
       {
@@ -366,13 +367,14 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable,
-      Func<TSource, TResult> func)
+   public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable, Func<TSource, TResult> func)
+      where TResult : notnull
    {
       return enumerable.Map(e => e.ForAny(func));
    }
 
    public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable, Action<TSource> action, TResult result)
+      where TResult : notnull
    {
       try
       {
@@ -396,14 +398,14 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable,
-      Action<TSource> action, TResult result)
+   public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable, Action<TSource> action, TResult result)
+      where TResult : notnull
    {
       return enumerable.Map(e => e.ForAny(action, result));
    }
 
-   public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable,
-      Action<TSource> action, Func<TResult> result) => tryTo(() =>
+   public static Result<TResult> ForAny<TSource, TResult>(this IEnumerable<TSource> enumerable, Action<TSource> action, Func<TResult> result)
+      where TResult : notnull => tryTo(() =>
    {
       foreach (var item in enumerable)
       {
@@ -413,15 +415,15 @@ public static class MonadExtensions
       return result();
    });
 
-   public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable,
-      Action<TSource> action, Func<TResult> result)
+   public static Result<TResult> ForAny<TSource, TResult>(this Result<IEnumerable<TSource>> enumerable, Action<TSource> action, Func<TResult> result)
+      where TResult : notnull
    {
       return enumerable.Map(e => e.ForAny(action, result));
    }
 
-   public static Result<T> Flat<T>(this Result<Result<T>> result) => result.Recover(e => e);
+   public static Result<T> Flat<T>(this Result<Result<T>> result) where T : notnull => result.Recover(e => e);
 
-   public static T ThrowIfFailed<T>(this Result<T> result)
+   public static T ThrowIfFailed<T>(this Result<T> result) where T : notnull
    {
       if (result is (true, var resultValue))
       {
@@ -433,8 +435,7 @@ public static class MonadExtensions
       }
    }
 
-   public static void ForEach<T>(this Result<IEnumerable<T>> enumerable, Action<T> ifSuccess,
-      Action<Exception> ifFailure)
+   public static void ForEach<T>(this Result<IEnumerable<T>> enumerable, Action<T> ifSuccess, Action<Exception> ifFailure)
    {
       if (enumerable is (true, var enumerableValue))
       {
@@ -473,7 +474,7 @@ public static class MonadExtensions
 
          try
          {
-            if (movedNext)
+            if (movedNext && value is not null)
             {
                ifSuccess(value);
             }
@@ -485,9 +486,9 @@ public static class MonadExtensions
       }
    }
 
-   public static Maybe<T> IfCast<T>(this object obj) => obj is T t ? t : nil;
+   public static Maybe<T> IfCast<T>(this object obj) where T : notnull => obj is T t ? t : nil;
 
-   public static IEnumerable<T> SomeValue<T>(this IEnumerable<Maybe<T>> enumerable)
+   public static IEnumerable<T> SomeValue<T>(this IEnumerable<Maybe<T>> enumerable) where T : notnull
    {
       foreach (var _item in enumerable)
       {
@@ -498,7 +499,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<T> SuccessfulValue<T>(this IEnumerable<Result<T>> enumerable)
+   public static IEnumerable<T> SuccessfulValue<T>(this IEnumerable<Result<T>> enumerable) where T : notnull
    {
       foreach (var _result in enumerable)
       {
@@ -509,13 +510,9 @@ public static class MonadExtensions
       }
    }
 
-   public static Completion<T> Completed<T>(this T value)
+   public static Completion<T> Completed<T>(this T value) where T : notnull
    {
-      if (value is null)
-      {
-         return "value cannot be null".Interrupted<T>();
-      }
-      else if (value is ITuple tuple)
+      if (value is ITuple tuple)
       {
          for (var i = 0; i < tuple.Length; i++)
          {
@@ -533,7 +530,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Completion<T> Completed<T>(this T value, CancellationToken token)
+   public static Completion<T> Completed<T>(this T value, CancellationToken token) where T : notnull
    {
       if (token.IsCancellationRequested)
       {
@@ -545,41 +542,41 @@ public static class MonadExtensions
       }
    }
 
-   public static Completion<T> Interrupted<T>(this string message) => new Interrupted<T>(new ApplicationException(message));
+   public static Completion<T> Interrupted<T>(this string message) where T : notnull => new Interrupted<T>(new ApplicationException(message));
 
-   public static Completion<T> Interrupted<T, TException>(this object firstItem, params object[] args) where TException : Exception
+   public static Completion<T> Interrupted<T, TException>(this object firstItem, params object[] args) where T : notnull where TException : Exception
    {
       var list = new List<object> { firstItem };
       list.AddRange(args);
 
-      return (TException)typeof(TException).Create(list.ToArray());
+      return (TException)typeof(TException).Create(list.ToArray())!;
    }
 
-   public static Completion<T> Completion<T>(this Result<T> result) => result.Map(v => v.Completed()).Recover(e => e);
+   public static Completion<T> Completion<T>(this Result<T> result) where T : notnull => result.Map(v => v.Completed()).Recover(e => e);
 
-   public static Completion<T> Completion<T>(this Result<T> result, CancellationToken token)
+   public static Completion<T> Completion<T>(this Result<T> result, CancellationToken token) where T : notnull
    {
       return result.Map(v => v.Completed(token)).Recover(e => e);
    }
 
-   public static Completion<T> Completion<T>(this Maybe<T> maybe) => maybe.Map(v => new Completed<T>(v)) | nil;
+   public static Completion<T> Completion<T>(this Maybe<T> maybe) where T : notnull => maybe.Map(v => new Completed<T>(v)) | nil;
 
-   public static Completion<T> Completion<T>(this Maybe<T> maybe, CancellationToken token)
+   public static Completion<T> Completion<T>(this Maybe<T> maybe, CancellationToken token) where T : notnull
    {
       return maybe.Map(v => v.Completed(token)) | (() => new Cancelled<T>());
    }
 
-   private static Completion<T> cancelledOrInterrupted<T>(Exception exception) => exception switch
+   private static Completion<T> cancelledOrInterrupted<T>(Exception exception) where T : notnull => exception switch
    {
       OperationCanceledException => nil,
       ObjectDisposedException => nil,
-      FullStackException { InnerException: { } and not FullStackException } fullStackException => cancelledOrInterrupted<T>(fullStackException
+      FullStackException { InnerException: not null and not FullStackException } fullStackException => cancelledOrInterrupted<T>(fullStackException
          .InnerException),
       _ => exception
    };
 
    public static async Task<Completion<T3>> SelectMany<T1, T2, T3>(this Task<Completion<T1>> source, Func<T1, Task<Completion<T2>>> func,
-      Func<T1, T2, T3> projection)
+      Func<T1, T2, T3> projection) where T1 : notnull where T2 : notnull where T3 : notnull
    {
       var _t = await source;
       if (_t is (true, var t))
@@ -608,7 +605,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> Result<T>(this Completion<T> completion)
+   public static Result<T> Result<T>(this Completion<T> completion) where T : notnull
    {
       if (completion is (true, var completionValue))
       {
@@ -624,13 +621,13 @@ public static class MonadExtensions
       }
    }
 
-   public static Maybe<T> MaxOrNone<T>(this IEnumerable<T> enumerable)
+   public static Maybe<T> MaxOrNone<T>(this IEnumerable<T> enumerable) where T : notnull
    {
       var array = enumerable.ToArray();
-      return maybe(array.Length > 0, () => array.Max());
+      return maybe(array.Length > 0, () => array.Max()!);
    }
 
-   public static Maybe<T> MaxOrNone<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc)
+   public static Maybe<T> MaxOrNone<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc) where T : notnull
    {
       var array = enumerable.ToArray();
       return maybe(array.Length > 0, () =>
@@ -640,13 +637,13 @@ public static class MonadExtensions
       });
    }
 
-   public static Maybe<T> MinOrNone<T>(this IEnumerable<T> enumerable)
+   public static Maybe<T> MinOrNone<T>(this IEnumerable<T> enumerable) where T : notnull
    {
       var array = enumerable.ToArray();
-      return maybe(array.Length > 0, () => array.Min());
+      return maybe(array.Length > 0, () => array.Min()!);
    }
 
-   public static Maybe<T> MinOrNone<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc)
+   public static Maybe<T> MinOrNone<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc) where T : notnull
    {
       var array = enumerable.ToArray();
       return maybe(array.Length > 0, () =>
@@ -656,13 +653,14 @@ public static class MonadExtensions
       });
    }
 
-   public static Result<T> MaxOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
+   public static Result<T> MaxOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) where T : notnull => tryTo(() =>
    {
       var array = enumerable.ToArray();
-      return assert(array.Length > 0, () => array.Max(), exceptionMessage);
+      return assert(array.Length > 0, () => array.Max()!, exceptionMessage);
    });
 
    public static Result<T> MaxOrFail<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc, Func<string> exceptionMessage)
+      where T : notnull
    {
       return tryTo(() =>
       {
@@ -675,13 +673,14 @@ public static class MonadExtensions
       });
    }
 
-   public static Result<T> MinOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) => tryTo(() =>
+   public static Result<T> MinOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) where T : notnull => tryTo(() =>
    {
       var array = enumerable.ToArray();
-      return assert(array.Length > 0, () => array.Min(), exceptionMessage);
+      return assert(array.Length > 0, () => array.Min()!, exceptionMessage);
    });
 
    public static Result<T> MinOrFail<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc, Func<string> exceptionMessage)
+      where T : notnull
    {
       return tryTo(() =>
       {
@@ -694,122 +693,130 @@ public static class MonadExtensions
       });
    }
 
-   public static Maybe<TResult> Map<T1, T2, TResult>(this Maybe<(T1, T2)> maybe, Func<T1, T2, TResult> func)
+   public static Maybe<TResult> Map<T1, T2, TResult>(this Maybe<(T1, T2)> maybe, Func<T1, T2, TResult> func) where TResult : notnull
    {
       return maybe.Map(t => func(t.Item1, t.Item2));
    }
 
-   public static Maybe<TResult> Map<T1, T2, TResult>(this Maybe<(T1, T2)> maybe, Func<T1, T2, Maybe<TResult>> func)
+   public static Maybe<TResult> Map<T1, T2, TResult>(this Maybe<(T1, T2)> maybe, Func<T1, T2, Maybe<TResult>> func) where TResult : notnull
    {
       return maybe.Map(t => func(t.Item1, t.Item2));
    }
 
-   public static Maybe<TResult> Map<T1, T2, T3, TResult>(this Maybe<(T1, T2, T3)> maybe, Func<T1, T2, T3, TResult> func)
+   public static Maybe<TResult> Map<T1, T2, T3, TResult>(this Maybe<(T1, T2, T3)> maybe, Func<T1, T2, T3, TResult> func) where TResult : notnull
    {
       return maybe.Map(t => func(t.Item1, t.Item2, t.Item3));
    }
 
    public static Maybe<TResult> Map<T1, T2, T3, TResult>(this Maybe<(T1, T2, T3)> maybe, Func<T1, T2, T3, Maybe<TResult>> func)
+      where TResult : notnull
    {
       return maybe.Map(t => func(t.Item1, t.Item2, t.Item3));
    }
 
    public static Maybe<TResult> Map<T1, T2, T3, T4, TResult>(this Maybe<(T1, T2, T3, T4)> maybe, Func<T1, T2, T3, T4, TResult> func)
+      where TResult : notnull
    {
       return maybe.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
    }
 
    public static Maybe<TResult> Map<T1, T2, T3, T4, TResult>(this Maybe<(T1, T2, T3, T4)> maybe, Func<T1, T2, T3, T4, Maybe<TResult>> func)
+      where TResult : notnull
    {
       return maybe.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
    }
 
-   public static Result<TResult> Map<T1, T2, TResult>(this Result<(T1, T2)> result, Func<T1, T2, TResult> func)
+   public static Result<TResult> Map<T1, T2, TResult>(this Result<(T1, T2)> result, Func<T1, T2, TResult> func) where TResult : notnull
    {
       return result.Map(t => func(t.Item1, t.Item2));
    }
 
-   public static Result<TResult> Map<T1, T2, TResult>(this Result<(T1, T2)> result, Func<T1, T2, Result<TResult>> func)
+   public static Result<TResult> Map<T1, T2, TResult>(this Result<(T1, T2)> result, Func<T1, T2, Result<TResult>> func) where TResult : notnull
    {
       return result.Map(t => func(t.Item1, t.Item2));
    }
 
-   public static Result<TResult> Map<T1, T2, T3, TResult>(this Result<(T1, T2, T3)> result, Func<T1, T2, T3, TResult> func)
+   public static Result<TResult> Map<T1, T2, T3, TResult>(this Result<(T1, T2, T3)> result, Func<T1, T2, T3, TResult> func) where TResult : notnull
    {
       return result.Map(t => func(t.Item1, t.Item2, t.Item3));
    }
 
    public static Result<TResult> Map<T1, T2, T3, TResult>(this Result<(T1, T2, T3)> result, Func<T1, T2, T3, Result<TResult>> func)
+      where TResult : notnull
    {
       return result.Map(t => func(t.Item1, t.Item2, t.Item3));
    }
 
    public static Result<TResult> Map<T1, T2, T3, T4, TResult>(this Result<(T1, T2, T3, T4)> result, Func<T1, T2, T3, T4, TResult> func)
+      where TResult : notnull
    {
       return result.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
    }
 
    public static Result<TResult> Map<T1, T2, T3, T4, TResult>(this Result<(T1, T2, T3, T4)> result, Func<T1, T2, T3, T4, Result<TResult>> func)
+      where TResult : notnull
    {
       return result.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
    }
 
-   public static Completion<TResult> Map<T1, T2, TResult>(this Completion<(T1, T2)> completion, Func<T1, T2, TResult> func)
+   public static Completion<TResult> Map<T1, T2, TResult>(this Completion<(T1, T2)> completion, Func<T1, T2, TResult> func) where TResult : notnull
    {
       return completion.Map(t => func(t.Item1, t.Item2));
    }
 
    public static Completion<TResult> Map<T1, T2, TResult>(this Completion<(T1, T2)> completion, Func<T1, T2, Completion<TResult>> func)
+      where TResult : notnull
    {
       return completion.Map(t => func(t.Item1, t.Item2));
    }
 
    public static Completion<TResult> Map<T1, T2, T3, TResult>(this Completion<(T1, T2, T3)> completion, Func<T1, T2, T3, TResult> func)
+      where TResult : notnull
    {
       return completion.Map(t => func(t.Item1, t.Item2, t.Item3));
    }
 
    public static Completion<TResult> Map<T1, T2, T3, TResult>(this Completion<(T1, T2, T3)> completion,
-      Func<T1, T2, T3, Completion<TResult>> func)
+      Func<T1, T2, T3, Completion<TResult>> func) where TResult : notnull
    {
       return completion.Map(t => func(t.Item1, t.Item2, t.Item3));
    }
 
    public static Completion<TResult> Map<T1, T2, T3, T4, TResult>(this Completion<(T1, T2, T3, T4)> completion,
-      Func<T1, T2, T3, T4, TResult> func)
+      Func<T1, T2, T3, T4, TResult> func) where TResult : notnull
    {
       return completion.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
    }
 
    public static Completion<TResult> Map<T1, T2, T3, T4, TResult>(this Completion<(T1, T2, T3, T4)> completion,
-      Func<T1, T2, T3, T4, Completion<TResult>> func)
+      Func<T1, T2, T3, T4, Completion<TResult>> func) where TResult : notnull
    {
       return completion.Map(t => func(t.Item1, t.Item2, t.Item3, t.Item4));
    }
 
-   public static Maybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<T> value)
+   public static Maybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<T> value) where T : notnull
    {
       return boolExpression() ? value() : nil;
    }
 
-   public static Maybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<Maybe<T>> value)
+   public static Maybe<T> SomeIf<T>(this Func<bool> boolExpression, Func<Maybe<T>> value) where T : notnull
    {
       return boolExpression() ? value() : nil;
    }
 
-   public static Maybe<T> SomeIf<T>(this bool boolExpression, Func<T> value)
+   public static Maybe<T> SomeIf<T>(this bool boolExpression, Func<T> value) where T : notnull
    {
       return boolExpression ? value() : nil;
    }
 
-   public static Maybe<T> SomeIf<T>(this bool boolExpression, Func<Maybe<T>> value)
+   public static Maybe<T> SomeIf<T>(this bool boolExpression, Func<Maybe<T>> value) where T : notnull
    {
       return boolExpression ? value() : nil;
    }
 
-   public static Maybe<T> MaybeIf<T>(this T value, Func<T, bool> predicate) => predicate(value) ? value : nil;
+   public static Maybe<T> MaybeIf<T>(this T value, Func<T, bool> predicate) where T : notnull => predicate(value) ? value : nil;
 
-   public static Result<T> ResultIf<T>(this T value, Func<T, bool> predicate, string failMessage)
+   public static Result<T> ResultIf<T>(this T value, Func<T, bool> predicate, string failMessage) where T : notnull
    {
       try
       {
@@ -821,7 +828,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> ResultIf<T>(this T value, Func<T, bool> predicate, Func<string> failMessage)
+   public static Result<T> ResultIf<T>(this T value, Func<T, bool> predicate, Func<string> failMessage) where T : notnull
    {
       try
       {
@@ -833,7 +840,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Result<T> ResultIf<T>(this T value, Func<T, bool> predicate, Exception exception)
+   public static Result<T> ResultIf<T>(this T value, Func<T, bool> predicate, Exception exception) where T : notnull
    {
       try
       {
@@ -845,7 +852,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Maybe<string> _failMessage)
+   public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Maybe<string> _failMessage) where T : notnull
    {
       try
       {
@@ -868,7 +875,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Func<Maybe<string>> failMessage)
+   public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Func<Maybe<string>> failMessage) where T : notnull
    {
       try
       {
@@ -895,7 +902,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Maybe<Exception> _exception)
+   public static Completion<T> CompletionIf<T>(this T value, Func<T, bool> predicate, Maybe<Exception> _exception) where T : notnull
    {
       try
       {
@@ -918,7 +925,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate)
+   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate) where T : notnull
    {
       try
       {
@@ -930,7 +937,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, string failMessage)
+   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, string failMessage) where T : notnull
    {
       try
       {
@@ -942,7 +949,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, Func<string> failMessage)
+   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, Func<string> failMessage) where T : notnull
    {
       try
       {
@@ -954,7 +961,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, Exception exception)
+   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, Exception exception) where T : notnull
    {
       try
       {
@@ -966,7 +973,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, Maybe<Exception> _exception)
+   public static Optional<T> OptionalIf<T>(this T value, Func<T, bool> predicate, Maybe<Exception> _exception) where T : notnull
    {
       try
       {
@@ -997,7 +1004,7 @@ public static class MonadExtensions
 
    public static bool IsCompletion(this Completion<bool> completion) => completion is Completed<bool>;
 
-   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Maybe<T>> enumerable)
+   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Maybe<T>> enumerable) where T : notnull
    {
       foreach (var maybe in enumerable)
       {
@@ -1008,7 +1015,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Result<T>> enumerable)
+   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Result<T>> enumerable) where T : notnull
    {
       foreach (var result in enumerable)
       {
@@ -1019,7 +1026,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Optional<T>> enumerable)
+   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Optional<T>> enumerable) where T : notnull
    {
       foreach (var optional in enumerable)
       {
@@ -1030,7 +1037,7 @@ public static class MonadExtensions
       }
    }
 
-   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Completion<T>> enumerable)
+   public static IEnumerable<T> OnlyTrue<T>(this IEnumerable<Completion<T>> enumerable) where T : notnull
    {
       foreach (var completion in enumerable)
       {
@@ -1042,13 +1049,14 @@ public static class MonadExtensions
    }
 
    [DebuggerStepThrough]
-   public static Optional<TResult> SelectMany<T, TResult>(this Optional<T> maybe, Func<T, Optional<TResult>> projection)
+   public static Optional<TResult> SelectMany<T, TResult>(this Optional<T> maybe, Func<T, Optional<TResult>> projection) where T : notnull
+      where TResult : notnull
    {
       return maybe.Map(projection) | (() => fail("Value not provided"));
    }
 
    [DebuggerStepThrough]
-   public static Optional<TResult> Select<T, TResult>(this Optional<T> result, Func<T, TResult> func)
+   public static Optional<TResult> Select<T, TResult>(this Optional<T> result, Func<T, TResult> func) where T : notnull where TResult : notnull
    {
       if (result is (true, var resultValue))
       {

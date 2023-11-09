@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
 
-public class IfHash<TKey, TValue>
+public class IfHash<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    protected IHash<TKey, TValue> hash;
 

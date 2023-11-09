@@ -7,7 +7,7 @@ using static Core.Monads.AttemptFunctions;
 
 namespace Core.Objects;
 
-public class LateLazyTrying<T>
+public class LateLazyTrying<T> where T : notnull
 {
    protected LateLazy<T> lateLazy;
 

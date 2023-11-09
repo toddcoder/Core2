@@ -8,17 +8,24 @@ namespace Core.Objects;
 
 internal class ObjectInfo
 {
-   public static Maybe<PropertyInfo> PropertyInfo(object obj, Signature signature)
+   public static Maybe<PropertyInfo> PropertyInfo(object? obj, Signature signature)
    {
-      var info = obj.GetType().GetProperty(signature.Name);
-      return maybe(info != null, () => info);
+      if (obj is null)
+      {
+         return nil;
+      }
+      else
+      {
+         var info = obj.GetType().GetProperty(signature.Name);
+         return maybe(info is not null, () => info!);
+      }
    }
 
-   protected object obj;
+   protected object? obj;
    protected Maybe<int> _index;
    protected Maybe<PropertyInfo> _info;
 
-   public ObjectInfo(object obj, Signature signature)
+   public ObjectInfo(object? obj, Signature signature)
    {
       this.obj = obj;
       _index = signature.Index;
@@ -39,7 +46,7 @@ internal class ObjectInfo
       _info = nil;
    }
 
-   public object Object => obj;
+   public object? Object => obj;
 
    public Maybe<int> Index => _index;
 
@@ -54,7 +61,7 @@ internal class ObjectInfo
             var parameters = info.GetIndexParameters();
             if (_index is (true, var index))
             {
-               return parameters.Length == 0 ? getValue(index) : info.GetValue(obj, getIndex(index));
+               return parameters.Length == 0 ? getValue(index) : info.GetValue(obj, getIndex(index))!;
             }
             else if (parameters.Length > 0)
             {
@@ -62,7 +69,7 @@ internal class ObjectInfo
             }
             else
             {
-               return info.GetValue(obj, null);
+               return info.GetValue(obj, null)!;
             }
          }
          else
@@ -102,14 +109,14 @@ internal class ObjectInfo
          var result = info.GetValue(obj, null);
          if (result is null)
          {
-            return result;
+            return nil;
          }
          else
          {
             return result switch
             {
-               Array array => array.GetValue(defaultIndex),
-               IList list => list[defaultIndex],
+               Array array => array.GetValue(defaultIndex)!,
+               IList list => list[defaultIndex]!,
                _ => nil
             };
          }

@@ -2,7 +2,7 @@
 
 namespace Core.DataStructures;
 
-public interface IQueue<T>
+public interface IQueue<T> where T : notnull
 {
    int Count { get; }
 

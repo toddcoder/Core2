@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-public class Empty<T> : Optional<T>, IEquatable<Empty<T>>
+public class Empty<T> : Optional<T>, IEquatable<Empty<T>> where T : notnull
 {
    protected Lazy<int> hashCode;
 

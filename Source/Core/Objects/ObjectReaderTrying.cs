@@ -11,24 +11,33 @@ public class ObjectReaderTrying
 
    public ObjectReaderTrying(ObjectReader reader) => this.reader = reader;
 
-   public Result<TResult> Invoke<T, TResult>(Expression<Func<T, TResult>> expression) => tryTo(() => reader.Invoke(expression));
-
-   public Result<TResult> Invoke<T1, T2, TResult>(Expression<Func<T1, T2, TResult>> expression) => tryTo(() => reader.Invoke(expression));
-
-   public Result<TResult> Invoke<T1, T2, T3, TResult>(Expression<Func<T1, T2, T3, TResult>> expression) => tryTo(() => reader.Invoke(expression));
-
-   public Result<TResult> Invoke<T1, T2, T3, T4, TResult>(Expression<Func<T1, T2, T3, T4, TResult>> expression)
+   public Result<TResult> Invoke<T, TResult>(Expression<Func<T, TResult>> expression) where TResult : notnull
    {
       return tryTo(() => reader.Invoke(expression));
    }
 
-   public Result<TResult> Invoke<T1, T2, T3, T4, T5, TResult>(Expression<Func<T1, T2, T3, T4, T5, TResult>> expression)
+   public Result<TResult> Invoke<T1, T2, TResult>(Expression<Func<T1, T2, TResult>> expression) where TResult : notnull
+   {
+      return tryTo(() => reader.Invoke(expression));
+   }
+
+   public Result<TResult> Invoke<T1, T2, T3, TResult>(Expression<Func<T1, T2, T3, TResult>> expression) where TResult : notnull
+   {
+      return tryTo(() => reader.Invoke(expression));
+   }
+
+   public Result<TResult> Invoke<T1, T2, T3, T4, TResult>(Expression<Func<T1, T2, T3, T4, TResult>> expression) where TResult : notnull
+   {
+      return tryTo(() => reader.Invoke(expression));
+   }
+
+   public Result<TResult> Invoke<T1, T2, T3, T4, T5, TResult>(Expression<Func<T1, T2, T3, T4, T5, TResult>> expression) where TResult : notnull
    {
       return tryTo(() => reader.Invoke(expression));
    }
 
    public Result<TResult> Invoke<T1, T2, T3, T4, T5, T6, TResult>(Expression<Func<T1, T2, T3, T4, T5, T6,
-      TResult>> expression)
+      TResult>> expression) where TResult : notnull
    {
       return tryTo(() => reader.Invoke(expression));
    }
@@ -45,5 +54,5 @@ public class ObjectReaderTrying
 
    public Result<Unit> Do<T1, T2, T3, T4, T5, T6>(Expression<Action<T1, T2, T3, T4, T5, T6>> expression) => tryTo(() => reader.Do(expression));
 
-   public Result<T> Assign<T>(string name) => tryTo(() => reader.Assign<T>(name));
+   public Result<T> Assign<T>(string name) where T : notnull => tryTo(() => reader.Assign<T>(name));
 }

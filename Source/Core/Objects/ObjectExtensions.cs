@@ -50,20 +50,20 @@ public static class ObjectExtensions
       }
    }
 
-   public static Type UnderlyingType(this Type type) => type.IsNullable() ? Nullable.GetUnderlyingType(type) : type;
+   public static Type? UnderlyingType(this Type? type) => type ?? Nullable.GetUnderlyingType(type!);
 
    public static int HashCode(this object obj, int prime = 397)
    {
       var evaluator = new PropertyEvaluator(obj);
       unchecked
       {
-         return evaluator.Signatures.Aggregate(prime, (current, signature) => current * prime + evaluator[signature]?.GetHashCode() ?? 0);
+         return evaluator.Signatures.Aggregate(prime, (current, signature) => current * prime + evaluator[signature]!.GetHashCode());
       }
    }
 
    public static int HashCode(this object obj, string signature) => PropertyEvaluator.GetValue(obj, signature).GetHashCode();
 
-   public static Result<T> CastAs<T>(this object obj)
+   public static Result<T> CastAs<T>(this object obj) where T : notnull
    {
       try
       {
@@ -82,7 +82,7 @@ public static class ObjectExtensions
       }
    }
 
-   public static Optional<T> OptionalAs<T>(this object obj)
+   public static Optional<T> OptionalAs<T>(this object obj) where T : notnull
    {
       try
       {
@@ -145,7 +145,7 @@ public static class ObjectExtensions
          }
          else
          {
-            return obj.ToString();
+            return obj.ToString() ?? "";
          }
       }
    }
@@ -158,7 +158,7 @@ public static class ObjectExtensions
       }
       catch (Exception exception)
       {
-         var formatter = new Formatter { ["object"] = obj?.ToString() ?? "", ["e"] = exception.Message };
+         var formatter = new Formatter { ["object"] = obj.ToString() ?? "", ["e"] = exception.Message };
          throw new ApplicationException(formatter.Format(message()));
       }
    }
@@ -166,11 +166,6 @@ public static class ObjectExtensions
    public static IEnumerable<(PropertyInfo propertyInfo, TAttribute attribute)> PropertiesUsing<TAttribute>(this object obj, bool inherit = true)
       where TAttribute : Attribute
    {
-      if (obj is null)
-      {
-         yield break;
-      }
-
       foreach (var propertyInfo in obj.GetType().GetProperties())
       {
          foreach (var userAttribute in propertyInfo.GetCustomAttributes(inherit))
@@ -186,11 +181,6 @@ public static class ObjectExtensions
    public static IEnumerable<(MethodInfo methodInfo, TAttribute attribute)> MethodsUsing<TAttribute>(this object obj, bool inherit = true)
       where TAttribute : Attribute
    {
-      if (obj is null)
-      {
-         yield break;
-      }
-
       foreach (var methodInfo in obj.GetType().GetMethods())
       {
          foreach (var customAttribute in methodInfo.GetCustomAttributes(inherit))

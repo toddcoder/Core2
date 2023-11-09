@@ -10,7 +10,11 @@ public class FullStackException : ApplicationException
       InnerException = exception;
    }
 
-   public FullStackException(string message) : base(message) => FullStackTrace = Environment.StackTrace;
+   public FullStackException(string message) : base(message)
+   {
+      FullStackTrace = Environment.StackTrace;
+      InnerException = new Exception(message);
+   }
 
    public FullStackException(string message, Exception innerException) : base(message, innerException)
    {

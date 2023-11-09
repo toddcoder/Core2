@@ -185,18 +185,9 @@ public static class AssertionExtensions
       return (ObjectAssertion)assertion.Named($"{(value is null ? "Object" : value.GetType().Name)} {name}");
    }
 
-   public static MaybeAssertion<T> Must<T>(this Maybe<T> value) => new(value);
+   public static MaybeAssertion<T> Must<T>(this Maybe<T> value) where T : notnull => new(value);
 
-   [Obsolete("Use value version")]
-   public static MaybeAssertion<T> Must<T>(this Expression<Func<Maybe<T>>> expression)
-   {
-      var (name, value) = resolve(expression);
-      var assertion = value.Must();
-
-      return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name}");
-   }
-
-   public static MaybeAssertion<T> Must<T>(this (Maybe<T>, string) tuple)
+   public static MaybeAssertion<T> Must<T>(this (Maybe<T>, string) tuple) where T : notnull
    {
       var (value, name) = tuple;
       var assertion = value.Must();
@@ -204,18 +195,9 @@ public static class AssertionExtensions
       return (MaybeAssertion<T>)assertion.Named($"Optional of {typeof(T).Name} {name}");
    }
 
-   public static ResultAssertion<T> Must<T>(this Result<T> value) => new(value);
+   public static ResultAssertion<T> Must<T>(this Result<T> value) where T : notnull => new(value);
 
-   [Obsolete("Use value version")]
-   public static ResultAssertion<T> Must<T>(this Expression<Func<Result<T>>> expression)
-   {
-      var (name, value) = resolve(expression);
-      var assertion = value.Must();
-
-      return (ResultAssertion<T>)assertion.Named($"Result of {typeof(T).Name} {name}");
-   }
-
-   public static ResultAssertion<T> Must<T>(this (Result<T>, string) tuple)
+   public static ResultAssertion<T> Must<T>(this (Result<T>, string) tuple) where T : notnull
    {
       var (value, name) = tuple;
       var assertion = value.Must();
@@ -223,18 +205,9 @@ public static class AssertionExtensions
       return (ResultAssertion<T>)assertion.Named($"Result of {typeof(T).Name} {name}");
    }
 
-   public static CompletionAssertion<T> Must<T>(this Completion<T> value) => new(value);
+   public static CompletionAssertion<T> Must<T>(this Completion<T> value) where T : notnull => new(value);
 
-   [Obsolete("Use value version")]
-   public static CompletionAssertion<T> Must<T>(this Expression<Func<Completion<T>>> expression)
-   {
-      var (name, value) = resolve(expression);
-      var assertion = value.Must();
-
-      return (CompletionAssertion<T>)assertion.Named($"Async Result of {typeof(T).Name} {name}");
-   }
-
-   public static CompletionAssertion<T> Must<T>(this (Completion<T>, string) tuple)
+   public static CompletionAssertion<T> Must<T>(this (Completion<T>, string) tuple) where T : notnull
    {
       var (value, name) = tuple;
       var assertion = value.Must();
@@ -243,15 +216,6 @@ public static class AssertionExtensions
    }
 
    public static FileNameAssertion Must(this FileName value) => new(value);
-
-   [Obsolete("Use value version")]
-   public static FileNameAssertion Must(this Expression<Func<FileName>> expression)
-   {
-      var (_, value) = resolve(expression);
-      var assertion = value.Must();
-
-      return (FileNameAssertion)assertion.Named($"File {value}");
-   }
 
    public static FileNameAssertion Must(this (FileName, string) tuple)
    {
@@ -263,15 +227,6 @@ public static class AssertionExtensions
 
    public static FolderNameAssertion Must(this FolderName value) => new(value);
 
-   [Obsolete("Use value version")]
-   public static FolderNameAssertion Must(this Expression<Func<FolderName>> expression)
-   {
-      var (_, value) = resolve(expression);
-      var assertion = value.Must();
-
-      return (FolderNameAssertion)assertion.Named($"Folder {value}");
-   }
-
    public static FolderNameAssertion Must(this (FolderName, string) tuple)
    {
       var (value, _) = tuple;
@@ -280,21 +235,12 @@ public static class AssertionExtensions
       return (FolderNameAssertion)assertion.Named($"Folder {value}");
    }
 
-   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Dictionary<TKey, TValue> value) where TKey : notnull
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Dictionary<TKey, TValue> value) where TKey : notnull where TValue : notnull
    {
       return new(value);
    }
 
-   [Obsolete("Use value version")]
-   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Expression<Func<Dictionary<TKey, TValue>>> expression) where TKey : notnull
-   {
-      var (name, value) = resolve(expression);
-      var assertion = value.Must();
-
-      return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
-   }
-
-   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (Dictionary<TKey, TValue>, string) tuple) where TKey : notnull
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (Dictionary<TKey, TValue>, string) tuple) where TKey : notnull where TValue : notnull
    {
       var (value, name) = tuple;
       var assertion = value.Must();
@@ -302,21 +248,13 @@ public static class AssertionExtensions
       return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
    }
 
-   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Hash<TKey, TValue> value)
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Hash<TKey, TValue> value) where TKey : notnull where TValue : notnull
    {
       return new(value);
    }
 
-   [Obsolete("Use value version")]
-   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Expression<Func<Hash<TKey, TValue>>> expression)
-   {
-      var (name, value) = resolve(expression);
-      var assertion = value.Must();
-
-      return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
-   }
-
-   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (Hash<TKey, TValue>, string) tuple)
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (Hash<TKey, TValue>, string) tuple) where TKey : notnull
+      where TValue : notnull
    {
       var (value, name) = tuple;
       var assertion = value.Must();
@@ -324,22 +262,13 @@ public static class AssertionExtensions
       return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
    }
 
-   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this IHash<TKey, TValue> value) where TKey : notnull
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this IHash<TKey, TValue> value) where TKey : notnull where TValue : notnull
    {
       Dictionary<TKey, TValue> hash = value.AnyHash().ForceValue();
       return hash.Must();
    }
 
-   [Obsolete("Use value version")]
-   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Expression<Func<IHash<TKey, TValue>>> expression) where TKey : notnull
-   {
-      var (name, value) = resolve(expression);
-      var assertion = value.Must();
-
-      return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
-   }
-
-   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (IHash<TKey, TValue>, string) tuple) where TKey : notnull
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (IHash<TKey, TValue>, string) tuple) where TKey : notnull where TValue : notnull
    {
       var (value, name) = tuple;
       var assertion = value.Must();
@@ -347,22 +276,14 @@ public static class AssertionExtensions
       return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
    }
 
-   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this AutoHash<TKey, TValue> value) where TKey : notnull
+   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this AutoHash<TKey, TValue> value) where TKey : notnull where TValue : notnull
    {
       Dictionary<TKey, TValue> hash = value.AnyHash().ForceValue();
       return hash.Must();
-   }
-
-   [Obsolete("Use value version")]
-   public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this Expression<Func<AutoHash<TKey, TValue>>> expression) where TKey : notnull
-   {
-      var (name, value) = resolve(expression);
-      var assertion = value.Must();
-
-      return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
    }
 
    public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (AutoHash<TKey, TValue>, string) tuple) where TKey : notnull
+      where TValue : notnull
    {
       var (value, name) = tuple;
       var assertion = value.Must();
@@ -370,22 +291,13 @@ public static class AssertionExtensions
       return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
    }
 
-   public static DictionaryAssertion<string, TValue> Must<TValue>(this StringHash<TValue> value)
+   public static DictionaryAssertion<string, TValue> Must<TValue>(this StringHash<TValue> value) where TValue : notnull
    {
       Dictionary<string, TValue> hash = value.AnyHash().ForceValue();
       return hash.Must();
    }
 
-   [Obsolete("Use value version")]
-   public static DictionaryAssertion<string, TValue> Must<TValue>(this Expression<Func<StringHash<TValue>>> expression)
-   {
-      var (name, value) = resolve(expression);
-      var assertion = value.Must();
-
-      return (DictionaryAssertion<string, TValue>)assertion.Named($"Dictionary {name}");
-   }
-
-   public static DictionaryAssertion<string, TValue> Must<TValue>(this (StringHash<TValue>, string) tuple)
+   public static DictionaryAssertion<string, TValue> Must<TValue>(this (StringHash<TValue>, string) tuple) where TValue : notnull
    {
       var (value, name) = tuple;
       var assertion = value.Must();
@@ -394,15 +306,6 @@ public static class AssertionExtensions
    }
 
    public static TypeAssertion Must(this Type value) => new(value);
-
-   [Obsolete("Use value version")]
-   public static TypeAssertion Must(this Expression<Func<Type>> expression)
-   {
-      var (name, value) = resolve(expression);
-      var assertion = value.Must();
-
-      return (TypeAssertion)assertion.Named($"Type {value.Name} {name}");
-   }
 
    public static TypeAssertion Must(this (Type, string) tuple)
    {
@@ -432,18 +335,9 @@ public static class AssertionExtensions
       return (MatchResultAssertion)assertion.Named($"Result {name}");
    }
 
-   public static TypedAssertion<T> MustOfType<T>(this T value) => new(value);
+   public static TypedAssertion<T> MustOfType<T>(this T value) where T : notnull => new(value);
 
-   [Obsolete("Use value version")]
-   public static TypedAssertion<T> MustOfType<T>(this Expression<Func<T>> expression)
-   {
-      var (name, value) = resolve(expression);
-      var assertion = value.Must();
-
-      return (TypedAssertion<T>)assertion.Named($"Object typed {typeof(T).Name} {name}");
-   }
-
-   public static TypedAssertion<T> MustOfType<T>(this (T, string) tuple)
+   public static TypedAssertion<T> MustOfType<T>(this (T, string) tuple) where T : notnull
    {
       var (value, name) = tuple;
       var assertion = value.Must();
@@ -452,15 +346,6 @@ public static class AssertionExtensions
    }
 
    public static EnumAssertion<TEnum> Must<TEnum>(this TEnum value) where TEnum : struct, Enum => new(value);
-
-   [Obsolete("Use value version")]
-   public static EnumAssertion<TEnum> Must<TEnum>(this Expression<Func<TEnum>> expression) where TEnum : struct, Enum
-   {
-      var (name, value) = resolve(expression);
-      var assertion = value.Must();
-
-      return (EnumAssertion<TEnum>)assertion.Named($"{value.GetType().Name} {name}");
-   }
 
    public static EnumAssertion<TEnum> Must<TEnum>(this (TEnum, string) tuple) where TEnum : struct, Enum
    {

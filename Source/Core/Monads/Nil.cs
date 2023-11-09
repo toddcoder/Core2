@@ -13,9 +13,9 @@ public class Nil : IEquatable<Nil>
       hashCode = new Lazy<int>(() => typeof(Nil).GetHashCode());
    }
 
-   public bool Equals(Nil other) => true;
+   public bool Equals(Nil? other) => true;
 
-   public override bool Equals(object obj) => obj is Nil;
+   public override bool Equals(object? obj) => obj is Nil;
 
    public override int GetHashCode() => hashCode.Value;
 

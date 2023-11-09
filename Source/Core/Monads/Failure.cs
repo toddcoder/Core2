@@ -6,7 +6,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-public class Failure<T> : Result<T>, IEquatable<Failure<T>>
+public class Failure<T> : Result<T>, IEquatable<Failure<T>> where T : notnull
 {
    public static implicit operator bool(Failure<T> _) => false;
 
@@ -70,7 +70,7 @@ public class Failure<T> : Result<T>, IEquatable<Failure<T>>
    public override void Deconstruct(out bool isSuccess, out T value)
    {
       isSuccess = false;
-      value = default;
+      value = default!;
    }
 
    public override Result<T> Assert(Predicate<T> predicate, Func<string> exceptionMessage) => this;
@@ -128,14 +128,11 @@ public class Failure<T> : Result<T>, IEquatable<Failure<T>>
    {
    }
 
-   public bool Equals(Failure<T> other)
-   {
-      return other is not null && ReferenceEquals(this, other) || Equals(exception, other.exception);
-   }
+   public bool Equals(Failure<T>? other) => other is not null && Equals(exception, other.exception);
 
-   public override bool Equals(object obj) => obj is Failure<T> other && Equals(other);
+   public override bool Equals(object? obj) => obj is Failure<T> other && Equals(other);
 
-   public override int GetHashCode() => exception?.GetHashCode() ?? 0;
+   public override int GetHashCode() => exception.GetHashCode();
 
    public override string ToString() => $"Failure({exception.Message.Elliptical(60, ' ')})";
 }

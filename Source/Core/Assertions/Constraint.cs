@@ -18,14 +18,14 @@ public class Constraint
       return new Constraint(condition, message, not, name);
    }
 
-   public Constraint(Func<bool> condition, string message, bool not, string name, object value)
+   public Constraint(Func<bool> condition, string message, bool not, string name, object? value)
    {
       Condition = condition;
-      var valueImage = value.ToNonNullString();
+      var valueImage = value?.ToNonNullString() ?? "";
       var newMessage = message.ReplaceAll(("$not ", not ? "not " : ""), ("$name", name), ("$value", valueImage));
       Not = not;
 
-      if (value != null)
+      if (value is not null)
       {
          newMessage = $"{newMessage}; found value {valueImage}";
       }

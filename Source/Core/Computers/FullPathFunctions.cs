@@ -2,6 +2,7 @@
 using System.IO;
 using Core.Assertions;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Computers;
 
@@ -20,7 +21,14 @@ public static class FullPathFunctions
          else
          {
             var root = Path.GetPathRoot(path);
-            return root.Trim('\\', '/').Must().Not.BeNullOrEmpty().OrFailure("Root nothing but slashes and backslashes").Map(_ => fullPath);
+            if (root is not null)
+            {
+               return root.Trim('\\', '/').Must().Not.BeNullOrEmpty().OrFailure("Root nothing but slashes and backslashes").Map(_ => fullPath);
+            }
+            else
+            {
+               return fail("Root is null");
+            }
          }
       }
       catch (Exception exception)

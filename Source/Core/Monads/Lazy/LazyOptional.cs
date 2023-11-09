@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads.Lazy;
 
-public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
+public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>> where T : notnull
 {
    public static implicit operator bool(LazyOptional<T> optional)
    {
@@ -105,7 +105,7 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
       return this;
    }
 
-   public LazyOptional<TNext> Then<TNext>(Func<T, Optional<TNext>> func)
+   public LazyOptional<TNext> Then<TNext>(Func<T, Optional<TNext>> func) where TNext : notnull
    {
       var _next = new LazyOptional<TNext>();
       ensureValue();
@@ -124,9 +124,9 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
       }
    }
 
-   public LazyOptional<TNext> Then<TNext>(Optional<TNext> next) => Then(_ => next);
+   public LazyOptional<TNext> Then<TNext>(Optional<TNext> next) where TNext : notnull => Then(_ => next);
 
-   public LazyOptional<TNext> Then<TNext>(Func<T, TNext> func)
+   public LazyOptional<TNext> Then<TNext>(Func<T, TNext> func) where TNext : notnull
    {
       var _next = new LazyOptional<TNext>();
       ensureValue();
@@ -334,9 +334,9 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
       _value.MapOf(action);
    }
 
-   public bool Equals(LazyOptional<T> other) => _value == other._value;
+   public bool Equals(LazyOptional<T>? other) => other is not null && _value == other._value;
 
-   public override bool Equals(object obj) => obj is LazyOptional<T> other && Equals(other);
+   public override bool Equals(object? obj) => obj is LazyOptional<T> other && Equals(other);
 
    public override int GetHashCode() => _value.GetHashCode();
 
@@ -344,5 +344,5 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>>
 
    public static bool operator !=(LazyOptional<T> left, LazyOptional<T> right) => !Equals(left, right);
 
-   public override string ToString() => _value.ToString();
+   public override string ToString() => _value.ToString() ?? "";
 }

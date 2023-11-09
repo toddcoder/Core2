@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads.Lazy;
 
-public class LazyCompletion<T> : Completion<T>
+public class LazyCompletion<T> : Completion<T> where T : notnull
 {
    public static implicit operator bool(LazyCompletion<T> completion)
    {
@@ -105,7 +105,7 @@ public class LazyCompletion<T> : Completion<T>
       return this;
    }
 
-   public LazyCompletion<TNext> Then<TNext>(Func<T, Completion<TNext>> func)
+   public LazyCompletion<TNext> Then<TNext>(Func<T, Completion<TNext>> func) where TNext : notnull
    {
       var _next = new LazyCompletion<TNext>();
       ensureValue();
@@ -124,9 +124,9 @@ public class LazyCompletion<T> : Completion<T>
       }
    }
 
-   public LazyCompletion<TNext> Then<TNext>(Completion<TNext> next) => Then(_ => next);
+   public LazyCompletion<TNext> Then<TNext>(Completion<TNext> next) where TNext : notnull => Then(_ => next);
 
-   public LazyCompletion<TNext> Then<TNext>(Func<T, TNext> func)
+   public LazyCompletion<TNext> Then<TNext>(Func<T, TNext> func) where TNext : notnull
    {
       var _next = new LazyCompletion<TNext>();
       ensureValue();
@@ -439,5 +439,5 @@ public class LazyCompletion<T> : Completion<T>
       _value.MapOf(action);
    }
 
-   public override string ToString() => _value.ToString();
+   public override string ToString() => _value.ToString() ?? "";
 }

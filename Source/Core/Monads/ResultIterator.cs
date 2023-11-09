@@ -4,17 +4,17 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-internal class ResultIterator<T>
+internal class ResultIterator<T> where T : notnull
 {
    protected IEnumerable<Result<T>> enumerable;
    protected Maybe<Action<T>> _success;
    protected Maybe<Action<Exception>> _failure;
 
-   public ResultIterator(IEnumerable<Result<T>> enumerable, Action<T> ifSuccess = null, Action<Exception> ifFailure = null)
+   public ResultIterator(IEnumerable<Result<T>> enumerable, Maybe<Action<T>> ifSuccess, Maybe<Action<Exception>> ifFailure)
    {
       this.enumerable = enumerable;
-      _success = ifSuccess.Some();
-      _failure = ifFailure.Some();
+      _success = ifSuccess;
+      _failure = ifFailure;
    }
 
    protected void handle(Result<T> result)

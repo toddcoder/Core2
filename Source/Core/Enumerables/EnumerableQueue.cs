@@ -5,7 +5,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Enumerables;
 
-public class EnumerableQueue<T>
+public class EnumerableQueue<T> where T : notnull
 {
    protected IEnumerator<T> enumerator;
 

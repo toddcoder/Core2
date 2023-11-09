@@ -2,7 +2,7 @@
 
 namespace Core.DataStructures;
 
-public class ResultStack<T>
+public class ResultStack<T> where T : notnull
 {
    protected MaybeStack<T> stack;
 

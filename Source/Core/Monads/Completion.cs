@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-public abstract class Completion<T>
+public abstract class Completion<T> where T : notnull
 {
    protected Exception defaultException() => fail("There is no exception");
 
@@ -44,7 +44,7 @@ public abstract class Completion<T>
       _ => throw new InvalidCastException("Must be a Completed to return a value")
    };
 
-   public static T operator |(Completion<T> completion, T defaultValue) => completion ? completion : defaultValue;
+   public static T operator |(Completion<T> completion, T defaultValue)  => completion ? completion : defaultValue;
 
    public static T operator |(Completion<T> completion, Func<T> defaultFunc) => completion ? completion : defaultFunc();
 
@@ -54,16 +54,16 @@ public abstract class Completion<T>
       return completion;
    }
 
-   public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted);
+   public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted) where TResult : notnull;
 
-   public abstract Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted);
+   public abstract Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) where TResult : notnull;
 
-   public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted, Func<Completion<TResult>> ifCancelled);
+   public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted, Func<Completion<TResult>> ifCancelled) where TResult : notnull;
 
-   public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted, Func<Exception, Completion<TResult>> ifInterrupted);
+   public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted, Func<Exception, Completion<TResult>> ifInterrupted) where TResult : notnull;
 
    public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted, Func<Completion<TResult>> ifCancelled,
-      Func<Exception, Completion<TResult>> ifInterrupted);
+      Func<Exception, Completion<TResult>> ifInterrupted) where TResult : notnull;
 
    public abstract TResult FlatMap<TResult>(Func<T, TResult> ifCompleted, Func<TResult> ifCancelled, Func<Exception, TResult> ifInterrupted);
 
@@ -79,25 +79,25 @@ public abstract class Completion<T>
 
    public abstract Completion<T> Do(Action<T> ifCompleted, Action ifCancelled, Action<Exception> ifInterrupted);
 
-   public abstract Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection);
+   public abstract Completion<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) where TResult : notnull;
 
-   public abstract Completion<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection);
+   public abstract Completion<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection) where TResult : notnull;
 
-   public abstract Completion<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection);
+   public abstract Completion<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection) where TResult : notnull;
 
-   public abstract Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection);
+   public abstract Completion<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection) where T1 : notnull where T2 : notnull;
 
-   public abstract Completion<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection);
+   public abstract Completion<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection) where T1 : notnull where T2 : notnull;
 
-   public abstract Completion<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection);
+   public abstract Completion<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection) where T1 : notnull where T2 : notnull;
 
-   public abstract Completion<TResult> SelectMany<TResult>(Func<T, TResult> func);
+   public abstract Completion<TResult> SelectMany<TResult>(Func<T, TResult> func) where TResult : notnull;
 
-   public abstract Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func);
+   public abstract Completion<TResult> Select<TResult>(Completion<T> result, Func<T, TResult> func) where TResult : notnull;
 
    public abstract bool IfCancelled();
 
-   public abstract Completion<TOther> NotCompleted<TOther>();
+   public abstract Completion<TOther> NotCompleted<TOther>() where TOther : notnull;
 
    public abstract void Force();
 
@@ -105,9 +105,9 @@ public abstract class Completion<T>
 
    public abstract Completion<T> CancelledOnly();
 
-   public abstract Completion<TOther> CancelledOnly<TOther>();
+   public abstract Completion<TOther> CancelledOnly<TOther>() where TOther : notnull;
 
-   public abstract Completion<TOther> NotCompletedOnly<TOther>();
+   public abstract Completion<TOther> NotCompletedOnly<TOther>() where TOther : notnull;
 
    public abstract void Deconstruct(out bool isCompleted, out T value);
 
@@ -121,7 +121,7 @@ public abstract class Completion<T>
 
    public abstract bool EqualToValueOf(T otherValue);
 
-   public abstract Completion<TResult> CastAs<TResult>();
+   public abstract Completion<TResult> CastAs<TResult>() where TResult : notnull;
 
    public abstract Completion<T> Where(Predicate<T> predicate);
 

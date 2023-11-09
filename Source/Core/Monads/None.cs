@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-public class None<T> : Maybe<T>, IEquatable<None<T>>
+public class None<T> : Maybe<T>, IEquatable<None<T>> where T : notnull
 {
    public static implicit operator bool(None<T> _) => false;
 
@@ -26,11 +26,8 @@ public class None<T> : Maybe<T>, IEquatable<None<T>>
    public override void Deconstruct(out bool isSome, out T value)
    {
       isSome = false;
-      value = default;
+      value = default!;
    }
-
-   [Obsolete("Use if")]
-   public override Maybe<T> IfThen(Action<T> action) => this;
 
    public override void MapOf(Action<T> action)
    {
@@ -64,9 +61,9 @@ public class None<T> : Maybe<T>, IEquatable<None<T>>
 
    public override object ToObject() => nil;
 
-   public bool Equals(None<T> other) => true;
+   public bool Equals(None<T>? other) => true;
 
-   public override bool Equals(object obj) => obj is None<T>;
+   public override bool Equals(object? obj) => obj is None<T>;
 
    public override int GetHashCode() => false.GetHashCode();
 

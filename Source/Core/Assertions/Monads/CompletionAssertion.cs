@@ -7,7 +7,7 @@ using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Assertions.Monads;
 
-public class CompletionAssertion<T> : IAssertion<T>
+public class CompletionAssertion<T> : IAssertion<T> where T : notnull
 {
    public static implicit operator bool(CompletionAssertion<T> assertion) => assertion.BeEquivalentToTrue();
 

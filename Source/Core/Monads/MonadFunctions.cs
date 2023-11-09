@@ -10,7 +10,7 @@ public static class MonadFunctions
 
    public static Exception fail(string message) => new ApplicationException(message);
 
-   public static Maybe<TParent> some<TChild, TParent>(TChild? value) where TChild : TParent
+   public static Maybe<TParent> some<TChild, TParent>(TChild? value) where TChild : TParent where TParent : notnull
    {
       if (value is not null)
       {
@@ -22,39 +22,29 @@ public static class MonadFunctions
       }
    }
 
-   public static Maybe<TParent> someAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : class
+   public static Maybe<TParent> someAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : notnull
    {
       return new Some<TParent>(value);
    }
 
-   public static Result<T> success<T>(T value) => new Success<T>(value);
+   public static Result<T> success<T>(T value) where T : notnull => new Success<T>(value);
 
    public static Result<TParent> successAs<TChild, TParent>(TChild value) where TChild : class, TParent where TParent : class
    {
       return new Success<TParent>(value);
    }
 
-   [Obsolete("Use exception")]
-   public static Result<T> failure<T>(Exception exception) => new Failure<T>(exception);
+   public static Maybe<T> maybe<T>(bool test, Func<T> ifTrue) where T : notnull => test ? ifTrue().Some() : nil;
 
-   [Obsolete("Use exception")]
-   public static Optional<T> failed<T>(Exception exception) => new Failed<T>(exception);
-
-
-   [Obsolete("Use exception")]
-   public static Optional<T> empty<T>() => new Empty<T>();
-
-   public static Maybe<T> maybe<T>(bool test, Func<T> ifTrue) => test ? ifTrue().Some() : nil;
-
-   public static Maybe<T> maybe<T>(bool test, Func<Maybe<T>> ifTrue) => test ? ifTrue() : nil;
+   public static Maybe<T> maybe<T>(bool test, Func<Maybe<T>> ifTrue) where T : notnull => test ? ifTrue() : nil;
 
    [Obsolete("Use nil")]
-   public static Completion<T> cancelled<T>() => new Cancelled<T>();
+   public static Completion<T> cancelled<T>() where T : notnull => new Cancelled<T>();
 
    [Obsolete("Use exception")]
-   public static Completion<T> interrupted<T>(Exception exception) => new Interrupted<T>(exception);
+   public static Completion<T> interrupted<T>(Exception exception) where T : notnull => new Interrupted<T>(exception);
 
-   public static Result<T> assert<T>(bool test, Func<T> ifTrue, Func<string> ifFalse)
+   public static Result<T> assert<T>(bool test, Func<T> ifTrue, Func<string> ifFalse) where T : notnull
    {
       try
       {
@@ -66,7 +56,7 @@ public static class MonadFunctions
       }
    }
 
-   public static Result<T> assert<T>(bool test, Func<Result<T>> ifTrue, Func<string> ifFalse)
+   public static Result<T> assert<T>(bool test, Func<Result<T>> ifTrue, Func<string> ifFalse) where T : notnull
    {
       try
       {
@@ -90,9 +80,9 @@ public static class MonadFunctions
       }
    }
 
-   public static Maybe<T>.If maybe<T>() => new(true);
+   public static Maybe<T>.If maybe<T>() where T : notnull => new(true);
 
-   public static Result<T>.If result<T>() => new(true, nil, nil);
+   public static Result<T>.If result<T>() where T : notnull => new(true, nil, nil);
 
-   public static Optional<T>.If optional<T>() => new(true);
+   public static Optional<T>.If optional<T>() where T : notnull => new(true);
 }

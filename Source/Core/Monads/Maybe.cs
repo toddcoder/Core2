@@ -3,7 +3,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-public abstract class Maybe<T>
+public abstract class Maybe<T> where T : notnull
 {
    public class If
    {
@@ -85,9 +85,9 @@ public abstract class Maybe<T>
       return maybe;
    }
 
-   public abstract Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome);
+   public abstract Maybe<TResult> Map<TResult>(Func<T, TResult> ifSome) where TResult : notnull;
 
-   public abstract Maybe<TResult> Map<TResult>(Func<T, Maybe<TResult>> ifSome);
+   public abstract Maybe<TResult> Map<TResult>(Func<T, Maybe<TResult>> ifSome) where TResult : notnull;
 
    public abstract T Required(string message);
 
@@ -99,39 +99,42 @@ public abstract class Maybe<T>
 
    public abstract void Deconstruct(out bool isSome, out T value);
 
-   [Obsolete("Use if")]
-   public abstract Maybe<T> IfThen(Action<T> action);
-
    public abstract void MapOf(Action<T> action);
 
    public abstract bool EqualToValueOf(Maybe<T> otherMaybe);
 
    public abstract bool ValueEqualTo(T otherValue);
 
-   public abstract Maybe<TResult> CastAs<TResult>();
+   public abstract Maybe<TResult> CastAs<TResult>() where TResult : notnull;
 
    public abstract Maybe<T> Where(Predicate<T> predicate);
 
-   public virtual Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection) => Map(projection);
+   public virtual Maybe<TResult> SelectMany<TResult>(Func<T, Maybe<TResult>> projection) where TResult : notnull => Map(projection);
 
-   public abstract Maybe<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection);
+   public abstract Maybe<TResult> SelectMany<TResult>(Func<T, Result<TResult>> projection) where TResult : notnull;
 
-   public virtual Maybe<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection) => Map(v => projection(v).Maybe());
+   public virtual Maybe<TResult> SelectMany<TResult>(Func<T, Optional<TResult>> projection) where TResult : notnull
+   {
+      return Map(v => projection(v).Maybe());
+   }
 
-   public virtual Maybe<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) => Map(v => projection(v).Maybe());
+   public virtual Maybe<TResult> SelectMany<TResult>(Func<T, Completion<TResult>> projection) where TResult : notnull
+   {
+      return Map(v => projection(v).Maybe());
+   }
 
-   public Maybe<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection)
+   public Maybe<T2> SelectMany<T1, T2>(Func<T, Maybe<T1>> func, Func<T, T1, T2> projection) where T1 : notnull where T2 : notnull
    {
       return Map(outer => func(outer).Map(inner => projection(outer, inner)));
    }
 
-   public abstract Maybe<T2> SelectMany<T1, T2>(Func<T, Result<T1>> func, Func<T, T1, T2> projection);
+   public abstract Maybe<T2> SelectMany<T1, T2>(Func<T, Result<T1>> func, Func<T, T1, T2> projection) where T1 : notnull where T2 : notnull;
 
-   public abstract Maybe<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection);
+   public abstract Maybe<T2> SelectMany<T1, T2>(Func<T, Optional<T1>> func, Func<T, T1, T2> projection) where T1 : notnull where T2 : notnull;
 
-   public abstract Maybe<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection);
+   public abstract Maybe<T2> SelectMany<T1, T2>(Func<T, Completion<T1>> func, Func<T, T1, T2> projection) where T1 : notnull where T2 : notnull;
 
-   public Maybe<TResult> Select<TResult>(Func<T, TResult> func) => Map(func);
+   public Maybe<TResult> Select<TResult>(Func<T, TResult> func) where TResult : notnull => Map(func);
 
    public Maybe<T> Tap(Action<Maybe<T>> action)
    {

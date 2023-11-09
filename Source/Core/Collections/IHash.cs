@@ -2,7 +2,7 @@
 
 namespace Core.Collections;
 
-public interface IHash<TKey, TValue>
+public interface IHash<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    TValue this[TKey key] { get; }
 

@@ -8,14 +8,14 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Assertions.Collections;
 
-public class TypedAssertion<T> : IAssertion<T>
+public class TypedAssertion<T> : IAssertion<T> where T : notnull
 {
-   protected T obj;
+   protected T? obj;
    protected List<Constraint> constraints;
    protected bool not;
    protected string name;
 
-   public TypedAssertion(T obj)
+   public TypedAssertion(T? obj)
    {
       this.obj = obj;
       constraints = new List<Constraint>();
@@ -42,17 +42,17 @@ public class TypedAssertion<T> : IAssertion<T>
 
    public TypedAssertion<T> Equal(T other)
    {
-      return add(() => obj.Equals(other), $"$name must $not equal {other}");
+      return add(() => obj!.Equals(other), $"$name must $not equal {other}");
    }
 
    public TypedAssertion<T> BeNull()
    {
-      return add(() => obj == null, "$name must $not be null");
+      return add(() => obj is null, "$name must $not be null");
    }
 
    public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
-   public T Value => obj;
+   public T Value => obj!;
 
    public IEnumerable<Constraint> Constraints => constraints;
 

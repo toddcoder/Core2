@@ -157,7 +157,7 @@ public class Set<T> : IEnumerable<T>, IEquatable<Set<T>>
 
    public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)content).GetEnumerator();
 
-   public bool Equals(Set<T> other)
+   public bool Equals(Set<T>? other)
    {
       if (other is null)
       {
@@ -172,13 +172,13 @@ public class Set<T> : IEnumerable<T>, IEquatable<Set<T>>
       return content.SetEquals(other.content) && Equals(_equalityComparer, other._equalityComparer);
    }
 
-   public override bool Equals(object obj) => obj is Set<T> set && Equals(set);
+   public override bool Equals(object? obj) => obj is Set<T> set && Equals(set);
 
    public override int GetHashCode()
    {
       unchecked
       {
-         return (content != null ? content.GetHashCode() : 0) * 397 ^ (_equalityComparer != null ? _equalityComparer.GetHashCode() : 0);
+         return content.GetHashCode() * 397 ^ (_equalityComparer.Map(c => c.GetHashCode()) | 0);
       }
    }
 

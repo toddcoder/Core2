@@ -8,7 +8,7 @@ public class PropertyInterface
 {
    public static IEvaluator GetEvaluator(object obj) => obj is DataContainer dc ? new DataContainerEvaluator(dc) : new PropertyEvaluator(obj);
 
-   protected IEvaluator evaluator;
+   protected IEvaluator evaluator = null!;
    protected bool isConvertible;
 
    public PropertyInterface(string name, string signature)
@@ -21,9 +21,9 @@ public class PropertyInterface
 
    public string Signature { get; set; }
 
-   public virtual Type PropertyType { get; private set; }
+   public virtual Type PropertyType { get; private set; } = null!;
 
-   protected static bool getIsConvertible(Type type) => type?.GetInterface("IConvertible") is not null;
+   protected static bool getIsConvertible(Type? type) => type?.GetInterface("IConvertible") is not null;
 
    public void DeterminePropertyType(object entity)
    {
@@ -38,7 +38,7 @@ public class PropertyInterface
       return ((IHash<string, object>)evaluator).Items[Signature];
    }
 
-   public void SetValue(object entity, object value)
+   public void SetValue(object entity, object? value)
    {
       evaluator = GetEvaluator(entity);
       if (isConvertible && getIsConvertible(value?.GetType()))
@@ -46,6 +46,9 @@ public class PropertyInterface
          value = Convert.ChangeType(value, PropertyType);
       }
 
-      evaluator[Signature] = value;
+      if (value is not null)
+      {
+         evaluator[Signature] = value;
+      }
    }
 }

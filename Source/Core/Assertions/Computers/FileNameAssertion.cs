@@ -16,12 +16,12 @@ public class FileNameAssertion : IAssertion<FileName>
 
    public static bool operator |(FileNameAssertion x, ICanBeTrue y) => or(x, y);
 
-   protected FileName file;
+   protected FileName? file;
    protected List<Constraint> constraints;
    protected bool not;
    protected string name;
 
-   public FileNameAssertion(FileName file)
+   public FileNameAssertion(FileName? file)
    {
       this.file = file;
       constraints = new List<Constraint>();
@@ -31,7 +31,7 @@ public class FileNameAssertion : IAssertion<FileName>
 
    public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
-   public FileName Value => file;
+   public FileName Value => file!;
 
    public IEnumerable<Constraint> Constraints => constraints;
 
@@ -54,68 +54,68 @@ public class FileNameAssertion : IAssertion<FileName>
       return this;
    }
 
-   public FileNameAssertion Exist() => add(() => file.Exists(), "$name must $not exist");
+   public FileNameAssertion Exist() => add(() => file!.Exists(), "$name must $not exist");
 
-   public FileNameAssertion HaveLengthOf(long length) => add(() => file.Length >= length, $"$name must $not have a length of at least {length}");
+   public FileNameAssertion HaveLengthOf(long length) => add(() => file!.Length >= length, $"$name must $not have a length of at least {length}");
 
    public FileNameAssertion CreationTimeOf(DateTime dateTime)
    {
-      return add(() => file.CreationTime >= dateTime, $"$name must $not have a creation time of at least {dateTime:G}");
+      return add(() => file!.CreationTime >= dateTime, $"$name must $not have a creation time of at least {dateTime:G}");
    }
 
    public FileNameAssertion LastAccessTimeOf(DateTime dateTime)
    {
-      return add(() => file.LastAccessTime >= dateTime, $"$name must $not have a last access time of at least {dateTime:G}");
+      return add(() => file!.LastAccessTime >= dateTime, $"$name must $not have a last access time of at least {dateTime:G}");
    }
 
    public FileNameAssertion LastWriteTimeOf(DateTime dateTime)
    {
-      return add(() => file.LastWriteTime >= dateTime, $"$name must $not have a last write time of at least {dateTime:G}");
+      return add(() => file!.LastWriteTime >= dateTime, $"$name must $not have a last write time of at least {dateTime:G}");
    }
 
    public FileNameAssertion HaveExtensionOf(string extension)
    {
-      return add(() => file.Extension == extension, $"$name must $not have an extension of {extension}");
+      return add(() => file!.Extension == extension, $"$name must $not have an extension of {extension}");
    }
 
    public FileNameAssertion HaveSameExtensionAs(FileName otherFile)
    {
-      return add(() => file.Extension == otherFile.Extension, $"$name must $not have same extension as {format(otherFile)}");
+      return add(() => file!.Extension == otherFile.Extension, $"$name must $not have same extension as {format(otherFile)}");
    }
 
    public FileNameAssertion BeInFolder(FolderName folder)
    {
-      return add(() => file.Folder == folder, $"$name must $not be in folder {folder}");
+      return add(() => file!.Folder == folder, $"$name must $not be in folder {folder}");
    }
 
    public FileNameAssertion HaveNameOf(string name)
    {
-      return add(() => file.Name == name, "$name must $not have name $name");
+      return add(() => file!.Name == name, "$name must $not have name $name");
    }
 
    public FileNameAssertion HaveSameNameAs(FileName otherFile)
    {
-      return add(() => file.Name == otherFile.Name, $"$name must $not have same name as {format(otherFile)}");
+      return add(() => file!.Name == otherFile.Name, $"$name must $not have same name as {format(otherFile)}");
    }
 
    public FileNameAssertion HaveNameExtensionOf(string nameExtension)
    {
-      return add(() => file.NameExtension == nameExtension, $"$name must $not have name + extension {nameExtension}");
+      return add(() => file!.NameExtension == nameExtension, $"$name must $not have name + extension {nameExtension}");
    }
 
    public FileNameAssertion HaveSameNameExtensionAs(FileName otherFile)
    {
-      return add(() => file.NameExtension == otherFile.NameExtension, $"$name must $not have same name + extension as {format(otherFile)}");
+      return add(() => file!.NameExtension == otherFile.NameExtension, $"$name must $not have same name + extension as {format(otherFile)}");
    }
 
    public FileNameAssertion Equal(FileName otherFile)
    {
-      return add(() => file == otherFile, $"$name must $not equal {format(otherFile)}");
+      return add(() => file! == otherFile, $"$name must $not equal {format(otherFile)}");
    }
 
    public FileNameAssertion BeNull()
    {
-      return add(() => file == null, "$name must $not be null");
+      return add(() => file is null, "$name must $not be null");
    }
 
    public IAssertion<FileName> Named(string name)

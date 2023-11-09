@@ -3,7 +3,7 @@ using Core.Monads;
 
 namespace Core.Collections;
 
-public class RequiredHash<TKey, TValue>
+public class RequiredHash<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    protected IHash<TKey, TValue> hash;
 

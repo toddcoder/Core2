@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections.Infix;
 
-public class InfixData<TValue, TInfix> : IInfixData<TValue, TInfix>
+public class InfixData<TValue, TInfix> : IInfixData<TValue, TInfix> where TInfix : notnull
 {
    public InfixData(TValue value, Maybe<TInfix> _infix)
    {

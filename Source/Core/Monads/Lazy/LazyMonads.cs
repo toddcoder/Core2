@@ -25,27 +25,27 @@ public class LazyMonads
       }
    }
 
-   public LazyMaybe<T> maybe<T>(Func<Maybe<T>> func) => new(func);
+   public LazyMaybe<T> maybe<T>(Func<Maybe<T>> func) where T : notnull => new(func);
 
-   public LazyMaybe<T> maybe<T>(Maybe<T> maybe) => new(maybe);
+   public LazyMaybe<T> maybe<T>(Maybe<T> maybe) where T : notnull => new(maybe);
 
-   public LazyMaybe<T> maybe<T>() => new();
+   public LazyMaybe<T> maybe<T>() where T : notnull => new();
 
-   public LazyResult<T> result<T>(Func<Result<T>> func) => new(func);
+   public LazyResult<T> result<T>(Func<Result<T>> func) where T : notnull => new(func);
 
-   public LazyResult<T> result<T>(Result<T> result) => new(result);
+   public LazyResult<T> result<T>(Result<T> result) where T : notnull => new(result);
 
-   public LazyResult<T> result<T>() => new();
+   public LazyResult<T> result<T>() where T : notnull => new();
 
-   public LazyOptional<T> optional<T>(Func<Optional<T>> func) => new(func);
+   public LazyOptional<T> optional<T>(Func<Optional<T>> func) where T : notnull => new(func);
 
-   public LazyOptional<T> optional<T>(Optional<T> optional) => new(optional);
+   public LazyOptional<T> optional<T>(Optional<T> optional) where T : notnull => new(optional);
 
-   public LazyOptional<T> optional<T>() => new();
+   public LazyOptional<T> optional<T>() where T : notnull => new();
 
-   public LazyCompletion<T> completion<T>(Func<Completion<T>> func) => new(func);
+   public LazyCompletion<T> completion<T>(Func<Completion<T>> func) where T : notnull => new(func);
 
-   public LazyCompletion<T> completion<T>(Completion<T> completion) => new(completion);
+   public LazyCompletion<T> completion<T>(Completion<T> completion) where T : notnull => new(completion);
 
-   public LazyCompletion<T> completion<T>() => new();
+   public LazyCompletion<T> completion<T>() where T : notnull => new();
 }

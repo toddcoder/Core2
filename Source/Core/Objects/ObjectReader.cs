@@ -38,9 +38,9 @@ public class ObjectReader
    {
       return memberInfo switch
       {
-         FieldInfo fieldInfo => fieldInfo.GetValue(obj).Success(),
-         PropertyInfo propertyInfo => propertyInfo.GetValue(obj).Success(),
-         _ => $"{memberInfo.Name} is neither a field nor a property".Failure<object>()
+         FieldInfo fieldInfo => fieldInfo.GetValue(obj)!,
+         PropertyInfo propertyInfo => propertyInfo.GetValue(obj)!,
+         _ =>  MonadFunctions.fail($"{memberInfo.Name} is neither a field nor a property")
       };
    }
 
@@ -68,51 +68,51 @@ public class ObjectReader
 
    protected ObjectReader(Hash<string, object> values) => this.values = values;
 
-   protected TResult invoke<TResult>(LambdaExpression expression)
+   protected TResult invoke<TResult>(LambdaExpression expression) where TResult : notnull
    {
       var arguments = expression.Parameters
          .Select(p => p.Name)
-         .Where(name => values.ContainsKey(name))
-         .Select(name => values[name])
+         .Where(name => values.ContainsKey(name!))
+         .Select(name => values[name!])
          .ToArray();
 
-      return (TResult)expression.Compile().DynamicInvoke(arguments);
+      return (TResult)expression.Compile().DynamicInvoke(arguments)!;
    }
 
    protected void _do(LambdaExpression expression)
    {
       var arguments = expression.Parameters
          .Select(p => p.Name)
-         .Where(name => values.ContainsKey(name))
-         .Select(name => values[name])
+         .Where(name => values.ContainsKey(name!))
+         .Select(name => values[name!])
          .ToArray();
 
       expression.Compile().DynamicInvoke(arguments);
    }
 
-   public TResult Invoke<T, TResult>(Expression<Func<T, TResult>> expression) => invoke<TResult>(expression);
+   public TResult Invoke<T, TResult>(Expression<Func<T, TResult>> expression) where TResult : notnull => invoke<TResult>(expression);
 
-   public TResult Invoke<T1, T2, TResult>(Expression<Func<T1, T2, TResult>> expression)
+   public TResult Invoke<T1, T2, TResult>(Expression<Func<T1, T2, TResult>> expression) where TResult : notnull
    {
       return invoke<TResult>(expression);
    }
 
-   public TResult Invoke<T1, T2, T3, TResult>(Expression<Func<T1, T2, T3, TResult>> expression)
+   public TResult Invoke<T1, T2, T3, TResult>(Expression<Func<T1, T2, T3, TResult>> expression) where TResult : notnull
    {
       return invoke<TResult>(expression);
    }
 
-   public TResult Invoke<T1, T2, T3, T4, TResult>(Expression<Func<T1, T2, T3, T4, TResult>> expression)
+   public TResult Invoke<T1, T2, T3, T4, TResult>(Expression<Func<T1, T2, T3, T4, TResult>> expression) where TResult : notnull
    {
       return invoke<TResult>(expression);
    }
 
-   public TResult Invoke<T1, T2, T3, T4, T5, TResult>(Expression<Func<T1, T2, T3, T4, T5, TResult>> expression)
+   public TResult Invoke<T1, T2, T3, T4, T5, TResult>(Expression<Func<T1, T2, T3, T4, T5, TResult>> expression) where TResult : notnull
    {
       return invoke<TResult>(expression);
    }
 
-   public TResult Invoke<T1, T2, T3, T4, T5, T6, TResult>(Expression<Func<T1, T2, T3, T4, T5, T6, TResult>> expression)
+   public TResult Invoke<T1, T2, T3, T4, T5, T6, TResult>(Expression<Func<T1, T2, T3, T4, T5, T6, TResult>> expression) where TResult : notnull
    {
       return invoke<TResult>(expression);
    }

@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads.MultiMatching;
 
-public class MaybeMatcher<T, TResult>
+public class MaybeMatcher<T, TResult> where T : notnull where TResult : notnull
 {
    public class MaybeFunction
    {
@@ -95,7 +95,7 @@ public class MaybeMatcher<T, TResult>
    }
 }
 
-public class MaybeMatcher<T>
+public class MaybeMatcher<T> where T : notnull
 {
    public class MaybeAction
    {

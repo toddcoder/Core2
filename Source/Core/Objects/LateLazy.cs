@@ -5,7 +5,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects;
 
-public class LateLazy<T>
+public class LateLazy<T> where T : notnull
 {
    protected const string DEFAULT_ERROR_MESSAGE = "Activator has not been set";
 

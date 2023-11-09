@@ -6,7 +6,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections.Expiring;
 
-public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
+public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    protected Hash<TKey, TValue> cache;
    protected Hash<TKey, ExpirationPolicy<TValue>> expirationPolicies;
@@ -14,13 +14,14 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
    protected object locker;
    protected Func<ExpirationPolicy<TValue>> newPolicy;
 
-   public event EventHandler<ExpirationArgs<TKey, TValue>> Expired;
+   public event EventHandler<ExpirationArgs<TKey, TValue>>? Expired;
 
    public ExpiringCache(TimeSpan activeMonitoringInterval)
    {
       cache = new Hash<TKey, TValue>();
       expirationPolicies = new Hash<TKey, ExpirationPolicy<TValue>>();
       var newTimer = new Timer(activeMonitoringInterval.TotalMilliseconds);
+      locker = new object();
       newTimer.Elapsed += (_, _) =>
       {
          lock (locker)
@@ -43,8 +44,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
       };
 
       _timer = newTimer;
-      locker = new object();
-      NewPolicy = () => new NonExpiration<TValue>();
+      newPolicy = () => new NonExpiration<TValue>();
    }
 
    public ExpiringCache()
@@ -53,7 +53,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
       expirationPolicies = new Hash<TKey, ExpirationPolicy<TValue>>();
       _timer = nil;
       locker = new object();
-      NewPolicy = () => new NonExpiration<TValue>();
+      newPolicy = () => new NonExpiration<TValue>();
    }
 
    public Func<ExpirationPolicy<TValue>> NewPolicy
@@ -94,7 +94,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
                   cache.Remove(key);
                   expirationPolicies.Remove(key);
 
-                  return default;
+                  return default!;
                }
                else
                {
@@ -103,7 +103,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue>
             }
             else
             {
-               return default;
+               return default!;
             }
          }
       }

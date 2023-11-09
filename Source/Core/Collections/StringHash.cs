@@ -3,7 +3,7 @@ using static Core.Collections.CollectionFunctions;
 
 namespace Core.Collections;
 
-public class StringHash<TValue> : Hash<string, TValue>
+public class StringHash<TValue> : Hash<string, TValue> where TValue : notnull
 {
    protected bool ignoreCase;
 

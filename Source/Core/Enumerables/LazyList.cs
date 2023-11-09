@@ -12,8 +12,8 @@ public class LazyList<T> : IList<T>
    protected List<IEnumerable<T>> enumerables;
    protected Maybe<T[]> _flattened;
 
-   public event EventHandler Flattened;
-   public event EventHandler Unflattened;
+   public event EventHandler? Flattened;
+   public event EventHandler? Unflattened;
 
    public LazyList()
    {
@@ -98,7 +98,7 @@ public class LazyList<T> : IList<T>
       Flatten();
       if (_flattened is (true, var flattened))
       {
-         var newEnumerable = flattened.Where(i => !i.Equals(item));
+         var newEnumerable = flattened.Where(i => !i!.Equals(item));
          Clear();
          Add(newEnumerable);
 

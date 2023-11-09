@@ -2,5 +2,5 @@
 
 public interface IGetter
 {
-   object GetValue(object obj);
+   object? GetValue(object obj);
 }

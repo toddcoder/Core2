@@ -8,5 +8,5 @@ public class PropertyGetter : IGetter
 
    public PropertyGetter(PropertyInfo propertyInfo) => this.propertyInfo = propertyInfo;
 
-   public object GetValue(object obj) => propertyInfo.GetValue(obj);
+   public object? GetValue(object obj) => propertyInfo.GetValue(obj);
 }

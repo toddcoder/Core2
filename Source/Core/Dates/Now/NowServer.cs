@@ -6,7 +6,10 @@ public static class NowServer
 {
    private static NowBase now;
 
-   static NowServer() => SetToStandard();
+   static NowServer()
+   {
+      now = new StandardNow();
+   }
 
    public static void SetToStandard() => now = new StandardNow();
 

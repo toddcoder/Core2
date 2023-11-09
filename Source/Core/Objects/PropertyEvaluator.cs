@@ -22,10 +22,10 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
       return ((IHash<string, object>)evaluator).Items[signature];
    }
 
-   protected object obj;
+   protected object? obj;
    protected Type type;
 
-   public PropertyEvaluator(object obj)
+   public PropertyEvaluator(object? obj)
    {
       this.obj = obj.Must().Not.BeNull().Force<ArgumentNullException, object>();
       type = this.obj.GetType();
@@ -43,7 +43,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
          {
             if (current is null)
             {
-               return null;
+               return null!;
             }
             else
             {
@@ -54,41 +54,40 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
                }
                else
                {
-                  return null;
+                  return null!;
                }
             }
          }
 
-         return current;
+         return current!;
       }
+#pragma warning disable CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
       set
+#pragma warning restore CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
       {
-         if (value is not null)
+         var current = obj;
+
+         var _lastInfo = monads.maybe<ObjectInfo>();
+
+         foreach (var info in new SignatureCollection(signature).Select(s => new ObjectInfo(current, s)))
          {
-            var current = obj;
-
-            var _lastInfo = monads.maybe<ObjectInfo>();
-
-            foreach (var info in new SignatureCollection(signature).Select(s => new ObjectInfo(current, s)))
+            if (current == null)
             {
-               if (current == null)
-               {
-                  throw fail($"{signature} is null; can't continue the chain");
-               }
-
-               var infoValue = info.Value.Required($"Signature {signature} doesn't exist");
-               if (!info.PropertyType)
-               {
-                  throw fail($"Couldn't determine object at {signature}");
-               }
-
-               current = infoValue;
-               _lastInfo = info;
+               throw fail($"{signature} is null; can't continue the chain");
             }
 
-            var li = _lastInfo.Required($"Couldn't derive {signature}");
-            li.Value = value;
+            var infoValue = info.Value.Required($"Signature {signature} doesn't exist");
+            if (!info.PropertyType)
+            {
+               throw fail($"Couldn't determine object at {signature}");
+            }
+
+            current = infoValue;
+            _lastInfo = info;
          }
+
+         var li = _lastInfo.Required($"Couldn't derive {signature}");
+         li.Value = value;
       }
    }
 
@@ -97,7 +96,9 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
    public object this[Signature signature]
    {
       get => this[signature.Name];
+#pragma warning disable CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
       set => this[signature.Name] = value;
+#pragma warning restore CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
    }
 
    public bool ContainsKey(Signature key) => Contains(key.Name);
@@ -105,11 +106,12 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
    Result<Hash<Signature, object>> IHash<Signature, object>.AnyHash()
    {
       var hash = new Hash<Signature, object>();
-      var info = obj.GetType().GetProperties();
+      var info = obj!.GetType().GetProperties();
 
       foreach (var pInfo in info)
       {
-         hash[new Signature(pInfo.Name)] = this[pInfo.Name];
+         var value = this[pInfo.Name];
+         hash[new Signature(pInfo.Name)] = value;
       }
 
       return hash;
@@ -121,7 +123,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
 
    public object Object
    {
-      get => obj;
+      get => obj!;
       set
       {
          value.Must().Not.BeNull().OrThrow();
@@ -196,7 +198,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
    public Result<Hash<string, object>> AnyHash()
    {
       var hash = new Hash<string, object>();
-      var info = obj.GetType().GetProperties();
+      var info = obj!.GetType().GetProperties();
 
       foreach (var pInfo in info)
       {
@@ -222,7 +224,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
       return info.GetCustomAttributes(true).OfType<TAttribute>().Any();
    }
 
-   public Maybe<T> ValueAtAttribute<TAttribute, T>() where TAttribute : Attribute
+   public Maybe<T> ValueAtAttribute<TAttribute, T>() where TAttribute : Attribute where T : notnull
    {
       var properties = type
          .GetProperties(BindingFlags.Instance | BindingFlags.Public)

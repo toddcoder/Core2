@@ -24,11 +24,11 @@ public class Monads
       }
    }
 
-   public Maybe<T> maybe<T>() => nil;
+   public Maybe<T> maybe<T>() where T : notnull => nil;
 
-   public Result<T> result<T>() => nil;
+   public Result<T> result<T>() where T : notnull => nil;
 
-   public Optional<T> optional<T>() => nil;
+   public Optional<T> optional<T>() where T : notnull => nil;
 
-   public Completion<T> completion<T>() => nil;
+   public Completion<T> completion<T>() where T : notnull => nil;
 }

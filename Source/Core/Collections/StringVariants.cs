@@ -21,9 +21,9 @@ public class StringVariants : IHash<string, string>
 
       public string Value { get; }
 
-      public bool Equals(KeyValue other) => Key == other.Key && Value == other.Value;
+      public bool Equals(KeyValue? other) => other is not null && Key == other.Key && Value == other.Value;
 
-      public override bool Equals(object obj) => obj is KeyValue other && Equals(other);
+      public override bool Equals(object? obj) => obj is KeyValue other && Equals(other);
 
       public override int GetHashCode() => hashCode() + Key + Value;
    }

@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-public class Some<T> : Maybe<T>, IEquatable<Some<T>>
+public class Some<T> : Maybe<T>, IEquatable<Some<T>> where T : notnull
 {
    public static implicit operator bool(Some<T> _) => true;
 
@@ -30,13 +30,6 @@ public class Some<T> : Maybe<T>, IEquatable<Some<T>>
    {
       isSome = true;
       value = this.value;
-   }
-
-   [Obsolete("Use if")]
-   public override Maybe<T> IfThen(Action<T> action)
-   {
-      action(value);
-      return this;
    }
 
    public override void MapOf(Action<T> action) => action(value);
@@ -117,14 +110,11 @@ public class Some<T> : Maybe<T>, IEquatable<Some<T>>
 
    public override object ToObject() => value;
 
-   public bool Equals(Some<T> other)
-   {
-      return other is not null && ReferenceEquals(this, other) || EqualityComparer<T>.Default.Equals(value, other.value);
-   }
+   public bool Equals(Some<T>? other) => other is not null && EqualityComparer<T>.Default.Equals(value, other.value);
 
-   public override bool Equals(object obj) => obj is Some<T> other && Equals(other);
+   public override bool Equals(object? obj) => obj is Some<T> other && Equals(other);
 
    public override int GetHashCode() => value.GetHashCode();
 
-   public override string ToString() => value.ToString();
+   public override string ToString() => value.ToString() ?? "";
 }

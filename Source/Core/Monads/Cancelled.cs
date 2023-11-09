@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
-public class Cancelled<T> : Completion<T>, IEquatable<Cancelled<T>>
+public class Cancelled<T> : Completion<T>, IEquatable<Cancelled<T>> where T : notnull
 {
    public static implicit operator bool(Cancelled<T> _) => false;
 

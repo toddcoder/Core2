@@ -5,7 +5,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
 
-public class HashTrying<TKey, TValue>
+public class HashTrying<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    protected Hash<TKey, TValue> hash;
 
