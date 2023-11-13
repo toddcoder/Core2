@@ -1,4 +1,3 @@
-using System;
 using System.Text;
 
 namespace Core.Markup.Rtf;
@@ -91,7 +90,7 @@ public static class ConversionExtensions
                      case 0x5c or 0x7b or 0x7d or <= 0x00 and < 0x20:
                         result.Append($@"\'{unicode:x2}");
                         break;
-                     case <= 0x20 and < 0x80:
+                     case <= 0x20:
                         result.Append(character);
                         break;
                      default:
@@ -103,7 +102,7 @@ public static class ConversionExtensions
                {
                   switch (unicode)
                   {
-                     case < 0x8000 and <= 0xffff:
+                     case < 0x8000:
                         result.Append($@"\uc1\u{unicode - 0x10000}*");
                         break;
                      default:
@@ -129,7 +128,7 @@ public static class ConversionExtensions
 
       foreach (var @byte in buffer)
       {
-         if (@byte is < 0x20 or <= 0x80 and <= 0xff or 0x5c or 0x7b or 0x7d)
+         if (@byte is < 0x20 or <= 0x80 and 0x5c or 0x7b or 0x7d)
          {
             result += $@"\'{@byte:x2}";
          }

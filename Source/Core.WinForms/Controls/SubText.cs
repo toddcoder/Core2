@@ -73,7 +73,7 @@ public class SubText : IEquatable<SubText>
 
    public SubTextOption Option { get; set; }
 
-   public SubTextSet Set => new(this, size, subTextHost);
+   public SubTextSet Set => new(this, subTextHost);
 
    public string FontName { get; set; }
 

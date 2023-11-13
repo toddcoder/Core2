@@ -1,5 +1,4 @@
-﻿using System;
-using Core.DataStructures;
+﻿using Core.DataStructures;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests;

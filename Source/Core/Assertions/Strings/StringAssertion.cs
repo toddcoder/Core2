@@ -22,12 +22,12 @@ public class StringAssertion : IAssertion<string>
 
    protected static bool inList(string subject, string[] strings) => strings.Any(s => subject.CompareTo(s) == 0);
 
-   protected string subject;
+   protected string? subject;
    protected List<Constraint> constraints;
    protected bool not;
    protected string name;
 
-   public StringAssertion(string subject)
+   public StringAssertion(string? subject)
    {
       this.subject = subject;
       constraints = new List<Constraint>();
@@ -35,7 +35,7 @@ public class StringAssertion : IAssertion<string>
       name = "String";
    }
 
-   public string Subject => subject;
+   public string Subject => subject!;
 
    public StringAssertion Not
    {
@@ -46,7 +46,7 @@ public class StringAssertion : IAssertion<string>
       }
    }
 
-   private static string format(string s) => $"\"{s.Elliptical(80, ' ')}\"";
+   private static string format(string? s) => $"\"{s!.Elliptical(80, ' ')}\"";
 
    protected StringAssertion add(Func<bool> constraintFunction, string message)
    {
@@ -58,32 +58,32 @@ public class StringAssertion : IAssertion<string>
 
    public StringAssertion Equal(string obj)
    {
-      return add(() => subject.CompareTo(obj) == 0, $"$name must $not equal {format(obj)}");
+      return add(() => subject!.CompareTo(obj) == 0, $"$name must $not equal {format(obj)}");
    }
 
    public StringAssertion BeGreaterThan(string obj)
    {
-      return add(() => subject.CompareTo(obj) > 0, $"$name must $not be > {format(obj)}");
+      return add(() => subject!.CompareTo(obj) > 0, $"$name must $not be > {format(obj)}");
    }
 
    public StringAssertion BeGreaterThanOrEqual(string obj)
    {
-      return add(() => subject.CompareTo(obj) >= 0, $"$name must $not be >= {format(obj)}");
+      return add(() => subject!.CompareTo(obj) >= 0, $"$name must $not be >= {format(obj)}");
    }
 
    public StringAssertion BeLessThan(string obj)
    {
-      return add(() => subject.CompareTo(obj) < 0, $"$name must $not be < {format(obj)}");
+      return add(() => subject!.CompareTo(obj) < 0, $"$name must $not be < {format(obj)}");
    }
 
    public StringAssertion BeLessThanOrEqual(string obj)
    {
-      return add(() => subject.CompareTo(obj) <= 0, $"$name must $not be <= {format(obj)}");
+      return add(() => subject!.CompareTo(obj) <= 0, $"$name must $not be <= {format(obj)}");
    }
 
    public StringAssertion BeNull()
    {
-      return add(() => subject == null, "$name must $not be null");
+      return add(() => subject is null, "$name must $not be null");
    }
 
    public StringAssertion BeEmpty()
@@ -103,45 +103,45 @@ public class StringAssertion : IAssertion<string>
 
    public StringAssertion HaveLengthOf(int length)
    {
-      return add(() => subject.Length >= length, $"$name must $not have a length >= {length}");
+      return add(() => subject!.Length >= length, $"$name must $not have a length >= {length}");
    }
 
    public StringAssertion HaveLengthOfExactly(int length)
    {
-      return add(() => subject.Length == length, $"$name must $not have a length of exactly {length}");
+      return add(() => subject!.Length == length, $"$name must $not have a length of exactly {length}");
    }
 
    public StringAssertion BeIn(params string[] strings)
    {
-      return add(() => inList(subject, strings), $"$name must $not be in {enumerableImage(strings)}");
+      return add(() => inList(subject!, strings), $"$name must $not be in {enumerableImage(strings)}");
    }
 
    public StringAssertion StartWith(string substring)
    {
-      return add(() => subject.StartsWith(substring), $"$name must start with {format(substring)}");
+      return add(() => subject!.StartsWith(substring), $"$name must start with {format(substring)}");
    }
 
    public StringAssertion EndWith(string substring)
    {
-      return add(() => subject.EndsWith(substring), $"$name must end with {format(substring)}");
+      return add(() => subject!.EndsWith(substring), $"$name must end with {format(substring)}");
    }
 
    public StringAssertion Match(string pattern)
    {
-      return add(() => subject.IsMatch(pattern), $"$name must $not match regex {format(pattern)}");
+      return add(() => subject!.IsMatch(pattern), $"$name must $not match regex {format(pattern)}");
    }
 
    public StringAssertion BeAValidFileName()
    {
-      return add(() => FileName.IsValidFileName(subject), "$name must $not be a valid file name");
+      return add(() => FileName.IsValidFileName(subject!), "$name must $not be a valid file name");
    }
 
    public StringAssertion BeAValidFolderName()
    {
-      return add(() => FolderName.IsValidFolderName(subject), "$name must $not be a valid folder name");
+      return add(() => FolderName.IsValidFolderName(subject!), "$name must $not be a valid folder name");
    }
 
-   public string Value => subject;
+   public string Value => subject!;
 
    public IEnumerable<Constraint> Constraints => constraints;
 

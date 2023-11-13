@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Services.Plugins;
+﻿namespace Core.Services.Plugins;
 
 public class PluginException : ApplicationException
 {

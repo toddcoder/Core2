@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Threading;
+﻿using Core.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests;

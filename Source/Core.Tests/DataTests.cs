@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Core.Applications;
+﻿using Core.Applications;
 using Core.Collections;
 using Core.Configurations;
 using Core.Data;

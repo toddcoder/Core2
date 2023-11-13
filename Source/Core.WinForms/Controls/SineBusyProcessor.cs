@@ -1,6 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Text;
+﻿using System.Drawing.Text;
 using Core.Collections;
 using static Core.Numbers.NumberExtensions;
 

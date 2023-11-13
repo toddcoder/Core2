@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms;
-using Core.Monads;
+﻿using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 

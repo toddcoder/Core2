@@ -9,7 +9,10 @@ public class ObjectFormatter
 
    protected PropertyEvaluator evaluator;
 
-   public ObjectFormatter(object obj) => evaluator = new PropertyEvaluator(obj);
+   public ObjectFormatter(object? obj)
+   {
+      evaluator = new PropertyEvaluator(obj);
+   }
 
    public string Format(string source) => source.Matches(REGEX_NAME).Map(result =>
    {
@@ -20,7 +23,7 @@ public class ObjectFormatter
          if (evaluator.ContainsKey(name))
          {
             var obj1 = evaluator[name];
-            result[i, 0] = obj1 is null ? "" : string.Format("{{0" + format + "}}", obj1);
+            result[i, 0] = string.Format("{{0" + format + "}}", obj1);
          }
       }
 

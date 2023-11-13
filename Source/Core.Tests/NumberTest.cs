@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Collections;
+﻿using Core.Collections;
 using Core.Enumerables;
 using Core.Numbers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

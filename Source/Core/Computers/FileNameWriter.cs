@@ -43,7 +43,7 @@ public class FileNameWriter : IDisposable
       writer = new StreamWriter(stream);
    }
 
-   protected static string getString(object value) => value?.ToString() ?? "";
+   protected static string getString(object value) => value.ToString() ?? "";
 
    public void Write(object value) => writer.Write(getString(value));
 
@@ -57,5 +57,5 @@ public class FileNameWriter : IDisposable
 
    public async Task FlushAsync() => await writer.FlushAsync();
 
-   public void Dispose() => writer?.Dispose();
+   public void Dispose() => writer.Dispose();
 }

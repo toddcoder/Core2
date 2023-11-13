@@ -1,5 +1,4 @@
-﻿using System.Windows.Forms;
-using Core.WinForms.Consoles;
+﻿using Core.WinForms.Consoles;
 
 namespace Core.WinForms.Documents;
 

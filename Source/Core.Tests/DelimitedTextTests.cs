@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Core.Enumerables;
+﻿using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;

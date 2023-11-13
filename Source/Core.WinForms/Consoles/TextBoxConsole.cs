@@ -225,7 +225,7 @@ public class TextBoxConsole
    {
       if (textBox.InvokeRequired && InvokeRequired)
       {
-         return (T)textBox.Invoke(new Func<T>(() => Get(func)));
+         return textBox.Invoke(() => Get(func));
       }
       else
       {

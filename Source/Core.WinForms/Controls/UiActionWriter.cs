@@ -1,8 +1,5 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+﻿using System.Drawing.Drawing2D;
 using System.Drawing.Text;
-using System.Windows.Forms;
 using Core.Monads;
 using Core.Numbers;
 using Core.Strings;

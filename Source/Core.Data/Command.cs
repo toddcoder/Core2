@@ -80,7 +80,7 @@ public class Command
 
    public string Name { get; set; }
 
-   public TimeSpan CommandTimeout { get; set; }
+   public TimeSpan CommandTimeout { get; init; }
 
-   public string Text { get; set; }
+   public string Text { get; init; }
 }

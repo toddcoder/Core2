@@ -28,13 +28,13 @@ public class Emailer
       Credentials = CredentialCache.DefaultNetworkCredentials;
    }
 
-   public Address Address { get; set; }
+   public Address Address { get; init; }
 
-   public string Body { get; set; }
+   public string Body { get; init; }
 
-   public Maybe<FileName[]> Attachments { get; set; }
+   public Maybe<FileName[]> Attachments { get; init; }
 
-   public Maybe<int> Port { get; set; }
+   public Maybe<int> Port { get; init; }
 
    public PriorityType Priority { get; set; }
 

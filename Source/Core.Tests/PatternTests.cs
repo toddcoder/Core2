@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Assertions;
+﻿using Core.Assertions;
 using Core.Matching;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Core.Strings;

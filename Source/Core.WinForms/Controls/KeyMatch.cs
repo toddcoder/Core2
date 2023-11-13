@@ -1,7 +1,4 @@
 ﻿using Core.Dates.DateIncrements;
-using System;
-using System.Drawing;
-using System.Windows.Forms;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;

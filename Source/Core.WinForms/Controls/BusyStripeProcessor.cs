@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using System.Drawing.Text;
+﻿using System.Drawing.Text;
 
 namespace Core.WinForms.Controls;
 
@@ -7,7 +6,6 @@ public class BusyStripeProcessor : BusyProcessor
 {
    protected int width;
    protected int lineWidth;
-   protected int height;
    protected int top;
    protected int x;
    protected int speed;
@@ -17,7 +15,6 @@ public class BusyStripeProcessor : BusyProcessor
 
    public BusyStripeProcessor(Rectangle clientRectangle, bool clickable, Color color) : base(clientRectangle)
    {
-      height = 4;
       x = clientRectangle.X;
       currentX = x;
       speed = 0;

@@ -1,8 +1,5 @@
-﻿using System.Drawing;
-using System.Drawing.Drawing2D;
+﻿using System.Drawing.Drawing2D;
 using System.Net;
-using System.Net.Http;
-using System.Windows.Forms;
 using Core.Dates.DateIncrements;
 using Core.Strings;
 

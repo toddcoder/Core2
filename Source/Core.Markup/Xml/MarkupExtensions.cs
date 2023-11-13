@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Text;
+﻿using System.Text;
 using System.Xml;
 using Core.Assertions;
 using Core.Matching;
@@ -32,7 +31,10 @@ public static class MarkupExtensions
       document.LoadXml(document.OuterXml.Substitute(PATTERN_EMPTY_ELEMENT, TEXT_EMPTY_ELEMENT));
 
       using var stream = new MemoryStream();
-      using var writer = new XmlTextWriter(stream, encoding) { Formatting = Formatting.Indented, Indentation = 3, QuoteChar = quoteChar };
+      using var writer = new XmlTextWriter(stream, encoding);
+      writer.Formatting = Formatting.Indented;
+      writer.Indentation = 3;
+      writer.QuoteChar = quoteChar;
 
       document.Save(writer);
 

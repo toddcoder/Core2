@@ -173,20 +173,26 @@ public static class RtfStripperFunction
                {
                   outputBuffer.Add(wordValue);
                }
-               else if (word == "uc")
+               else
                {
-                  numberOfAsciiToSkipAfterUnicode = arg.Value().Int32();
-               }
-               else if (word == "u")
-               {
-                  var c = arg.Value().Int32();
-                  if (c < 0)
+                  switch (word)
                   {
-                     c += 0x10000;
-                  }
+                     case "uc":
+                        numberOfAsciiToSkipAfterUnicode = arg.Value().Int32();
+                        break;
+                     case "u":
+                     {
+                        var c = arg.Value().Int32();
+                        if (c < 0)
+                        {
+                           c += 0x10000;
+                        }
 
-                  outputBuffer.Add(char.ConvertFromUtf32(c));
-                  numberOfAsciiLeftToSkip = numberOfAsciiToSkipAfterUnicode;
+                        outputBuffer.Add(char.ConvertFromUtf32(c));
+                        numberOfAsciiLeftToSkip = numberOfAsciiToSkipAfterUnicode;
+                        break;
+                     }
+                  }
                }
             }
             else if (hex.IsNotEmpty())

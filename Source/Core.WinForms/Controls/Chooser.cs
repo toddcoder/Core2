@@ -272,7 +272,7 @@ public partial class Chooser : Form
       listViewItems.Columns[0].Width = ClientSize.Width;
       listViewItems.Columns[0].Text = title;
 
-      var lastItem = listViewItems.Items[listViewItems.Items.Count - 1];
+      var lastItem = listViewItems.Items[^1];
       var bounds = lastItem.Bounds;
       var bottom = bounds.Bottom;
       Height = bottom + 4;

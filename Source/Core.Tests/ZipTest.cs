@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Core.Assertions;
+﻿using Core.Assertions;
 using Core.Computers;
 using Core.Monads;
 using Core.Zip;

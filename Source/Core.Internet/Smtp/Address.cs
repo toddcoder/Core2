@@ -33,29 +33,29 @@ public class Address
       Subject = addressSetting.Value.String("subject");
    }
 
-   public string Server { get; set; }
+   public string Server { get; init; }
 
-   public string From { get; set; }
+   public string From { get; init; }
 
    public string To
    {
       get => to;
-      set => to = joinByCommas(value);
+      init => to = joinByCommas(value);
    }
 
    public string CC
    {
       get => cc;
-      set => cc = joinByCommas(value);
+      init => cc = joinByCommas(value);
    }
 
    public string BCC
    {
       get => bcc;
-      set => bcc = joinByCommas(value);
+      init => bcc = joinByCommas(value);
    }
 
-   public string Subject { get; set; }
+   public string Subject { get; init; }
 
    public Address Clone(string subject) => new()
    {

@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
-using Core.Monads;
+﻿using Core.Monads;
 using Core.Strings.Emojis;
 using static Core.Monads.MonadFunctions;
 

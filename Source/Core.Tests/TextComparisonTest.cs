@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Computers;
+﻿using Core.Computers;
 using Core.Strings.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

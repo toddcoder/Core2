@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Core.Assertions;
+﻿using Core.Assertions;
 using Core.Computers;
 using Core.Enumerables;
 using Core.Matching;

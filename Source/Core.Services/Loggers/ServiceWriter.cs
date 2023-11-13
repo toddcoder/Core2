@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Internet.Smtp;
+﻿using Core.Internet.Smtp;
 
 namespace Core.Services.Loggers;
 

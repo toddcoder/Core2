@@ -97,7 +97,7 @@ public class DataContainer : StringHash<object>
          var builder = new StringBuilder(Format);
          foreach (var key in KeyArray())
          {
-            builder.Replace("{" + key + "}", this[key]?.ToString() ?? "");
+            builder.Replace("{" + key + "}", this[key].ToString() ?? "");
          }
 
          return builder.ToString();

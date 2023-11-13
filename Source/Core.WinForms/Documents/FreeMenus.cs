@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-using Core.Monads;
+﻿using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Documents;

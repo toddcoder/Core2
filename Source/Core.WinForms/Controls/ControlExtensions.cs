@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using System.Windows.Forms;
-
-namespace Core.WinForms.Controls;
+﻿namespace Core.WinForms.Controls;
 
 public static class ControlExtensions
 {

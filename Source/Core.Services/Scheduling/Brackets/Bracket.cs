@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Services.Scheduling.Brackets;
+﻿namespace Core.Services.Scheduling.Brackets;
 
 public abstract class Bracket
 {

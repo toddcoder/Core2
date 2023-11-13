@@ -5,7 +5,7 @@ namespace Core.Assertions;
 
 public class Constraint
 {
-   public static Constraint Failing(string message, string name) => new Constraint(() => false, message, false, name, new object());
+   public static Constraint Failing(string message, string name) => new(() => false, message, false, name, new object());
 
    public static Constraint Formatted<T>(Func<bool> condition, string message, bool not, string name, T value, Func<T, string> formatter)
    {

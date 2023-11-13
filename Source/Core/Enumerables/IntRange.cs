@@ -69,7 +69,6 @@ public class IntRange : IEnumerable<int>
    protected Maybe<int> _stop;
    protected int increment;
    protected Maybe<Func<int, int, bool>> _endingPredicate;
-   protected bool inclusive;
 
    public IntRange(int start)
    {
@@ -77,21 +76,18 @@ public class IntRange : IEnumerable<int>
       _stop = nil;
       increment = 1;
       _endingPredicate = nil;
-      inclusive = false;
    }
 
    public void To(int newStop)
    {
       _stop = newStop;
       _endingPredicate = func<int, int, bool>((x, y) => x <= y);
-      inclusive = true;
    }
 
    public void Until(int newStop)
    {
       _stop = newStop;
       _endingPredicate = func<int, int, bool>((x, y) => x < y);
-      inclusive = false;
    }
 
    public IntRange By(int newIncrement)

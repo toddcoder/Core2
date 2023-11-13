@@ -57,7 +57,7 @@ public static class ObjectExtensions
       var evaluator = new PropertyEvaluator(obj);
       unchecked
       {
-         return evaluator.Signatures.Aggregate(prime, (current, signature) => current * prime + evaluator[signature]!.GetHashCode());
+         return evaluator.Signatures.Aggregate(prime, (current, signature) => current * prime + evaluator[signature].GetHashCode());
       }
    }
 

@@ -21,7 +21,7 @@ public class Footnote : BlockList
 
       result.AppendLine(@"{\super\chftn}");
       result.AppendLine(@"{\footnote\plain\chftn");
-      blocks[blocks.Count - 1].BlockTail = "}";
+      blocks[^1].BlockTail = "}";
       result.Append(base.Render());
       result.AppendLine("}");
 

@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Arrays;
+﻿using Core.Arrays;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
 

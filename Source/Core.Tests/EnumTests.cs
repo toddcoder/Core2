@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Assertions;
+﻿using Core.Assertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests;

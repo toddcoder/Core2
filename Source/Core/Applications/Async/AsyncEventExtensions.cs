@@ -7,7 +7,7 @@ namespace Core.Applications.Async;
 
 public static class AsyncEventExtensions
 {
-   public static async Task InvokeAsync<TArgs>(this AsyncEventHandler<TArgs> eventHandler, object sender, TArgs args) where TArgs : EventArgs
+   public static async Task InvokeAsync<TArgs>(this AsyncEventHandler<TArgs>? eventHandler, object sender, TArgs args) where TArgs : EventArgs
    {
       if (eventHandler != null)
       {
@@ -15,7 +15,7 @@ public static class AsyncEventExtensions
       }
    }
 
-   public static async Task InvokeAsync<TArgs>(this AsyncEventHandler<TArgs> eventHandler, object sender, TArgs args, CancellationToken token)
+   public static async Task InvokeAsync<TArgs>(this AsyncEventHandler<TArgs>? eventHandler, object sender, TArgs args, CancellationToken token)
       where TArgs : EventArgs
    {
       if (!token.IsCancellationRequested)

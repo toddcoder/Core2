@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Assertions;
+﻿using Core.Assertions;
 using Core.Matching;
 using static Core.Markup.Xml.MarkupTextHolder;
 

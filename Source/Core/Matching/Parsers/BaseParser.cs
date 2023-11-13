@@ -15,14 +15,10 @@ public abstract class BaseParser
    public const string REGEX_BAL_IDENTIFIER = "[a-zA-Z_][a-zA-Z_0-9-]*";
 
    protected string[] tokens;
-   protected RRegex regexIdentifier;
-   protected RRegex regexBalIdentifier;
 
    public BaseParser()
    {
       tokens = Array.Empty<string>();
-      regexIdentifier = new RRegex(REGEX_IDENTIFIER, RegexOptions.Compiled);
-      regexBalIdentifier = new RRegex(REGEX_BAL_IDENTIFIER, RegexOptions.Compiled);
    }
 
    public abstract string Pattern { get; }

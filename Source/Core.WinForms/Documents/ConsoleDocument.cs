@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Windows.Forms;
-using Core.WinForms.Consoles;
+﻿using Core.WinForms.Consoles;
 
 namespace Core.WinForms.Documents;
 
@@ -49,7 +46,7 @@ public class ConsoleDocument : IDisposable
 
    public void Dispose()
    {
-      writer?.Dispose();
-      reader?.Dispose();
+      writer.Dispose();
+      reader.Dispose();
    }
 }

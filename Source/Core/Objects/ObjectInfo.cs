@@ -87,7 +87,7 @@ internal class ObjectInfo
             {
                if (parameters.Length == 0)
                {
-                  var _ = setValue(value);
+                  _ = setValue(value);
                }
                else
                {

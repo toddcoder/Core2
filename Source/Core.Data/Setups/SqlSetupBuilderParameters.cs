@@ -47,25 +47,15 @@ public class SqlSetupBuilderParameters
       public static Size size(int value) => new(value);
    }
 
-   public abstract class BaseParameter
-   {
-   }
+   public abstract class BaseParameter;
 
-   public interface IConnectionStringParameter
-   {
-   }
+   public interface IConnectionStringParameter;
 
-   public interface ICommandTextParameter
-   {
-   }
+   public interface ICommandTextParameter;
 
-   public interface IFieldParameter
-   {
-   }
+   public interface IFieldParameter;
 
-   public interface IParameterParameter
-   {
-   }
+   public interface IParameterParameter;
 
    public abstract class StringParameter : BaseParameter
    {

@@ -132,7 +132,7 @@ public class ComparableAssertion<T> : IAssertion<T> where T : struct, IComparabl
 
    public ComparableAssertion<T> BeIn(params object[] objects)
    {
-      var objectsString = objects.Select(o => o == null ? "null" : objects.ToString()).ToString(", ");
+      var objectsString = objects.Select(o => o.ToString()!).ToString(", ");
       return add(objects, _ => inList(comparable, objects), $"$name must $not be in {objectsString}");
    }
 

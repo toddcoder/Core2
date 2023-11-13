@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Assertions;
+﻿using Core.Assertions;
 
 namespace Core.Services.Scheduling;
 

@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using Core.Numbers;
+﻿using Core.Numbers;
 
 namespace Core.WinForms.Controls;
 

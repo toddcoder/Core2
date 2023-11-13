@@ -1,9 +1,6 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Threading;
 using System.Windows.Forms;
 using Core.Dates.DateIncrements;
 using Core.Strings;
@@ -168,7 +165,7 @@ public class WinFormsTests
    public void ClickableRoundedMessageTest()
    {
       var form = new Form();
-      var message = new RoundedUiAction(form, true);
+      var message = new RoundedUiAction(form);
       message.SetUp(4, 4, form.ClientSize.Width - 20, 100, AnchorStyles.Left);
       message.Message("Round");
       message.Click += (_, _) => message.Message("Clicked");
@@ -548,10 +545,7 @@ public class WinFormsTests
       var form = new Form();
       var uiAction = new UiAction(form);
       uiAction.SetUp(0, 0, 200, 40);
-      uiAction.Click += (_, _) =>
-      {
-         var _ = uiAction.Choose("A,B,C").SizeToText(true).Choices("Alpha", "Bravo", "Charlie").Choose();
-      };
+      uiAction.Click += (_, _) => _ = uiAction.Choose("A,B,C").SizeToText(true).Choices("Alpha", "Bravo", "Charlie").Choose();
       uiAction.ClickText = "Select item";
 
       form.ShowDialog();
@@ -582,10 +576,7 @@ public class WinFormsTests
       var form = new Form();
       var uiAction = new UiAction(form);
       uiAction.SetUp(0, 0, 200, 40);
-      uiAction.Click += (_, _) =>
-      {
-         var _ = uiAction.Choose("A,B,C").Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
-      };
+      uiAction.Click += (_, _) => _ = uiAction.Choose("A,B,C").Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
       uiAction.ClickText = "Select item";
 
       form.ShowDialog();
@@ -597,10 +588,7 @@ public class WinFormsTests
       var form = new Form();
       var uiAction = new UiAction(form);
       uiAction.SetUp(0, 0, 200, 40);
-      uiAction.Click += (_, _) =>
-      {
-         var _ = uiAction.Choose("A,B,C", 800).Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
-      };
+      uiAction.Click += (_, _) => _ = uiAction.Choose("A,B,C", 800).Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
       uiAction.ClickText = "Select item";
 
       form.ShowDialog();
@@ -619,10 +607,7 @@ public class WinFormsTests
          e.Italic = true;
          e.Override = true;
       };
-      uiAction.Click += (_, _) =>
-      {
-         var _ = uiAction.Choose("A,B,C", 800).Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
-      };
+      uiAction.Click += (_, _) => _ = uiAction.Choose("A,B,C", 800).Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
       uiAction.ClickText = "Select item";
 
       form.ShowDialog();

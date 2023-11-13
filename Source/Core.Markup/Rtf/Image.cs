@@ -25,7 +25,7 @@ public class Image : Block
       margins = new Margins();
       keepAspectRatio = true;
       blockHead = @"{\pard";
-      blockTail = @"}";
+      blockTail = "}";
       startNewPage = false;
       startNewParagraph = false;
 
@@ -44,7 +44,7 @@ public class Image : Block
       margins = new Margins();
       keepAspectRatio = true;
       blockHead = @"{\pard";
-      blockTail = @"}";
+      blockTail = "}";
       startNewPage = false;
       startNewParagraph = false;
 

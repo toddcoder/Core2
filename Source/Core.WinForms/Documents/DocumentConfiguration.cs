@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms;
-
-namespace Core.WinForms.Documents;
+﻿namespace Core.WinForms.Documents;
 
 public class DocumentConfiguration
 {

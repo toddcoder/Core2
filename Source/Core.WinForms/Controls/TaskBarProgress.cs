@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace Core.WinForms.Controls;
 
@@ -43,9 +42,7 @@ public class TaskBarProgress
    }
 
    [ComImport, Guid("56fdf344-fd6d-11d0-958a-006097c9a090"), ClassInterface(ClassInterfaceType.None)]
-   protected class TaskBarInstance
-   {
-   }
+   protected class TaskBarInstance;
 
    protected static ITaskbarList3 taskbarInstance = (ITaskbarList3)new TaskBarInstance();
 

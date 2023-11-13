@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Markup.Html;
+﻿using Core.Markup.Html;
 using Core.Markup.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;

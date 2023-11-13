@@ -94,11 +94,11 @@ public class Parameter : PropertyInterface
 
    public Maybe<Type> Type { get; set; }
 
-   public Maybe<int> Size { get; set; }
+   public Maybe<int> Size { get; init; }
 
-   public bool Output { get; set; }
+   public bool Output { get; init; }
 
-   public Maybe<string> Value { get; set; }
+   public Maybe<string> Value { get; init; }
 
-   public Maybe<string> Default { get; set; }
+   public Maybe<string> Default { get; init; }
 }

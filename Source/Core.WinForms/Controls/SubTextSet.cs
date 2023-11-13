@@ -1,19 +1,13 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-
-namespace Core.WinForms.Controls;
+﻿namespace Core.WinForms.Controls;
 
 public class SubTextSet
 {
    protected SubText subText;
-   protected Size size;
    protected ISubTextHost subTextHost;
 
-   internal SubTextSet(SubText subText, Size size, ISubTextHost subTextHost)
+   internal SubTextSet(SubText subText, ISubTextHost subTextHost)
    {
       this.subText = subText;
-      this.size = size;
       this.subTextHost = subTextHost;
    }
 

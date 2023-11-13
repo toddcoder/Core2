@@ -8,7 +8,7 @@ public class StringWriter : BaseWriter, IDisposable
 
    public StringWriter() => writer = new System.IO.StringWriter();
 
-   protected void dispose() => writer?.Dispose();
+   protected void dispose() => writer.Dispose();
 
    public void Dispose()
    {

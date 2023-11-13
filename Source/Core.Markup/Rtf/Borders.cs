@@ -1,4 +1,3 @@
-using System.Linq;
 using Core.Assertions;
 
 namespace Core.Markup.Rtf;

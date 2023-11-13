@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Core.Collections;
 using Core.Matching;
 using Core.Strings;

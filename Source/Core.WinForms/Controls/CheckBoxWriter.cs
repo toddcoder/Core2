@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using Core.Monads;
+﻿using Core.Monads;
 
 namespace Core.WinForms.Controls;
 

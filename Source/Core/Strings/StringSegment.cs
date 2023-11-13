@@ -4,7 +4,7 @@ public class StringSegment
 {
    public static implicit operator string(StringSegment segment) => segment.String;
 
-   public static implicit operator bool(StringSegment segment) => segment.StartIndex > -1 && segment.StopIndex > -1;
+   public static implicit operator bool(StringSegment segment) => segment is { StartIndex: > -1, StopIndex: > -1 };
 
    protected string str;
    protected int startIndex;

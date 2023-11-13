@@ -60,8 +60,6 @@ public class PendingFormatter
    protected Maybe<float> _fontSize;
    protected Maybe<FirstLineIndent> _firstLineIndent;
    protected (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins;
-   protected Maybe<float> _columnWidth;
-   protected Maybe<float> _rowHeight;
    protected Maybe<Style> _style;
 
    public PendingFormatter(Table table)
@@ -77,8 +75,6 @@ public class PendingFormatter
       _fontSize = nil;
       _firstLineIndent = nil;
       margins = (nil, nil, nil, nil);
-      _columnWidth = nil;
-      _rowHeight = nil;
       _style = nil;
    }
 
@@ -189,18 +185,6 @@ public class PendingFormatter
    public PendingFormatter Margins((Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
    {
       this.margins = margins;
-      return this;
-   }
-
-   public PendingFormatter ColumnWidth(float width)
-   {
-      _columnWidth = width;
-      return this;
-   }
-
-   public PendingFormatter RowWidth(float height)
-   {
-      _rowHeight = height;
       return this;
    }
 

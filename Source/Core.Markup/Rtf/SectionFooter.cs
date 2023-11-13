@@ -16,7 +16,7 @@ public class SectionFooter : BlockList
       result.AppendLine(@"\par ");
       result.Append(base.Render());
       result.AppendLine(@"\par");
-      result.AppendLine(@"}");
+      result.AppendLine("}");
 
       return result.ToString();
    }

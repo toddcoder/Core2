@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Services.Scheduling.Parsers;
+﻿namespace Core.Services.Scheduling.Parsers;
 
 public class DayOfWeekParser : Parser
 {

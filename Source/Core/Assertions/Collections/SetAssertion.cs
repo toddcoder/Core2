@@ -10,23 +10,23 @@ namespace Core.Assertions.Collections;
 
 public class SetAssertion<T> : IAssertion<Set<T>>
 {
-   protected Set<T> set;
+   protected Set<T>? set;
    protected List<Constraint> constraints;
    protected bool not;
    protected string name;
    protected string image;
 
-   public SetAssertion(Set<T> set)
+   public SetAssertion(Set<T>? set)
    {
       this.set = set;
 
       constraints = new List<Constraint>();
       not = false;
       name = "Set";
-      image = enumerableImage(set);
+      image = set is not null ? enumerableImage(set) : "";
    }
 
-   public Set<T> Set => set;
+   public Set<T> Set => set!;
 
    public SetAssertion<T> Not
    {
@@ -45,51 +45,51 @@ public class SetAssertion<T> : IAssertion<Set<T>>
       return this;
    }
 
-   public SetAssertion<T> Equal(Set<T> other) => add(() => set.Equals(other), $"$name must $not equal {enumerableImage(other)}");
+   public SetAssertion<T> Equal(Set<T> other) => add(() => set!.Equals(other), $"$name must $not equal {enumerableImage(other)}");
 
    public SetAssertion<T> BeNull() => add(() => set is null, "$name must $not be null");
 
-   public SetAssertion<T> BeEmpty() => add(() => set.Count == 0, "$name must $not be empty");
+   public SetAssertion<T> BeEmpty() => add(() => set!.Count == 0, "$name must $not be empty");
 
    public SetAssertion<T> BeNullOrEmpty() => add(() => set is null || set.Count == 0, "$name must $not be null or empty");
 
    public SetAssertion<T> HaveCountOf(int minimumCount)
    {
-      return add(() => set.Count >= minimumCount, $"$name must $not have a length of at least {minimumCount}");
+      return add(() => set!.Count >= minimumCount, $"$name must $not have a length of at least {minimumCount}");
    }
 
    public SetAssertion<T> HaveCountOfExactly(int count)
    {
-      return add(() => set.Count == count, $"$name must $not have a length of exactly {count}");
+      return add(() => set!.Count == count, $"$name must $not have a length of exactly {count}");
    }
 
-   public SetAssertion<T> Contain(T item) => add(() => set.Contains(item), $"$name must $not contain {item}");
+   public SetAssertion<T> Contain(T item) => add(() => set!.Contains(item), $"$name must $not contain {item}");
 
-   public SetAssertion<T> Overlap(IEnumerable<T> items) => add(() => set.Overlaps(items), $"$name must $not overlap {enumerableImage(items)}");
+   public SetAssertion<T> Overlap(IEnumerable<T> items) => add(() => set!.Overlaps(items), $"$name must $not overlap {enumerableImage(items)}");
 
    public SetAssertion<T> BeASubsetOf(IEnumerable<T> items)
    {
-      return add(() => set.IsSubsetOf(items), $"$name must $not be a subset of {enumerableImage(items)}");
+      return add(() => set!.IsSubsetOf(items), $"$name must $not be a subset of {enumerableImage(items)}");
    }
 
    public SetAssertion<T> BeAProperSubsetOf(IEnumerable<T> items)
    {
-      return add(() => set.IsProperSubsetOf(items), $"$name must $not be a proper subset of {enumerableImage(items)}");
+      return add(() => set!.IsProperSubsetOf(items), $"$name must $not be a proper subset of {enumerableImage(items)}");
    }
 
    public SetAssertion<T> BeASupersetOf(IEnumerable<T> items)
    {
-      return add(() => set.IsSupersetOf(items), $"$name must $not be a superset of {enumerableImage(items)}");
+      return add(() => set!.IsSupersetOf(items), $"$name must $not be a superset of {enumerableImage(items)}");
    }
 
    public SetAssertion<T> BeAProperSupersetOf(IEnumerable<T> items)
    {
-      return add(() => set.IsProperSupersetOf(items), $"$name must $not be a proper superset of {enumerableImage(items)}");
+      return add(() => set!.IsProperSupersetOf(items), $"$name must $not be a proper superset of {enumerableImage(items)}");
    }
 
    public bool BeEquivalentToTrue() => beEquivalentToTrue(this);
 
-   public Set<T> Value => set;
+   public Set<T> Value => set!;
 
    public IEnumerable<Constraint> Constraints => constraints;
 

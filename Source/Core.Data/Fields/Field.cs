@@ -84,7 +84,7 @@ public class Field : PropertyInterface
 
    public bool Optional { get; set; }
 
-   public Maybe<Type> Type { get; set; }
+   public Maybe<Type> Type { get; init; }
 
    public override Type PropertyType => Type | (() => base.PropertyType);
 }

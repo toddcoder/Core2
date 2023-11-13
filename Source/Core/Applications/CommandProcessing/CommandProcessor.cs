@@ -307,7 +307,7 @@ public abstract class CommandProcessor : IDisposable
       {
          Console.WriteLine();
          Console.Write("Hit any key to exit");
-         var _ = Console.ReadKey();
+         _ = Console.ReadKey();
       }
    }
 

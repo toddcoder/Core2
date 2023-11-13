@@ -54,7 +54,7 @@ public class Table : Block
 
       if (table.TableBuilder is (true, var tableBuilder))
       {
-         var tableBuilderItem = new TableBuilderItem() { Type = type };
+         var tableBuilderItem = new TableBuilderItem { Type = type };
          tableBuilder.Add(tableBuilderItem);
 
          return tableBuilderItem;
@@ -207,7 +207,7 @@ public class Table : Block
             if (j < count)
             {
                var cellData = row[j];
-               if (cellData.ImageFile is (true, var imageFile) && cellData.ImageFileType is (true, var imageFileType))
+               if (cellData is { ImageFile: (true, var imageFile), ImageFileType: (true, var imageFileType) })
                {
                   tableCell.Image(imageFile.FullPath, imageFileType);
                }

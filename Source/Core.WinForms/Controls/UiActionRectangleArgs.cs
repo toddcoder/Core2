@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing;
-
-namespace Core.WinForms.Controls;
+﻿namespace Core.WinForms.Controls;
 
 public class UiActionRectangleArgs : EventArgs
 {

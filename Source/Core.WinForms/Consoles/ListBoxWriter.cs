@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Text;
 using Core.Enumerables;
 
 namespace Core.WinForms.Consoles;
@@ -64,6 +61,6 @@ public class ListBoxWriter : TextWriter
       var array = new object[listBox.Items.Count];
       listBox.Items.CopyTo(array, 0);
 
-      return array.Select(o => o?.ToString() ?? "").ToString("\r\n");
+      return array.Select(o => o.ToString() ?? "").ToString("\r\n");
    }
 }

@@ -139,7 +139,6 @@ public class DelimitedText
 
       var builder = new StringBuilder();
       var inside = false;
-      var current = source;
       var insideStart = 0;
       var outsideStart = 0;
       var _endMatcher = monads.maybe<Pattern>();
@@ -148,7 +147,7 @@ public class DelimitedText
       while (i < source.Length)
       {
          var ch = source[i];
-         current = source.Drop(i);
+         var current = source.Drop(i);
          if (inside)
          {
             var _result = current.Matches(exceptPattern);

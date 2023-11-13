@@ -142,5 +142,5 @@ public class Logger : IDisposable
 
    public void Flush(StringWriter outerWriter) => outerWriter.Write(writer.ToString());
 
-   public void Dispose() => writer?.Dispose();
+   public void Dispose() => writer.Dispose();
 }

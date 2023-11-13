@@ -15,22 +15,22 @@ public class ListAssertion<T> : IAssertion<List<T>>
 
    public static bool operator |(ListAssertion<T> x, ICanBeTrue y) => or(x, y);
 
-   protected List<T> list;
+   protected List<T>? list;
    protected List<Constraint> constraints;
    protected bool not;
    protected string name;
    protected string image;
 
-   public ListAssertion(List<T> list)
+   public ListAssertion(List<T>? list)
    {
       this.list = list;
       constraints = new List<Constraint>();
       not = false;
       name = "List";
-      image = enumerableImage(list);
+      image = list is not null ? enumerableImage(list) : "";
    }
 
-   public List<T> List => list;
+   public List<T> List => list!;
 
    public ListAssertion<T> Not
    {
@@ -51,40 +51,40 @@ public class ListAssertion<T> : IAssertion<List<T>>
 
    public ListAssertion<T> Equal(List<T> otherList)
    {
-      return add(() => list.Equals(otherList), $"$name must $not equal {enumerableImage(otherList)}");
+      return add(() => list!.Equals(otherList), $"$name must $not equal {enumerableImage(otherList)}");
    }
 
    public ListAssertion<T> BeNull()
    {
-      return add(() => list == null, "$name must $not be null");
+      return add(() => list is null, "$name must $not be null");
    }
 
    public ListAssertion<T> BeEmpty()
    {
-      return add(() => list.Count == 0, "$name must $not be empty");
+      return add(() => list!.Count == 0, "$name must $not be empty");
    }
 
    public ListAssertion<T> BeNullOrEmpty()
    {
-      return add(() => list == null || list.Count == 0, "$name must $not be null or empty");
+      return add(() => list is null || list.Count == 0, "$name must $not be null or empty");
    }
 
    public ListAssertion<T> HaveIndexOf(int index)
    {
-      return add(() => index > 0 && index < list.Count, $"$name must $not have an index of {index}");
+      return add(() => index > 0 && index < list!.Count, $"$name must $not have an index of {index}");
    }
 
    public ListAssertion<T> HaveCountOf(int minimumCount)
    {
-      return add(() => list.Count >= minimumCount, $"$name must $not have a count of at least {minimumCount}");
+      return add(() => list!.Count >= minimumCount, $"$name must $not have a count of at least {minimumCount}");
    }
 
    public ListAssertion<T> HaveCountOfExactly(int count)
    {
-      return add(() => list.Count == count, $"$name must $not have a count of exactly {count}");
+      return add(() => list!.Count == count, $"$name must $not have a count of exactly {count}");
    }
 
-   public List<T> Value => list;
+   public List<T> Value => list!;
 
    public IEnumerable<Constraint> Constraints => constraints;
 

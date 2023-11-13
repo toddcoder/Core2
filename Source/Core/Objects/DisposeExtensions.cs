@@ -14,7 +14,7 @@ public static class DisposeExtensions
       }
    }
 
-   public static void Close(this Stream stream) => stream?.Close();
+   public static void Close(this Stream stream) => stream.Close();
 
    public static bool IsDisposable(this object disposable) => disposable is IDisposable;
 

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Linq;
-using Core.Enumerables;
+﻿using Core.Enumerables;
 using Core.Monads;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf;
 

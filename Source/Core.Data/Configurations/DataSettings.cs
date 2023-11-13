@@ -13,11 +13,11 @@ public class DataSettings
       AdaptersSetting = nil;
    }
 
-   public Maybe<Setting> ConnectionsSetting { get; set; }
+   public Maybe<Setting> ConnectionsSetting { get; init; }
 
-   public Maybe<Setting> CommandsSetting { get; set; }
+   public Maybe<Setting> CommandsSetting { get; init; }
 
-   public Maybe<Setting> AdaptersSetting { get; set; }
+   public Maybe<Setting> AdaptersSetting { get; init; }
 
    public Result<string> Command(string adapterName)
    {

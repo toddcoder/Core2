@@ -77,13 +77,13 @@ public class OleDbSetup : ISetup
       }
    }
 
-   public IConnectionString ConnectionString { get; set; }
+   public IConnectionString ConnectionString { get; init; }
 
-   public string CommandText { get; set; }
+   public string CommandText { get; init; }
 
-   public Fields.Fields Fields { get; set; }
+   public Fields.Fields Fields { get; init; }
 
-   public Parameters.Parameters Parameters { get; set; }
+   public Parameters.Parameters Parameters { get; init; }
 
-   public TimeSpan CommandTimeout { get; set; }
+   public TimeSpan CommandTimeout { get; init; }
 }

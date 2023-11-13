@@ -85,7 +85,7 @@ public class UiToolTip : ToolTip
          Text = exceptionToolTip;
          e.ToolTipSize = getTextSize();
       }
-      else if (uiAction._clickText is (true, var clickText) && !uiAction.IsFailureOrException)
+      else if (uiAction is { _clickText: (true, var clickText), IsFailureOrException: false })
       {
          Text = clickText;
          e.ToolTipSize = getTextSize();

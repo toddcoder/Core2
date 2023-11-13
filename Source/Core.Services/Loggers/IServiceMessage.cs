@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Services.Loggers;
+﻿namespace Core.Services.Loggers;
 
 public interface IServiceMessage
 {

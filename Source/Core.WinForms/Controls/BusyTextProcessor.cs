@@ -1,7 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Windows.Forms;
+﻿using System.Drawing.Drawing2D;
 
 namespace Core.WinForms.Controls;
 
@@ -93,11 +90,9 @@ public class BusyTextProcessor
 
    protected static void drawLine(Graphics graphics, PointF startPoint, PointF endPoint, Color color)
    {
-      using var pen = new Pen(color, SPOKE_THICKNESS)
-      {
-         StartCap = LineCap.Round,
-         EndCap = LineCap.Round
-      };
+      using var pen = new Pen(color, SPOKE_THICKNESS);
+      pen.StartCap = LineCap.Round;
+      pen.EndCap = LineCap.Round;
       graphics.DrawLine(pen, startPoint, endPoint);
    }
 

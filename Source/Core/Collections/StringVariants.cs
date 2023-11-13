@@ -31,14 +31,12 @@ public class StringVariants : IHash<string, string>
    protected StringHash templates;
    protected StringHash<KeyValue> keyValues;
    protected Maybe<string> _templateName;
-   protected string[] aliases;
 
    public StringVariants()
    {
       templates = new StringHash(true);
       keyValues = new StringHash<KeyValue>(true);
       _templateName = nil;
-      aliases = Array.Empty<string>();
    }
 
    public StringVariants(Dictionary<string, string> dictionary) : this()

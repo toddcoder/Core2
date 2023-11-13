@@ -188,7 +188,7 @@ public class Paragraph : Block
 
    protected string setControlWords(string text)
    {
-      var _result = text.Matches(@"['@#?!']");
+      var _result = text.Matches("['@#?!']");
       if (_result is (true, var result))
       {
          var offset = 1;
@@ -471,7 +471,7 @@ public class Paragraph : Block
 
    public void ControlWorlds(string controlWorldTemplate)
    {
-      var _result = controlWorldTemplate.Matches(@"['@#?!']");
+      var _result = controlWorldTemplate.Matches("['@#?!']");
       if (_result is (true, var result))
       {
          var offset = 1;

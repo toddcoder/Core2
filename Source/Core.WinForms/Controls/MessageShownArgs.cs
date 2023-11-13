@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.WinForms.Controls;
+﻿namespace Core.WinForms.Controls;
 
 public class MessageShownArgs : EventArgs
 {

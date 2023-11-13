@@ -1,5 +1,3 @@
-using System;
-
 namespace Core.Markup.Rtf;
 
 [Flags]

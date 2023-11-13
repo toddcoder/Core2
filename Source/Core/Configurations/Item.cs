@@ -50,7 +50,7 @@ public class Item : ConfigurationItem, IConfigurationItemGetter
 
    public override string ToString()
    {
-      var value = Text.ReplaceAll(("\t", @"`t"), ("\r", @"`r"), ("\n", @"`n"));
+      var value = Text.ReplaceAll(("\t", "`t"), ("\r", "`r"), ("\n", "`n"));
       if (value.IsEmpty())
       {
          return $"{Key}: \"{value}\"";

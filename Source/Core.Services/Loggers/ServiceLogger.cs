@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using Core.Applications.Writers;
 using Core.Computers;
 using Core.Configurations;

@@ -41,7 +41,7 @@ public class TableCell : BlockList
       set
       {
          mergeInfo.ActivateWith(() => value);
-         var _ = mergeInfo.Value;
+         _ = mergeInfo.Value;
       }
    }
 

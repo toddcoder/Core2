@@ -1,7 +1,5 @@
 ﻿using Core.Monads;
-using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
 
 namespace Core.WinForms.Controls;
 

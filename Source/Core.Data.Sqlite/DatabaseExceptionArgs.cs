@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Data.Sqlite;
+﻿namespace Core.Data.Sqlite;
 
 public class DatabaseExceptionArgs : EventArgs
 {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Core.DataStructures;
+﻿using Core.DataStructures;
 using Core.Matching;
 
 namespace Core.Markup.Rtf;

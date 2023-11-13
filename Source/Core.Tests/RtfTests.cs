@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Markup.Rtf;
+﻿using Core.Markup.Rtf;
 using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
@@ -256,12 +255,11 @@ public class RtfTests
       var paragraph = document | "Please approve deployment to ";
       var formatter = paragraph | none;
       formatter = formatter | "staging01ua" | boldStyle;
-      formatter = formatter | " with link ";
-      formatter = formatter |
-         "http://tfs.eprod.com/ls/estreamuat/_releaseProgress?_a=release-environment-logs&releaseId=6024&environmentId=6024".Link();
-      formatter = formatter | " for Hotfix (Rolling) ";
+      formatter |= " with link ";
+      formatter |= "http://tfs.eprod.com/ls/estreamuat/_releaseProgress?_a=release-environment-logs&releaseId=6024&environmentId=6024".Link();
+      formatter |= " for Hotfix (Rolling) ";
       formatter = formatter | "r-6.41.10" | boldStyle;
-      formatter = formatter | ".";
+      _ = formatter | ".";
 
       document.Save(@"C:\Temp\Bug1.rtf");
    }

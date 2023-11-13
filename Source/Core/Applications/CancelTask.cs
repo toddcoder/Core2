@@ -45,9 +45,9 @@ public abstract class CancelTask<TState> : IDisposable
 
    protected void dispose()
    {
-      task?.Dispose();
-      source?.Dispose();
-      reset?.Dispose();
+      task.Dispose();
+      source.Dispose();
+      reset.Dispose();
    }
 
    public void Start() => task.Start();

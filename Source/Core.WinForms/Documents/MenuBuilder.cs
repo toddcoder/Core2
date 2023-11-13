@@ -7,25 +7,15 @@ namespace Core.WinForms.Documents;
 
 public class MenuBuilder
 {
-   public class MenuEnd
-   {
-   }
+   public class MenuEnd;
 
-   public class BuilderSubMenu
-   {
-   }
+   public class BuilderSubMenu;
 
-   public class BuilderIsChecked
-   {
-   }
+   public class BuilderIsChecked;
 
-   public class Separator
-   {
-   }
+   public class Separator;
 
-   public class ContextMenuItem
-   {
-   }
+   public class ContextMenuItem;
 
    public static MenuBuilder operator +(MenuBuilder builder, string text) => builder.Text(text);
 

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Markup.Rtf;
+﻿namespace Core.Markup.Rtf;
 
 public static class ParagraphFunctions
 {

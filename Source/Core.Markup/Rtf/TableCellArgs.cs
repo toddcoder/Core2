@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Markup.Rtf;
+﻿namespace Core.Markup.Rtf;
 
 public class TableCellArgs : EventArgs
 {
@@ -8,7 +6,7 @@ public class TableCellArgs : EventArgs
    {
       RowIndex = rowIndex;
       ColumnIndex = columnIndex;
-      Text = text ?? "";
+      Text = text;
       TableCell = tableCell;
    }
 

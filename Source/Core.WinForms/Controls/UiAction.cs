@@ -672,85 +672,99 @@ public class UiAction : UserControl, ISubTextHost
          });
          this.Do(() => toolTip.SetToolTip(this, noStatusToolTip));
       }
-      else if (type == UiActionType.Failure)
-      {
-         if (!toolTip.Action)
-         {
-            _oldTitle = toolTip.ToolTipTitle.NotEmpty();
-         }
-
-         toolTip.ToolTipTitle = "failure";
-         toolTip.Text = text;
-         toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
-         {
-            toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.Black, Color.Gold, e.Bounds);
-            toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Gold, Color.Black, e.Bounds);
-         });
-         this.Do(() => toolTip.SetToolTip(this, text));
-      }
-      else if (type == UiActionType.Exception)
-      {
-         if (!toolTip.Action)
-         {
-            _oldTitle = toolTip.ToolTipTitle.NotEmpty();
-         }
-
-         toolTip.ToolTipTitle = "exception";
-         toolTip.Text = text;
-         toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
-         {
-            toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.White, Color.Red, e.Bounds);
-            toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Red, Color.White, e.Bounds);
-         });
-         this.Do(() => toolTip.SetToolTip(this, text));
-      }
-      else if (type == UiActionType.NoStatus)
-      {
-         if (!toolTip.Action)
-         {
-            _oldTitle = toolTip.ToolTipTitle.NotEmpty();
-         }
-
-         toolTip.ToolTipTitle = "no status";
-         toolTip.Text = text;
-         toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
-         {
-            toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.Black, Color.White, e.Bounds);
-            toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.White, Color.Black, e.Bounds);
-         });
-         this.Do(() => toolTip.SetToolTip(this, text));
-      }
-      else if (Clickable && ClickText.IsNotEmpty())
-      {
-         if (_oldTitle is (true, var oldTitle))
-         {
-            toolTip.ToolTipTitle = oldTitle;
-            _oldTitle = nil;
-         }
-         else
-         {
-            toolTip.ToolTipTitle = "";
-         }
-
-         toolTip.Text = ClickText;
-         toolTip.Action = nil;
-         this.Do(() => toolTip.SetToolTip(this, ClickText));
-      }
       else
       {
-         if (_oldTitle is (true, var oldTitle))
+         switch (type)
          {
-            toolTip.ToolTipTitle = oldTitle;
-            _oldTitle = nil;
-         }
-         else
-         {
-            toolTip.ToolTipTitle = "";
-         }
+            case UiActionType.Failure:
+            {
+               if (!toolTip.Action)
+               {
+                  _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+               }
 
-         toolTip.Text = text;
-         toolTip.Action = nil;
-         this.Do(() => toolTip.SetToolTip(this, text));
+               toolTip.ToolTipTitle = "failure";
+               toolTip.Text = text;
+               toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+               {
+                  toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.Black, Color.Gold, e.Bounds);
+                  toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Gold, Color.Black, e.Bounds);
+               });
+               this.Do(() => toolTip.SetToolTip(this, text));
+               break;
+            }
+            case UiActionType.Exception:
+            {
+               if (!toolTip.Action)
+               {
+                  _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+               }
+
+               toolTip.ToolTipTitle = "exception";
+               toolTip.Text = text;
+               toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+               {
+                  toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.White, Color.Red, e.Bounds);
+                  toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Red, Color.White, e.Bounds);
+               });
+               this.Do(() => toolTip.SetToolTip(this, text));
+               break;
+            }
+            case UiActionType.NoStatus:
+            {
+               if (!toolTip.Action)
+               {
+                  _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+               }
+
+               toolTip.ToolTipTitle = "no status";
+               toolTip.Text = text;
+               toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+               {
+                  toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.Black, Color.White, e.Bounds);
+                  toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.White, Color.Black, e.Bounds);
+               });
+               this.Do(() => toolTip.SetToolTip(this, text));
+               break;
+            }
+            default:
+            {
+               if (Clickable && ClickText.IsNotEmpty())
+               {
+                  if (_oldTitle is (true, var oldTitle))
+                  {
+                     toolTip.ToolTipTitle = oldTitle;
+                     _oldTitle = nil;
+                  }
+                  else
+                  {
+                     toolTip.ToolTipTitle = "";
+                  }
+
+                  toolTip.Text = ClickText;
+                  toolTip.Action = nil;
+                  this.Do(() => toolTip.SetToolTip(this, ClickText));
+               }
+               else
+               {
+                  if (_oldTitle is (true, var oldTitle))
+                  {
+                     toolTip.ToolTipTitle = oldTitle;
+                     _oldTitle = nil;
+                  }
+                  else
+                  {
+                     toolTip.ToolTipTitle = "";
+                  }
+
+                  toolTip.Text = text;
+                  toolTip.Action = nil;
+                  this.Do(() => toolTip.SetToolTip(this, text));
+               }
+
+               break;
+            }
+         }
       }
 
       refresh();

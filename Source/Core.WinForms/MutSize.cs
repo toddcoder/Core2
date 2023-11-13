@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace Core.WinForms;
+﻿namespace Core.WinForms;
 
 public class MutSize
 {

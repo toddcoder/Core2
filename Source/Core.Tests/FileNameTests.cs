@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Computers;
+﻿using Core.Computers;
 using Core.Computers.Synchronization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Monads.Lazy.LazyRepeatingMonads;

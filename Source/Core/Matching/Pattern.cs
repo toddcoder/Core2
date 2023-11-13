@@ -133,7 +133,7 @@ public class Pattern : IEquatable<Pattern>
       {
          var rRegex = compiledRegex.Memoize(regex, r => new RRegex(r, options | RegexOptions.Compiled));
          var newMatches = rRegex.Matches(input)
-            .Select((m, i) => new Match()
+            .Select((m, i) => new Match
             {
                Index = m.Index,
                Length = m.Length,
