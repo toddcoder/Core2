@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Applications;
+﻿using Core.Applications;
 using Core.Applications.CommandProcessing;
 using Core.Collections;
 using Core.Computers;
@@ -44,7 +43,7 @@ internal class Program : CommandLineInterface
 {
    [EntryPoint(EntryPointType.Parameters)]
    public void Main(bool push = false, bool pull = false, bool show = false, int code = 0, double amount = 0,
-      AttributeTargets attributeTargets = AttributeTargets.All, string text = "", bool recursive = true, string[] array = null)
+      AttributeTargets attributeTargets = AttributeTargets.All, string text = "", bool recursive = true, string[]? array = null)
    {
       array ??= Array.Empty<string>();
 
@@ -162,6 +161,9 @@ internal class TestProgram : CommandProcessor
    {
       File = nil;
       Folder = nil;
+      Text = "";
+      Pattern = "; f";
+      Replacement = "";
    }
 
    [Command("find", "Find text using pattern", "$source$pattern$count?")]

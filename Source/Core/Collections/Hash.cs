@@ -284,4 +284,12 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
    public virtual Hash<TKey, TValue> Subset(IEnumerable<TKey> keys) => Subset(keys.ToArray());
 
    public HashMaybe<TKey, TValue> Maybe => new(this);
+
+   public void AddKeys(IEnumerable<TKey> keys, TValue value)
+   {
+      foreach (var key in keys)
+      {
+         this[key] = value;
+      }
+   }
 }

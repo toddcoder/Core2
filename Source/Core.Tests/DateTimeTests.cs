@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using Core.Dates;
 using Core.Dates.DateIncrements;
 using Core.Dates.Now;
-using static Core.Objects.ConversionFunctions;
+using Core.Objects;
+using Timeout = Core.Dates.Timeout;
 
 namespace Core.Tests;
 
@@ -13,7 +13,7 @@ public class DateTimeTests
    [TestMethod]
    public void DescriptionFromNowTest()
    {
-      var beginningDate = Value.DateTime("06/01/2021 6:30:01 AM");
+      var beginningDate = "06/01/2021 6:30:01 AM".Value().DateTime();
       DateIncrementer incrementer = beginningDate;
       NowServer.SetToTest(incrementer);
 
@@ -60,7 +60,7 @@ public class DateTimeTests
    [TestMethod]
    public void IncrementalDateDescriptionTest()
    {
-      var beginningDate = Value.DateTime("06/01/2021");
+      var beginningDate = "06/01/2021".Value().DateTime();
       DateIncrementer incrementer = beginningDate;
       NowServer.SetToTest(incrementer);
 
@@ -83,7 +83,7 @@ public class DateTimeTests
    public void ZuluToDateTimeTest()
    {
       var source = "2022-11-18T15:00:18.253Z";
-      var _date = Maybe.DateTime(source);
+      var _date = source.Maybe().DateTime();
       if (_date.Map(d => d.Zulu()) is (true, var zulu))
       {
          Console.WriteLine(zulu);

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Core.DataStructures;
 using Core.Dates.DateIncrements;
 using Core.Enumerables;
@@ -249,8 +246,8 @@ public class MonadTests
    [TestMethod]
    public void NullTupleItemTest()
    {
-      (int, string, int) items = (1, null, 10);
-      Maybe<(int, string, int)> _items = items;
+      (int, string?, int) items = (1, null, 10);
+      Maybe<(int, string?, int)> _items = items;
       Console.WriteLine(!_items);
    }
 

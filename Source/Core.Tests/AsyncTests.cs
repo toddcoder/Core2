@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Core.Applications.Async;
+﻿using Core.Applications.Async;
 using Core.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Applications.Async.AsyncFunctions;
@@ -11,7 +8,7 @@ namespace Core.Tests;
 [TestClass]
 public class AsyncTests
 {
-   protected event AsyncEventHandler<EventArgs> Greet;
+   protected event AsyncEventHandler<EventArgs>? Greet;
 
    [TestMethod]
    public async Task AsyncEventTest()

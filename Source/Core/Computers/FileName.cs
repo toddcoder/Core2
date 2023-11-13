@@ -23,15 +23,6 @@ namespace Core.Computers;
 
 public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>, IFullPath, IValidPath<FileName>
 {
-   public class Try
-   {
-      [Obsolete("Use static FromString")]
-      public static Result<FileName> FromString(string file)
-      {
-         return file.Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
-      }
-   }
-
    public static Result<FileName> FromString(string file) => file.Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
 
    [DllImport("shell32.dll", CharSet = CharSet.Unicode)]

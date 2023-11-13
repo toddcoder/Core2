@@ -1,7 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.IO;
-using System.Linq;
 using Core.Applications;
 using Core.Assertions;
 using Core.Collections;
@@ -13,6 +10,7 @@ using Core.Monads;
 using Core.Strings;
 using Core.Strings.Text;
 using static Core.Monads.Lazy.LazyMonads;
+using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Tests;
@@ -29,13 +27,21 @@ public class ConfigurationTests
 
    protected class Test
    {
+      public Test()
+      {
+         StringValue = "";
+         File = nil;
+         Doubles = Array.Empty<double>();
+         Escape = "";
+      }
+
       public TestEnum Enum { get; set; }
 
       public int IntValue { get; set; }
 
       public string StringValue { get; set; }
 
-      public FileName File { get; set; }
+      public Maybe<FileName> File { get; set; }
 
       public double[] Doubles { get; set; }
 
@@ -45,7 +51,7 @@ public class ConfigurationTests
 
       public override string ToString()
       {
-         return $"{Enum}; {IntValue}; {StringValue}; {File}; {Doubles.Select(d => d.ToString()).ToString(", ")}; {IsTrue}; {Escape}";
+         return $"{Enum}; {IntValue}; {StringValue}; {File | ""}; {Doubles.Select(d => d.ToString()).ToString(", ")}; {IsTrue}; {Escape}";
       }
    }
 
@@ -66,16 +72,16 @@ public class ConfigurationTests
 
    protected class BinaryPackage : IEquatable<BinaryPackage>
    {
-      public byte[] Payload { get; set; }
+      public byte[] Payload { get; set; } = Array.Empty<byte>();
 
-      public bool Equals(BinaryPackage other)
+      public bool Equals(BinaryPackage? other)
       {
          return other is not null && (ReferenceEquals(this, other) || Payload.Zip(other.Payload, (b1, b2) => b1 == b2).All(b => b));
       }
 
-      public override bool Equals(object obj) => obj is BinaryPackage binaryPackage && Equals(binaryPackage);
+      public override bool Equals(object? obj) => obj is BinaryPackage binaryPackage && Equals(binaryPackage);
 
-      public override int GetHashCode() => Payload?.GetHashCode() ?? 0;
+      public override int GetHashCode() => Payload.GetHashCode();
    }
 
    protected Maybe<(string server, string database)> getServerDatabase(Setting setting)
@@ -160,7 +166,7 @@ public class ConfigurationTests
          Enum = TestEnum.Bravo,
          IntValue = 153,
          StringValue = "foobar",
-         File = @"C:\temp\temp.txt",
+         File = (FileName)@"C:\temp\temp.txt",
          Doubles = new[] { 1.0, 5.0, 3.0 },
          IsTrue = true,
          Escape = "\r \t \\ foobar"
@@ -502,9 +508,9 @@ public class ConfigurationTests
 
       public int EndColumn { get; set; }
 
-      public string Message { get; set; }
+      public string Message { get; set; } = "";
 
-      public string Rule { get; set; }
+      public string Rule { get; set; } = "";
 
       public override string ToString() => $"{Message}: {Rule} ({Index}, {Length})";
    }

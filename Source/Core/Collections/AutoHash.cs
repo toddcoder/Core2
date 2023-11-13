@@ -124,6 +124,26 @@ public class AutoHash<TKey, TValue> : Hash<TKey, TValue> where TKey : notnull wh
 
    public bool AutoAddDefault { get; set; }
 
+   public TValue GetValue(TKey key)
+   {
+      if (ContainsKey(key))
+      {
+         return base[key];
+      }
+      else if (_defaultLambda is (true, var defaultLambda))
+      {
+         return defaultLambda(key);
+      }
+      else if (_defaultValue is (true, var defaultValue))
+      {
+         return defaultValue;
+      }
+      else
+      {
+         return base[key];
+      }
+   }
+
    public new TValue this[TKey key]
    {
       get
@@ -172,6 +192,14 @@ public class AutoHash<TKey, TValue> : Hash<TKey, TValue> where TKey : notnull wh
       else
       {
          return new AutoHash<TKey, TValue>(Comparer);
+      }
+   }
+
+   public void AddKeys(IEnumerable<TKey> keys)
+   {
+      foreach (var key in keys)
+      {
+         this[key] = GetValue(key);
       }
    }
 }

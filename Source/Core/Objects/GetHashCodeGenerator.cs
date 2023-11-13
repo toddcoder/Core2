@@ -34,7 +34,7 @@ public class GetHashCodeGenerator
       queue3 = 0U;
    }
 
-   public void Add(object value)
+   public void Add(object? value)
    {
       var input = value is null ? 0U : (uint)value.GetHashCode();
       var count = length++;

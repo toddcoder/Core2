@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Core.Assertions;
+﻿using Core.Assertions;
 using Core.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Arrays.ArrayFunctions;
@@ -52,9 +50,9 @@ public class AssertionTests
    {
       foreach (var str in array("foobar", "", null))
       {
-         Console.WriteLine(str.Must().Not.BeNull() ? $"{str ?? "null"} is not null" : "is null");
+         Console.WriteLine(str!.Must().Not.BeNull() ? $"{str ?? "null"} is not null" : "is null");
 
-         Console.WriteLine(str.Must().Not.BeEmpty() ? $"{str ?? "null"} is not empty" : "is empty");
+         Console.WriteLine(str!.Must().Not.BeEmpty() ? $"{str ?? "null"} is not empty" : "is empty");
       }
    }
 
