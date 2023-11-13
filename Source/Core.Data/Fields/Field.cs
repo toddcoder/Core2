@@ -23,7 +23,7 @@ public class Field : PropertyInterface
          }
 
          var typeName = result.FourthGroup;
-         var _type = maybe(typeName.IsNotEmpty(), () => getType(typeName));
+         var _type = maybe<Type>() & typeName.IsNotEmpty() & (() => getType(typeName));
 
          return new Field(name, signature, optional) { Type = _type };
       }

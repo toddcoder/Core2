@@ -65,7 +65,7 @@ public class Parameter : PropertyInterface
 
    protected static Maybe<Type> getType(string typeName)
    {
-      return maybe(typeName.IsNotEmpty(), () => System.Type.GetType(typeName, true, true)!);
+      return maybe<Type>() & typeName.IsNotEmpty() & (() => System.Type.GetType(typeName, true, true)!);
    }
 
    protected static string fixTypeName(string typeName)

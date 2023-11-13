@@ -15,7 +15,7 @@ public static class TypeExtensions
 {
    public static Maybe<object> DefaultValue(this Type? type)
    {
-      return maybe(type is not null, () =>
+      return maybe<object>() & type is not null & (() =>
       {
          var expression = Lambda<Func<object>>(Convert(Default(type!), typeof(object)));
          return expression.Compile()();

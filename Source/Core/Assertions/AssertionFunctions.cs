@@ -218,7 +218,7 @@ public static class AssertionFunctions
 
    public static Maybe<T> orNone<T>(IAssertion<T> assertion) where T : notnull
    {
-      return maybe(assertion.Constraints.All(c => c.IsTrue()), () => assertion.Value);
+      return maybe<T>() & assertion.Constraints.All(c => c.IsTrue()) & (() => assertion.Value);
    }
 
    public static async Task<Completion<T>> orFailureAsync<T>(IAssertion<T> assertion, CancellationToken token) where T : notnull

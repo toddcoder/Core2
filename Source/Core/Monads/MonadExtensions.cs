@@ -72,7 +72,7 @@ public static class MonadExtensions
       }
    }
 
-   public static Maybe<string> NotEmpty(this string text) => maybe(text.IsNotEmpty(), text.Some);
+   public static Maybe<string> NotEmpty(this string text) => maybe<string>() & text.IsNotEmpty() & text;
 
    public static Maybe<int> NotNegative(this int number) => maybe<int>() & number > -1 & number;
 
@@ -624,13 +624,13 @@ public static class MonadExtensions
    public static Maybe<T> MaxOrNone<T>(this IEnumerable<T> enumerable) where T : notnull
    {
       var array = enumerable.ToArray();
-      return maybe(array.Length > 0, () => array.Max()!);
+      return maybe<T>() & array.Length > 0 & (() => array.Max()!);
    }
 
    public static Maybe<T> MaxOrNone<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc) where T : notnull
    {
       var array = enumerable.ToArray();
-      return maybe(array.Length > 0, () =>
+      return maybe<T>() & array.Length > 0 & (() =>
       {
          var max = array.Select((v, i) => (v: maxOnFunc(v), i)).Max();
          return array[max.i];
@@ -640,13 +640,13 @@ public static class MonadExtensions
    public static Maybe<T> MinOrNone<T>(this IEnumerable<T> enumerable) where T : notnull
    {
       var array = enumerable.ToArray();
-      return maybe(array.Length > 0, () => array.Min()!);
+      return maybe<T>() & array.Length > 0 & (() => array.Min()!);
    }
 
    public static Maybe<T> MinOrNone<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc) where T : notnull
    {
       var array = enumerable.ToArray();
-      return maybe(array.Length > 0, () =>
+      return maybe<T>() & array.Length > 0 & (() =>
       {
          var min = array.Select((v, i) => (v: minOnFunc(v), i)).Min();
          return array[min.i];

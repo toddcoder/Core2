@@ -47,11 +47,11 @@ public class MatchResult : IEnumerable<Match>
 
    public Match[] Matches => matches;
 
-   protected Maybe<Match> getMatchMaybe(int index) => maybe(index.Between(0).Until(matches.Length), () => matches[index]);
+   protected Maybe<Match> getMatchMaybe(int index) => maybe<Match>() & index.Between(0).Until(matches.Length) & (() => matches[index]);
 
    protected static Maybe<Group> getGroupMaybe(Maybe<Match> match, int index)
    {
-      return match.Map(m => maybe(index.Between(0).Until(m.Groups.Length), () => m.Groups[index]));
+      return match.Map(m => maybe<Group>() & index.Between(0).Until(m.Groups.Length) & (() => m.Groups[index]));
    }
 
    public int Index => matches.Length == 0 ? -1 : matches[0].Index;
@@ -123,7 +123,7 @@ public class MatchResult : IEnumerable<Match>
    public Maybe<string> Maybe(int matchIndex, int groupIndex)
    {
       var value = this[matchIndex, groupIndex];
-      return maybe(value.IsNotEmpty(), () => value);
+      return maybe<string>() & value.IsNotEmpty() & (() => value);
    }
 
    public string this[int matchIndex]
@@ -135,7 +135,7 @@ public class MatchResult : IEnumerable<Match>
    public Maybe<string> Maybe(int matchIndex)
    {
       var value = this[matchIndex];
-      return maybe(value.IsNotEmpty(), () => value);
+      return maybe<string>() & value.IsNotEmpty() & (() => value);
    }
 
    public IEnumerator<Match> GetEnumerator()

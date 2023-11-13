@@ -144,7 +144,7 @@ public class Adapter<T> : IEnumerable<T> where T : class
          RecordsAffected = DataSource.Execute(entity, Command, Parameters, Fields);
          HasRows = DataSource.HasRows;
 
-         return maybe(HasRows, () => entity);
+         return maybe<T>() & HasRows & (() => entity);
       }
       catch
       {

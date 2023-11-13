@@ -106,13 +106,13 @@ public class Time : IComparable<DateTime>, IComparable<Time>
    public static string ToLongString(TimeSpan timeSpan, bool includeMilliseconds)
    {
       return ToLongString(timeSpan.Days, timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds,
-         maybe(includeMilliseconds, () => timeSpan.Milliseconds));
+         maybe<int>() & includeMilliseconds & (() => timeSpan.Milliseconds));
    }
 
    public static string ToShortString(TimeSpan timeSpan, bool includeMilliseconds)
    {
       return ToShortString(timeSpan.Days, timeSpan.Hours,
-         timeSpan.Minutes, timeSpan.Seconds, maybe(includeMilliseconds, () => timeSpan.Milliseconds));
+         timeSpan.Minutes, timeSpan.Seconds, maybe<int>() & includeMilliseconds & (() => timeSpan.Milliseconds));
    }
 
    public static string ToVeryShortString(TimeSpan timeSpan)
@@ -462,7 +462,7 @@ public class Time : IComparable<DateTime>, IComparable<Time>
 
    public string ToLongString(bool includeMilliseconds)
    {
-      return ToLongString(0, hour, minute, second, maybe(includeMilliseconds, () => millisecond));
+      return ToLongString(0, hour, minute, second, maybe<int>() & includeMilliseconds & (() => millisecond));
    }
 
    public DateTime ToDate()

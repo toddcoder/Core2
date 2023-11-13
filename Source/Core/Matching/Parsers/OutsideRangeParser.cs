@@ -38,6 +38,6 @@ public class OutsideRangeParser : BaseParser
       var word = tokens[2];
       var result = GetRange(word);
 
-      return maybe(result.IsNotEmpty(), () => (negative ? "[^" : "[") + result + "]");
+      return maybe<string>() & result.IsNotEmpty() & (() => (negative ? "[^" : "[") + result + "]");
    }
 }

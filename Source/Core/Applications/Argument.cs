@@ -28,7 +28,7 @@ public class Argument
          if (Computers.FileName.IsValidFileName(text))
          {
             FileName file = text;
-            fileName = maybe(file.Exists(), () => file);
+            fileName = maybe<FileName>() & file.Exists() & (() => file);
          }
          else
          {
@@ -46,7 +46,7 @@ public class Argument
          if (Computers.FolderName.IsValidFolderName(text))
          {
             FolderName folder = text;
-            folderName = maybe(folder.Exists(), () => folder);
+            folderName = maybe<FolderName>() & folder.Exists() & (() => folder);
          }
          else
          {

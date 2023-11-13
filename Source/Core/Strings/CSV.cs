@@ -134,7 +134,7 @@ public class Csv : IEnumerable<IEnumerable<string>>
       return entity;
    }
 
-   public Maybe<T> FirstObject<T>(params string[] signatures) where T : notnull, new() => maybe(records.Count > 0, () =>
+   public Maybe<T> FirstObject<T>(params string[] signatures) where T : notnull, new() => maybe<T>() & records.Count > 0 & (() =>
    {
       var evaluator = new PropertyEvaluator(new T());
       return getObject<T>(evaluator, records[0], signatures);

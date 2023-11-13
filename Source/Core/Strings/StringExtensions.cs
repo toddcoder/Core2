@@ -1370,39 +1370,40 @@ public static class StringExtensions
 
    public static Maybe<int> ExtractInt(this string source)
    {
-      return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d+); f")).Map(result => result[0, 1].Maybe().Int32());
+      return maybe<int>() & source.IsNotEmpty() & (() => source.Matches("/(['+-']? /d+); f").Map(result => result[0, 1].Maybe().Int32()));
    }
 
    public static Maybe<double> ExtractDouble(this string source)
    {
-      return maybe(source.IsNotEmpty(), () => source.Matches("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?); f"))
-         .Map(result => result[0, 1].Value().Double());
+      return maybe<double>() & source.IsNotEmpty() & (() => source.Matches("/(['+-']? /d* '.' /d* (['eE'] ['-+']? /d+)?); f")
+         .Map(result => result[0, 1].Value().Double()));
    }
 
-   public static Maybe<char> First(this string source) => maybe(source.IsNotEmpty(), () => source[0]);
+   public static Maybe<char> First(this string source) => maybe<char>() & source.IsNotEmpty() & (() => source[0]);
 
-   public static Maybe<char> Last(this string source) => maybe(source.IsNotEmpty(), () => source[^1]);
+   public static Maybe<char> Last(this string source) => maybe<char>() & source.IsNotEmpty() & (() => source[^1]);
 
    public static Maybe<string> Left(this string source, int length)
    {
       var minLength = length.MinOf(source.Length);
-      return maybe(minLength > 0, () => source.Keep(minLength));
+      return maybe<string>() & minLength > 0 & (() => source.Keep(minLength));
    }
 
    public static Maybe<string> Right(this string source, int length)
    {
       var minLength = Math.Min(length, source.Length);
-      return maybe(source.IsNotEmpty() && minLength > 0, () => source.Drop(source.Length - minLength).Keep(minLength));
+      return maybe<string>() & (source.IsNotEmpty() && minLength > 0) & (() => source.Drop(source.Length - minLength).Keep(minLength));
    }
 
    public static Maybe<string> Sub(this string source, int index, int length)
    {
-      return maybe(source.IsNotEmpty() && length > 0 && index >= 0 && index + length - 1 < source.Length, () => source.Drop(index).Keep(length));
+      return maybe<string>() & (source.IsNotEmpty() && length > 0 && index >= 0 && index + length - 1 < source.Length) &
+         (() => source.Drop(index).Keep(length));
    }
 
    public static Maybe<string> Sub(this string source, int index)
    {
-      return maybe(source.IsNotEmpty() && index >= 0 && index < source.Length, () => source.Drop(index));
+      return maybe<string>() & (source.IsNotEmpty() && index >= 0 && index < source.Length) & (() => source.Drop(index));
    }
 
    public static bool IsDate(this string date) => DateTime.TryParse(date, out _);
@@ -1824,12 +1825,13 @@ public static class StringExtensions
          return source.Matches("^ ('0x')? /(['0-9a-fA-F']+) $; f").Map(m => int.Parse(m.FirstGroup, NumberStyles.HexNumber));
       }
 
-      return maybe(source.IsNotEmpty(), matches);
+      return maybe<int>() & source.IsNotEmpty() & matches;
    }
 
    public static Maybe<string> GetSignature(this string parameterName)
    {
-      return maybe(parameterName.IsNotEmpty(), () => parameterName.Matches("^ '@' /(.*) $; f").Map(m => m.FirstGroup.SnakeToCamelCase(true)));
+      return maybe<string>() & parameterName.IsNotEmpty() &
+         (() => parameterName.Matches("^ '@' /(.*) $; f").Map(m => m.FirstGroup.SnakeToCamelCase(true)));
    }
 
    public static IEnumerable<Slice> SlicesOf(this string source, string value, StringComparison comparison = StringComparison.CurrentCulture)
@@ -1997,7 +1999,7 @@ public static class StringExtensions
          var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
          var index = source.IndexOf(substring, startIndex, comparison);
 
-         return maybe(index != -1, () => index);
+         return maybe<int>() & index != -1 & (() => index);
       }
       else
       {
@@ -2017,7 +2019,7 @@ public static class StringExtensions
          var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
          var index = source.LastIndexOf(substring, startIndex, comparison);
 
-         return maybe(index != -1, () => index);
+         return maybe<int>() & index != -1 & (() => index);
       }
       else
       {

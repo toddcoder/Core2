@@ -34,8 +34,10 @@ public static class MonadFunctions
       return new Success<TParent>(value);
    }
 
+   [Obsolete("Use maybe function")]
    public static Maybe<T> maybe<T>(bool test, Func<T> ifTrue) where T : notnull => test ? ifTrue().Some() : nil;
 
+   [Obsolete("Use maybe function")]
    public static Maybe<T> maybe<T>(bool test, Func<Maybe<T>> ifTrue) where T : notnull => test ? ifTrue() : nil;
 
    [Obsolete("Use nil")]

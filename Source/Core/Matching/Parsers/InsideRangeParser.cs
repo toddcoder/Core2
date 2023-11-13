@@ -13,6 +13,6 @@ public class InsideRangeParser : BaseParser
       var word = tokens[1];
       var result = OutsideRangeParser.GetRange(word);
 
-      return maybe(result.IsNotEmpty(), () => result);
+      return maybe<string>() & result.IsNotEmpty() & (() => result);
    }
 }

@@ -160,7 +160,7 @@ public abstract class Plugin
 
    public void SetRetrier()
    {
-      _retrier = maybe(retries > 0, () => new Retrier(retries, InnerDispatch, retryException));
+      _retrier = maybe<Retrier>() & retries > 0 & (() => new Retrier(retries, InnerDispatch, retryException));
       if (_retrier is (true, var retrier))
       {
          retrier.Successful += (_, e) => SuccessfulInnerDispatch(e.RetryCount);

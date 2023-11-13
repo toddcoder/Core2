@@ -17,7 +17,7 @@ internal class ObjectInfo
       else
       {
          var info = obj.GetType().GetProperty(signature.Name);
-         return maybe(info is not null, () => info!);
+         return maybe<PropertyInfo>() & info is not null & (() => info!);
       }
    }
 

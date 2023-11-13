@@ -180,7 +180,7 @@ public abstract class CommandLineInterface : IDisposable
       }
       else if (type == typeof(Maybe<string>))
       {
-         return maybe(source.IsNotEmpty(), () => source);
+         return maybe<string>() & source.IsNotEmpty() & (() => source);
       }
       else if (type == typeof(FolderName))
       {
@@ -192,11 +192,11 @@ public abstract class CommandLineInterface : IDisposable
       }
       else if (type == typeof(Maybe<FolderName>))
       {
-         return maybe(source.IsNotEmpty(), () => (FolderName)source);
+         return maybe<FolderName>() & source.IsNotEmpty() & (() => source);
       }
       else if (type == typeof(Maybe<FileName>))
       {
-         return maybe(source.IsNotEmpty(), () => (FileName)source);
+         return maybe<FileName>() & source.IsNotEmpty() & (() => source);
       }
       else
       {
@@ -481,7 +481,7 @@ public abstract class CommandLineInterface : IDisposable
    protected void useWithParameters(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
    {
       var _arguments = methodInfo.GetParameters()
-         .Select(p => (p.Name, p.ParameterType, defaultValue: maybe(p.HasDefaultValue, () => p.DefaultValue!)))
+         .Select(p => (p.Name, p.ParameterType, defaultValue: maybe<object>() & p.HasDefaultValue & (() => p.DefaultValue!)))
          .Select(t => retrieveItem(t.Name!, t.ParameterType, t.defaultValue, prefix, suffix, commandLine))
          .ToArray();
       var _failure = _arguments.FirstOrNone(p => !p);
