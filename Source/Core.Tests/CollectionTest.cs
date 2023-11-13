@@ -26,9 +26,9 @@ public class CollectionTest
       {
          intStack.Push(number);
 
-         if (_op)
+         if (_op is (true, var op))
          {
-            charStack.Push(_op);
+            charStack.Push(op);
          }
       }
 

@@ -149,6 +149,8 @@ public class PatternTests
          {
             match.Text = $"<{match.Text}>";
          }
+
+         Console.WriteLine(result);
       }
    }
 
