@@ -6,17 +6,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Source\Core\Core.cs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data", "Source\Core.Data\Core.Data.csproj", "{B6C8BEEB-90DE-4E8E-BDB7-22CF5809F12C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Data.Sqlite", "Source\Core.Data.Sqlite\Core.Data.Sqlite.csproj", "{454C57C9-452B-4C39-BF56-C18B302FE65A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Data.Sqlite", "Source\Core.Data.Sqlite\Core.Data.Sqlite.csproj", "{454C57C9-452B-4C39-BF56-C18B302FE65A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Internet", "Source\Core.Internet\Core.Internet.csproj", "{F72EE5BE-F021-44D7-925F-F885689F36E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Internet", "Source\Core.Internet\Core.Internet.csproj", "{F72EE5BE-F021-44D7-925F-F885689F36E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Io", "Source\Core.Io\Core.Io.csproj", "{8C52D1AA-938C-4309-B3B0-160F72F3A415}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Io", "Source\Core.Io\Core.Io.csproj", "{8C52D1AA-938C-4309-B3B0-160F72F3A415}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Markup", "Source\Core.Markup\Core.Markup.csproj", "{2F604523-1D16-4B95-8F34-EAEAE06BA402}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Markup", "Source\Core.Markup\Core.Markup.csproj", "{2F604523-1D16-4B95-8F34-EAEAE06BA402}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Services", "Source\Core.Services\Core.Services.csproj", "{DD78E9C1-4856-4B0D-8B02-585F2F875772}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Services", "Source\Core.Services\Core.Services.csproj", "{DD78E9C1-4856-4B0D-8B02-585F2F875772}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.WinForms", "Source\Core.WinForms\Core.WinForms.csproj", "{F7A9268A-3F14-46A7-9F05-65265D9EC26A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.WinForms", "Source\Core.WinForms\Core.WinForms.csproj", "{F7A9268A-3F14-46A7-9F05-65265D9EC26A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Zip", "Source\Core.Zip\Core.Zip.csproj", "{7A5C44B8-0BC3-4206-BE3F-1FDAE9BBFC68}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Json", "Source\Core.Json\Core.Json.csproj", "{39E0DC6C-47E0-429F-9858-94FDC5AC38FF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,6 +60,14 @@ Global
 		{F7A9268A-3F14-46A7-9F05-65265D9EC26A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7A9268A-3F14-46A7-9F05-65265D9EC26A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7A9268A-3F14-46A7-9F05-65265D9EC26A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A5C44B8-0BC3-4206-BE3F-1FDAE9BBFC68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A5C44B8-0BC3-4206-BE3F-1FDAE9BBFC68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A5C44B8-0BC3-4206-BE3F-1FDAE9BBFC68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A5C44B8-0BC3-4206-BE3F-1FDAE9BBFC68}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39E0DC6C-47E0-429F-9858-94FDC5AC38FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39E0DC6C-47E0-429F-9858-94FDC5AC38FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39E0DC6C-47E0-429F-9858-94FDC5AC38FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39E0DC6C-47E0-429F-9858-94FDC5AC38FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
