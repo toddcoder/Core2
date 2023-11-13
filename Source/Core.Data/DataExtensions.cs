@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Core.Data;
+﻿namespace Core.Data;
 
 public static class DataExtensions
 {

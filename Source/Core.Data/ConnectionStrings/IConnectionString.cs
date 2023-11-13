@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Data.ConnectionStrings;
+﻿namespace Core.Data.ConnectionStrings;
 
 public interface IConnectionString
 {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Data.DataSources;
+﻿namespace Core.Data.DataSources;
 
 public class CancelEventArgs : EventArgs
 {
