@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Configurations;
+﻿using Core.Configurations;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
@@ -54,11 +53,15 @@ public class Field : PropertyInterface
       else
       {
          var fullName = typeName.Substitute("^ '$'; f", "System.");
-         return System.Type.GetType(fullName, false, true);
+         return System.Type.GetType(fullName, false, true)!;
       }
    }
 
-   public Field(string name, string signature, bool optional) : base(name, signature) => Optional = optional;
+   public Field(string name, string signature, bool optional) : base(name, signature)
+   {
+      Optional = optional;
+      Type = nil;
+   }
 
    public Field(string name, Type type, bool optional = false) : base(name, name)
    {

@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Assertions;
+﻿using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
 using Core.Data.Configurations;
@@ -20,13 +19,16 @@ public class OleDbSetup : ISetup
    public static Result<OleDbSetup> FromDataGroups(DataSettings dataSettings, string adapterName, Maybe<FileName> file)
    {
       var _result =
-         from adapterSetting in dataSettings.AdaptersSetting.Result.Setting(adapterName)
+         from adaptersSetting in dataSettings.AdaptersSetting.Result("Adapters setting not created")
+         from adapterSetting in adaptersSetting.Result.Setting(adapterName)
          let _parameters = new Parameters.Parameters(adapterSetting.Maybe.Setting("parameters"))
          let _fields = new Fields.Fields(adapterSetting.Maybe.Setting("fields"))
          from connectionName in adapterSetting.Result.String("connection")
          let commandName = adapterSetting.Maybe.String("command") | adapterName
-         from connectionSetting in dataSettings.ConnectionsSetting.Result.Setting(connectionName)
-         from commandSetting in dataSettings.CommandsSetting.Result.Setting(commandName)
+         from connectionsSetting in dataSettings.ConnectionsSetting.Result("Connections setting not created")
+         from connectionSetting in connectionsSetting.Result.Setting(connectionName)
+         from commandsSetting in dataSettings.CommandsSetting.Result("Commands setting not created")
+         from commandSetting in commandsSetting.Result.Setting(commandName)
          let _command = new Command(commandSetting)
          let _connection = new Connection(connectionSetting)
          let type = _connection.Type.ToLower()
@@ -59,6 +61,11 @@ public class OleDbSetup : ISetup
    public OleDbSetup(Maybe<FileName> file)
    {
       this.file = file;
+
+      ConnectionString = null!;
+      CommandText = string.Empty;
+      Fields = new Fields.Fields();
+      Parameters = new Parameters.Parameters();
    }
 
    public DataSource DataSource

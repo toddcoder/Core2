@@ -1,5 +1,4 @@
-﻿using System;
-using Core.Data.ConnectionStrings;
+﻿using Core.Data.ConnectionStrings;
 using Core.Data.DataSources;
 
 namespace Core.Data.Setups;
@@ -10,11 +9,11 @@ public interface ISetup
 
    IConnectionString ConnectionString { get; }
 
-   string CommandText { get; set; }
+   string CommandText { get; }
 
-   Fields.Fields Fields { get; set; }
+   Fields.Fields Fields { get; }
 
-   Parameters.Parameters Parameters { get; set; }
+   Parameters.Parameters Parameters { get; }
 
-   TimeSpan CommandTimeout { get; set; }
+   TimeSpan CommandTimeout { get; }
 }

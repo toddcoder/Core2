@@ -72,7 +72,10 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
 
    protected Result<string> adapterExists(string adapterName)
    {
-      return dataSettings.AdaptersSetting.Result.String(adapterName);
+      return
+         from adaptersSetting in dataSettings.AdaptersSetting.Result("Adapters setting not created")
+         from adapterSetting in adaptersSetting.Result.String(adapterName)
+         select adapterName;
    }
 
    public Result<Adapter<T>> Adapter(string adapterName, T entity, string setupType = "sql")

@@ -18,15 +18,14 @@ public class SqlSetup : ISetup, ISetupWithInfo
 {
    public static Result<SqlSetup> FromDataGroups(DataSettings dataSettings, string adapterName)
    {
-      var connectionsSetting = dataSettings.ConnectionsSetting;
-      var commandsSetting = dataSettings.CommandsSetting;
-      var adaptersSetting = dataSettings.AdaptersSetting;
-
       return
+         from adaptersSetting in dataSettings.AdaptersSetting.Result("Adapters setting not created")
          from adapterSetting in adaptersSetting.Result.Setting(adapterName)
          from connectionName in adapterSetting.Result.String("connection")
+         from connectionsSetting in dataSettings.ConnectionsSetting.Result("Connections setting not created")
          from connectionSetting in connectionsSetting.Result.Setting(connectionName)
          let commandName = adaptersSetting.Maybe.String("command") | adapterName
+         from commandsSetting in dataSettings.CommandsSetting.Result("Commands setting not created")
          from commandSetting in commandsSetting.Result.Setting(commandName)
          let connection = new Connection(connectionsSetting)
          from connectionString in SqlConnectionString.FromConnection(connection)

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.OleDb;
-using System.Reflection;
 using Core.Computers;
 using Core.Dates.DateIncrements;
 using Core.Monads;
+using Core.Objects;
 using Core.Strings;
 using static System.Convert;
 using static Core.Monads.MonadFunctions;
@@ -87,20 +86,34 @@ public class OleDbDataSource : DataSource
          }
          else
          {
-            var value = parameter.GetValue(entity);//.Required($"Parameter {parameter.Name}'s value couldn't be determined");
-            if (value is null && parameter.Default is (true, var defaultValue))
+            var _value = parameter.GetValue(entity);
+            if (!_value)
             {
-               value = parameter.Type.Map(t => ChangeType(defaultValue, t)) | (object)defaultValue;
+               if (parameter.Default is (true, var defaultValue))
+               {
+                  _value = parameter.Type.Map(t => ChangeType(defaultValue, t));
+                  if (!_value)
+                  {
+                     _value = defaultValue;
+                  }
+               }
             }
 
-            var type = value?.GetType();
-            var underlyingType = type?.UnderlyingTypeOf() ?? nil;
-            if (underlyingType)
+            if (_value is (true, var value))
             {
-               value = type.InvokeMember("Value", BindingFlags.GetProperty, null, value, Array.Empty<object>());
+               var type = value.GetType();
+               var _underlyingType = type.UnderlyingTypeOf();
+               if (_underlyingType)
+               {
+                  var invoker = new Invoker(value);
+                  _value = invoker.GetProperty<object>("Value");
+               }
             }
 
-            oledbParameter.Value = value;
+            if (_value is (true, var value2))
+            {
+               oledbParameter.Value = value2;
+            }
          }
 
          if (Command is (true, var command))

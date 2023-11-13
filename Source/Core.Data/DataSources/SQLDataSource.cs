@@ -1,16 +1,13 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Reflection;
 using Core.Assertions;
 using Core.Collections;
 using Core.Dates.DateIncrements;
 using Core.Enumerables;
 using Core.Monads;
+using Core.Objects;
 using Core.Strings;
 using static System.Convert;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.DataSources;
 
@@ -66,20 +63,34 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
          }
          else
          {
-            var value = parameter.GetValue(entity).Required($"Parameter {parameter.Name}'s value couldn't be determined");
-            if (value is null && parameter.Default is (true, var defaultValue))
+            var _value = parameter.GetValue(entity);
+            if (!_value)
             {
-               value = parameter.Type.Map(t => ChangeType(defaultValue, t)) | (object)defaultValue;
+               if (parameter.Default is (true, var defaultValue))
+               {
+                  _value = parameter.Type.Map(t => ChangeType(defaultValue, t));
+                  if (!_value)
+                  {
+                     _value = defaultValue;
+                  }
+               }
             }
 
-            var type = value?.GetType();
-            var underlyingType = type?.UnderlyingTypeOf() ?? nil;
-            if (underlyingType)
+            if (_value is (true, var value))
             {
-               value = type.InvokeMember("Value", BindingFlags.GetProperty, null, value, Array.Empty<object>());
+               var type = value.GetType();
+               var _underlyingType = type.UnderlyingTypeOf();
+               if (_underlyingType)
+               {
+                  var invoker = new Invoker(value);
+                  _value = invoker.GetProperty<object>("Value");
+               }
             }
 
-            sqlParameter.Value = value;
+            if (_value is (true, var value2))
+            {
+               sqlParameter.Value = value2;
+            }
          }
 
          command.Parameters.Add(sqlParameter);
@@ -106,13 +117,15 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
    protected StringHash<string> attributes;
    protected long recordCount;
 
-   public event SqlInfoMessageEventHandler Message;
+   public event SqlInfoMessageEventHandler? Message;
 
    public SqlDataSource(string connectionString, TimeSpan timeout) : base(connectionString, timeout)
    {
       CommandTimeout = timeout;
       attributes = new StringHash<string>(true);
       recordCount = 0;
+
+      TableName = "";
    }
 
    public SqlDataSource(string connectionString) : this(connectionString, 30.Seconds())
@@ -213,7 +226,9 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
 
       using var dataReader = sourceAdapter.ExecuteReader();
       using var sqlConnection = (SqlConnection)GetConnection();
-      using var bulkCopy = new SqlBulkCopy(sqlConnection) { DestinationTableName = TableName, NotifyAfter = 5000 };
+      using var bulkCopy = new SqlBulkCopy(sqlConnection);
+      bulkCopy.DestinationTableName = TableName;
+      bulkCopy.NotifyAfter = 5000;
       bulkCopy.SqlRowsCopied += (_, e) => recordCount += e.RowsCopied;
       bulkCopy.BulkCopyTimeout = (int)CommandTimeout.TotalSeconds;
       bulkCopy.WriteToServer(dataReader);
@@ -226,7 +241,8 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
       recordCount = 0;
 
       using var sqlConnection = (SqlConnection)GetConnection();
-      using var bulkCopy = new SqlBulkCopy(sqlConnection) { NotifyAfter = 5000 };
+      using var bulkCopy = new SqlBulkCopy(sqlConnection);
+      bulkCopy.NotifyAfter = 5000;
       bulkCopy.SqlRowsCopied += (_, e) => recordCount += e.RowsCopied;
       bulkCopy.DestinationTableName = TableName;
       bulkCopy.BulkCopyTimeout = (int)timeout.TotalSeconds;
@@ -235,13 +251,7 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
 
    public override void ClearAllPools() => SqlConnection.ClearAllPools();
 
-   public override void SetMessageHandler(SqlInfoMessageEventHandler handler)
-   {
-      if (handler != null)
-      {
-         Message += handler;
-      }
-   }
+   public override void SetMessageHandler(SqlInfoMessageEventHandler handler) => Message += handler;
 
    public override DataSource WithNewConnectionString(string newConnectionString) => new SqlDataSource(newConnectionString, CommandTimeout);
 }
