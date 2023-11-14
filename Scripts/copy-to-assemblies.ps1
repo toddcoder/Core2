@@ -1,6 +1,6 @@
 Push-Location "C:\Users\tebennett\source\repos\Core2\Source"
 
-$target = "C:\Users\tebennett\source\repos\Core2\Source\Assemblies"
+$target = "C:\Users\tebennett\source\repos\Core2\Assemblies"
 
 robocopy "Core\bin\Debug\net6.0-windows7.0" $target Core.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
 robocopy "Core.Internet\bin\Debug\net6.0-windows7.0" $target Core.Internet.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
