@@ -32,7 +32,7 @@ public class UiActionWriter
    protected TextFormatFlags getFlags(CardinalAlignment alignment)
    {
       Bits32<TextFormatFlags> flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix;
-      flags[TextFormatFlags.PathEllipsis] = isFile;
+      flags[TextFormatFlags.PathEllipsis] = isPath;
       switch (alignment)
       {
          case CardinalAlignment.NorthWest:
@@ -79,7 +79,7 @@ public class UiActionWriter
    protected Maybe<int> _ceiling;
    protected CheckStyle checkStyle;
    protected Maybe<string> _emptyTextTitle;
-   protected bool isFile;
+   protected bool isPath;
    protected Result<Rectangle> _rectangle;
    protected Result<Font> _font;
    protected Result<Color> _color;
@@ -93,7 +93,7 @@ public class UiActionWriter
       this._ceiling = _ceiling;
       this.buttonType = buttonType;
 
-      isFile = false;
+      isPath = false;
       checkStyle = CheckStyle.None;
       _emptyTextTitle = nil;
 
@@ -112,10 +112,10 @@ public class UiActionWriter
       set => checkStyle = value;
    }
 
-   public bool IsFile
+   public bool IsPath
    {
-      get => isFile;
-      set => isFile = value;
+      get => isPath;
+      set => isPath = value;
    }
 
    public Maybe<string> EmptyTextTitle
@@ -236,7 +236,7 @@ public class UiActionWriter
             {
                rectangle = AutoSizingWriter.NarrowRectangle(rectangle, _floor, _ceiling);
                drawButtonType(g, rectangle, color);
-               var writer = new AutoSizingWriter(text, rectangle, color, font, isFile);
+               var writer = new AutoSizingWriter(text, rectangle, color, font, isPath);
                writer.Write(g);
             }
             else

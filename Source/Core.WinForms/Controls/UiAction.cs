@@ -570,7 +570,7 @@ public class UiAction : UserControl, ISubTextHost
 
    public CardinalAlignment MessageAlignment { get; set; }
 
-   public bool IsFile { get; set; }
+   public bool IsPath { get; set; }
 
    internal void SetCheckStyle(CheckStyle checkStyle)
    {
@@ -894,7 +894,7 @@ public class UiAction : UserControl, ISubTextHost
    {
       try
       {
-         IsFile = true;
+         IsPath = true;
          if (isFailure)
          {
             Failure(file.FullPath);
@@ -913,6 +913,37 @@ public class UiAction : UserControl, ISubTextHost
          else
          {
             Message(file.FullPath);
+         }
+      }
+      catch (Exception exception)
+      {
+         Exception(exception);
+      }
+   }
+
+   public void FolderName(FolderName folder, bool checkForFolderExistence = true, bool isFailure = false)
+   {
+      try
+      {
+         IsPath = true;
+         if (isFailure)
+         {
+            Failure(folder.FullPath);
+         }
+         else if (checkForFolderExistence)
+         {
+            if (folder)
+            {
+               Success(folder.FullPath);
+            }
+            else
+            {
+               Failure(folder.FullPath);
+            }
+         }
+         else
+         {
+            Message(folder.FullPath);
          }
       }
       catch (Exception exception)
@@ -1242,7 +1273,7 @@ public class UiAction : UserControl, ISubTextHost
             Font = Font,
             Color = Color.Black,
             EmptyTextTitle = EmptyTextTitle,
-            IsFile = IsFile
+            IsPath = IsPath
          };
 
          var filledRectangle = disabledWriter.TextRectangle(text, e.Graphics, ClientRectangle);
@@ -1313,7 +1344,7 @@ public class UiAction : UserControl, ISubTextHost
          Color = getForeColor(),
          CheckStyle = checkStyle,
          EmptyTextTitle = EmptyTextTitle,
-         IsFile = IsFile
+         IsPath = IsPath
       });
       var httpWriter = new Lazy<HttpWriter>(() => new HttpWriter(text, clientRectangle, getFont()));
 
