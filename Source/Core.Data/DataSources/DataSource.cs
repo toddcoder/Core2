@@ -99,7 +99,7 @@ public abstract class DataSource
       AddParameters(entity, parameters);
 
       setCommand(entity, command);
-      IDataReader reader = null!;
+      IDataReader? reader = null;
       HasRows = false;
 
       try
@@ -167,7 +167,7 @@ public abstract class DataSource
       }
       finally
       {
-         reader.Dispose();
+         reader?.Dispose();
          deallocateObjects();
       }
    }
