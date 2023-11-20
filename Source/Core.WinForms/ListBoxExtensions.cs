@@ -131,4 +131,15 @@ public static class ListBoxExtensions
          }
       }
    }
+
+   public static IEnumerable<T> CheckedItems<T>(this CheckedListBox checkedListBox)
+   {
+      foreach (var checkedItem in checkedListBox.CheckedItems)
+      {
+         if (checkedItem is T obj)
+         {
+            yield return obj;
+         }
+      }
+   }
 }
