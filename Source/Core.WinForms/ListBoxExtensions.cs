@@ -120,4 +120,15 @@ public static class ListBoxExtensions
          return exception;
       }
    }
+
+   public static IEnumerable<T> SelectedItems<T>(this ListBox listBox)
+   {
+      foreach (var item in listBox.SelectedItems)
+      {
+         if (item is T obj)
+         {
+            yield return obj;
+         }
+      }
+   }
 }
