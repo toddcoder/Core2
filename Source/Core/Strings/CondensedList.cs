@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Core.Collections;
 using Core.Enumerables;
-using Core.Monads;
 
 namespace Core.Strings;
 
@@ -58,7 +57,7 @@ public class CondensedList : IHash<string, int>
 
    public bool ContainsKey(string key) => counts.ContainsKey(key);
 
-   public Result<Hash<string, int>> AnyHash() => counts;
+   public Hash<string, int> GetHash() => counts;
 
    public HashInterfaceMaybe<string, int> Items => new(this);
 }

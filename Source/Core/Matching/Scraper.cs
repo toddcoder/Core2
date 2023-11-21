@@ -142,7 +142,7 @@ public class Scraper : IHash<string, string>
 
    public bool ContainsKey(string key) => variables.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => variables;
+   public Hash<string, string> GetHash() => variables;
 
    public HashInterfaceMaybe<string, string> Items => new(this);
 
@@ -172,21 +172,14 @@ public class Scraper : IHash<string, string>
       var _scraper = scraperStack.Pop();
       if (_scraper is (true, var scraper))
       {
-         var _variables = scraper.AnyHash();
-         if (_variables is (true, var scraperVariables))
+         var scraperVariables = scraper.GetHash();
+         var stringHash = scraperVariables.ToStringHash(true);
+         foreach (var (variable, value) in stringHash)
          {
-            variables = _variables.Map(h => h.ToStringHash(true));
-            foreach (var (variable, value) in variables)
-            {
-               scraperVariables[variable] = value;
-            }
+            scraperVariables[variable] = value;
+         }
 
-            return scraper;
-         }
-         else
-         {
-            return _variables.Exception;
-         }
+         return scraper;
       }
       else
       {

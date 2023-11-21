@@ -162,7 +162,7 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
 
    public bool ContainsKey(string key) => attributes.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => attributes;
+   public Hash<string, string> GetHash() => attributes;
 
    public HashInterfaceMaybe<string, string> Items => new(this);
 

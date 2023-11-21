@@ -1,6 +1,4 @@
-﻿using Core.Monads;
-
-namespace Core.Collections;
+﻿namespace Core.Collections;
 
 public interface IHash<TKey, TValue> where TKey : notnull where TValue : notnull
 {
@@ -8,7 +6,7 @@ public interface IHash<TKey, TValue> where TKey : notnull where TValue : notnull
 
    bool ContainsKey(TKey key);
 
-   Result<Hash<TKey, TValue>> AnyHash();
+   Hash<TKey, TValue> GetHash();
 
    HashInterfaceMaybe<TKey, TValue> Items { get; }
 }

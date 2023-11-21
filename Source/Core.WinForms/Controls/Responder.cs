@@ -1,6 +1,5 @@
 ﻿using Core.Collections;
 using Core.Matching;
-using Core.Monads;
 using static Core.Strings.StringFunctions;
 
 namespace Core.WinForms.Controls;
@@ -195,7 +194,7 @@ public class Responder : UserControl, IHash<string, Responder.ResponderButton>
 
    public bool ContainsKey(string key) => responderButtons.ContainsKey(key);
 
-   public Result<Hash<string, ResponderButton>> AnyHash() => responderButtons;
+   public Hash<string, ResponderButton> GetHash() => responderButtons;
 
    public HashInterfaceMaybe<string, ResponderButton> Items => new(this);
 

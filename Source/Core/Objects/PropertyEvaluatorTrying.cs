@@ -12,11 +12,11 @@ public class PropertyEvaluatorTrying
 
    public PropertyEvaluator Evaluator => evaluator;
 
-   public Result<object> this[string signature] => tryTo(() => evaluator[signature]);
+   public Result<object> this[string signature] => tryTo(() => evaluator[signature]!);
 
    public Result<object> Set(string signature, object value) => tryTo(() => evaluator[signature] = value);
 
-   public Result<object> this[Signature signature] => tryTo(() => evaluator[signature]);
+   public Result<object> this[Signature signature] => tryTo(() => evaluator[signature]!);
 
    public Result<object> Set(Signature signature, object value) => tryTo(() => evaluator[signature] = value);
 

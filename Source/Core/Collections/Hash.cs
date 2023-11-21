@@ -136,7 +136,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
       }
    }
 
-   public Result<Hash<TKey, TValue>> AnyHash() => this;
+   public Hash<TKey, TValue> GetHash() => this;
 
    public HashInterfaceMaybe<TKey, TValue> Items => new(this);
 

@@ -129,7 +129,7 @@ public abstract class Table<TKey, TValue> : IEnumerable<TValue>, IHash<TKey, TVa
       return _scalar.Map(r => r.Equals(key)).Recover(_ => false);
    }
 
-   public Result<Hash<TKey, TValue>> AnyHash() => this.ToHash(KeyFromValue);
+   public Hash<TKey, TValue> GetHash() => this.ToHash(KeyFromValue);
 
    public HashInterfaceMaybe<TKey, TValue> Items => new(this);
 }

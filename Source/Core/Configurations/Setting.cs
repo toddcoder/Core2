@@ -95,7 +95,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
    public bool ContainsKey(string key) => items.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => items.ToStringHash(i => i.Key, i => i.Value.ToString() ?? "", true);
+   public Hash<string, string> GetHash() => items.ToStringHash(i => i.Key, i => i.Value.ToString() ?? "", true);
 
    HashInterfaceMaybe<string, string> IHash<string, string>.Items => new(this);
 

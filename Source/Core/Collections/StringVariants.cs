@@ -55,7 +55,7 @@ public class StringVariants : IHash<string, string>
 
    public bool ContainsKey(string key) => templates.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => templates;
+   public Hash<string, string> GetHash() => templates;
 
    public HashInterfaceMaybe<string, string> Items => new(this);
 

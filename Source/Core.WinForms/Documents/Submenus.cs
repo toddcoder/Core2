@@ -1,7 +1,5 @@
 ﻿using System.Collections;
 using Core.Collections;
-using Core.Monads;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Documents;
 
@@ -18,7 +16,7 @@ public class Submenus : IHash<string, ToolStripMenuItem>, IEnumerable<ToolStripM
 
    public bool ContainsKey(string key) => parent.DropDownItems.ContainsKey(Menus.SubmenuName(parentText, key));
 
-   public Result<Hash<string, ToolStripMenuItem>> AnyHash() => fail("Not implemented");
+   public Hash<string, ToolStripMenuItem> GetHash() => new StringHash<ToolStripMenuItem>(true);
 
    public HashInterfaceMaybe<string, ToolStripMenuItem> Items => new(this);
 

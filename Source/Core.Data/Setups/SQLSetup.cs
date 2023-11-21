@@ -155,13 +155,10 @@ public class SqlSetup : ISetup, ISetupWithInfo
 
    protected void loadAttributes(IHash<string, string> hash)
    {
-      var _hash = hash.AnyHash();
-      if (_hash is (true, var hashValue))
+      var hashValue = hash.GetHash();
+      foreach (var (key, value) in hashValue)
       {
-         foreach (var (key, value) in hashValue)
-         {
-            attributes[key] = value;
-         }
+         attributes[key] = value;
       }
    }
 

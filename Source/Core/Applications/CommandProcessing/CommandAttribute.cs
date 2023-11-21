@@ -68,7 +68,7 @@ public class CommandAttribute : Attribute, IHash<string, string>
 
    public bool ContainsKey(string key) => replacements.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => replacements;
+   public Hash<string, string> GetHash() => replacements;
 
    public HashInterfaceMaybe<string, string> Items => new(this);
 }

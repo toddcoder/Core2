@@ -5,7 +5,6 @@ using System.Linq;
 using Core.Assertions;
 using Core.Collections;
 using Core.Matching;
-using Core.Monads;
 using Core.Numbers;
 using static Core.Strings.StringFunctions;
 
@@ -103,7 +102,7 @@ public class Formatter : IHash<string, string>
 
    public bool ContainsKey(string key) => names.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => names.Success<Hash<string, string>>();
+   public Hash<string, string> GetHash() => names;
 
    public HashInterfaceMaybe<string, string> Items => new(this);
 

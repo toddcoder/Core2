@@ -53,7 +53,7 @@ public class Parameters : IEnumerable<Parameter>, IHash<string, Parameter>
 
    public bool ContainsKey(string key) => parameters.ContainsKey(key);
 
-   public Result<Hash<string, Parameter>> AnyHash() => parameters.AsHash;
+   public Hash<string, Parameter> GetHash() => parameters.AsHash;
 
    public HashInterfaceMaybe<string, Parameter> Items => new(this);
 

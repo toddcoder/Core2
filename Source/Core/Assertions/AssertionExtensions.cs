@@ -264,7 +264,7 @@ public static class AssertionExtensions
 
    public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this IHash<TKey, TValue> value) where TKey : notnull where TValue : notnull
    {
-      Dictionary<TKey, TValue> hash = value.AnyHash().ForceValue();
+      Dictionary<TKey, TValue> hash = value.GetHash();
       return hash.Must();
    }
 
@@ -278,7 +278,7 @@ public static class AssertionExtensions
 
    public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this AutoHash<TKey, TValue> value) where TKey : notnull where TValue : notnull
    {
-      Dictionary<TKey, TValue> hash = value.AnyHash().ForceValue();
+      Dictionary<TKey, TValue> hash = value.GetHash();
       return hash.Must();
    }
 
@@ -293,7 +293,7 @@ public static class AssertionExtensions
 
    public static DictionaryAssertion<string, TValue> Must<TValue>(this StringHash<TValue> value) where TValue : notnull
    {
-      Dictionary<string, TValue> hash = value.AnyHash().ForceValue();
+      Dictionary<string, TValue> hash = value.GetHash();
       return hash.Must();
    }
 

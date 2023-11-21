@@ -1,7 +1,6 @@
 ﻿using Core.Collections;
 using Core.Configurations;
 using Core.Dates.DateIncrements;
-using Core.Monads;
 using Core.Objects;
 
 namespace Core.Data;
@@ -33,7 +32,7 @@ public class Connection : IHash<string, string>
 
    public bool ContainsKey(string key) => data.ContainsKey(key);
 
-   public Result<Hash<string, string>> AnyHash() => data.AsHash;
+   public Hash<string, string> GetHash() => data.AsHash;
 
    public HashInterfaceMaybe<string, string> Items => new(this);
 

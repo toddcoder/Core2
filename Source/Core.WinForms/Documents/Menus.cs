@@ -637,7 +637,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    public bool ContainsKey(string key) => menuItems.ContainsKey(MenuName(key));
 
-   public Result<Hash<string, ToolStripMenuItem>> AnyHash() => menuItems.ToHash(i => i.Key, i => (ToolStripMenuItem)i.Value);
+   public Hash<string, ToolStripMenuItem> GetHash() => menuItems.ToHash(i => i.Key, i => (ToolStripMenuItem)i.Value);
 
    public HashInterfaceMaybe<string, ToolStripMenuItem> Items => new(this);
 

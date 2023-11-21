@@ -131,7 +131,7 @@ public class PadderTable
       var evaluator = new PropertyEvaluator(obj);
       foreach (var signature in signatures)
       {
-         Add(evaluator[signature].ToNonNullString());
+         Add(evaluator[signature]!.ToNonNullString());
       }
    }
 

@@ -489,22 +489,15 @@ public static class HashExtensions
    {
       try
       {
-         var _internalHash = hash.AnyHash();
-         if (_internalHash is (true, var internalHash))
+         var internalHash = hash.GetHash();
+         var toSetting = new Setting();
+         foreach (var (key, value) in internalHash)
          {
-            var toSetting = new Setting();
-            foreach (var (key, value) in internalHash)
-            {
-               var keyAsString = key.ToString()!;
-               toSetting.SetItem(keyAsString, new Item(keyAsString, value.ToString() ?? ""));
-            }
+            var keyAsString = key.ToString()!;
+            toSetting.SetItem(keyAsString, new Item(keyAsString, value.ToString() ?? ""));
+         }
 
-            return toSetting;
-         }
-         else
-         {
-            return _internalHash.Exception;
-         }
+         return toSetting;
       }
       catch (Exception exception)
       {

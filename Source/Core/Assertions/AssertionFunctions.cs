@@ -62,7 +62,7 @@ public static class AssertionFunctions
 
    public static string hashImage<TKey, TValue>(IHash<TKey, TValue> hash) where TKey : notnull where TValue : notnull
    {
-      return hash.AnyHash().Map(dictionaryImage) | (() => hash.ToString() ?? "");
+      return dictionaryImage(hash.GetHash());
    }
 
    public static string maybeImage<T>(Maybe<T> maybe) where T : notnull

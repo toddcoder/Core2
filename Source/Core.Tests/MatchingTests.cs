@@ -74,7 +74,7 @@ public class MatchingTests
          from split2 in pushed2.Split("/s* ',' /s*; f", s => $"var1_{s}:{index2++}")
          from popped2 in split2.Pop()
          select popped2;
-      if (_scraper && scraper.AnyHash() is (true, var hash))
+      if (_scraper.Map(s => s.GetHash()) is (true, var hash))
       {
          var func1 = $"{hash["name1"]}({getVariables(hash, "var0_")})";
          var func2 = $"{hash["name2"]}({getVariables(hash, "var1_")})";

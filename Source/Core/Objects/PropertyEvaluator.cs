@@ -33,9 +33,11 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
 
    public IHash<string, object> Hash => this;
 
-   public object this[string signature]
+   public object? this[string signature]
    {
+#pragma warning disable CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
       get
+#pragma warning restore CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
       {
          var current = obj;
 
@@ -43,7 +45,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
          {
             if (current is null)
             {
-               return null!;
+               return null;
             }
             else
             {
@@ -54,16 +56,14 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
                }
                else
                {
-                  return null!;
+                  return null;
                }
             }
          }
 
-         return current!;
+         return current;
       }
-#pragma warning disable CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
       set
-#pragma warning restore CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
       {
          var current = obj;
 
@@ -87,23 +87,37 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
          }
 
          var li = _lastInfo.Required($"Couldn't derive {signature}");
-         li.Value = value;
+         li.Value = value!;
       }
    }
 
    public bool ContainsKey(string key) => Contains(key);
 
-   public object this[Signature signature]
+   public Hash<string, object> GetHash()
    {
+      var hash = new Hash<string, object>();
+      var info = obj!.GetType().GetProperties();
+
+      foreach (var pInfo in info)
+      {
+         var value = this[pInfo.Name];
+         hash[pInfo.Name] = value!;
+      }
+
+      return hash;
+   }
+
+   public object? this[Signature signature]
+   {
+#pragma warning disable CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
       get => this[signature.Name];
-#pragma warning disable CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
+#pragma warning restore CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
       set => this[signature.Name] = value;
-#pragma warning restore CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
    }
 
    public bool ContainsKey(Signature key) => Contains(key.Name);
 
-   Result<Hash<Signature, object>> IHash<Signature, object>.AnyHash()
+   Hash<Signature, object> IHash<Signature, object>.GetHash()
    {
       var hash = new Hash<Signature, object>();
       var info = obj!.GetType().GetProperties();
@@ -111,7 +125,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
       foreach (var pInfo in info)
       {
          var value = this[pInfo.Name];
-         hash[new Signature(pInfo.Name)] = value;
+         hash[new Signature(pInfo.Name)] = value!;
       }
 
       return hash;
@@ -202,7 +216,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
 
       foreach (var pInfo in info)
       {
-         hash[pInfo.Name] = this[pInfo.Name];
+         hash[pInfo.Name] = this[pInfo.Name]!;
       }
 
       return hash;

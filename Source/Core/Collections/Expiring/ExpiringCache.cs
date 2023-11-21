@@ -125,7 +125,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue> where TKey : notn
       }
    }
 
-   public Result<Hash<TKey, TValue>> AnyHash() => cache;
+   public Hash<TKey, TValue> GetHash() => cache;
 
    public HashInterfaceMaybe<TKey, TValue> Items => new(this);
 

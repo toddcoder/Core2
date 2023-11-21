@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Core.Collections;
-using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects;
@@ -12,38 +11,34 @@ public class DataContainerEvaluator : IEvaluator, IHash<string, object>, IHash<S
 
    public DataContainerEvaluator(DataContainer data) => this.data = data;
 
-   object IEvaluator.this[string signature]
+   object? IEvaluator.this[string signature]
    {
       get => data[signature];
-#pragma warning disable CS8769 // Nullability of reference types in type of parameter doesn't match implemented member (possibly because of nullability attributes).
-      set => data[signature] = value;
-#pragma warning restore CS8769 // Nullability of reference types in type of parameter doesn't match implemented member (possibly because of nullability attributes).
+      set => data[signature] = value!;
    }
 
    public bool ContainsKey(string key) => data.ContainsKey(key);
 
-   Result<Hash<string, object>> IHash<string, object>.AnyHash()
+   Hash<string, object> IHash<string, object>.GetHash()
    {
-      return Signatures.Select(s => (key: s.Name, value: data[s.Name])).ToHash(i => i.key, i => i.value).Success();
+      return Signatures.Select(s => (key: s.Name, value: data[s.Name])).ToHash(i => i.key, i => i.value);
    }
 
    HashInterfaceMaybe<Signature, object> IHash<Signature, object>.Items => new(this);
 
    HashInterfaceMaybe<string, object> IHash<string, object>.Items => new(this);
 
-   object IEvaluator.this[Signature signature]
+   object? IEvaluator.this[Signature signature]
    {
       get => data[signature.Name];
-#pragma warning disable CS8769 // Nullability of reference types in type of parameter doesn't match implemented member (possibly because of nullability attributes).
-      set => data[signature.Name] = value;
-#pragma warning restore CS8769 // Nullability of reference types in type of parameter doesn't match implemented member (possibly because of nullability attributes).
+      set => data[signature.Name] = value!;
    }
 
    public bool ContainsKey(Signature key) => data.ContainsKey(key.Name);
 
-   Result<Hash<Signature, object>> IHash<Signature, object>.AnyHash()
+   Hash<Signature, object> IHash<Signature, object>.GetHash()
    {
-      return Signatures.Select(s => (key: s, value: data[s.Name])).ToHash(i => i.key, i => i.value).Success();
+      return Signatures.Select(s => (key: s, value: data[s.Name])).ToHash(i => i.key, i => i.value);
    }
 
    public Type Type(string signature)
