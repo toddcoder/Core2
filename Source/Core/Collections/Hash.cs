@@ -292,4 +292,19 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
          this[key] = value;
       }
    }
+
+   public TValue ValueOrNew(TKey key, Func<TKey, TValue> initializer)
+   {
+      if (TryGetValue(key, out var value))
+      {
+         return value;
+      }
+      else
+      {
+         value = initializer(key);
+         this[key] = value;
+
+         return value;
+      }
+   }
 }
