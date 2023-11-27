@@ -605,4 +605,15 @@ public class ConfigurationTests
          throw _setting.Exception;
       }
    }
+
+   [TestMethod]
+   public void SetTest()
+   {
+      var setting = new Setting();
+      setting.Set("index").Int32 = 153;
+      setting.Set("name").String = "foobar";
+      setting.Set("now").DateTime = DateTime.Now;
+
+      Console.Write(setting.ToString());
+   }
 }

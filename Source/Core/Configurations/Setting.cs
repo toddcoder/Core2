@@ -55,9 +55,19 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       items = new StringHash<ConfigurationItem>(true);
    }
 
+   public Setting(IEnumerable<(string key, string value)> items, string key = ROOT_NAME) : this(key)
+   {
+      foreach (var (itemKey, value) in items)
+      {
+         this.items[itemKey] = new Item(itemKey, value);
+      }
+   }
+
    public override string Key { get; }
 
    public bool IsArray { get; set; }
+
+   public SettingSetter Set(string key) => new(this, key);
 
    Maybe<Setting> IConfigurationItemGetter.GetSetting(string key)
    {
