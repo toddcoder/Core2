@@ -246,17 +246,11 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>> where T : notnull
       return _value.SelectMany(func, projection);
    }
 
-   public override Maybe<T> Initialize(Func<T> initializer)
-   {
-      ensureValue();
-      return _value.Initialize(initializer);
-   }
+   public override Maybe<T> Initialize(Func<T> initializer) => _value.Initialize(initializer);
 
-   public override (T value, Maybe<T> maybe) Create(Func<T> initializer)
-   {
-      ensureValue();
-      return _value.Create(initializer);
-   }
+   public override (T value, Maybe<T> maybe) Create(Func<T> initializer) => _value.Create(initializer);
+
+   public override (T value, Maybe<T> maybe) Lazy(Func<T> initializer) => _value.Lazy(initializer);
 
    public override object ToObject()
    {

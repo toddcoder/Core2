@@ -146,5 +146,7 @@ public abstract class Maybe<T> where T : notnull
 
    public abstract (T value, Maybe<T> maybe) Create(Func<T> initializer);
 
+   public abstract (T value, Maybe<T> maybe) Lazy(Func<T> initializer);
+
    public abstract object ToObject();
 }

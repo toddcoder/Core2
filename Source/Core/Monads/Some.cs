@@ -108,6 +108,12 @@ public class Some<T> : Maybe<T>, IEquatable<Some<T>> where T : notnull
 
    public override (T value, Maybe<T> maybe) Create(Func<T> initializer) => (value, this);
 
+   public override (T value, Maybe<T> maybe) Lazy(Func<T> initializer)
+   {
+      value = initializer();
+      return (value, this);
+   }
+
    public override object ToObject() => value;
 
    public bool Equals(Some<T>? other) => other is not null && EqualityComparer<T>.Default.Equals(value, other.value);

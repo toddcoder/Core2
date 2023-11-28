@@ -59,6 +59,14 @@ public class None<T> : Maybe<T>, IEquatable<None<T>> where T : notnull
       return (value, maybe);
    }
 
+   public override (T value, Maybe<T> maybe) Lazy(Func<T> initializer)
+   {
+      var value = initializer();
+      Maybe<T> maybe = value;
+
+      return (value, maybe);
+   }
+
    public override object ToObject() => nil;
 
    public bool Equals(None<T>? other) => true;
