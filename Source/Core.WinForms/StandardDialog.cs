@@ -98,6 +98,12 @@ public class StandardDialog
       }
    }
 
+   public static Optional<FileName> OpenFile(Form form, string title, string defaultExt, string fileType)
+   {
+      var standardDialog = new StandardDialog { Title = title, DefaultExt = defaultExt };
+      return standardDialog.OpenFileDialog(form, fileType);
+   }
+
    public Optional<FileName> SaveFileDialog(Form parentForm, string fileType = "")
    {
       try
@@ -140,6 +146,17 @@ public class StandardDialog
       }
    }
 
+   public static Optional<FileName> SaveFile(Form form, string title, string defaultExt, string fileType, Maybe<FileName> initialFile)
+   {
+      var standardDialog = new StandardDialog { Title = title, DefaultExt = defaultExt, FileName = initialFile.Map(f => f.FullPath) };
+      return standardDialog.SaveFileDialog(form, fileType);
+   }
+
+   public static Optional<FileName> SaveFile(Form form, string title, string defaultExt, string fileType)
+   {
+      return SaveFile(form, title, defaultExt, fileType, nil);
+   }
+
    public Optional<FolderName> FolderBrowserDialog(Form parentForm)
    {
       try
@@ -163,5 +180,11 @@ public class StandardDialog
       {
          return exception;
       }
+   }
+
+   public static Optional<FolderName> BrowseFolder(Form form, string title, Maybe<FolderName> initialFolder)
+   {
+      var standardDialog = new StandardDialog { Title = title, InitialFolder = initialFolder };
+      return standardDialog.FolderBrowserDialog(form);
    }
 }
