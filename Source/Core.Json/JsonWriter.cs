@@ -80,8 +80,6 @@ public class JsonWriter : IDisposable
 
    public void Write(string propertyName, string[] values)
    {
-      //writer.WritePropertyName(propertyName);
-      //JsonSerializer.Serialize(writer, values);
       writer.WriteStartArray(propertyName);
       foreach (var value in values)
       {

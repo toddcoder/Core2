@@ -32,5 +32,7 @@ public enum Emoji
    Cut,
    Bar,
    No,
-   Refresh
+   Refresh,
+   CheckBox,
+   UncheckBox
 }

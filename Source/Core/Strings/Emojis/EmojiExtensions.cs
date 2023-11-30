@@ -39,6 +39,8 @@ public static class EmojiExtensions
       Emoji.Bar => "║",
       Emoji.No => "🚫",
       Emoji.Refresh => "🗘",
+      Emoji.CheckBox => "☒",
+      Emoji.UncheckBox => "☐",
       _ => ""
    };
 
@@ -81,6 +83,8 @@ public static class EmojiExtensions
                "bar" => "║",
                "no" => "🚫",
                "refresh" => "🗘",
+               "checkbox" => "☒",
+               "uncheckbox" => "☐",
                _ => nil
             };
             if (_replacement is (true, var replacement))
