@@ -23,6 +23,7 @@ public partial class Form1 : Form, IMessageQueueListener
    protected string test;
    protected ExTextBox textBox;
    protected StringSet set = null!;
+   protected TableLayoutPanelBuilder builder = null!;
 
    public Form1()
    {
@@ -455,6 +456,15 @@ public partial class Form1 : Form, IMessageQueueListener
       _ = contextMenus + "Copy" + (() => textBox1.Copy()) + Keys.Control + Keys.Alt + Keys.C + contextMenu;
       _ = contextMenus + "Paste" + (() => textBox1.Paste()) + Keys.Control + Keys.Alt + Keys.P + contextMenu;
       contextMenus.CreateContextMenu(textBox1);
+
+      /*builder = new TableLayoutPanelBuilder(tableLayoutPanel1);
+      var uiAction1 = new UiAction(this);
+      var uiAction2 = new UiAction(this);
+      var uiAction3 = new UiAction(this);
+      var uiAction4 = new UiAction(this);
+      var uiAction5 = new UiAction(this);
+
+      _ = builder + uiAction1 + (2, 0);*/
    }
 
    protected void button1_Click(object sender, EventArgs e)

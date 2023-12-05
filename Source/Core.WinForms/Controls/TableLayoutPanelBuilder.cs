@@ -1,134 +1,66 @@
-﻿namespace Core.WinForms.Controls;
+﻿using Core.Arrays;
 
-public class TableLayoutPanelBuilder(TableLayoutPanel tableLayoutPanel)
+namespace Core.WinForms.Controls;
+
+public class TableLayoutPanelBuilder
 {
-   public abstract class Dimension;
+   protected TableLayoutPanel tableLayoutPanel;
+   protected List<TableLayoutPanelStyle> columnStyles;
+   protected List<TableLayoutPanelStyle> rowStyles;
+   protected ResizableMatrix<bool> blocked;
 
-   public class Column : Dimension;
-
-   public class Row : Dimension;
-
-   public class NewRow : Dimension;
-
-   public static TableLayoutPanelBuilder operator +(TableLayoutPanelBuilder builder, float value)
+   public TableLayoutPanelBuilder(TableLayoutPanel tableLayoutPanel)
    {
-      builder.styles.Add((SizeType.Percent, value));
-      return builder;
+      this.tableLayoutPanel = tableLayoutPanel;
+
+      this.tableLayoutPanel.ColumnStyles.Clear();
+      this.tableLayoutPanel.RowStyles.Clear();
+
+      columnStyles = new List<TableLayoutPanelStyle>();
+      rowStyles = new List<TableLayoutPanelStyle>();
+
+      blocked = new ResizableMatrix<bool>(0, 0, false);
    }
 
-   public static TableLayoutPanelBuilder operator +(TableLayoutPanelBuilder builder, int value)
+   public TableLayoutPanelStyle Column
    {
-      switch (value)
+      get
       {
-         case 0:
-            builder.styles.Add((SizeType.AutoSize, 0));
-            break;
-         default:
-            builder.styles.Add((SizeType.Absolute, value));
-            break;
+         var column = new TableLayoutPanelStyle(this);
+         columnStyles.Add(column);
+
+         return column;
       }
-
-      return builder;
    }
 
-   public static TableLayoutPanelBuilder operator +(TableLayoutPanelBuilder builder, Dimension dimension)
+   public TableLayoutPanelStyle Row
    {
-      if (builder.isFirst)
+      get
       {
-         builder.TableLayoutPanel.ColumnStyles.Clear();
-         builder.TableLayoutPanel.RowStyles.Clear();
-         builder.isFirst = false;
+         var row = new TableLayoutPanelStyle(this);
+         rowStyles.Add(row);
+
+         return row;
       }
-
-      switch (dimension)
-      {
-         case Column:
-            builder.addColumns();
-            break;
-         case Row:
-            builder.addRows();
-            break;
-      }
-
-      return builder;
    }
 
-   public static TableLayoutPanelControlBuilder operator +(TableLayoutPanelBuilder builder, Control control)
+   protected bool fits(int x, int y, int columnSpan, int rowSpan)
    {
-      var controlBuilder = new TableLayoutPanelControlBuilder(control);
-      builder.controls.Add(controlBuilder);
-
-      return controlBuilder;
+      return false;
    }
 
-   protected bool isFirst = true;
-   protected List<(SizeType sizeType, object value)> styles = new();
-   protected List<TableLayoutPanelControlBuilder> controls = new();
-
-   public TableLayoutPanel TableLayoutPanel => tableLayoutPanel;
-
-   protected void addColumns()
+   public void SetUp(Control control, int columnSpan = 1, int rowSpan = 1, string fontName = "Consolas", float fontSize = 12f,
+      DockStyle dockStyle = DockStyle.Fill)
    {
-      tableLayoutPanel.ColumnCount = styles.Count;
+      var rowCount = tableLayoutPanel.RowCount;
+      var columnCount = tableLayoutPanel.ColumnCount;
 
-      foreach (var (styleType, value) in styles)
+      blocked.Resize(rowCount, columnCount);
+      for (var row = 0; row < rowCount; row++)
       {
-         switch (styleType, value)
+         for (var column = 0; column < columnCount; column++)
          {
-            case (SizeType.Percent, float percent):
-               tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(styleType, percent));
-               break;
-            case (SizeType.Absolute, int absolute):
-               tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(styleType, absolute));
-               break;
-            case (SizeType.AutoSize, _):
-               tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(styleType));
-               break;
-         }
-      }
 
-      styles.Clear();
-   }
-
-   protected void addRows()
-   {
-      tableLayoutPanel.RowCount = styles.Count;
-
-      foreach (var (styleType, value) in styles)
-      {
-         switch (styleType, value)
-         {
-            case (SizeType.Percent, float percent):
-               tableLayoutPanel.RowStyles.Add(new RowStyle(styleType, percent));
-               break;
-            case (SizeType.Absolute, int absolute):
-               tableLayoutPanel.RowStyles.Add(new RowStyle(styleType, absolute));
-               break;
-            case (SizeType.AutoSize, _):
-               tableLayoutPanel.RowStyles.Add(new RowStyle(styleType));
-               break;
-         }
-      }
-
-      styles.Clear();
-   }
-
-   public void Build()
-   {
-      var columnIndex = 0;
-      var rowIndex = 0;
-
-      foreach (var builder in controls)
-      {
-         builder.SetUp(tableLayoutPanel, columnIndex, rowIndex);
-         if (builder.NewRow)
-         {
-            rowIndex++;
-            columnIndex = 0;
-         }
-         else
-         {
-            columnIndex++;
          }
       }
    }
