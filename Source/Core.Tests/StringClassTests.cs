@@ -97,7 +97,7 @@ public class StringClassTests
       var formatted = formatter.Format(text);
       Console.WriteLine(formatted);
 
-      var replacements = new StringHash(true) { ["environment"] = "estream01ua", ["releaseType"] = "Patch", ["release"] = "r-6.24.0" };
+      StringHash replacements = new() { ["environment"] = "estream01ua", ["releaseType"] = "Patch", ["release"] = "r-6.24.0" };
       formatter = new Formatter(replacements);
       formatted = formatter.Format(text);
       Console.WriteLine(formatted);

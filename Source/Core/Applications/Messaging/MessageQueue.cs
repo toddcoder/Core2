@@ -16,8 +16,8 @@ public static class MessageQueue
 
    static MessageQueue()
    {
-      listeners = new AutoStringHash<List<IMessageQueueListener>>(true, _ => new List<IMessageQueueListener>(), true);
-      syncListeners = new AutoStringHash<List<IMessageQueueSyncListener>>(true, _ => new List<IMessageQueueSyncListener>(), true);
+      listeners = new AutoStringHash<List<IMessageQueueListener>>(_ => [], true);
+      syncListeners = new AutoStringHash<List<IMessageQueueSyncListener>>(_ => [], true);
       syncMessages = new MaybeQueue<Message>();
       locker = new object();
    }

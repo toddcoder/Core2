@@ -55,9 +55,11 @@ public class MaybeStack<T> : IEnumerable<T> where T : notnull
 
    public Result<T> Item(int index)
    {
+      T[] getArray() => [.. stack.Skip(index).Take(1)];
+
       return
          from assertion in index.Must().BeBetween(0).Until(Count).OrFailure()
-         from item in tryTo(() => stack.Skip(index).Take(1).ToArray()[0])
+         from item in tryTo(() => getArray()[0])
          select item;
    }
 
@@ -67,7 +69,7 @@ public class MaybeStack<T> : IEnumerable<T> where T : notnull
 
    public void Push(T item) => stack.Push(item);
 
-   public T[] ToArray() => stack.ToArray();
+   public T[] ToArray() => [.. stack];
 
    public IEnumerator<T> GetEnumerator() => stack.GetEnumerator();
 

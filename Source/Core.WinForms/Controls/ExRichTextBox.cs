@@ -6,7 +6,6 @@ using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
 using Core.Strings;
-using static Core.Arrays.ArrayFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -110,14 +109,14 @@ public class ExRichTextBox : RichTextBox
       windowExtender = new WindowExtender(this);
       windowExtender.AssignHandle(Handle);
 
-      SelectionTabs = array(32, 64, 96, 128, 160, 192, 224);
+      SelectionTabs = [32, 64, 96, 128, 160, 192, 224];
       ModifiedGlyphColor = Color.Gold;
       SavedGlyphColor = Color.Green;
       ModificationGlyphWidth = 4f;
       ModificationGlyphLeftMargin = 2;
       AnnotationFont = new Font("Calibri", 12f, FontStyle.Bold);
       leftMargin = 0;
-      modificationStates = new List<ModificationState>();
+      modificationStates = [];
 
       TextChanged += (_, _) =>
       {
@@ -401,7 +400,7 @@ public class ExRichTextBox : RichTextBox
       var line1 = GetLineFromCharIndex(SelectionStart);
       var line2 = GetLineFromCharIndex(SelectionStart + SelectionLength);
 
-      return (Lines.Skip(line1).Take(line2 - line1 + 1).ToArray(), line1);
+      return ([.. Lines.Skip(line1).Take(line2 - line1 + 1)], line1);
    }
 
    public string LineFrom(int lineNumber) => Lines[getLineNumber(lineNumber)];

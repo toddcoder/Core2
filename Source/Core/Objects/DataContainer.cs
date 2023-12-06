@@ -65,7 +65,8 @@ public class DataContainer : StringHash<object>
 
    public StringHash<TValue> ToHash<TValue>(Func<object, TValue> toValue) where TValue : class
    {
-      var result = new StringHash<TValue>(ignoreCase);
+      StringHash<TValue> result = [];
+      result = result.CaseIgnore(ignoreCase);
 
       foreach (var (key, obj) in this)
       {

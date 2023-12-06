@@ -128,18 +128,18 @@ public class Paragraph : Block
       _lineSpacing = nil;
       margins = new Margins();
       alignment = Alignment.Left;
-      charFormats = new List<CharFormat>();
+      charFormats = [];
       this.allowFootnote = allowFootnote;
       this.allowControlWord = allowControlWord;
-      footnotes = new List<Footnote>();
-      controlWords = new List<FieldControlWord>();
+      footnotes = [];
+      controlWords = [];
       blockHead = @"{\pard";
       blockTail = @"\par}";
       startNewPage = false;
       firstLineIndent = 0;
       defaultCharFormat = new CharFormat();
-      pendingCharFormats = new List<(int, int, FontStyleFlag)>();
-      pendingHyperlinks = new StringHash<(int, int, Hyperlink)>(true);
+      pendingCharFormats = [];
+      pendingHyperlinks = [];
    }
 
    public Style Style

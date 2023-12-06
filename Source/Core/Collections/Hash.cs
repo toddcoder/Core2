@@ -66,6 +66,8 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
       Updated?.Invoke(this, new HashArgs<TKey, TValue>(key, value));
    }
 
+   public void Add((TKey key, TValue value) item) => Add(item.key, item.value);
+
    public new bool Remove(TKey key)
    {
       if (ContainsKey(key))
@@ -201,7 +203,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
 
    public HashTrying<TKey, TValue> TryTo => new(this);
 
-   public KeyValuePair<TKey, TValue>[] ItemsArray() => this.ToArray();
+   public KeyValuePair<TKey, TValue>[] ItemsArray() => [.. this];
 
    public IEnumerable<(TKey key, TValue value)> Tuples()
    {
@@ -281,7 +283,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
       return newHash;
    }
 
-   public virtual Hash<TKey, TValue> Subset(IEnumerable<TKey> keys) => Subset(keys.ToArray());
+   public virtual Hash<TKey, TValue> Subset(IEnumerable<TKey> keys) => Subset([.. keys]);
 
    public HashMaybe<TKey, TValue> Maybe => new(this);
 

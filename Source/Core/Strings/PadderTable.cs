@@ -38,8 +38,8 @@ public class PadderTable
    public PadderTable(string format)
    {
       Format = format;
-      items = Array.Empty<PadderItem>();
-      data = new List<string[]>();
+      items = [];
+      data = [];
       itemIndex = 0;
       padder = new Lazy<PadderArray>(() => new PadderArray(itemCount));
       getPaddings();
@@ -56,7 +56,7 @@ public class PadderTable
    {
       hasNoLength = false;
       var maxCount = 0;
-      var padderItems = new List<PadderItem>();
+      List<PadderItem> padderItems = [];
 
       var _matches = Format.Matches("'{' /(/d+) '}' /('[' /(/d+) /(['lLrRcC']) ']'); fi");
       if (_matches is (true, var matches))
@@ -76,7 +76,7 @@ public class PadderTable
          }
 
          Format = matches.ToString();
-         items = padderItems.ToArray();
+         items = [.. padderItems];
          itemCount = maxCount + 1;
       }
    }
@@ -151,7 +151,7 @@ public class PadderTable
          }
       }
 
-      var result = data.Select(line => string.Format(Format, line.Select(l => (object)l).ToArray()));
+      var result = data.Select(line => string.Format(Format, [.. line.Select(l => (object)l)]));
       return result.ToString("\r\n");
    }
 }

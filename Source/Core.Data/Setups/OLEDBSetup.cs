@@ -12,7 +12,7 @@ public class OleDbSetup : ISetup
 {
    protected static StringHash<Func<IConnectionString>> registeredTypes;
 
-   static OleDbSetup() => registeredTypes = new StringHash<Func<IConnectionString>>(true);
+   static OleDbSetup() => registeredTypes = [];
 
    public static void RegisterType(string type, Func<IConnectionString> func) => registeredTypes[type] = func;
 
@@ -64,7 +64,7 @@ public class OleDbSetup : ISetup
 
       ConnectionString = null!;
       CommandText = string.Empty;
-      Fields = new Fields.Fields();
+      Fields = [];
       Parameters = new Parameters.Parameters();
    }
 

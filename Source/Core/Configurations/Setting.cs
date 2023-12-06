@@ -52,7 +52,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       Key = key;
       isGeneratedKey = key.StartsWith("__$key");
 
-      items = new StringHash<ConfigurationItem>(true);
+      items = [];
    }
 
    public Setting(IEnumerable<(string key, string value)> items, string key = ROOT_NAME) : this(key)
@@ -105,11 +105,11 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
    public bool ContainsKey(string key) => items.ContainsKey(key);
 
-   public Hash<string, string> GetHash() => items.ToStringHash(i => i.Key, i => i.Value.ToString() ?? "", true);
+   public Hash<string, string> GetHash() => items.ToStringHash(i => i.Key, i => i.Value.ToString() ?? "");
 
    HashInterfaceMaybe<string, string> IHash<string, string>.Items => new(this);
 
-   public StringHash ToStringHash() => Items().ToHash(t => t.key, t => t.text).ToStringHash(true);
+   public StringHash ToStringHash() => Items().ToHash(t => t.key, t => t.text).ToStringHash();
 
    public override IEnumerable<(string key, string text)> Items()
    {
@@ -296,7 +296,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
             }
             else if (_arraySetting.ValueOf(FromString(source)) is (true, var arraySetting))
             {
-               var settings = arraySetting.Settings().Select(t => t.setting).ToArray();
+               Setting[] settings = [.. arraySetting.Settings().Select(t => t.setting)];
                return makeArray(elementType, settings);
             }
             else
@@ -480,7 +480,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       }
 
       var elementType = type.GetElementType();
-      var array = Settings().Select(i => i.setting).ToArray();
+      Setting[] array = [.. Settings().Select(i => i.setting)];
 
       return makeArray(elementType, array).Required($"Couldn't make array of element type {elementType?.FullName ?? ""}");
    }

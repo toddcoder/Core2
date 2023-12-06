@@ -44,9 +44,9 @@ public abstract class CommandProcessor : IDisposable
       this.application = application;
 
       var configurationFile = getConfigurationFile(this.application);
-      configuration = new Configuration(configurationFile, new StringHash<ConfigurationItem>(true));
-      configurationDefaults = new StringHash(true);
-      configurationHelp = new StringHash(true);
+      configuration = new Configuration(configurationFile, []);
+      configurationDefaults = [];
+      configurationHelp = [];
       StandardWriter = getStandardWriter();
       ExceptionWriter = getExceptionWriter();
 
@@ -109,7 +109,7 @@ public abstract class CommandProcessor : IDisposable
    {
       try
       {
-         var defaultValues = new StringHash(true);
+         StringHash defaultValues = [];
          foreach (var (key, defaultValue) in configurationDefaults)
          {
             var _value = configuration.Maybe.String(key);
@@ -340,26 +340,26 @@ public abstract class CommandProcessor : IDisposable
 
    protected (PropertyInfo propertyInfo, SwitchAttribute attribute)[] getSwitchAttributes()
    {
-      return this.PropertiesUsing<SwitchAttribute>().ToArray();
+      return [..this.PropertiesUsing<SwitchAttribute>()];
    }
 
    protected (MethodInfo methodInfo, CommandAttribute attribute)[] getCommandAttributes()
    {
-      return this.MethodsUsing<CommandAttribute>().ToArray();
+      return [.. this.MethodsUsing<CommandAttribute>()];
    }
 
    public StringHash<(Maybe<string> _helpText, Maybe<string> _switchPattern, IHash<string, string> replacements)> GetCommandHelp()
    {
       return getCommandAttributes()
          .Select(a => (a.attribute.Name, a.attribute.HelpText, a.attribute.SwitchPattern, (IHash<string, string>)a.attribute))
-         .ToStringHash(t => t.Name, t => (t.HelpText, t.SwitchPattern, t.Item4), true);
+         .ToStringHash(t => t.Name, t => (t.HelpText, t.SwitchPattern, t.Item4));
    }
 
    public StringHash<(string type, string argument, Maybe<string> _shortCut)> GetSwitchHelp()
    {
       return getSwitchAttributes()
          .Select(a => (a.attribute.Name, a.attribute.Type, a.attribute.Argument, a.attribute.ShortCut))
-         .ToStringHash(t => t.Name, t => (t.Type, t.Argument, t.ShortCut), true);
+         .ToStringHash(t => t.Name, t => (t.Type, t.Argument, t.ShortCut));
    }
 
    public virtual void ConfigurationChanged()
@@ -534,12 +534,12 @@ public abstract class CommandProcessor : IDisposable
    {
       try
       {
-         methodInfo.Invoke(this, Array.Empty<object>());
+         methodInfo.Invoke(this, []);
          return unit;
       }
       catch (Exception exception)
       {
-         if (exception.InnerException != null)
+         if (exception.InnerException is not null)
          {
             return exception.InnerException;
          }

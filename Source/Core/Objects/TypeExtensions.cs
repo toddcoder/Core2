@@ -4,7 +4,6 @@ using Core.Monads;
 using Core.Strings;
 using static System.Reflection.Assembly;
 using static System.Linq.Expressions.Expression;
-using static Core.Arrays.ArrayFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
@@ -110,5 +109,5 @@ public static class TypeExtensions
       }
    }
 
-   public static Result<object> New(this Type type, params object[] args) => tryTo(() => Activator.CreateInstance(type, array(args))!);
+   public static Result<object> New(this Type type, params object[] args) => tryTo(() => Activator.CreateInstance(type, [.. args])!);
 }

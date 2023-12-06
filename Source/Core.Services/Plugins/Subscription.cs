@@ -12,7 +12,7 @@ public class Subscription : Plugin, IRequiresTypeManager
    public Subscription(string name, Configuration configuration, Setting jobSetting)
       : base(name, configuration, jobSetting)
    {
-      jobNames = new StringSet(true);
+      jobNames = [];
       TypeManager = null!;
    }
 
@@ -47,7 +47,7 @@ public class Subscription : Plugin, IRequiresTypeManager
       var _jobsSetting = configuration.Result.Setting("jobs");
       if (_jobsSetting is (true, var jobsSetting))
       {
-         var tasks = getJobs(jobsSetting).Select(job => Task.Run(job.ExecutePlugin)).ToArray();
+         Task[] tasks = [.. getJobs(jobsSetting).Select(job => Task.Run(job.ExecutePlugin))];
          Task.WaitAll(tasks);
 
          return unit;

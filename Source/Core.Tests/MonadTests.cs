@@ -7,7 +7,6 @@ using Core.Numbers;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Applications.Async.AsyncFunctions;
-using static Core.Arrays.ArrayFunctions;
 using static Core.Lambdas.LambdaFunctions;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.Lazy.LazyMonads;
@@ -491,7 +490,7 @@ public class MonadTests
    public void LazyRepeatingMonadsTest()
    {
       var stack = new MaybeStack<string>();
-      foreach (var item in array("a", "b", "c", "d", "e", "f"))
+      foreach (var item in (string[]) ["a", "b", "c", "d", "e", "f"])
       {
          stack.Push(item);
       }

@@ -8,7 +8,7 @@ public class Borders
 
    public Borders()
    {
-      borders = Enumerable.Range(0, 4).Select(_ => new Border()).ToArray();
+      borders = [.. Enumerable.Range(0, 4).Select(_ => new Border())];
    }
 
    public Border this[Direction direction]

@@ -1,7 +1,6 @@
 ﻿using Core.Markup.Html;
 using Core.Markup.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Arrays.ArrayFunctions;
 
 namespace Core.Tests;
 
@@ -118,7 +117,7 @@ public class MarkupTests
       _ = body + "hr>";
       _ = body + "p>Conflicted Branches" + "@class=title";
 
-      foreach (var branch in array("branch1", "branch2", "branch3"))
+      foreach (var branch in (string[]) ["branch1", "branch2", "branch3"])
       {
          _ = body + "hr>";
 
@@ -126,7 +125,7 @@ public class MarkupTests
          _ = table + $"th>{branch}" + "@class=header";
          _ = table + "th>File" + "@class=header";
 
-         foreach (var file in array("file1", "file2", "file3", "file4"))
+         foreach (var file in (string[]) ["file1", "file2", "file3", "file4"])
          {
             _ = table + "tr>" + "td>" + $"td>{file}";
          }

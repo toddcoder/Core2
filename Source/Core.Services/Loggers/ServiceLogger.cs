@@ -141,7 +141,7 @@ public class ServiceLogger : BaseWriter, IServiceMessage
       {
          if (folder.Name != currentDateText())
          {
-            var files = folder.Files.ToArray();
+            FileName[] files = [.. folder.Files];
             if (files.Any())
             {
                foreach (var file in files.Where(f => f.LastWriteTime + Expiry < NowServer.Now))

@@ -1,7 +1,6 @@
 ﻿using Core.Assertions;
 using Core.Enumerables;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Arrays.ArrayFunctions;
 
 namespace Core.Tests;
 
@@ -11,7 +10,7 @@ public class TupleTests
    [TestMethod]
    public void SplitTest()
    {
-      var enumerable = array(("alpha", 1), ("bravo", 2), ("charlie", 3));
+      (string, int)[] enumerable = [("alpha", 1), ("bravo", 2), ("charlie", 3)];
       var (enumerable1, enumerable2) = enumerable.Split();
       var text1 = enumerable1.ToString(", ");
       var text2 = enumerable2.ToString(", ");

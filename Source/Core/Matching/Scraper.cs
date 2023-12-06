@@ -25,7 +25,7 @@ public class Scraper : IHash<string, string>
    {
       this.source = new Source(source);
 
-      variables = new StringHash(true);
+      variables = [];
    }
 
    public Optional<Scraper> Match(Pattern pattern, params string[] names)
@@ -38,7 +38,7 @@ public class Scraper : IHash<string, string>
       var _result = pattern.MatchedBy(source.Current);
       if (_result is (true, var result))
       {
-         var groups = result.Groups(0).Skip(1).ToArray();
+         string[] groups = [.. result.Groups(0).Skip(1)];
          var minLength = groups.Length.MinOf(names.Length);
          for (var i = 0; i < minLength; i++)
          {
@@ -173,7 +173,7 @@ public class Scraper : IHash<string, string>
       if (_scraper is (true, var scraper))
       {
          var scraperVariables = scraper.GetHash();
-         var stringHash = scraperVariables.ToStringHash(true);
+         var stringHash = scraperVariables.ToStringHash();
          foreach (var (variable, value) in stringHash)
          {
             scraperVariables[variable] = value;

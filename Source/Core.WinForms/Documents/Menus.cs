@@ -63,9 +63,9 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    public Menus()
    {
-      menuItems = new StringHash<ToolStripItem>(true);
-      dynamicTextItems = new Hash<ToolStripItem, MenuText>();
-      tabIndexes = new StringHash<int>(true);
+      menuItems = [];
+      dynamicTextItems = [];
+      tabIndexes = [];
       tabIndex = 0;
       _currentMenu = nil;
       _currentItem = nil;
@@ -607,10 +607,10 @@ public class Menus : IHash<string, ToolStripMenuItem>
       form.Controls.Add(menuStrip);
    }
 
-   protected ToolStripItem[] getMenuItems() => menuItems.Values
-      .Select(i => new { MenuItem = i, Index = tabIndexes[i.Name] })
-      .OrderBy(a => a.Index)
-      .Select(a => a.MenuItem).ToArray();
+   protected ToolStripItem[] getMenuItems() =>
+   [
+      .. menuItems.Values.Select(i => new { MenuItem = i, Index = tabIndexes[i.Name] }).OrderBy(a => a.Index).Select(a => a.MenuItem)
+   ];
 
    public void CreateContextMenu(Control control)
    {

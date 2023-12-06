@@ -58,7 +58,7 @@ public class DataContainerEvaluator : IEvaluator, IHash<string, object>, IHash<S
 
    public bool Contains(string signature) => data.ContainsKey(signature);
 
-   public Signature[] Signatures => data.KeyArray().Select(key => new Signature(key)).ToArray();
+   public Signature[] Signatures => [.. data.KeyArray().Select(key => new Signature(key))];
 
    object IHash<string, object>.this[string key] => data[key];
 

@@ -8,7 +8,6 @@ using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
 using Core.Strings;
-using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Monads.Monads;
 
@@ -26,7 +25,7 @@ public static class EnumerableExtensions
 
    public static IEnumerable<IEnumerable<T>> Pivot<T>(this IEnumerable<IEnumerable<T>> source, Func<T> defaultValue)
    {
-      var array = source.Select(row => row.ToArray()).ToArray();
+      T[][] array = [.. source.Select(row => (T[]) [.. row])];
       if (array.Length != 0)
       {
          var maxRowLen = array.Select(a => a.Length).Max();
@@ -34,10 +33,10 @@ public static class EnumerableExtensions
          var squared = array;
          if (minRowLen != maxRowLen)
          {
-            squared = array.Select(row => row.Pad(maxRowLen, defaultValue())).ToArray();
+            squared = [.. array.Select(row => row.Pad(maxRowLen, defaultValue()))];
          }
 
-         return 0.Until(maxRowLen).Select(i => squared.Select(row => row[i]).ToArray());
+         return [.. 0.Until(maxRowLen).Select(i => squared.Select(row => row[i]))];
       }
       else
       {
@@ -47,9 +46,29 @@ public static class EnumerableExtensions
 
    public static IEnumerable<IEnumerable<T>> Pivot<T>(this IEnumerable<IEnumerable<T>> source, T defaultValue) => source.Pivot(() => defaultValue);
 
-   public static Result<T[]> ToResultOfArray<T>(this IEnumerable<T> enumerable) => tryTo(enumerable.ToArray);
+   public static Result<T[]> ToResultOfArray<T>(this IEnumerable<T> enumerable)
+   {
+      try
+      {
+         return (T[]) [.. enumerable];
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
 
-   public static Result<List<T>> ToResultOfList<T>(this IEnumerable<T> enumerable) => tryTo(enumerable.ToList);
+   public static Result<List<T>> ToResultOfList<T>(this IEnumerable<T> enumerable)
+   {
+      try
+      {
+         return (List<T>) [.. enumerable];
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
 
    public static IEnumerable<int> UpTo(this int from, int to, int by = 1)
    {
@@ -935,14 +954,14 @@ public static class EnumerableExtensions
          }
          else
          {
-            hash[key] = new List<TValue> { value };
+            hash[key] = [value];
          }
       }
 
       var result = new Hash<TKey, TValue[]>();
       foreach (var (key, value) in hash)
       {
-         result[key] = value.ToArray();
+         result[key] = [.. value];
       }
 
       return result;
@@ -961,15 +980,15 @@ public static class EnumerableExtensions
          }
          else
          {
-            hash[key] = new Set<TValue> { value };
+            hash[key] = [value];
          }
       }
 
       return hash;
    }
 
-   public static Hash<TKey, StringSet> GroupToStringSet<TKey>(this IEnumerable<string> enumerable, Func<string, TKey> groupingFunc,
-      bool ignoreCase = false) where TKey : notnull
+   public static Hash<TKey, StringSet> GroupToStringSet<TKey>(this IEnumerable<string> enumerable, Func<string, TKey> groupingFunc)
+      where TKey : notnull
    {
       var hash = new Hash<TKey, StringSet>();
       foreach (var value in enumerable)
@@ -981,7 +1000,7 @@ public static class EnumerableExtensions
          }
          else
          {
-            hash[key] = new StringSet(ignoreCase) { value };
+            hash[key] = [value];
          }
       }
 
@@ -991,8 +1010,8 @@ public static class EnumerableExtensions
    public static (IEnumerable<T> isTrue, IEnumerable<T> isFalse) Partition<T>(this IEnumerable<T> enumerable,
       Predicate<T> predicate)
    {
-      var isTrue = new List<T>();
-      var isFalse = new List<T>();
+      List<T> isTrue = [];
+      List<T> isFalse = [];
       foreach (var item in enumerable)
       {
          if (predicate(item))
@@ -1184,8 +1203,8 @@ public static class EnumerableExtensions
    public static bool AllMatch<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable, Func<T1, T2, bool> matcher,
       bool mustBeSameLength = true) where T2 : notnull
    {
-      var left = leftEnumerable.ToArray();
-      var right = rightEnumerable.ToArray();
+      T1[] left = [.. leftEnumerable];
+      T2[] right = [.. rightEnumerable];
 
       if (mustBeSameLength && left.Length != right.Length)
       {
@@ -1206,7 +1225,7 @@ public static class EnumerableExtensions
    public static IEnumerable<(T1, Maybe<T2>)> AllMatched<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable,
       Func<T1, T2, bool> matcher) where T2 : notnull
    {
-      var rightArray = rightEnumerable.ToArray();
+      T2[] rightArray = [.. rightEnumerable];
       foreach (var left in leftEnumerable)
       {
          yield return (left, rightArray.FirstOrNone(r => matcher(left, r)));
@@ -1268,7 +1287,7 @@ public static class EnumerableExtensions
 
    public static IEnumerable<IEnumerable<T>> Cluster<T>(this IEnumerable<T> enumerable, int count)
    {
-      var array = enumerable.ToArray();
+      T[] array = [.. enumerable];
       for (var i = 0; i < array.Length; i += count)
       {
          yield return array.Skip(i).Take(count);
@@ -1278,8 +1297,8 @@ public static class EnumerableExtensions
    public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, params string[] keys) where T : notnull
    {
       var keySet = new StringSet(true, keys);
-      var matching = new StringHash<T>(true);
-      var remainder = new List<T>();
+      StringHash<T> matching = [];
+      List<T> remainder = [];
       foreach (var item in enumerable)
       {
          var key = keyMap(item);
@@ -1312,7 +1331,7 @@ public static class EnumerableExtensions
    {
       var comparer = Comparer<T>.Create((x, y) => compareFunc(x, y));
       var keySet = new StringSet(true, keys);
-      var matching = new AutoStringHash<SortedSet<T>>(true, _ => new SortedSet<T>(comparer), true);
+      var matching = new AutoStringHash<SortedSet<T>>(_ => new SortedSet<T>(comparer), true);
       var remainder = new SortedSet<T>(comparer);
 
       foreach (var item in enumerable)
@@ -1420,7 +1439,7 @@ public static class EnumerableExtensions
 
    public static Maybe<int> Find<T>(this IEnumerable<T> items, T item, int startIndex = 0)
    {
-      var array = items.ToArray();
+      T[] array = [.. items];
       for (var i = startIndex; i < array.Length; i++)
       {
          if (array[i]!.Equals(item))
@@ -1434,7 +1453,7 @@ public static class EnumerableExtensions
 
    public static IEnumerable<int> FindAll<T>(this IEnumerable<T> items, T item, int startIndex = 0)
    {
-      var array = items.ToArray();
+      T[] array = [.. items];
       for (var i = startIndex; i < array.Length; i++)
       {
          if (array[i]!.Equals(item))
@@ -1456,8 +1475,22 @@ public static class EnumerableExtensions
       }
    }
 
-   public static IEnumerable<(T1 left, T2 right)> Merge<T1, T2>(this IEnumerable<T1> left, IEnumerable<T2> right) where T1 : notnull where T2 : notnull
+   public static IEnumerable<(T1 left, T2 right)> Merge<T1, T2>(this IEnumerable<T1> left, IEnumerable<T2> right) where T1 : notnull
+      where T2 : notnull
    {
       return left.Merge<T1, T2, (T1, T2)>(right, (t1, t2) => (t1, t2));
+   }
+
+   public static string Andify<T>(this IEnumerable<T> enumerable) where T : notnull
+   {
+      T[] array = [.. enumerable];
+      var length = array.Length;
+      return length switch
+      {
+         0 => "",
+         1 => array[0].ToString() ?? "",
+         2 => $"{array[0]} and {array[1]}",
+         _ => $"{array.Take(array.Length - 1).ToString(", ")}, and {array[^1]}"
+      };
    }
 }

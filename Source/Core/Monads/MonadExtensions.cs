@@ -153,7 +153,7 @@ public static class MonadExtensions
       var list = new List<object> { firstItem };
       list.AddRange(args);
 
-      return (TException)typeof(TException).Create(list.ToArray())!;
+      return (TException)typeof(TException).Create([.. list])!;
    }
 
    public static Result<T> Result<T>(this bool test, Func<T> ifFunc, string exceptionMessage) where T : notnull
@@ -549,7 +549,7 @@ public static class MonadExtensions
       var list = new List<object> { firstItem };
       list.AddRange(args);
 
-      return (TException)typeof(TException).Create(list.ToArray())!;
+      return (TException)typeof(TException).Create([.. list])!;
    }
 
    public static Completion<T> Completion<T>(this Result<T> result) where T : notnull => result.Map(v => v.Completed()).Recover(e => e);
@@ -623,13 +623,13 @@ public static class MonadExtensions
 
    public static Maybe<T> MaxOrNone<T>(this IEnumerable<T> enumerable) where T : notnull
    {
-      var array = enumerable.ToArray();
+      T[] array = [.. enumerable];
       return maybe<T>() & array.Length > 0 & (() => array.Max()!);
    }
 
    public static Maybe<T> MaxOrNone<T, TMax>(this IEnumerable<T> enumerable, Func<T, TMax> maxOnFunc) where T : notnull
    {
-      var array = enumerable.ToArray();
+      T[] array = [.. enumerable];
       return maybe<T>() & array.Length > 0 & (() =>
       {
          var max = array.Select((v, i) => (v: maxOnFunc(v), i)).Max();
@@ -639,13 +639,13 @@ public static class MonadExtensions
 
    public static Maybe<T> MinOrNone<T>(this IEnumerable<T> enumerable) where T : notnull
    {
-      var array = enumerable.ToArray();
+      T[] array = [.. enumerable];
       return maybe<T>() & array.Length > 0 & (() => array.Min()!);
    }
 
    public static Maybe<T> MinOrNone<T, TMin>(this IEnumerable<T> enumerable, Func<T, TMin> minOnFunc) where T : notnull
    {
-      var array = enumerable.ToArray();
+      T[] array = [.. enumerable];
       return maybe<T>() & array.Length > 0 & (() =>
       {
          var min = array.Select((v, i) => (v: minOnFunc(v), i)).Min();
@@ -655,7 +655,7 @@ public static class MonadExtensions
 
    public static Result<T> MaxOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) where T : notnull => tryTo(() =>
    {
-      var array = enumerable.ToArray();
+      T[] array = [.. enumerable];
       return assert(array.Length > 0, () => array.Max()!, exceptionMessage);
    });
 
@@ -664,7 +664,7 @@ public static class MonadExtensions
    {
       return tryTo(() =>
       {
-         var array = enumerable.ToArray();
+         T[] array = [.. enumerable];
          return assert(array.Length > 0, () =>
          {
             var max = array.Select((v, i) => (v: maxOnFunc(v), i)).Max();
@@ -675,7 +675,7 @@ public static class MonadExtensions
 
    public static Result<T> MinOrFail<T>(this IEnumerable<T> enumerable, Func<string> exceptionMessage) where T : notnull => tryTo(() =>
    {
-      var array = enumerable.ToArray();
+      T[] array = [.. enumerable];
       return assert(array.Length > 0, () => array.Min()!, exceptionMessage);
    });
 
@@ -684,7 +684,7 @@ public static class MonadExtensions
    {
       return tryTo(() =>
       {
-         var array = enumerable.ToArray();
+         T[] array = [.. enumerable];
          return assert(array.Length > 0, () =>
          {
             var min = array.Select((v, i) => (v: minOnFunc(v), i)).Min();

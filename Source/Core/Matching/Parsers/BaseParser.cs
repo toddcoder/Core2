@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Monads;
@@ -18,7 +17,7 @@ public abstract class BaseParser
 
    public BaseParser()
    {
-      tokens = Array.Empty<string>();
+      tokens = [];
    }
 
    public abstract string Pattern { get; }
@@ -45,7 +44,7 @@ public abstract class BaseParser
          var oldIndex = index;
 
          index += matches[0].Length;
-         tokens = getGroups(matches[0]).Select(group => group.Value).ToArray();
+         tokens = [.. getGroups(matches[0]).Select(group => group.Value)];
          var _result = Parse(source, ref index);
          if (_result)
          {

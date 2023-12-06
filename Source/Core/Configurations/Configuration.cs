@@ -43,7 +43,7 @@ public class Configuration : Setting
       return tryTo(() => Serialize(file, typeof(T), obj, save, name));
    }
 
-   public static Configuration Empty => new(@"C:\Temp\temp.configuration", new StringHash<ConfigurationItem>(true));
+   public static Configuration Empty => new(@"C:\Temp\temp.configuration", []);
 
    protected FileName file;
 

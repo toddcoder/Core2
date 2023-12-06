@@ -266,7 +266,8 @@ internal class DifferenceBuilder
 
    public Result<DifferenceResult> Build()
    {
-      var itemHash = new StringHash<int>(ignoreCase);
+      StringHash<int> itemHash = [];
+      itemHash = itemHash.CaseIgnore(ignoreCase);
       var lineDiffs = new List<DifferenceBlock>();
 
       buildItemHashes(itemHash, oldModification, ignoreWhiteSpace, ignoreCase);

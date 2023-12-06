@@ -294,7 +294,7 @@ public class UiAction : UserControl, ISubTextHost
          }
       };
 
-      rectangles = Array.Empty<Rectangle>();
+      rectangles = [];
 
       Click += (_, _) =>
       {
@@ -462,7 +462,7 @@ public class UiAction : UserControl, ISubTextHost
       CardinalAlignment = CardinalAlignment.Center;
       _taskBarProgress = nil;
       cancelled = true;
-      rectangles = Array.Empty<Rectangle>();
+      rectangles = [];
       _floor = nil;
       _ceiling = nil;
       _keyMatch = nil;
@@ -2943,11 +2943,11 @@ public class UiAction : UserControl, ISubTextHost
             var height = clientHeight - 2 * paddingWidth;
             var fullWidth = paddingWidth + width;
 
-            rectangles = Enumerable.Range(0, value).Select(i => new Rectangle(i * fullWidth, top, width, height)).ToArray();
+            rectangles = [.. Enumerable.Range(0, value).Select(i => new Rectangle(i * fullWidth, top, width, height))];
          }
          else
          {
-            rectangles = Array.Empty<Rectangle>();
+            rectangles = [];
          }
       }
    }
@@ -3187,7 +3187,7 @@ public class UiAction : UserControl, ISubTextHost
       }
    }
 
-   public string[] Alternates => _alternateWriter.Map(w => w.Alternates) | Array.Empty<string>;
+   public string[] Alternates => _alternateWriter.Map(w => w.Alternates) | [];
 
    public Maybe<string> GetAlternate(int index) => _alternateWriter.Map(w => w.GetAlternate(index));
 

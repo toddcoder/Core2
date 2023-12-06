@@ -3,7 +3,6 @@ using Core.Enumerables;
 using Core.Numbers;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Arrays.ArrayFunctions;
 
 namespace Core.Tests;
 
@@ -143,7 +142,7 @@ public class StringExtensionTests
    [TestMethod]
    public void WordsTest()
    {
-      foreach (var text in array("maryMaryContrary", "ExamplesRemarksConstructorsProperties", "alpha-bravo-charlie"))
+      foreach (var text in (string[]) ["maryMaryContrary", "ExamplesRemarksConstructorsProperties", "alpha-bravo-charlie"])
       {
          writeWords(text);
       }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Core.Arrays;
 using Core.Enumerables;
@@ -26,28 +25,25 @@ public class Padding
       splitPattern = DEFAULT_SPLIT_PATTERN;
       columnSeparator = " ";
       text = "";
-      sizes = Array.Empty<int>();
+      sizes = [];
    }
 
    public Padding(string padTypes)
    {
-      this.padTypes = padTypes.Unjoin(DEFAULT_SPLIT_PATTERN)
-         .Select(s => s.Maybe().Enumeration<PadType>())
-         .SomeValue()
-         .ToArray();
+      this.padTypes = [.. padTypes.Unjoin(DEFAULT_SPLIT_PATTERN).Select(s => s.Maybe().Enumeration<PadType>()).SomeValue()];
       splitPattern = DEFAULT_SPLIT_PATTERN;
       columnSeparator = " ";
       text = "";
-      sizes = Array.Empty<int>();
+      sizes = [];
    }
 
    public Padding(int count, PadType padType)
    {
-      padTypes = Enumerable.Repeat(padType, count).ToArray();
+      padTypes = [.. Enumerable.Repeat(padType, count)];
       splitPattern = DEFAULT_SPLIT_PATTERN;
       columnSeparator = " ";
       text = "";
-      sizes = Array.Empty<int>();
+      sizes = [];
    }
 
    public string SplitPattern
@@ -68,7 +64,7 @@ public class Padding
       {
          if (text.IsNotEmpty())
          {
-            var lines = text.Unjoin(LINE_SPLIT_PATTERN).Select(line => line.Unjoin(splitPattern)).ToArray();
+            string[][] lines = [.. text.Unjoin(LINE_SPLIT_PATTERN).Select(line => line.Unjoin(splitPattern))];
             return getText(lines);
          }
          else
@@ -83,11 +79,11 @@ public class Padding
    {
       if (lines.Length != 0)
       {
-         var enumerable = lines.Select(line => line.Select(column => column.Length).ToArray()).Pivot(() => 0).ToArray();
-         sizes = enumerable.Select(columns => columns.Max()).ToArray();
+         IEnumerable<int>[] enumerable = [.. lines.Select(line => (int[]) [.. line.Select(column => column.Length)]).Pivot(() => 0)];
+         sizes = [.. enumerable.Select(columns => columns.Max())];
          var sizesLength = sizes.Length;
          var paddedPadTypes = padTypes.Pad(sizesLength, PadType.Right);
-         lines = lines.Select(columns => columns.Pad(sizesLength, "")).ToArray();
+         lines = [.. lines.Select(columns => columns.Pad(sizesLength, ""))];
 
          return lines
             .Select(columns => columns
@@ -101,7 +97,7 @@ public class Padding
       }
    }
 
-   public string ToString(IEnumerable<IEnumerable<string>> source) => getText(source.Select(columns => columns.ToArray()).ToArray());
+   public string ToString(IEnumerable<IEnumerable<string>> source) => getText([.. source.Select(columns => (string[]) [.. columns])]);
 
    public override string ToString() => Text;
 
@@ -109,7 +105,7 @@ public class Padding
    {
       if (sizes.Length == 0)
       {
-         return getText(new[] { headers });
+         return getText([headers]);
       }
       else
       {

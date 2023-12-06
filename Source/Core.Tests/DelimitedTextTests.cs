@@ -56,9 +56,7 @@ public class DelimitedTextTests
       Pattern.IsFriendly = false;
       var delimitedText = DelimitedText.AsSql();
       var source = "'a = b' != 'b = a'";
-      var result = delimitedText.Enumerable(source)
-         .Where(t => t.status == DelimitedTextStatus.Outside && t.text.Contains("="))
-         .ToArray();
+      (string text, int index, DelimitedTextStatus status)[] result = [.. delimitedText.Enumerable(source).Where(t => t.status == DelimitedTextStatus.Outside && t.text.Contains("="))];
       if (result.Length == 1)
       {
          var _slice = result[0].text.FindByRegex("/s+ ['!=<>'] '=' /s+; f");
@@ -156,7 +154,7 @@ public class DelimitedTextTests
       Pattern.IsFriendly = false;
       var source = "'foobar' AND 'foobaz' OR 'foo' AND 'bar'";
       var delimitedText = DelimitedText.AsSql();
-      var slices = delimitedText.Split(source, "/s+ 'OR' /s+; f").ToArray();
+      Slice[] slices = [.. delimitedText.Split(source, "/s+ 'OR' /s+; f")];
       foreach (var slice in slices)
       {
          Console.WriteLine($"<{slice.Text}>");

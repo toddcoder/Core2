@@ -18,18 +18,15 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue> where TKey : notn
 
    public ExpiringCache(TimeSpan activeMonitoringInterval)
    {
-      cache = new Hash<TKey, TValue>();
-      expirationPolicies = new Hash<TKey, ExpirationPolicy<TValue>>();
+      cache = [];
+      expirationPolicies = [];
       var newTimer = new Timer(activeMonitoringInterval.TotalMilliseconds);
       locker = new object();
       newTimer.Elapsed += (_, _) =>
       {
          lock (locker)
          {
-            var expiredKeys = cache
-               .Where(i => expirationPolicies.Maybe[i.Key].Map(v => v.ItemEvictable(i.Value)) | false)
-               .Select(i => i.Key)
-               .ToArray();
+            TKey[] expiredKeys = [.. cache.Where(i => expirationPolicies.Maybe[i.Key].Map(v => v.ItemEvictable(i.Value)) | false).Select(i => i.Key)];
             foreach (var key in expiredKeys)
             {
                var args = new ExpirationArgs<TKey, TValue>(key, cache[key]);
@@ -49,8 +46,8 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue> where TKey : notn
 
    public ExpiringCache()
    {
-      cache = new Hash<TKey, TValue>();
-      expirationPolicies = new Hash<TKey, ExpirationPolicy<TValue>>();
+      cache = [];
+      expirationPolicies = [];
       _timer = nil;
       locker = new object();
       newPolicy = () => new NonExpiration<TValue>();

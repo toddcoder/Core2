@@ -12,7 +12,8 @@ public class CondensedList : IHash<string, int>
    public CondensedList(string separator = ", ", bool ignoreCase = true)
    {
       this.separator = separator;
-      counts = new StringHash<int>(ignoreCase);
+      counts = [];
+      counts = counts.CaseIgnore(ignoreCase);
    }
 
    public void Add(string text)

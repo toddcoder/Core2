@@ -12,9 +12,13 @@ public class StringSet : Set<string>
 {
    protected bool ignoreCase;
 
-   public StringSet(bool ignoreCase) : base(stringComparer(ignoreCase))
+   protected StringSet(bool ignoreCase) : base(stringComparer(ignoreCase))
    {
       this.ignoreCase = ignoreCase;
+   }
+
+   public StringSet() : this(true)
+   {
    }
 
    public StringSet(UserStringComparer stringComparer) : base(stringComparer)
@@ -26,13 +30,21 @@ public class StringSet : Set<string>
       this.ignoreCase = ignoreCase;
    }
 
+   public StringSet(IEnumerable<string> strings) : this(true, strings)
+   {
+   }
+
    public StringSet(UserStringComparer stringComparer, IEnumerable<string> strings) : base(strings, stringComparer)
    {
    }
 
-   public StringSet(bool ignoreCase, params string[] strings) : base(strings, stringComparer(ignoreCase))
+   protected StringSet(bool ignoreCase, params string[] strings) : base(strings, stringComparer(ignoreCase))
    {
       this.ignoreCase = ignoreCase;
+   }
+
+   public StringSet(params string[] strings) : this(true, strings)
+   {
    }
 
    public StringSet(UserStringComparer stringComparer, params string[] strings) : base(strings, stringComparer)
@@ -62,4 +74,8 @@ public class StringSet : Set<string>
    }
 
    public bool AnyMatch(Pattern pattern) => this.Any(i => i.IsMatch(pattern));
+
+   public StringSet CaseAware() => new(false, this);
+
+   public StringSet CaseIgnore(bool ignoreCase) => new(ignoreCase, this);
 }

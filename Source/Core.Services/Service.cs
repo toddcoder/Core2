@@ -52,7 +52,7 @@ public class Service
          serviceMessage.Add(serviceMessageValue);
       }
 
-      jobs = new StringHash<Job>(true);
-      subscriptions = new StringHash<Subscription>(true);
+      jobs = [];
+      subscriptions = [];
    }
 }

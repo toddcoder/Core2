@@ -16,7 +16,7 @@ public class Submenus : IHash<string, ToolStripMenuItem>, IEnumerable<ToolStripM
 
    public bool ContainsKey(string key) => parent.DropDownItems.ContainsKey(Menus.SubmenuName(parentText, key));
 
-   public Hash<string, ToolStripMenuItem> GetHash() => new StringHash<ToolStripMenuItem>(true);
+   public Hash<string, ToolStripMenuItem> GetHash() => [];
 
    public HashInterfaceMaybe<string, ToolStripMenuItem> Items => new(this);
 

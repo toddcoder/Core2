@@ -28,9 +28,9 @@ public class JobPool
       this.refillThreshold = refillThreshold;
 
       processorCount = Environment.ProcessorCount;
-      manualResetEvents = Enumerable.Range(0, processorCount).Select(_ => new ManualResetEvent(false)).ToArray();
+      manualResetEvents = [.. Enumerable.Range(0, processorCount).Select(_ => new ManualResetEvent(false))];
       locker = new object();
-      jobs = Enumerable.Range(0, processorCount).Select(i => new Job(i, manualResetEvents[i], locker)).ToArray();
+      jobs = [.. Enumerable.Range(0, processorCount).Select(i => new Job(i, manualResetEvents[i], locker))];
       queue = new JobQueue(processorCount);
    }
 
@@ -88,18 +88,17 @@ public class JobPool
 
       for (var i = 0; i < processorCount; i++)
       {
-         while (queue.Count(i) > 0)
+         while (queue.Dequeue(i) is (true, var action))
          {
-            var _action = queue.Dequeue(i);
-            newQueue.Enqueue(_action);
+            newQueue.Enqueue(action);
          }
       }
 
       queue.ResetCurrentAffinity();
       var _item = lazyRepeating.maybe<Action<int>>();
-      while (_item.ValueOf(newQueue.Dequeue))
+      while (_item.ValueOf(newQueue.Dequeue) is (true, var item))
       {
-         queue.Enqueue(_item);
+         queue.Enqueue(item);
       }
 
       e.Quit = false;
@@ -120,7 +119,7 @@ public class JobPool
    {
       get
       {
-         var list = new List<string>();
+         List<string> list = [];
          var totalCount = 0;
          for (var i = 0; i < processorCount; i++)
          {

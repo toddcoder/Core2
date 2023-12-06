@@ -69,7 +69,7 @@ public abstract class Table<TKey, TValue> : IEnumerable<TValue>, IHash<TKey, TVa
       var parameterNames = fromObject.Keys.Select(key => $"${key}").ToString(", ");
       var commandText = $"REPLACE INTO {TableName} ({fields}) VALUES ({parameterNames})";
 
-      return database.ExecuteNonQuery(commandText, fromObject.Tuples().ToArray());
+      return database.ExecuteNonQuery(commandText, [.. fromObject.Tuples()]);
    }
 
    public IEnumerator<TValue> GetEnumerator()

@@ -64,7 +64,7 @@ public static class ArrayExtensions
       }
       else if (limitingSize == 0)
       {
-         return Array.Empty<T>();
+         return [];
       }
       else if (limitingSize > length)
       {
@@ -88,19 +88,7 @@ public static class ArrayExtensions
       var list = array.Select(value => new { Index = random.Next(), Value = value });
       var sortedList = list.OrderBy(i => i.Index).Select(i => i.Value);
 
-      return sortedList.ToArray();
-   }
-
-   public static string Andify<T>(this T[] array)
-   {
-      var length = array.Length;
-      return length switch
-      {
-         0 => "",
-         1 => array[0]!.ToString() ?? "",
-         2 => $"{array[0]} and {array[1]}",
-         _ => $"{array.Take(array.Length - 1).ToString(", ")}, and {array[^1]}"
-      };
+      return [..sortedList];
    }
 
    public static bool IsEmpty<T>(this T[] array) => array.Length == 0;
@@ -127,28 +115,22 @@ public static class ArrayExtensions
 
    public static T[] Pick<T>(this T[] array, string columnIndexes)
    {
-      return columnIndexes.PickIndexes()
-         .Where(i => i.Between(0).Until(array.Length))
-         .Select(index => array[index])
-         .ToArray();
+      return [.. columnIndexes.PickIndexes().Where(i => i.Between(0).Until(array.Length)).Select(index => array[index])];
    }
 
    public static T[] Pick<T>(this T[] array, params int[] columnIndexes)
    {
-      return columnIndexes.Where(i => i.Between(0).Until(array.Length)).Select(index => array[index]).ToArray();
+      return [.. columnIndexes.Where(i => i.Between(0).Until(array.Length)).Select(index => array[index])];
    }
 
    public static (T value, int index)[] PickIndexes<T>(this T[] array, string columnIndexes)
    {
-      return columnIndexes.PickIndexes()
-         .Where(i => i.Between(0).Until(array.Length))
-         .Select(index => (array[index], index))
-         .ToArray();
+      return [.. columnIndexes.PickIndexes().Where(i => i.Between(0).Until(array.Length)).Select(index => (array[index], index))];
    }
 
    public static int[] PickIndexes(this string columnIndexes)
    {
-      var indexes = new List<int>();
+      List<int> indexes = [];
 
       foreach (var group in columnIndexes.RemoveWhitespace().Unjoin("','; f"))
       {
@@ -174,7 +156,7 @@ public static class ArrayExtensions
       }
 
       indexes.Sort();
-      return indexes.ToArray();
+      return [.. indexes];
    }
 
    public static bool ContainsValue<T>(this T[] array, T value) => Array.IndexOf(array, value) > -1;
@@ -197,9 +179,9 @@ public static class ArrayExtensions
 
    public static Maybe<T> Last<T>(this T[] array) where T : notnull => maybe<T>() & array.IsNotEmpty() & (() => array[^1]);
 
-   public static T[] Tail<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Skip(1).ToArray();
+   public static T[] Tail<T>(this T[] array) => array.IsEmpty() ? [] : [.. array.Skip(1)];
 
-   public static T[] AllButLast<T>(this T[] array) => array.IsEmpty() ? Array.Empty<T>() : array.Take(array.Length - 1).ToArray();
+   public static T[] AllButLast<T>(this T[] array) => array.IsEmpty() ? [] : [.. array.Take(array.Length - 1)];
 
    public static Maybe<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition, Predicate<T> stopCondition, int startIndex = 0)
    {
@@ -333,7 +315,7 @@ public static class ArrayExtensions
          list.Add((leftArray[i], rightArray[i]));
       }
 
-      return list.ToArray();
+      return [.. list];
    }
 
    public static (T1, T2)[] Zip<T1, T2>(this T1[] leftArray, Func<T1, int, T2> generatorFunc)
@@ -346,7 +328,7 @@ public static class ArrayExtensions
          list.Add((left, generatorFunc(left, i)));
       }
 
-      return list.ToArray();
+      return [.. list];
    }
 
    public static T3[] Zip<T1, T2, T3>(this T1[] leftArray, T2[] rightArray, Func<T1, T2, T3> mappingFunc)
@@ -358,7 +340,7 @@ public static class ArrayExtensions
          list.Add(mappingFunc(leftArray[i], rightArray[i]));
       }
 
-      return list.ToArray();
+      return [.. list];
    }
 
    public static T3[] Zip<T1, T2, T3>(this T1[] leftArray, Func<T1, int, T2> generatorFunc,
@@ -374,7 +356,7 @@ public static class ArrayExtensions
          list.Add(item);
       }
 
-      return list.ToArray();
+      return [.. list];
    }
 
    public static Maybe<(T1, T2)>[] ZipUnevenly<T1, T2>(this T1[] leftArray, T2[] rightArray)
@@ -393,12 +375,12 @@ public static class ArrayExtensions
          }
       }
 
-      return list.ToArray();
+      return [.. list];
    }
 
-   public static T[] Repeat<T>(this int count, T value) => Enumerable.Repeat(value, count).ToArray();
+   public static T[] Repeat<T>(this int count, T value) => [.. Enumerable.Repeat(value, count)];
 
-   public static T[] Repeat<T>(this int count, Func<T> func) => 0.Until(count).Select(_ => func()).ToArray();
+   public static T[] Repeat<T>(this int count, Func<T> func) => [.. 0.Until(count).Select(_ => func())];
 
    public static T[] Repeat<T>(this T[] array, int count)
    {
@@ -408,7 +390,7 @@ public static class ArrayExtensions
          result.AddRange(array);
       }
 
-      return result.ToArray();
+      return [.. result];
    }
 
    public static Result<int> Assign<T>(this T[] array, out T var0, out T var1)
@@ -513,7 +495,7 @@ public static class ArrayExtensions
 
    public static Maybe<int[]> Indexes<T>(this T[] array, T item, int startIndex = 0)
    {
-      var list = new List<int>();
+      List<int> list = [];
       var index = Array.IndexOf(array, item, startIndex);
       if (index != -1)
       {
@@ -523,7 +505,7 @@ public static class ArrayExtensions
             index = Array.IndexOf(array, item, index + 1);
          }
 
-         return list.ToArray();
+         return (int[]) [.. list];
       }
       else
       {
@@ -541,7 +523,7 @@ public static class ArrayExtensions
 
    public static Hash<TKey, TValue> ToHash<TKey, TValue>(this (TKey, TValue)[] array) where TKey : notnull where TValue : notnull
    {
-      var hash = new Hash<TKey, TValue>();
+      Hash<TKey, TValue> hash = [];
       foreach (var (key, value) in array)
       {
          hash[key] = value;
@@ -644,9 +626,6 @@ public static class ArrayExtensions
 
    public static bool AllEqualTo<T>(this T[] left, T[] right) where T : IEquatable<T>
    {
-      left.Must().Not.BeNullOrEmpty().OrThrow();
-      right.Must().Not.BeNullOrEmpty().OrThrow();
-
       if (left.Length != right.Length)
       {
          return false;
@@ -665,5 +644,5 @@ public static class ArrayExtensions
       }
    }
 
-   public static T[] RemoveAt<T>(this T[] array, int index) => array.Indexed().Where(t => t.Item1 != index).Select(t => t.Item2).ToArray();
+   public static T[] RemoveAt<T>(this T[] array, int index) => [.. array.Indexed().Where(t => t.index != index).Select(t => t.item)];
 }

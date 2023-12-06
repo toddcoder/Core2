@@ -11,7 +11,8 @@ public class HashExceptions : Exception, IHash<string, Exception>
 
    public HashExceptions(bool ignoreCase)
    {
-      exceptions = new StringHash<Exception>(ignoreCase);
+      exceptions = [];
+      exceptions = exceptions.CaseIgnore(ignoreCase);
    }
 
    public Exception this[string key]

@@ -1,4 +1,5 @@
 ﻿using Core.Collections;
+using Core.Numbers;
 using Core.Strings;
 
 namespace Core.WinForms.Controls;
@@ -28,8 +29,8 @@ public class UiActionScroller
       lineCount = clientRectangle.Height / height;
       lastLine = lineCount - 1;
       currentLine = 0;
-      lines = Enumerable.Range(0, lineCount).Select(_ => "").ToArray();
-      sizes = new StringHash<Size>(false);
+      lines = [.. 0.Until(lineCount).Select(_ => "")];
+      sizes = [];
    }
 
    protected Size lineSize(string text) => sizes.Memoize(text, t => TextRenderer.MeasureText(t, font));

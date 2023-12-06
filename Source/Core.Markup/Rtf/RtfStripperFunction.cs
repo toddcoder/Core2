@@ -72,7 +72,7 @@ public static class RtfStripperFunction
       "xmlopen"
    };
 
-   private static StringHash specialCharacters = new(true)
+   private static StringHash specialCharacters = new()
    {
       { "par", "\n" },
       { "sect", "\n\n" },
@@ -88,7 +88,7 @@ public static class RtfStripperFunction
       { "lquote", "\u2018" },
       { "rquote", "\u2019" },
       { "ldblquote", "\u201C" },
-      { "rdblquote", "\u201D" },
+      { "rdblquote", "\u201D" }
    };
 
    public static Result<string> stripRichTextFormat(string inputRtf)

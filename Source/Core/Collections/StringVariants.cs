@@ -34,8 +34,8 @@ public class StringVariants : IHash<string, string>
 
    public StringVariants()
    {
-      templates = new StringHash(true);
-      keyValues = new StringHash<KeyValue>(true);
+      templates = [];
+      keyValues = [];
       _templateName = nil;
    }
 

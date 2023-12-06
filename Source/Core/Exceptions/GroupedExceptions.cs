@@ -32,8 +32,8 @@ public class GroupedExceptions<T> : ApplicationException, IEnumerable<GroupedExc
 
    public GroupedExceptions()
    {
-      data = new StringHash<Set<T>>(true);
-      stackTraces = new StringHash(true);
+      data = [];
+      stackTraces = [];
    }
 
    public void Add<TState>(TState state, Exception exception, Func<TState, Exception, T> extract)
@@ -46,7 +46,7 @@ public class GroupedExceptions<T> : ApplicationException, IEnumerable<GroupedExc
       }
       else
       {
-         data[key] = new Set<T> { result };
+         data[key] = [result];
       }
 
       stackTraces[key] = exception.StackTrace ?? "";

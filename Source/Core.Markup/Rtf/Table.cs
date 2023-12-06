@@ -17,7 +17,7 @@ public class Table : Block
       public CellData()
       {
          Text = string.Empty;
-         Specifiers = Array.Empty<object>();
+         Specifiers = [];
          PendingFormatter = nil;
          ImageFile = nil;
          ImageFileType = nil;
@@ -114,10 +114,10 @@ public class Table : Block
 
       TableBuilder = nil;
 
-      cells = Array.Empty<TableCell[]>();
-      rowHeights = Array.Empty<float>();
-      rowKeepInSamePage = Array.Empty<bool>();
-      cellPadding = Array.Empty<Margins>();
+      cells = [];
+      rowHeights = [];
+      rowKeepInSamePage = [];
+      cellPadding = [];
    }
 
    public Maybe<CellData> CurrentCell => _currentCell;
@@ -129,7 +129,7 @@ public class Table : Block
 
    public Table Row()
    {
-      rows.Add(new List<CellData>());
+      rows.Add([]);
       rowIndex = rows.Count - 1;
 
       return this;

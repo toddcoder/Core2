@@ -106,7 +106,7 @@ public class ConfigurationResult
 
    public Result<string[]> Strings(string key) => String(key).Map(s => s.Unjoin("/s* ',' /s*"));
 
-   public Result<string[]> SettingTexts(string key) => Setting(key).Map(s => s.Items().Select(i => i.text).ToArray());
+   public Result<string[]> SettingTexts(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.text)]);
 
-   public Result<string[]> SettingKeys(string key) => Setting(key).Map(s => s.Items().Select(i => i.key).ToArray());
+   public Result<string[]> SettingKeys(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.key)]);
 }

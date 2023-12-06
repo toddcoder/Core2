@@ -12,9 +12,9 @@ public class CommandAttribute : Attribute, IHash<string, string>
 {
    protected static StringHash getReplacements(string source)
    {
-      var hash = new StringHash(true);
+      StringHash hash = [];
 
-      var items = source.Unjoin(@"/s* -(< '\') ';' /s*; f").Select(i => i.Replace(@"\;", ";")).ToArray();
+      string[] items = [.. source.Unjoin(@"/s* -(< '\') ';' /s*; f").Select(i => i.Replace(@"\;", ";"))];
       foreach (var item in items)
       {
          if (item.Matches("^ /(-[':']+) ':' /s* /(.+) $; f") is (true, var (key, value)))

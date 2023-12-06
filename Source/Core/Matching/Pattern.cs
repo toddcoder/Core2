@@ -8,7 +8,6 @@ using Core.Numbers;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.GetHashCodeGenerator;
-using RMatch = System.Text.RegularExpressions.Match;
 using RGroup = System.Text.RegularExpressions.Group;
 using RRegex = System.Text.RegularExpressions.Regex;
 
@@ -93,8 +92,9 @@ public class Pattern : IEquatable<Pattern>
 
    static Pattern()
    {
-      friendlyPatterns = new StringHash<string>(true);
-      compiledRegex = new StringHash<RRegex>(false);
+      friendlyPatterns = [];
+      compiledRegex = [];
+      compiledRegex = compiledRegex.CaseAware();
       isFriendly = true;
    }
 
@@ -138,15 +138,13 @@ public class Pattern : IEquatable<Pattern>
                Index = m.Index,
                Length = m.Length,
                Text = m.Value,
-               Groups = m.Groups.Cast<RGroup>()
-                  .Select((g, j) => new Group { Index = g.Index, Length = g.Length, Text = g.Value, Which = j })
-                  .ToArray(),
+               Groups = [.. m.Groups.Cast<RGroup>().Select((g, j) => new Group { Index = g.Index, Length = g.Length, Text = g.Value, Which = j })],
                Which = i
             });
-         var matches = newMatches.ToArray();
+         Match[] matches = [.. newMatches];
          var slicer = new Slicer(input);
-         var indexesToNames = new Hash<int, string>();
-         var namesToIndexes = new StringHash<int>(true);
+         Hash<int, string> indexesToNames = [];
+         StringHash<int> namesToIndexes = [];
          foreach (var name in rRegex.GetGroupNames())
          {
             if (RRegex.IsMatch(name, @"^[+-]?\d+$"))

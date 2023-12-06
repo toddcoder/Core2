@@ -18,7 +18,7 @@ public class Scheduler
 
    public Scheduler(string source, bool autoNext = false, bool noSchedules = false)
    {
-      schedules = source.Unjoin("/s* ',' /s*; f").Select(s => new Schedule(s, autoNext)).ToArray();
+      schedules = [.. source.Unjoin("/s* ',' /s*; f").Select(s => new Schedule(s, autoNext))];
       lastScheduleIndex = -1;
       nextScheduleIndex = -1;
       _lastTargetDateTime = nil;

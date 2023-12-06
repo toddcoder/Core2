@@ -117,7 +117,7 @@ public abstract class CommandLineInterface : IDisposable
 
    public virtual void SaveAliases(FileName aliasFile)
    {
-      aliasFile.Lines = aliases.Select(kv => $"{kv.Key}~{kv.Value}").ToArray();
+      aliasFile.Lines = [.. aliases.Select(kv => $"{kv.Key}~{kv.Value}")];
    }
 
    protected Result<(MethodInfo methodInfo, EntryPointType entryPointType)> getEntryPoint()
@@ -480,10 +480,12 @@ public abstract class CommandLineInterface : IDisposable
 
    protected void useWithParameters(MethodInfo methodInfo, string prefix, string suffix, string commandLine)
    {
-      var _arguments = methodInfo.GetParameters()
-         .Select(p => (p.Name, p.ParameterType, defaultValue: maybe<object>() & p.HasDefaultValue & (() => p.DefaultValue!)))
-         .Select(t => retrieveItem(t.Name!, t.ParameterType, t.defaultValue, prefix, suffix, commandLine))
-         .ToArray();
+      Result<object>[] _arguments =
+      [
+         ..methodInfo.GetParameters()
+            .Select(p => (p.Name, p.ParameterType, defaultValue: maybe<object>() & p.HasDefaultValue & (() => p.DefaultValue!)))
+            .Select(t => retrieveItem(t.Name!, t.ParameterType, t.defaultValue, prefix, suffix, commandLine))
+      ];
       var _failure = _arguments.FirstOrNone(p => !p);
       if (_failure is (true, var failure))
       {
@@ -497,7 +499,7 @@ public abstract class CommandLineInterface : IDisposable
          try
          {
             Running = true;
-            methodInfo.Invoke(this, _arguments.Select(a => a.ForceValue()).ToArray());
+            methodInfo.Invoke(this, [.._arguments.Select(a => a.ForceValue())]);
          }
          catch (Exception exception)
          {
@@ -557,7 +559,7 @@ public abstract class CommandLineInterface : IDisposable
          try
          {
             Running = true;
-            methodInfo.Invoke(this, Array.Empty<object>());
+            methodInfo.Invoke(this, []);
          }
          catch (Exception exception)
          {

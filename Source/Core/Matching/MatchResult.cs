@@ -15,7 +15,7 @@ public class MatchResult : IEnumerable<Match>
 {
    public static MatchResult Empty
    {
-      get => new(Array.Empty<Match>(), new Hash<int, string>(), new StringHash<int>(true), new Slicer(string.Empty), string.Empty, "");
+      get => new([], [], [], new Slicer(string.Empty), string.Empty, "");
    }
 
    protected Match[] matches;
@@ -264,7 +264,9 @@ public class MatchResult : IEnumerable<Match>
 
    public StringHash<string> ToStringHash(bool ignoreCase)
    {
-      var hash = new StringHash<string>(ignoreCase);
+      StringHash<string> hash = [];
+      hash = hash.CaseIgnore(ignoreCase);
+
       for (var i = 0; i < GroupCount(0); i++)
       {
          var _name = indexesToNames.Maybe[i];
@@ -407,7 +409,7 @@ public class MatchResult : IEnumerable<Match>
 
    public Optional<MatchResult> MatchedBy(Pattern pattern) => pattern.MatchedBy(Unmatched);
 
-   public string[] Groups(int matchIndex) => getMatch(matchIndex).Groups.Select(g => g.GetSlice(slicer)).ToArray();
+   public string[] Groups(int matchIndex) => [.. getMatch(matchIndex).Groups.Select(g => g.GetSlice(slicer))];
 
    public string EvaluateMatches(Func<Match, int, Maybe<string>> func)
    {
@@ -432,7 +434,7 @@ public class MatchResult : IEnumerable<Match>
 
       foreach (var match in matches)
       {
-         var groups = skipGroup0 ? match.Groups.Skip(1).ToArray() : match.Groups;
+         var groups = skipGroup0 ? [.. match.Groups.Skip(1)] : match.Groups;
          var groupIndex = skipGroup0 ? 1 : 0;
          foreach (var group in groups)
          {

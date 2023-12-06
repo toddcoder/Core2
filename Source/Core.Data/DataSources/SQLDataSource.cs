@@ -122,7 +122,7 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
    public SqlDataSource(string connectionString, TimeSpan timeout) : base(connectionString, timeout)
    {
       CommandTimeout = timeout;
-      attributes = new StringHash<string>(true);
+      attributes = [];
       recordCount = 0;
 
       TableName = "";
@@ -175,7 +175,7 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
       }
 
       var sqlConnection = new SqlConnection(connectionString);
-      if (Message != null)
+      if (Message is not null)
       {
          sqlConnection.InfoMessage += Message;
          sqlConnection.FireInfoMessageEventOnUserErrors = true;

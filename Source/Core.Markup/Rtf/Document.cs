@@ -40,7 +40,7 @@ public class Document : BlockList
       header = new HeaderFooter(HeaderFooterType.Header);
       footer = new HeaderFooter(HeaderFooterType.Footer);
 
-      fontTable = new StringHash<int>(true) { [DefaultValue.FONT] = 0 };
+      fontTable = new StringHash<int> { [DefaultValue.FONT] = 0 };
       colorTable = new Hash<Color, int> { [new Color()] = 0 };
       _ = Color("blue");
    }

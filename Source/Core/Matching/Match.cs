@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Arrays;
@@ -15,7 +14,7 @@ public class Match : Group, IEnumerable<Group>
    public Match()
    {
       matchResult = new LateLazy<MatchResult>(errorMessage: "Match result has not been set");
-      Groups = Array.Empty<Group>();
+      Groups = [];
    }
 
    public MatchResult MatchResult

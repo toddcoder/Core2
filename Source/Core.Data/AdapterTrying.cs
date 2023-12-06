@@ -38,5 +38,5 @@ public class AdapterTrying<T> where T : class
 
    public Result<Adapter<T>> WithNewCommand(string newCommand) => tryTo(() => adapter.WithNewCommand(newCommand));
 
-   public Result<T[]> ToArray() => Enumerable().Map(e => e.ToArray());
+   public Result<T[]> ToArray() => Enumerable().Map(e => (T[]) [.. e]);
 }

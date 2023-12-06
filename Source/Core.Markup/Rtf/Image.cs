@@ -5,7 +5,6 @@ namespace Core.Markup.Rtf;
 
 public class Image : Block
 {
-   //protected FileName imageFile;
    protected ImageFileType imageFileType;
    protected byte[] imageBytes;
    protected Alignment alignment;
@@ -141,7 +140,7 @@ public class Image : Block
             result.AppendLine();
          }
 
-         result.AppendFormat("{0:x2}", imageBytes[i]);
+         result.Append($"{imageBytes[i]:x2}");
       }
 
       return result.ToString();

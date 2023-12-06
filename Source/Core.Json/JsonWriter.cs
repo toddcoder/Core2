@@ -90,7 +90,7 @@ public class JsonWriter : IDisposable
 
    public void Write<T>(string propertyName, T[] values)
    {
-      var stringArray = values.Select(o => o!.ToNonNullString()).ToArray();
+      string[] stringArray = [.. values.Select(o => o!.ToNonNullString())];
       Write(propertyName, stringArray);
    }
 

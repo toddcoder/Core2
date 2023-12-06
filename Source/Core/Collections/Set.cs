@@ -84,7 +84,7 @@ public class Set<T> : IEnumerable<T>, IEquatable<Set<T>>
 
    public virtual bool Contains(T item) => content.Contains(item);
 
-   public Set<T> Clone() => _equalityComparer.Map(ec => new Set<T>(content.ToArray(), ec)) | (() => new Set<T>(content.ToArray()));
+   public Set<T> Clone() => _equalityComparer.Map(ec => new Set<T>(content, ec)) | (() => new Set<T>(content));
 
    public Set<T> Union(IEnumerable<T> enumerable)
    {
@@ -155,7 +155,13 @@ public class Set<T> : IEnumerable<T>, IEquatable<Set<T>>
 
    IEnumerator IEnumerable.GetEnumerator() => content.GetEnumerator();
 
-   public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)content).GetEnumerator();
+   public IEnumerator<T> GetEnumerator()
+   {
+      foreach (var item in content)
+      {
+         yield return item;
+      }
+   }
 
    public bool Equals(Set<T>? other)
    {

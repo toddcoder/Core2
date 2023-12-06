@@ -16,7 +16,7 @@ public class JsonLogger : Logger
       jsonWriter = new JsonWriter();
       jsonWriter.BeginObject();
 
-      counts = new AutoStringHash<int>(true, _ => 0, true);
+      counts = new AutoStringHash<int>(_ => 0, true);
    }
 
    public override void WriteRaw(char prefix, string message)

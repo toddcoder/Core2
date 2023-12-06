@@ -74,7 +74,7 @@ public class DataTests
          select adapterFromSetup;
       if (_adapter is (true, var adapter))
       {
-         var data = adapter.ToArray();
+         ColumnData[] data = [.. adapter];
          foreach (var columnData in data)
          {
             Console.WriteLine(columnData);
@@ -118,7 +118,7 @@ public class DataTests
       if (_adapter is (true, var adapter))
       {
          adapter.ConnectionString = TRUE_CONNECTION_STRING;
-         var data = adapter.ToArray();
+         ColumnData[] data = [.. adapter];
          foreach (var columnData in data)
          {
             Console.WriteLine(columnData);

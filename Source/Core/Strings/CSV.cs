@@ -28,7 +28,7 @@ public class Csv : IEnumerable<IEnumerable<string>>
 
       public Record()
       {
-         fields = new List<string>();
+         fields = [];
          isEmpty = true;
       }
 
@@ -44,7 +44,7 @@ public class Csv : IEnumerable<IEnumerable<string>>
          }
       }
 
-      public string[] Fields => fields.ToArray();
+      public string[] Fields => [.. fields];
 
       public bool IsEmpty => isEmpty;
 
@@ -64,7 +64,7 @@ public class Csv : IEnumerable<IEnumerable<string>>
 
    public Csv(string source)
    {
-      records = new List<Record>();
+      records = [];
       delimitedText = DelimitedText.AsBasic();
       var destringified = delimitedText.Destringify(source);
       if (source.IsNotEmpty())
@@ -78,7 +78,7 @@ public class Csv : IEnumerable<IEnumerable<string>>
 
    internal Csv(IEnumerable<Record> records, DelimitedText delimitedText)
    {
-      this.records = new List<Record>();
+      this.records = [];
       this.delimitedText = delimitedText;
       var ignored = false;
       foreach (var record in records)

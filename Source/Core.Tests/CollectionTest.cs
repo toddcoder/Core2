@@ -5,7 +5,6 @@ using Core.Collections.Infix;
 using Core.DataStructures;
 using Core.Dates;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Arrays.ArrayFunctions;
 using static Core.Monads.Lazy.LazyRepeatingMonads;
 
 namespace Core.Tests;
@@ -57,7 +56,7 @@ public class CollectionTest
    {
       var queue = new PriorityQueue<int>();
 
-      foreach (var item in array(1, 5, 3, 6, 9))
+      foreach (var item in (int[]) [1, 5, 3, 6, 9])
       {
          queue.Enqueue(item);
       }

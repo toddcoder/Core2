@@ -24,7 +24,7 @@ public class Parameters : IEnumerable<Parameter>, IHash<string, Parameter>
 
    protected StringHash<Parameter> parameters;
 
-   public Parameters() => parameters = new StringHash<Parameter>(true);
+   public Parameters() => parameters = [];
 
    public Parameters(IEnumerable<Parameter> parameters) : this()
    {

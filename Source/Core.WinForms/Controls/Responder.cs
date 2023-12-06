@@ -78,7 +78,7 @@ public class Responder : UserControl, IHash<string, Responder.ResponderButton>
       FailedForeColor = Color.Red;
       FailedBackColor = Color.White;
 
-      responderButtons = buttonSpecifiers.Select(specifier => ResponderButton.FromText(control, specifier)).ToStringHash(rb => rb.Key, true);
+      responderButtons = buttonSpecifiers.Select(specifier => ResponderButton.FromText(control, specifier)).ToStringHash(rb => rb.Key);
 
       foreach (var (_, responderButton) in responderButtons)
       {

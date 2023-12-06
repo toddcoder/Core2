@@ -65,7 +65,7 @@ public class ChooserSet
       try
       {
          workingOn();
-         chooser.Choices = choices.ToStringHash(c => c, c => c, true);
+         chooser.Choices = choices.ToStringHash(c => c, c => c);
          return this;
       }
       finally
@@ -79,7 +79,7 @@ public class ChooserSet
       try
       {
          workingOn();
-         chooser.Choices = choices.ToStringHash(true);
+         chooser.Choices = choices.ToStringHash();
          return this;
       }
       finally
@@ -88,7 +88,7 @@ public class ChooserSet
       }
    }
 
-   public ChooserSet Choices(IEnumerable<string> choices) => Choices(choices.ToArray());
+   public ChooserSet Choices(IEnumerable<string> choices) => Choices([.. choices]);
 
    public ChooserSet ForeColor(Color foreColor)
    {

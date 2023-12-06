@@ -1,5 +1,6 @@
 ﻿using Core.Monads;
 using System.Drawing.Drawing2D;
+using Core.Enumerables;
 
 namespace Core.WinForms.Controls;
 
@@ -13,7 +14,7 @@ public class DeletableWriter : AlternateWriter
    public DeletableWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling) :
       base(uiAction, alternates, autoSizeText, _floor, _ceiling)
    {
-      deletableRectangles = Enumerable.Range(0, alternates.Length).Select(_ => Rectangle.Empty).ToArray();
+      deletableRectangles = [.. 0.UpTo(alternates.Length).Select(_ => Rectangle.Empty)];
    }
 
    protected override (int penSize, Rectangle textRectangle, Rectangle smallRectangle) splitRectangle(Rectangle rectangle)

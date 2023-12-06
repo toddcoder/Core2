@@ -211,7 +211,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
 
    public Result<Hash<string, object>> AnyHash()
    {
-      var hash = new Hash<string, object>();
+      Hash<string, object> hash = [];
       var info = obj!.GetType().GetProperties();
 
       foreach (var pInfo in info)
@@ -222,16 +222,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
       return hash;
    }
 
-   public Signature[] Signatures
-   {
-      get
-      {
-         return type
-            .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-            .Select(i => new Signature(i.Name))
-            .ToArray();
-      }
-   }
+   public Signature[] Signatures => [.. type.GetProperties(BindingFlags.Instance | BindingFlags.Public).Select(i => new Signature(i.Name))];
 
    protected static bool attributeMatches<TAttribute>(PropertyInfo info) where TAttribute : Attribute
    {

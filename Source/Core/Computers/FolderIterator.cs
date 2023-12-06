@@ -60,7 +60,7 @@ public class FolderIterator : IEnumerable<FolderName>
                   yield return folder;
                }
 
-               var iterator = new FolderIterator(folder.FullPath, folderParts.Skip(index + 1).ToArray(), endOnly);
+               var iterator = new FolderIterator(folder.FullPath, [.. folderParts.Skip(index + 1)], endOnly);
                foreach (var subfolder in iterator)
                {
                   yield return subfolder;

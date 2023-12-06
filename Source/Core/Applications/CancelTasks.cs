@@ -53,7 +53,7 @@ public class CancelTasks<TTask, TState> : IList<TTask>, IDisposable
 
    public void WaitAll(TimeSpan timeout)
    {
-      WaitHandle.WaitAll(tasks.Select(t => (WaitHandle)t.Reset).ToArray(), timeout);
+      WaitHandle.WaitAll([..tasks.Select(t => (WaitHandle)t.Reset)], timeout);
    }
 
    protected void dispose()

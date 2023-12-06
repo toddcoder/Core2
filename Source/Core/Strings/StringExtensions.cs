@@ -50,7 +50,7 @@ public static class StringExtensions
       }
 
       var result = source.Repeat(count);
-      return result.Length <= maxLength ? result : result.Substring(0, maxLength);
+      return result.Length <= maxLength ? result : result[..maxLength];
    }
 
    public static string Repeat(this string source, int count, string connector)
@@ -72,12 +72,12 @@ public static class StringExtensions
    public static string Repeat(this string source, int count, int maxLength, string connector)
    {
       var result = source.Repeat(count, connector);
-      return result.Length <= maxLength ? result : result.Substring(0, maxLength);
+      return result.Length <= maxLength ? result : result[..maxLength];
    }
 
    public static string[] Lines(this string source, SplitType split)
    {
-      return source.IsEmpty() ? Array.Empty<string>() : source.Unjoin(splitPattern(split));
+      return source.IsEmpty() ? [] : source.Unjoin(splitPattern(split));
    }
 
    public static string[] Lines(this string source) => source.Unjoin("/r/n | /r | /n; f");
@@ -172,7 +172,7 @@ public static class StringExtensions
 
    public static string Elliptical(this string source, int limit, string upTo, bool pad = false, string ellipses = "…")
    {
-      var upToChars = upTo.ToArray();
+      char[] upToChars = [.. upTo];
       if (source.IsEmpty() || limit <= 0)
       {
          return string.Empty;
@@ -777,7 +777,7 @@ public static class StringExtensions
       }
    }
 
-   public static string Reverse(this string source) => source.Map(new string(source.Select(c => c).Reverse().ToArray()));
+   public static string Reverse(this string source) => source.Map(new string([.. source.Select(c => c).Reverse()]));
 
    public static string Succ(this string source)
    {
@@ -2139,7 +2139,7 @@ public static class StringExtensions
          return source;
       }
 
-      return split(source).ToArray().ToString("");
+      return split(source).ToString("");
    }
 
    [Obsolete("Use EqualTo")]

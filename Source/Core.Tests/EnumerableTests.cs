@@ -3,7 +3,6 @@ using Core.Enumerables;
 using Core.Monads;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Arrays.ArrayFunctions;
 
 namespace Core.Tests;
 
@@ -53,7 +52,7 @@ public class EnumerableTests
    [TestMethod]
    public void FirstOrFailTest()
    {
-      var testArray = 0.UpUntil(10).ToArray();
+      int[] testArray = [.. 0.UpUntil(10)];
       var _first = testArray.FirstOrFailure("Not found");
       if (_first is (true, var first))
       {
@@ -64,7 +63,7 @@ public class EnumerableTests
          Console.WriteLine(_first.Exception.Message);
       }
 
-      testArray = array<int>();
+      testArray = [];
       _first = testArray.FirstOrFailure("Not found");
       if (_first is (true, var first2))
       {
@@ -79,7 +78,7 @@ public class EnumerableTests
    [TestMethod]
    public void IndexesOfMinMaxTest()
    {
-      var source = array("alpha", "apples", "brat", "IP");
+      string[] source = ["alpha", "apples", "brat", "IP"];
 
       Console.WriteLine("Index of max");
       Console.WriteLine(source.IndexOfMax().Map(i => source[i]) | "empty");
@@ -103,7 +102,7 @@ public class EnumerableTests
    [TestMethod]
    public void MonadMinMaxTest()
    {
-      var strings = array("foobar", "foo", "a", "bar");
+      string[] strings = ["foobar", "foo", "a", "bar"];
       var _max = strings.MaxOrNone();
       if (_max)
       {
@@ -120,11 +119,11 @@ public class EnumerableTests
    [TestMethod]
    public void AllMatchTest()
    {
-      var left = array("foobar", "foo", "a", "bar");
-      var right = array(6, 3, 1, 3);
+      string[] left = ["foobar", "foo", "a", "bar"];
+      int[] right = [6, 3, 1, 3];
       left.AllMatch(right, (s, i) => s.Length == i).Must().BeTrue().OrThrow();
 
-      var right2 = array(5, 3, 1, 3);
+      int[] right2 = [5, 3, 1, 3];
       left.AllMatch(right2, (s, i) => s.Length == i).Must().BeTrue().OrThrow();
    }
 
@@ -158,7 +157,7 @@ public class EnumerableTests
    [TestMethod]
    public void ByTest()
    {
-      var numbers = 1.To(10).ToArray();
+      int[] numbers = [.. 1.To(10)];
       foreach (var by2 in numbers.Cluster(2))
       {
          Console.WriteLine("----------");
@@ -172,7 +171,7 @@ public class EnumerableTests
    [TestMethod]
    public void SortByListTest()
    {
-      ItemToSort[] array = { new("z"), new("a"), new("b"), new("c"), new("d"), new("e"), new("f"), new("y"), new("x") };
+      ItemToSort[] array = [new("z"), new("a"), new("b"), new("c"), new("d"), new("e"), new("f"), new("y"), new("x")];
       var enumerable = array.SortByList(i => i.Key, "f", "e", "b", "a", "c", "d");
       foreach (var itemToSort in enumerable)
       {
@@ -184,12 +183,12 @@ public class EnumerableTests
    public void ListOrderByTest()
    {
       SortableItem[] array =
-      {
+      [
          new() { Branch = "alpha", Order = "Good" }, new() { Branch = "bravo", Order = "Good" },
          new() { Branch = "charlie", Order = "Ugly" }, new() { Branch = "delta", Order = "Bad" },
          new() { Branch = "echo", Order = "Good" }, new() { Branch = "foxtrot", Order = "Ugly" }
-      };
-      var sorted = array.OrderBy(i => i.Order, new[] { "Good", "Bad", "Ugly" });
+      ];
+      var sorted = array.OrderBy(i => i.Order, ["Good", "Bad", "Ugly"]);
       foreach (var sortableItem in sorted)
       {
          Console.WriteLine($"{sortableItem.Branch}: {sortableItem.Order}");
@@ -197,7 +196,7 @@ public class EnumerableTests
 
       Console.WriteLine("=".Repeat(80));
 
-      sorted = array.OrderByDescending(i => i.Order, new[] { "Good", "Bad", "Ugly" }).ThenByDescending(i => i.Branch);
+      sorted = array.OrderByDescending(i => i.Order, ["Good", "Bad", "Ugly"]).ThenByDescending(i => i.Branch);
       foreach (var sortableItem in sorted)
       {
          Console.WriteLine($"{sortableItem.Branch}: {sortableItem.Order}");
@@ -207,13 +206,13 @@ public class EnumerableTests
    [TestMethod]
    public void LazyListTest()
    {
-      var list = new LazyList<int>
-      {
-         new[] { 1, 2, 3, 4, 5 },
+      LazyList<int> list =
+      [
+         .. (int[]) [1, 2, 3, 4, 5],
          111,
          153,
-         new[] { 555, 111, 222 }
-      };
+         .. (int[]) [555, 111, 222]
+      ];
       foreach (var item in list)
       {
          Console.WriteLine(item);
@@ -223,8 +222,8 @@ public class EnumerableTests
    [TestMethod]
    public void MergeTest()
    {
-      var left = new[] { 1, 2, 3, 4 };
-      var right = new[] { "a", "b", "c" };
+      int[] left = [1, 2, 3, 4];
+      string[] right = ["a", "b", "c"];
 
       foreach (var paired in left.Merge(right, (l, r) => l + r))
       {

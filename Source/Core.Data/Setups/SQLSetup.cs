@@ -69,7 +69,7 @@ public class SqlSetup : ISetup, ISetupWithInfo
       var _fieldsSetting = setupSetting.Maybe.Setting("fields");
       Fields = new Fields.Fields(_fieldsSetting);
 
-      attributes = new StringHash(true);
+      attributes = [];
       Handler = nil;
       loadAttributes(setupSetting.Maybe.Setting("attributes"));
    }
@@ -87,14 +87,14 @@ public class SqlSetup : ISetup, ISetupWithInfo
       Parameters = new Parameters.Parameters(setupObject.Parameters());
       Fields = new Fields.Fields(setupObject.Fields());
 
-      attributes = new StringHash(true);
+      attributes = [];
       Handler = nil;
       loadAttributes(setupObject.Attributes);
    }
 
    internal SqlSetup(Maybe<Setting> attributesSetting)
    {
-      attributes = new StringHash(true);
+      attributes = [];
       Handler = nil;
       CommandText = string.Empty;
       ConnectionString = null!;
@@ -125,16 +125,16 @@ public class SqlSetup : ISetup, ISetupWithInfo
       }
       else
       {
-         Fields = new Fields.Fields();
+         Fields = [];
       }
 
-      attributes = new StringHash(true);
+      attributes = [];
       Handler = nil;
    }
 
    internal SqlSetup()
    {
-      attributes = new StringHash(true);
+      attributes = [];
       Handler = nil;
       ConnectionString = null!;
       CommandText = null!;

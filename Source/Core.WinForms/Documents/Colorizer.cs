@@ -17,7 +17,7 @@ public class Colorizer
    public Colorizer(Pattern pattern, string colors)
    {
       this.pattern = pattern;
-      this.colors = colors.Unjoin("/s* ',' /s*; f").Select(Color.FromName).ToArray();
+      this.colors = [.. colors.Unjoin("/s* ',' /s*; f").Select(Color.FromName)];
    }
 
    public void Colorize(RichTextBox textBox)

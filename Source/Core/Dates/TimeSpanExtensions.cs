@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Core.Arrays;
+using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
@@ -57,7 +57,7 @@ public static class TimeSpanExtensions
          list.Add("0 seconds");
       }
 
-      return list.ToArray().Andify();
+      return list.Andify();
    }
 
    public static string ToShortString(this TimeSpan span, bool includeMilliseconds)

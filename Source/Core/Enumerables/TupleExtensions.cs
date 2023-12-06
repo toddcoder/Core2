@@ -32,7 +32,7 @@ public static class TupleExtensions
 
    public static (IEnumerable<T1>, IEnumerable<T2>) Split<T1, T2>(this IEnumerable<(T1, T2)> enumerable)
    {
-      var array = enumerable.ToArray();
+      (T1, T2)[] array = [.. enumerable];
       var enumerable1 = array.Select(t => t.Item1);
       var enumerable2 = array.Select(t => t.Item2);
 
@@ -41,7 +41,7 @@ public static class TupleExtensions
 
    public static (IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>) Split<T1, T2, T3>(this IEnumerable<(T1, T2, T3)> enumerable)
    {
-      var array = enumerable.ToArray();
+      (T1, T2, T3)[] array = [.. enumerable];
       var enumerable1 = array.Select(t => t.Item1);
       var enumerable2 = array.Select(t => t.Item2);
       var enumerable3 = array.Select(t => t.Item3);
@@ -52,7 +52,7 @@ public static class TupleExtensions
    public static (IEnumerable<T1>, IEnumerable<T2>, IEnumerable<T3>, IEnumerable<T4>) Split<T1, T2, T3, T4>(
       this IEnumerable<(T1, T2, T3, T4)> enumerable)
    {
-      var array = enumerable.ToArray();
+      (T1, T2, T3, T4)[] array = [.. enumerable];
       var enumerable1 = array.Select(t => t.Item1);
       var enumerable2 = array.Select(t => t.Item2);
       var enumerable3 = array.Select(t => t.Item3);

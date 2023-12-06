@@ -17,7 +17,7 @@ public class JobQueue
    {
       this.affinityCount = affinityCount;
 
-      queues = Enumerable.Range(0, this.affinityCount).Select(_ => new MaybeQueue<Action<int>>()).ToArray();
+      queues = [.. Enumerable.Range(0, this.affinityCount).Select(_ => new MaybeQueue<Action<int>>())];
       locker = new object();
       currentAffinity = 0;
    }

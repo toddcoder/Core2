@@ -18,7 +18,7 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
 
    static Adapters()
    {
-      setups = new StringHash<Func<DataSettings, string, ISetup>>(true)
+      setups = new StringHash<Func<DataSettings, string, ISetup>>
       {
          ["sql"] = (dataGroups, adapterName) =>
          {
@@ -44,8 +44,8 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
    public Adapters(DataSettings dataSettings, params string[] validAdapterNames)
    {
       this.dataSettings = dataSettings;
-      adapters = new StringHash<Adapter<T>>(true);
-      validAdapters = new StringSet(true);
+      adapters = [];
+      validAdapters = [];
       if (validAdapterNames.Length == 0)
       {
          isValidAdapterName = _ => true;
@@ -60,7 +60,7 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
    protected Adapters(DataSettings dataSettings, StringHash<Adapter<T>> adapters, StringSet validAdapters, Predicate<string> isValidAdapterName)
    {
       this.dataSettings = dataSettings;
-      this.adapters = new StringHash<Adapter<T>>(true, adapters);
+      this.adapters = new StringHash<Adapter<T>>(adapters);
       this.validAdapters = new StringSet(true, validAdapters);
       this.isValidAdapterName = isValidAdapterName;
    }

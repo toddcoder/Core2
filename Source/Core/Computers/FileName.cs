@@ -539,7 +539,7 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
       }
 
       {
-         var selectedSubfolders = subfolders.Skip(skipCount).ToArray().ToString(@"\");
+         var selectedSubfolders = subfolders.Skip(skipCount).ToString(@"\");
          return $@"{selectedSubfolders}\{NameExtension}";
       }
    }

@@ -154,7 +154,7 @@ public abstract class Database
          using var reader = ExecuteDataReader(command, commandText, parameters);
          if (reader.Read())
          {
-            var result = new StringHash(true);
+            StringHash result = [];
             var value = reader.GetValues();
             for (var i = 0; i < value.Count; i++)
             {

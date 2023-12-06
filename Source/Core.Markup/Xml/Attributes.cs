@@ -10,7 +10,7 @@ public class Attributes : IEnumerable<Attribute>
 
    public Attributes()
    {
-      attributes = new StringHash<Attribute>(true);
+      attributes = [];
       Quote = QuoteType.Double;
    }
 

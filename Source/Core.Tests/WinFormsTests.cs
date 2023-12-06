@@ -177,7 +177,7 @@ public class WinFormsTests
    public void StatusesTest()
    {
       var form = new Form();
-      var uiActions = Enumerable.Range(0, 4).Select(_ => new UiAction(form)).ToArray();
+      UiAction[] uiActions = [.. Enumerable.Range(0, 4).Select(_ => new UiAction(form))];
       var width = form.ClientSize.Width - 20;
       for (var i = 0; i < 4; i++)
       {

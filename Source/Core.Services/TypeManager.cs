@@ -17,12 +17,12 @@ public class TypeManager
 {
    protected static StringHash assemblyNamesFrom(Setting assembliesSetting)
    {
-      return assembliesSetting.Settings().ToStringHash(i => i.key, i => i.setting.Value.String("path"), true);
+      return assembliesSetting.Settings().ToStringHash(i => i.key, i => i.setting.Value.String("path"));
    }
 
    protected static StringHash typeNamesFrom(Setting typesSetting)
    {
-      return typesSetting.Items().ToStringHash(i => i.key, i => i.text, true);
+      return typesSetting.Items().ToStringHash(i => i.key, i => i.text);
    }
 
    public static Result<TypeManager> FromConfiguration(Configuration configuration)
@@ -49,10 +49,10 @@ public class TypeManager
       this.assemblyNames = assemblyNames;
       this.typeNames = typeNames;
 
-      assemblyCache = new StringHash<Assembly>(true);
+      assemblyCache = [];
       _defaultAssemblyName = assemblyNames.Tuples().FirstOrNone(i => i.key == "default").Map((_, path) => path);
 
-      typeCache = new StringHash<Type>(true);
+      typeCache = [];
       _defaultTypeName = typeNames.Tuples().FirstOrNone(i => i.key == "default").Map((_, typeName) => typeName);
    }
 

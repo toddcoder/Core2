@@ -13,7 +13,7 @@ public class StyleBuilder
 
    public StyleBuilder()
    {
-      styles = new AutoStringHash<List<string>>(true, _ => new List<string>(), true);
+      styles = new AutoStringHash<List<string>>(_ => [], true);
       _key = nil;
    }
 

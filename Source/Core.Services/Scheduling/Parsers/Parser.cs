@@ -25,7 +25,7 @@ public abstract class Parser
    {
       validator = new Validator();
       year = month = day = hour = minute = second = 0;
-      tokens = Array.Empty<string>();
+      tokens = [];
       Bracket = new AlwaysBracket();
    }
 
@@ -38,7 +38,7 @@ public abstract class Parser
       {
          tokens = _tokens;
          var lastIndex = tokens.Length - 1;
-         var values = tokens.Where((_, i) => i.Between(1).Until(lastIndex)).Select(t => t.Value().Int32(-1)).ToArray();
+         int[] values = [.. tokens.Where((_, i) => i.Between(1).Until(lastIndex)).Select(t => t.Value().Int32(-1))];
          var bracketSource = tokens[lastIndex];
          var _times = bracketSource.Matches(PATTERN_UNADORNED_BRACKET);
          if (_times is (true, var (begin, end)))

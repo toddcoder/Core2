@@ -2,7 +2,6 @@
 using Core.Collections;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Arrays.ArrayFunctions;
 
 namespace Core.Tests;
 
@@ -11,7 +10,7 @@ public class HashTest
 {
    protected static void test(AutoHash<string, int> autoHash, string message, Func<string, int> newLambda)
    {
-      var keys = array("alpha", "bravo", "charlie");
+      string[] keys = ["alpha", "bravo", "charlie"];
 
       Console.WriteLine("-".Repeat(80));
       Console.WriteLine(message.LeftJustify(80, '-'));
@@ -43,7 +42,7 @@ public class HashTest
    [TestMethod]
    public void StringHashTest()
    {
-      var hash = new StringHash<int>(true) { ["alpha"] = 0, ["bravo"] = 1, ["charlie"] = 2 };
+      StringHash<int> hash = new() { ["alpha"] = 0, ["bravo"] = 1, ["charlie"] = 2 };
       hash.Must().HaveKeyOf("Bravo").OrThrow();
    }
 
@@ -51,7 +50,7 @@ public class HashTest
    public void GroupToHashTest()
    {
       var random = new Random(153);
-      var array = Enumerable.Range(0, 1000).Select(_ => random.Next(10)).ToArray();
+      int[] array = [.. Enumerable.Range(0, 1000).Select(_ => random.Next(10))];
       var _hash = array.GroupToHash(i => i < 5 ? "lower" : "upper");
       if (_hash is (true, var hash))
       {

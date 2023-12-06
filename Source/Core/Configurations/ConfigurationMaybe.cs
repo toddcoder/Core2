@@ -92,7 +92,7 @@ public class ConfigurationMaybe
 
    public Maybe<string[]> Strings(string key) => String(key).Map(s => s.Unjoin("/s* ',' /s*"));
 
-   public Maybe<string[]> SettingTexts(string key) => Setting(key).Map(s => s.Items().Select(i => i.text).ToArray());
+   public Maybe<string[]> SettingTexts(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.text)]);
 
-   public Maybe<string[]> SettingKeys(string key) => Setting(key).Map(s => s.Items().Select(i => i.key).ToArray());
+   public Maybe<string[]> SettingKeys(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.key)]);
 }

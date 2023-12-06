@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Assertions;
+using Core.Enumerables;
 
 namespace Core.Strings;
 
@@ -33,10 +34,9 @@ public class PadderArray
 
    public void EvaluateAll(IEnumerable<string> enumerable)
    {
-      var array = enumerable.ToArray();
-      for (var i = 0; i < array.Length; i++)
+      foreach (var (i, item) in enumerable.Indexed())
       {
-         Evaluate(i, array[i]);
+         Evaluate(i, item);
       }
    }
 

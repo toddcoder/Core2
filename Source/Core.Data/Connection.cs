@@ -11,7 +11,7 @@ public class Connection : IHash<string, string>
 
    public Connection(Setting connectionSetting)
    {
-      data = new StringHash(true);
+      data = [];
       Name = connectionSetting.Key;
       Type = connectionSetting.Maybe.String("type") | "sql";
       Timeout = connectionSetting.Maybe.String("timeout").Map(t => t.Maybe().TimeSpan()) | (() => 30.Seconds());

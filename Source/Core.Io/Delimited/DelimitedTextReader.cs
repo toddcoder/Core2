@@ -23,9 +23,9 @@ public class DelimitedTextReader : IDataReader, IEnumerable<string[]>
       this.fieldCount = fieldCount;
       fields = new string[fieldCount];
       buffer = new Buffer(reader, bufferSize, delimiter);
-      headers = new List<string>();
-      indexes = new StringHash<int>(true);
-      converters = new Hash<int, Func<string, object>>();
+      headers = [];
+      indexes = [];
+      converters = [];
       hasConverters = false;
       emptyRecord = false;
       currentFieldCount = this.fieldCount;

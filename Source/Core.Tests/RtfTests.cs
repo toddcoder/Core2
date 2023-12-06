@@ -1,7 +1,6 @@
 ﻿using Core.Markup.Rtf;
 using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Arrays.ArrayFunctions;
 using static Core.Markup.Rtf.RtfFunctions;
 using static Core.Markup.Rtf.RtfStripperFunction;
 using static Core.Monads.MonadFunctions;
@@ -292,7 +291,7 @@ public class RtfTests
    [TestMethod]
    public void RowsBuilderTest()
    {
-      var headers = array("Column 1", "Column 2", "Column 3");
+      string[] headers = ["Column 1", "Column 2", "Column 3"];
 
       var document = new Document();
       var font = document.Font("Times New Roman");

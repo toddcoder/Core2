@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Collections;
@@ -18,7 +17,7 @@ public class Arguments : IEnumerable<Argument>
       var delimitedText = DelimitedText.BothQuotes();
       var destringified = delimitedText.Destringify(arguments.Replace(@"\", @"\\"));
 
-      return destringified.Unjoin("/s+; f").Select(s => delimitedText.Restringify(s, RestringifyQuotes.None)).ToArray();
+      return [.. destringified.Unjoin("/s+; f").Select(s => delimitedText.Restringify(s, RestringifyQuotes.None))];
    }
 
    protected Argument[] arguments;
@@ -42,14 +41,14 @@ public class Arguments : IEnumerable<Argument>
 
    public Arguments()
    {
-      originalArguments = Array.Empty<string>();
-      arguments = Array.Empty<Argument>();
+      originalArguments = [];
+      arguments = [];
    }
 
    internal Arguments(Argument[] arguments)
    {
       this.arguments = arguments;
-      originalArguments = arguments.Select(a => a.Text).ToArray();
+      originalArguments = [.. arguments.Select(a => a.Text)];
       length = this.arguments.Length;
    }
 

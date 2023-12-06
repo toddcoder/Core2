@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Strings.Text;
+﻿namespace Core.Strings.Text;
 
 internal class Modification
 {
@@ -8,10 +6,10 @@ internal class Modification
    {
       RawData = rawData;
 
-      HashedItems = Array.Empty<int>();
-      RawData = Array.Empty<string>();
-      Modifications = Array.Empty<bool>();
-      Items = Array.Empty<string>();
+      HashedItems = [];
+      RawData = [];
+      Modifications = [];
+      Items = [];
    }
 
    public int[] HashedItems { get; set; }

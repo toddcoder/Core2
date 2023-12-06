@@ -83,13 +83,16 @@ public class PadderList
       return rows.Select(row => row.Columns(lengths, padTypes).ToString(columnSeparator));
    }
 
-   protected static PadType[] getPadTypes(string source) => source.ToCharArray().Select(c => c switch
-   {
-      'L' or 'l' => PadType.Left,
-      'r' or 'R' => PadType.Right,
-      'c' or 'C' => PadType.Center,
-      _ => PadType.Left
-   }).ToArray();
+   protected static PadType[] getPadTypes(string source) =>
+   [
+      .. source.ToCharArray().Select(c => c switch
+      {
+         'L' or 'l' => PadType.Left,
+         'r' or 'R' => PadType.Right,
+         'c' or 'C' => PadType.Center,
+         _ => PadType.Left
+      })
+   ];
 
    public IEnumerable<string> Lines(string columnSeparator, string padTypes)
    {

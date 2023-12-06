@@ -55,7 +55,7 @@ public class MaybeQueue<T> : IQueue<T>, IEnumerable<T> where T : notnull
    {
       return
          from assertion in index.Must().BeBetween(0).Until(Count).OrFailure()
-         from item in tryTo(() => queue.Skip(index).Take(1).ToArray()[0])
+         from item in tryTo(() => ((T[]) [.. queue.Skip(index).Take(1)])[0])
          select item;
    }
 
@@ -73,7 +73,7 @@ public class MaybeQueue<T> : IQueue<T>, IEnumerable<T> where T : notnull
 
    public Maybe<T> Peek() => maybe<T>() & IsNotEmpty & (() => queue.Peek());
 
-   public T[] ToArray() => queue.ToArray();
+   public T[] ToArray() => [.. queue];
 
    public void TrimExcess() => queue.TrimExcess();
 

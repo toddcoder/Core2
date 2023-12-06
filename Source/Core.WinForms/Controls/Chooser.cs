@@ -38,7 +38,7 @@ public partial class Chooser : Form
       this.title = title;
       this.uiAction = uiAction;
 
-      choices = new StringHash(true);
+      choices = [];
       _foreColor = nil;
       _backColor = nil;
       _nilItem = "none";

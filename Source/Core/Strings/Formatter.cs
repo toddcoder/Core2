@@ -68,23 +68,22 @@ public class Formatter : IHash<string, string>
 
    public static string[] NamesInString(string source)
    {
-      var emptyArray = Array.Empty<string>();
       if (source.IsNotEmpty())
       {
          var _result = source.Matches(REGEX_NAME);
-         return _result.Map(r => 0.Until(r.MatchCount).Select(i => r[i, 1]).ToArray()) | emptyArray;
+         return _result.Map(r => (string[]) [.. 0.Until(r.MatchCount).Select(i => r[i, 1])]) | [];
       }
       else
       {
-         return emptyArray;
+         return [];
       }
    }
 
    protected AutoStringHash names;
 
-   public Formatter() => names = new AutoStringHash(true, _ => string.Empty);
+   public Formatter() => names = new AutoStringHash(_ => string.Empty);
 
-   public Formatter(Dictionary<string, string> initializers) => names = new AutoStringHash(true, initializers);
+   public Formatter(Dictionary<string, string> initializers) => names = new AutoStringHash(initializers);
 
    public Formatter(Formatter formatter) : this()
    {
@@ -106,9 +105,9 @@ public class Formatter : IHash<string, string>
 
    public HashInterfaceMaybe<string, string> Items => new(this);
 
-   public string[] Names => names.Select(item => item.Key).ToArray();
+   public string[] Names => [.. names.Select(item => item.Key)];
 
-   public string[] Values => names.Select(item => item.Value).ToArray();
+   public string[] Values => [.. names.Select(item => item.Value)];
 
    public AutoStringHash Replacements => names;
 

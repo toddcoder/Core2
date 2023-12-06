@@ -25,7 +25,7 @@ public class LazyList<T> : IList<T>
    {
       if (!_flattened)
       {
-         _flattened = enumerables.Flatten().ToArray();
+         _flattened = (T[]) [.. enumerables.Flatten()];
          Flattened?.Invoke(this, EventArgs.Empty);
       }
    }

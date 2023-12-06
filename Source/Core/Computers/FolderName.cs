@@ -62,7 +62,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
       return newFolder;
    }
 
-   public static FolderName CreateRootOnly(string root) => new(root, Array.Empty<string>());
+   public static FolderName CreateRootOnly(string root) => new(root, (string[]) []);
 
    protected static FolderName specialFolder(Environment.SpecialFolder folder) => Environment.GetFolderPath(folder);
 
@@ -306,14 +306,14 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
             var newValue = value;
             while (newValue.StartsWith(@"\"))
             {
-               newValue = newValue.Substring(1);
+               newValue = newValue.Drop(1);
             }
 
             subfolders = newValue.Split('\\');
          }
          else
          {
-            subfolders = Array.Empty<string>();
+            subfolders = [];
          }
       }
    }
@@ -327,7 +327,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
             var copy = new string[subfolders.Length];
             subfolders.CopyTo(copy, 0);
 
-            return copy.Reverse().ToArray();
+            return [.. copy.Reverse()];
          }
          else
          {
@@ -400,14 +400,14 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
       {
          while (subfolders.StartsWith(@"\"))
          {
-            subfolders = subfolders.Substring(1);
+            subfolders = subfolders.Drop(1);
          }
 
          return subfolders.Unjoin(@"'\'; f");
       }
       else
       {
-         return Array.Empty<string>();
+         return [];
       }
    }
 
@@ -431,7 +431,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
       setFullPath();
    }
 
-   protected void initialize(string newRoot) => initialize(newRoot, Array.Empty<string>());
+   protected void initialize(string newRoot) => initialize(newRoot, []);
 
    protected void setFullPath(string folder)
    {
@@ -442,7 +442,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
       string folderSubfolders;
       if (folder.StartsWith(folderRoot))
       {
-         folderSubfolders = folder.Substring(folderRoot.Length);
+         folderSubfolders = folder.Drop(folderRoot.Length);
       }
       else
       {
@@ -451,10 +451,10 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
 
       if (folderSubfolders.StartsWith(@"\"))
       {
-         folderSubfolders = folderSubfolders.Substring(1);
+         folderSubfolders = folderSubfolders.Drop(1);
       }
 
-      initialize(folderRoot, folderSubfolders.IsEmpty() ? Array.Empty<string>() : folderSubfolders.Unjoin(@"'\'; f"));
+      initialize(folderRoot, folderSubfolders.IsEmpty() ? [] : folderSubfolders.Unjoin(@"'\'; f"));
    }
 
    public void CreateIfNonExistent()

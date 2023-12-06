@@ -13,7 +13,7 @@ public class EnumerableCycle<T> : IEnumerable<T>
 
    public EnumerableCycle(IEnumerable<T> enumerable)
    {
-      array = enumerable.ToArray();
+      array = [.. enumerable];
 
       index = 0;
       length = array.Length;

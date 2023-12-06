@@ -27,8 +27,8 @@ public class Fields : IEnumerable<Field>
 
    public Fields()
    {
-      fields = new StringHash<Field>(true);
-      ordered = new List<string>();
+      fields = [];
+      ordered = [];
    }
 
    public Fields(IEnumerable<Field> fields) : this()

@@ -17,7 +17,7 @@ internal class Parameters
       Recursive = true;
       Text = string.Empty;
       AttributeTargets = AttributeTargets.All;
-      Array = System.Array.Empty<string>();
+      Array = [];
    }
 
    public bool Push { get; set; }
@@ -45,7 +45,7 @@ internal class Program : CommandLineInterface
    public void Main(bool push = false, bool pull = false, bool show = false, int code = 0, double amount = 0,
       AttributeTargets attributeTargets = AttributeTargets.All, string text = "", bool recursive = true, string[]? array = null)
    {
-      array ??= Array.Empty<string>();
+      array ??= [];
 
       var command = "?";
       if (pull)
@@ -107,7 +107,7 @@ internal class ThisProgram : CommandLineInterface
       Recursive = true;
       Text = string.Empty;
       AttributeTargets = AttributeTargets.All;
-      Array = System.Array.Empty<string>();
+      Array = [];
    }
 
    public bool Push { get; set; }
@@ -229,9 +229,9 @@ internal class TestProgram : CommandProcessor
    [Switch("folder", "folder", "Folder to use", "f2")]
    public Maybe<FolderName> Folder { get; set; }
 
-   public override StringHash GetConfigurationDefaults() => new(true);
+   public override StringHash GetConfigurationDefaults() => [];
 
-   public override StringHash GetConfigurationHelp() => new(true);
+   public override StringHash GetConfigurationHelp() => [];
 
    public override void Initialize()
    {

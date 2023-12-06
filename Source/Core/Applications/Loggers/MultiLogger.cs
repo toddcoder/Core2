@@ -15,8 +15,8 @@ public class MultiLogger
 
    public MultiLogger(int indentation = 2)
    {
-      keys = new StringSet(true);
-      loggers = new AutoStringHash<Logger>(true, key =>
+      keys = [];
+      loggers = new AutoStringHash<Logger>(key =>
       {
          keys.Add(key);
          return new Logger(indentation) { Key = key };

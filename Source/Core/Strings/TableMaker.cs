@@ -113,8 +113,8 @@ public class TableMaker
 
    public TableMaker(params (string header, Justification justification)[] columns)
    {
-      columnHeaders = columns.Select(c => new ColumnHeader(c.header, c.justification)).ToArray();
-      rows = new List<IRow>();
+      columnHeaders = [.. columns.Select(c => new ColumnHeader(c.header, c.justification))];
+      rows = [];
       hasHeaders = true;
       HeaderFoot = '=';
       ColumnSeparator = " | ";
@@ -124,9 +124,9 @@ public class TableMaker
 
    public TableMaker(params Justification[] justifications)
    {
-      columnHeaders = justifications.Select(j => new ColumnHeader("", j)).ToArray();
+      columnHeaders = [.. justifications.Select(j => new ColumnHeader("", j))];
 
-      rows = new List<IRow>();
+      rows = [];
       hasHeaders = false;
 
       HeaderFoot = '=';
@@ -165,7 +165,7 @@ public class TableMaker
          }
       }
 
-      var row = new Row(columns.ToArray());
+      var row = new Row(columns);
       row.Evaluate(columnHeaders);
       rows.Add(row);
 

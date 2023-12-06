@@ -154,7 +154,7 @@ public abstract class XRange<TSource, TDistance> : IComparer<TSource>, IEnumerab
          {
             yield return currentList;
 
-            currentList = new List<TSource> { current };
+            currentList = [current];
          }
       }
 
@@ -168,7 +168,7 @@ public abstract class XRange<TSource, TDistance> : IComparer<TSource>, IEnumerab
 
    public IEnumerable<string> ToRangeString(IEnumerable<TSource> source) => toContiguousSequences(source, this).Select(seq =>
    {
-      var seqArray = seq.ToArray();
+      TSource[] seqArray = [.. seq];
       return rangeString(seqArray.First(), seqArray.Last());
    });
 }

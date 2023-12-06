@@ -100,7 +100,7 @@ public class Time : IComparable<DateTime>, IComparable<Time>
          builder.Add(_milliseconds == 1 ? "1 millisecond" : $"{_milliseconds} milliseconds");
       }
 
-      return builder.ToArray().Andify();
+      return builder.Andify();
    }
 
    public static string ToLongString(TimeSpan timeSpan, bool includeMilliseconds)

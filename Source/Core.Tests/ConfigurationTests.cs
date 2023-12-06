@@ -31,7 +31,7 @@ public class ConfigurationTests
       {
          StringValue = "";
          File = nil;
-         Doubles = Array.Empty<double>();
+         Doubles = [];
          Escape = "";
       }
 
@@ -59,7 +59,7 @@ public class ConfigurationTests
    {
       public Container()
       {
-         Tests = Array.Empty<Test>();
+         Tests = [];
       }
 
       public Test[] Tests { get; set; }
@@ -67,12 +67,12 @@ public class ConfigurationTests
 
    protected class ReleaseTarget
    {
-      public string[] ReleaseTargets { get; set; } = Array.Empty<string>();
+      public string[] ReleaseTargets { get; set; } = [];
    }
 
    protected class BinaryPackage : IEquatable<BinaryPackage>
    {
-      public byte[] Payload { get; set; } = Array.Empty<byte>();
+      public byte[] Payload { get; set; } = [];
 
       public bool Equals(BinaryPackage? other)
       {
@@ -263,7 +263,7 @@ public class ConfigurationTests
    [TestMethod]
    public void HashToConfigurationTest()
    {
-      var hash = new StringHash(true)
+      StringHash hash = new()
       {
          ["alpha"] = "Alpha",
          ["bravo"] = "Beta",
@@ -286,7 +286,7 @@ public class ConfigurationTests
    [TestMethod]
    public void SerializeStringHashTest()
    {
-      var hash = new StringHash(true)
+      StringHash hash = new()
       {
          ["alpha"] = "Alpha",
          ["bravo"] = "Beta",
@@ -318,7 +318,7 @@ public class ConfigurationTests
    [TestMethod]
    public void EmptyStringItemTest()
    {
-      var hash = new StringHash(true) { ["release"] = "", ["build"] = "http" };
+      StringHash hash = new() { ["release"] = "", ["build"] = "http" };
       var _setting = hash.ToSetting();
       if (_setting is (true, var setting))
       {
@@ -519,7 +519,7 @@ public class ConfigurationTests
    {
       public NonConformanceInfoContainer()
       {
-         NonConformanceInfos = Array.Empty<NonConformanceInfo>();
+         NonConformanceInfos = [];
       }
 
       public NonConformanceInfo[] NonConformanceInfos { get; set; }

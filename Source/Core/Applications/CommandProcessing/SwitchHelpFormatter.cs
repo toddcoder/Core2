@@ -56,7 +56,7 @@ public class SwitchHelpFormatter
       this.helpText = helpText;
       this.source = expand(source);
 
-      replacements = new StringHash(true);
+      replacements = [];
 
       foreach (var (name, (type, argument, _shortCut)) in switchHelp)
       {

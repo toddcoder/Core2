@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using Core.Matching;
 using Core.Monads;
-using static Core.Arrays.ArrayFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Strings.Text;
 
 public class Differentiator
 {
-   protected static string[] splitWords(string line) => line.Split(array(' ', '\t', '.', '(', ')', '{', '}', ',', '!'));
+   protected static string[] splitWords(string line) => line.Split([' ', '\t', '.', '(', ')', '{', '}', ',', '!']);
 
    protected string[] oldText;
    protected string[] newText;

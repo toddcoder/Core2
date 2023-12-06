@@ -14,7 +14,7 @@ public class PriorityQueue<T> : IQueue<T>, IEnumerable<T>, IEquatable<PriorityQu
 
    public PriorityQueue()
    {
-      list = new List<T>();
+      list = [];
    }
 
    public PriorityQueue(IEnumerable<T> enumerable) : this()

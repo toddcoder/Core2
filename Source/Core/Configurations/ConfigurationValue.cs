@@ -46,7 +46,7 @@ public class ConfigurationValue
 
    public string[] Strings(string key) => String(key).Unjoin("/s* ',' /s*");
 
-   public string[] SettingTexts(string key) => Setting(key).Items().Select(i => i.text).ToArray();
+   public string[] SettingTexts(string key) => [.. Setting(key).Items().Select(i => i.text)];
 
-   public string[] SettingKeys(string key) => Setting(key).Items().Select(i => i.key).ToArray();
+   public string[] SettingKeys(string key) => [.. Setting(key).Items().Select(i => i.key)];
 }

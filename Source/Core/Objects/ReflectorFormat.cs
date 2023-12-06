@@ -49,7 +49,7 @@ public class ReflectorFormat
    {
       public Replacements(IEnumerable<ReflectorReplacement> replacements, string source)
       {
-         ReflectorReplacements = replacements.ToArray();
+         ReflectorReplacements = [.. replacements];
          Source = source;
       }
 

@@ -28,7 +28,7 @@ public class ParallelProcessor<T>
 
    public void ForEach(IEnumerable<T> items)
    {
-      prepareListSlices(items.ToArray());
+      prepareListSlices(items);
       for (var i = 0; i < numberOfThreads; i++)
       {
          manualResetEvents[i].Reset();
@@ -40,7 +40,7 @@ public class ParallelProcessor<T>
 
    protected void prepareListSlices(IEnumerable<T> items)
    {
-      var array = items.ToArray();
+      T[] array = [.. items];
       for (var i = 0; i < numberOfThreads; i++)
       {
          listSlices[i].Items = array;
@@ -75,7 +75,7 @@ public class SlicedList<T>
    {
       ManualResetEvent = manualResetEvent;
 
-      Items = Array.Empty<T>();
+      Items = [];
       Indexes = new LinkedList<int>();
    }
 

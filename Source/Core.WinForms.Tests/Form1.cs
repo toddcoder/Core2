@@ -26,8 +26,8 @@ public partial class Form1 : Form, IMessageQueueListener
 
    public Form1()
    {
-      set = new StringSet(true)
-      {
+      set =
+      [
          "Foundation",
          "Foundation",
          "Estream.Migrations",
@@ -319,7 +319,7 @@ public partial class Form1 : Form, IMessageQueueListener
          "Estream.Contracts.UnitTests",
          "Estream.MaterialBalance.IntegrationTests",
          "Estream.Web.IntegrationTests"
-      };
+      ];
 
       InitializeComponent();
 

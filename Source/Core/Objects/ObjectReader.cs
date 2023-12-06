@@ -40,7 +40,7 @@ public class ObjectReader
       {
          FieldInfo fieldInfo => fieldInfo.GetValue(obj)!,
          PropertyInfo propertyInfo => propertyInfo.GetValue(obj)!,
-         _ =>  MonadFunctions.fail($"{memberInfo.Name} is neither a field nor a property")
+         _ => MonadFunctions.fail($"{memberInfo.Name} is neither a field nor a property")
       };
    }
 
@@ -70,22 +70,26 @@ public class ObjectReader
 
    protected TResult invoke<TResult>(LambdaExpression expression) where TResult : notnull
    {
-      var arguments = expression.Parameters
-         .Select(p => p.Name)
-         .Where(name => values.ContainsKey(name!))
-         .Select(name => values[name!])
-         .ToArray();
+      object[] arguments =
+      [
+         .. expression.Parameters
+            .Select(p => p.Name)
+            .Where(name => values.ContainsKey(name!))
+            .Select(name => values[name!])
+      ];
 
       return (TResult)expression.Compile().DynamicInvoke(arguments)!;
    }
 
    protected void _do(LambdaExpression expression)
    {
-      var arguments = expression.Parameters
-         .Select(p => p.Name)
-         .Where(name => values.ContainsKey(name!))
-         .Select(name => values[name!])
-         .ToArray();
+      object[] arguments =
+      [
+         .. expression.Parameters
+            .Select(p => p.Name)
+            .Where(name => values.ContainsKey(name!))
+            .Select(name => values[name!])
+      ];
 
       expression.Compile().DynamicInvoke(arguments);
    }

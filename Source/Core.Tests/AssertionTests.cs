@@ -1,7 +1,6 @@
 ﻿using Core.Assertions;
 using Core.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Arrays.ArrayFunctions;
 
 namespace Core.Tests;
 
@@ -48,11 +47,10 @@ public class AssertionTests
    [TestMethod]
    public void StringAssertionTest()
    {
-      foreach (var str in array("foobar", "", null))
+      foreach (var str in (string[]) ["foobar", ""])
       {
-         Console.WriteLine(str!.Must().Not.BeNull() ? $"{str ?? "null"} is not null" : "is null");
-
-         Console.WriteLine(str!.Must().Not.BeEmpty() ? $"{str ?? "null"} is not empty" : "is empty");
+         Console.WriteLine(str.Must().Not.BeNull() ? $"{str} is not null" : "is null");
+         Console.WriteLine(str.Must().Not.BeEmpty() ? $"{str} is not empty" : "is empty");
       }
    }
 

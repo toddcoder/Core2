@@ -57,9 +57,9 @@ public class FolderNameTrying
       return targetFolder;
    });
 
-   public Result<FileName[]> Files => tryTo(() => folderName.Files.ToArray());
+   public Result<FileName[]> Files => tryTo(() => (FileName[]) [.. folderName.Files]);
 
-   public Result<FolderName[]> Folders => tryTo(() => folderName.Folders.ToArray());
+   public Result<FolderName[]> Folders => tryTo(() => (FolderName[]) [..folderName.Folders]);
 
    public Result<int> FileCount => tryTo(() => folderName.FileCount);
 
