@@ -315,6 +315,11 @@ public class SubText : IEquatable<SubText>
    {
       X = rightSubText.X - TextSize(nil).measuredSize.Width - margin;
       Y = rightSubText.Y;
+
+      if (!_rightSubText)
+      {
+         _rightSubText = (rightSubText, margin);
+      }
    }
 
    public void AdjustRightSubText()
@@ -329,6 +334,11 @@ public class SubText : IEquatable<SubText>
    {
       X = leftSubText.X + leftSubText.TextSize(nil).measuredSize.Width + margin;
       Y = leftSubText.Y;
+
+      if (!_leftSubText)
+      {
+         _leftSubText = (leftSubText, margin);
+      }
    }
 
    public void AdjustLeftSubText()
