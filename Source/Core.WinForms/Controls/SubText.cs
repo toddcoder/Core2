@@ -22,6 +22,8 @@ public class SubText : IEquatable<SubText>
    protected Maybe<CardinalAlignment> _alignment;
    protected int margin;
    protected LocationLockStatus locationLockStatus;
+   protected Maybe<(SubText subText, int margin)> _rightSubText;
+   protected Maybe<(SubText subText, int margin)> _leftSubText;
 
    public event EventHandler<PaintEventArgs>? Painting;
    public event EventHandler<PaintEventArgs>? PaintingBackground;
@@ -46,6 +48,8 @@ public class SubText : IEquatable<SubText>
       _alignment = nil;
       margin = 2;
       locationLockStatus = LocationLockStatus.Floating;
+      _rightSubText = nil;
+      _leftSubText = nil;
 
       FontName = "Consolas";
       FontSize = 12;
@@ -313,10 +317,26 @@ public class SubText : IEquatable<SubText>
       Y = rightSubText.Y;
    }
 
+   public void AdjustRightSubText()
+   {
+      if (_rightSubText is (true, var (rightSubText, subTextMargin)))
+      {
+         LeftOf(rightSubText, subTextMargin);
+      }
+   }
+
    public void RightOf(SubText leftSubText, int margin = 2)
    {
       X = leftSubText.X + leftSubText.TextSize(nil).measuredSize.Width + margin;
       Y = leftSubText.Y;
+   }
+
+   public void AdjustLeftSubText()
+   {
+      if (_leftSubText is (true, var (leftSubText, subTextMargin)))
+      {
+         RightOf(leftSubText, subTextMargin);
+      }
    }
 
    public bool Equals(SubText? other) => other is not null && Id.Equals(other.Id);

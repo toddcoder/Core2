@@ -1612,6 +1612,8 @@ public class UiAction : UserControl, ISubTextHost
          subText.Transparency = transparency;
          subText.SetLocation(clientRectangle);
          subText.Draw(graphics, foreColor.Value, backColor.Value);
+         subText.AdjustLeftSubText();
+         subText.AdjustRightSubText();
       }
    }
 
