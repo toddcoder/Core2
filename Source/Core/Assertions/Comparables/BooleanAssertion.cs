@@ -23,7 +23,7 @@ public class BooleanAssertion : IAssertion<bool>
    public BooleanAssertion(bool boolean)
    {
       this.boolean = boolean;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Boolean";
    }

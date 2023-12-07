@@ -12,7 +12,7 @@ public class InfixList<TValue, TInfix> : IEnumerable<IInfixData<TValue, TInfix>>
 
    public InfixList()
    {
-      list = new List<IInfixData<TValue, TInfix>>();
+      list = [];
       stopped = false;
    }
 

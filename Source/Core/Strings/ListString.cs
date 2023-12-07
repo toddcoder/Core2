@@ -15,7 +15,7 @@ public class ListString : IEnumerable<string>
 
    public ListString(string initialString, string separator = ", ", bool unique = false, bool nonEmptyOnly = false)
    {
-      list = new List<string> { initialString };
+      list = [initialString];
       this.separator = separator;
       this.unique = unique;
       this.nonEmptyOnly = nonEmptyOnly;

@@ -26,7 +26,7 @@ public class ServiceMessage : IServiceMessage
          _eventWriter = nil;
       }
 
-      messages = new List<IServiceMessage>();
+      messages = [];
       _logger = nil;
       _namedExceptions = nil;
       _serviceWriter = nil;

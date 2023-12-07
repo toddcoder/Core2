@@ -18,7 +18,7 @@ public class TypedAssertion<T> : IAssertion<T> where T : notnull
    public TypedAssertion(T? obj)
    {
       this.obj = obj;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Typed value";
    }

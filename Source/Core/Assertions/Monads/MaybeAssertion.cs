@@ -23,7 +23,7 @@ public class MaybeAssertion<T> : IAssertion<T> where T : notnull
    public MaybeAssertion(Maybe<T> maybe)
    {
       this.maybe = maybe;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Optional";
    }

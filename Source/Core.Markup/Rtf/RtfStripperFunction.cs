@@ -102,7 +102,7 @@ public static class RtfStripperFunction
       var ignorable = false;
       var numberOfAsciiToSkipAfterUnicode = 1;
       var numberOfAsciiLeftToSkip = 0;
-      var outputBuffer = new List<string>();
+      List<string> outputBuffer = [];
 
       var _matches = inputRtf.Matches(pattern);
       if (_matches is (true, var matches))

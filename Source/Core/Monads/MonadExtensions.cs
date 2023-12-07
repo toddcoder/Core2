@@ -150,7 +150,7 @@ public static class MonadExtensions
 
    public static Result<T> Failure<T, TException>(this object firstItem, params object[] args) where T : notnull where TException : Exception
    {
-      var list = new List<object> { firstItem };
+      List<object> list = [firstItem];
       list.AddRange(args);
 
       return (TException)typeof(TException).Create([.. list])!;
@@ -293,7 +293,7 @@ public static class MonadExtensions
 
    public static Maybe<IEnumerable<T>> AllAreSome<T>(this IEnumerable<Maybe<T>> enumerable) where T : notnull
    {
-      var result = new List<T>();
+      List<T> result = [];
       foreach (var _value in enumerable)
       {
          if (_value is (true, var value))
@@ -546,7 +546,7 @@ public static class MonadExtensions
 
    public static Completion<T> Interrupted<T, TException>(this object firstItem, params object[] args) where T : notnull where TException : Exception
    {
-      var list = new List<object> { firstItem };
+      List<object> list = [firstItem];
       list.AddRange(args);
 
       return (TException)typeof(TException).Create([.. list])!;

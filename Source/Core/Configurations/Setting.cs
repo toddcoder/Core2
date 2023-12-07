@@ -29,11 +29,11 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
    static Setting()
    {
-      baseTypes = new Set<Type>
-      {
+      baseTypes =
+      [
          typeof(string), typeof(int), typeof(long), typeof(float), typeof(double), typeof(bool), typeof(DateTime), typeof(Guid), typeof(FileName),
          typeof(FolderName), typeof(byte[])
-      };
+      ];
    }
 
    public static implicit operator Setting(string source) => FromString(source).ForceValue();
@@ -335,7 +335,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       else if (type.IsArray)
       {
          var array = (Array?)obj;
-         var list = new List<string>();
+         List<string> list = [];
          if (array is not null)
          {
             foreach (var item in array)
@@ -415,7 +415,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
                      {
                         if (isBaseType(elementType))
                         {
-                           var list = new List<string>();
+                           List<string> list = [];
                            for (var i = 0; i < array.Length; i++)
                            {
                               list.Add(toString(array.GetValue(i), elementType));

@@ -20,7 +20,7 @@ public class PatternAssertion : IAssertion<Pattern>
    {
       this.pattern = pattern;
 
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Pattern";
    }

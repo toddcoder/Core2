@@ -23,7 +23,7 @@ public class ResultAssertion<T> : IAssertion<T> where T : notnull
    public ResultAssertion(Result<T> result)
    {
       this.result = result;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Result";
    }

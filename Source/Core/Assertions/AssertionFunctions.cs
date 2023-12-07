@@ -45,10 +45,10 @@ public static class AssertionFunctions
 
    public static string enumerableImage<T>(IEnumerable<T> enumerable, int limit = 10)
    {
-      var list = enumerable.ToList();
+      List<T> list = [.. enumerable];
       if (list.Count > limit)
       {
-         list = list.Take(limit).ToList();
+         list = [.. list.Take(limit)];
       }
 
       return list.ToString(", ");

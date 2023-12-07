@@ -30,7 +30,7 @@ public class StringAssertion : IAssertion<string>
    public StringAssertion(string? subject)
    {
       this.subject = subject;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "String";
    }

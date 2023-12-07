@@ -527,7 +527,7 @@ public class Paragraph : Block
       int count;
       var tokens = new LinkedList<Token>();
       LinkedListNode<Token> node;
-      var disjointRanges = new List<DisjointRange>();
+      List<DisjointRange> disjointRanges = [];
 
       foreach (var format in charFormats)
       {
@@ -558,9 +558,9 @@ public class Paragraph : Block
             }
          }
 
-         var deletedRanges = new List<DisjointRange>();
-         var addedRanges = new List<DisjointRange>();
-         var anchorRanges = new List<DisjointRange>();
+         List<DisjointRange> deletedRanges = [];
+         List<DisjointRange> addedRanges = [];
+         List<DisjointRange> anchorRanges = [];
          foreach (var disjointRange in disjointRanges)
          {
             if (range.Head <= disjointRange.Head && range.Tail >= disjointRange.Tail)

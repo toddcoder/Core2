@@ -20,7 +20,7 @@ public class SetAssertion<T> : IAssertion<Set<T>>
    {
       this.set = set;
 
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Set";
       image = set is not null ? enumerableImage(set) : "";

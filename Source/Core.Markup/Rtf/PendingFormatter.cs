@@ -66,7 +66,7 @@ public class PendingFormatter
    {
       this.table = table;
 
-      features = new Set<Feature>();
+      features = [];
       _alignment = nil;
       _foregroundColor = nil;
       _backgroundColor = nil;

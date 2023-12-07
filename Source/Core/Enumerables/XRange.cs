@@ -114,7 +114,7 @@ public abstract class XRange<TSource, TDistance> : IComparer<TSource>, IEnumerab
 
    public IEnumerable<TSource> Unknown(IEnumerable<XRange<TSource, TDistance>> sourceRanges)
    {
-      var set = new Set<TSource>();
+      Set<TSource> set = [];
 
       foreach (var sourceRange in sourceRanges.OrderBy(x => x.actualFrom.Value))
       {
@@ -141,7 +141,7 @@ public abstract class XRange<TSource, TDistance> : IComparer<TSource>, IEnumerab
          throw new InvalidOperationException("Sequence is empty");
       }
 
-      var currentList = new List<TSource> { enumerator.Current };
+      List<TSource> currentList = [enumerator.Current];
       while (enumerator.MoveNext())
       {
          var current = enumerator.Current;

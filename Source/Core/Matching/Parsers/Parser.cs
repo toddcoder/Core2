@@ -16,8 +16,8 @@ public class Parser
 
    protected List<BaseParser> parsers;
 
-   public Parser() => parsers = new List<BaseParser>
-   {
+   public Parser() => parsers =
+   [
       new StringParser(),
       new CommentParser(),
       new SpanBreakParser(),
@@ -39,7 +39,7 @@ public class Parser
       new NumericQuantificationParser(),
       new NumericQuantification2Parser(),
       new UnmodifiedParser()
-   };
+   ];
 
    public string Parse(string source)
    {

@@ -913,7 +913,7 @@ public static class EnumerableExtensions
    public static TResult FoldRight<TSource, TResult>(this IEnumerable<TSource> enumerable, TResult init,
       Func<TSource, TResult, TResult> foldFunc)
    {
-      var list = enumerable.ToList();
+      List<TSource> list = [.. enumerable];
       var accumulator = init;
       for (var i = list.Count - 1; i >= 0; i--)
       {
@@ -927,7 +927,7 @@ public static class EnumerableExtensions
 
    public static T FoldRight<T>(this IEnumerable<T> enumerable, Func<T, T, T> foldFunc)
    {
-      var list = enumerable.ToList();
+      List<T> list = [.. enumerable];
       if (list.Count == 0)
       {
          throw fail("Enumerable can't be empty");
@@ -944,7 +944,7 @@ public static class EnumerableExtensions
 
    public static Hash<TKey, TValue[]> Group<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> groupingFunc) where TKey : notnull
    {
-      var hash = new Hash<TKey, List<TValue>>();
+      Hash<TKey, List<TValue>> hash = [];
       foreach (var value in enumerable)
       {
          var key = groupingFunc(value);
@@ -958,7 +958,7 @@ public static class EnumerableExtensions
          }
       }
 
-      var result = new Hash<TKey, TValue[]>();
+      Hash<TKey, TValue[]> result = [];
       foreach (var (key, value) in hash)
       {
          result[key] = [.. value];
@@ -970,7 +970,7 @@ public static class EnumerableExtensions
    public static Hash<TKey, Set<TValue>> GroupToSet<TKey, TValue>(this IEnumerable<TValue> enumerable,
       Func<TValue, TKey> groupingFunc) where TKey : notnull
    {
-      var hash = new Hash<TKey, Set<TValue>>();
+      Hash<TKey, Set<TValue>> hash = [];
       foreach (var value in enumerable)
       {
          var key = groupingFunc(value);
@@ -990,7 +990,7 @@ public static class EnumerableExtensions
    public static Hash<TKey, StringSet> GroupToStringSet<TKey>(this IEnumerable<string> enumerable, Func<string, TKey> groupingFunc)
       where TKey : notnull
    {
-      var hash = new Hash<TKey, StringSet>();
+      Hash<TKey, StringSet> hash = [];
       foreach (var value in enumerable)
       {
          var key = groupingFunc(value);
@@ -1141,7 +1141,7 @@ public static class EnumerableExtensions
 
    public static IEnumerable<T> Reversed<T>(this IEnumerable<T> enumerable)
    {
-      var list = enumerable.ToList();
+      List<T> list = [.. enumerable];
       list.Reverse();
 
       return list;
@@ -1241,9 +1241,13 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Set<T> ToSet<T>(this IEnumerable<T> enumerable) => new(enumerable);
+   public static Set<T> ToSet<T>(this IEnumerable<T> enumerable) => [.. enumerable];
 
-   public static StringSet ToStringSet(this IEnumerable<string> enumerable, bool ignoreCase) => new(ignoreCase, enumerable);
+   public static StringSet ToStringSet(this IEnumerable<string> enumerable, bool ignoreCase)
+   {
+      StringSet set = [.. enumerable];
+      return set.CaseIgnore(ignoreCase);
+   }
 
    public static IntegerEnumerable Times(this int size) => new(size);
 
@@ -1296,7 +1300,7 @@ public static class EnumerableExtensions
 
    public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, params string[] keys) where T : notnull
    {
-      var keySet = new StringSet(true, keys);
+      StringSet keySet = [.. keys];
       StringHash<T> matching = [];
       List<T> remainder = [];
       foreach (var item in enumerable)
@@ -1330,7 +1334,7 @@ public static class EnumerableExtensions
       params string[] keys)
    {
       var comparer = Comparer<T>.Create((x, y) => compareFunc(x, y));
-      var keySet = new StringSet(true, keys);
+      StringSet keySet = [.. keys];
       var matching = new AutoStringHash<SortedSet<T>>(_ => new SortedSet<T>(comparer), true);
       var remainder = new SortedSet<T>(comparer);
 

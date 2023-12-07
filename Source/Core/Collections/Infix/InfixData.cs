@@ -1,5 +1,4 @@
 ﻿using Core.Monads;
-using Core.Objects;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections.Infix;
@@ -20,10 +19,8 @@ public class InfixData<TValue, TInfix> : IInfixData<TValue, TInfix> where TInfix
    {
    }
 
-   [Equatable]
    public TValue Value { get; }
 
-   [Equatable]
    public Maybe<TInfix> Infix { get; }
 
    public override string ToString() => Value + (Infix.Map(i => " " + i) | "");

@@ -86,8 +86,8 @@ public class SqlSetupBuilder
    {
       _connectionStringBuilder = nil;
       _commandTextBuilder = nil;
-      parameterBuilders = new List<ParameterBuilder>();
-      fieldBuilders = new List<FieldBuilder>();
+      parameterBuilders = [];
+      fieldBuilders = [];
    }
 
    internal void ConnectionStringBuilder(ConnectionStringBuilder builder) => _connectionStringBuilder = builder;
@@ -141,7 +141,7 @@ public class SqlSetupBuilder
          return _commandText.Exception;
       }
 
-      var fields = new List<Field>();
+      List<Field> fields = [];
       foreach (var fieldBuilder in fieldBuilders)
       {
          var _field = fieldBuilder.Build();
@@ -157,7 +157,7 @@ public class SqlSetupBuilder
 
       sqlSetup.Fields = new Fields.Fields(fields);
 
-      var parameters = new List<Parameter>();
+      List<Parameter> parameters = [];
       foreach (var parameterBuilder in parameterBuilders)
       {
          var _parameter = parameterBuilder.Build();

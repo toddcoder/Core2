@@ -10,8 +10,8 @@ public class DifferenceModel
 {
    public DifferenceModel()
    {
-      OldDifferenceItems = new List<DifferenceItem>();
-      NewDifferenceItems = new List<DifferenceItem>();
+      OldDifferenceItems = [];
+      NewDifferenceItems = [];
    }
 
    public List<DifferenceItem> OldDifferenceItems { get; }
@@ -36,7 +36,7 @@ public class DifferenceModel
    {
       var oldHash = OldDifferences().ToHash(d => d.Position, d => d.ToString());
       var newHash = NewDifferences().ToHash(d => d.Position, d => d.ToString());
-      var keys = new Set<int>();
+      Set<int> keys = [];
       keys.AddRange(oldHash.Keys.Where(k => k > -1));
       keys.AddRange(newHash.Keys.Where(k => k > -1));
 
@@ -44,15 +44,15 @@ public class DifferenceModel
 
       foreach (var key in keys.OrderBy(k => k))
       {
-         if (oldHash.ContainsKey(key))
+         if (oldHash.Maybe[key] is (true, var oldValue))
          {
-            builder.Append(oldHash[key]);
+            builder.Append(oldValue);
          }
 
-         if (newHash.ContainsKey(key))
+         if (newHash.Maybe[key] is (true, var newValue))
          {
             builder.Append(" <=> ");
-            builder.Append(newHash[key]);
+            builder.Append(newValue);
          }
 
          yield return builder.ToString();

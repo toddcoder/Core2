@@ -25,7 +25,7 @@ public class FolderNameAssertion : IAssertion<FolderName>
    public FolderNameAssertion(FolderName? folder)
    {
       this.folder = folder;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Folder";
    }

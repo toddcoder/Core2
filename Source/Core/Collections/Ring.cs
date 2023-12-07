@@ -9,7 +9,7 @@ public class Ring<T>
 
    public Ring()
    {
-      list = new List<T>();
+      list = [];
       index = 0;
    }
 

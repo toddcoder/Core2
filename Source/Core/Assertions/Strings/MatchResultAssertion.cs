@@ -20,7 +20,7 @@ public class MatchResultAssertion : IAssertion<MatchResult>
    {
       this.result = result;
 
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Result";
    }

@@ -11,7 +11,7 @@ public class MultiExceptions : Exception, IList<Exception>
 {
    protected List<Exception> exceptions;
 
-   public MultiExceptions() => exceptions = new List<Exception>();
+   public MultiExceptions() => exceptions = [];
 
    public void Add(Exception exception) => exceptions.Add(exception);
 
@@ -59,6 +59,6 @@ public class MultiExceptions : Exception, IList<Exception>
 
    public IEnumerable<TException> Exceptions<TException>() where TException : Exception
    {
-      return exceptions.Select(e => (TException)e).ToList();
+      return [.. exceptions.Select(e => (TException)e)];
    }
 }

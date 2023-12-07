@@ -56,7 +56,7 @@ public class MultiMatcher<T> where T : notnull
 
    internal MultiMatcher()
    {
-      patternActions = new List<PatternAction>();
+      patternActions = [];
       _defaultResult = nil;
    }
 
@@ -159,7 +159,7 @@ public class MultiMatcher
 
    internal MultiMatcher()
    {
-      patternActions = new List<PatternAction>();
+      patternActions = [];
       _defaultAction = nil;
    }
 

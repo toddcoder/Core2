@@ -24,7 +24,7 @@ public class ListAssertion<T> : IAssertion<List<T>>
    public ListAssertion(List<T>? list)
    {
       this.list = list;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "List";
       image = list is not null ? enumerableImage(list) : "";

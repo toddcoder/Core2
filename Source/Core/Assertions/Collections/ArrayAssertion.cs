@@ -24,7 +24,7 @@ public class ArrayAssertion<T> : IAssertion<T[]>
    public ArrayAssertion(T[]? array)
    {
       this.array = array;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Array";
       image = array is not null ? enumerableImage(array) : "";

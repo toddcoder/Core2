@@ -33,7 +33,7 @@ public class BlockList : Renderable
       this.allowImage = allowImage;
       this.allowTable = allowTable;
 
-      blocks = new List<Block>();
+      blocks = [];
       defaultCharFormat = new CharFormat();
    }
 

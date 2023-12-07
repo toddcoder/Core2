@@ -38,7 +38,7 @@ public class HtmlBuilder : MarkupBuilder
 
       body = root + "body>";
 
-      selectors = new Set<Selector>();
+      selectors = [];
    }
 
    public Element Html => root;

@@ -42,7 +42,7 @@ public class Slicer : IEnumerable<(int index, int length, string text)>
    public Slicer(string text)
    {
       this.text = text;
-      replacements = new List<Replacement>();
+      replacements = [];
       offset = 0;
       currentLength = 0;
    }

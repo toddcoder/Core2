@@ -25,7 +25,7 @@ public class StringSet : Set<string>
    {
    }
 
-   public StringSet(bool ignoreCase, IEnumerable<string> strings) : base(strings, stringComparer(ignoreCase))
+   protected StringSet(bool ignoreCase, IEnumerable<string> strings) : base(strings, stringComparer(ignoreCase))
    {
       this.ignoreCase = ignoreCase;
    }

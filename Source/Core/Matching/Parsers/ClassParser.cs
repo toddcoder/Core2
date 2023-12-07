@@ -9,8 +9,8 @@ public class ClassParser : BaseParser
 {
    protected List<BaseParser> parsers;
 
-   public ClassParser() => parsers = new List<BaseParser>
-   {
+   public ClassParser() => parsers =
+   [
       new StringParser(),
       new SlashClassParser(),
       new InsideRangeParser(),
@@ -18,7 +18,7 @@ public class ClassParser : BaseParser
       new NamedClassParser(),
       new QuoteParser(),
       new EndOfClassParser()
-   };
+   ];
 
    public override string Pattern => @"^\s*(-)?\s*(/)?\[";
 

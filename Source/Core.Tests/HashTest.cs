@@ -35,14 +35,14 @@ public class HashTest
       test(new AutoHash<string, int>(_ => -1, true), "Auto-add", _ => -2);
 
       var autoHash = new AutoHash<string, int>(k => k.Length);
-      autoHash.AddKeys(new List<string> { "alpha", "bravo" });
+      autoHash.AddKeys(["alpha", "bravo"]);
       test(autoHash, "AddKeys", k => -k.Length);
    }
 
    [TestMethod]
    public void StringHashTest()
    {
-      StringHash<int> hash = new() { ["alpha"] = 0, ["bravo"] = 1, ["charlie"] = 2 };
+      StringHash<int> hash = ["alpha".at(0), "bravo".at(1), "charlie".at(2)];
       hash.Must().HaveKeyOf("Bravo").OrThrow();
    }
 
@@ -59,5 +59,12 @@ public class HashTest
             Console.WriteLine($"key {key}: {value.Length}");
          }
       }
+   }
+
+   [TestMethod]
+   public void CollectionBuilderTest()
+   {
+      Hash<char, int> hash = ['a'.at(0), 'b'.at(1)];
+      Console.Write(hash['a']);
    }
 }

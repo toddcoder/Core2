@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using Core.Monads;
-using Core.Objects;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.GetHashCodeGenerator;
 
@@ -17,7 +16,7 @@ public class DifferenceItem : IEquatable<DifferenceItem>
       Text = text;
       Type = type;
       Position = position;
-      subItems = new List<DifferenceItem>();
+      subItems = [];
    }
 
    public DifferenceItem(string text, DifferenceType type, int position) : this(text, type, position.Some())
@@ -32,17 +31,10 @@ public class DifferenceItem : IEquatable<DifferenceItem>
    {
    }
 
-   /*protected override bool equals(object other)
-   {
-      return other is DifferenceItem otherDiffItem && (bool)Position == (bool)otherDiffItem.Position && subItemsEqual(otherDiffItem);
-   }*/
-
-   [Equatable]
    public DifferenceType Type { get; set; }
 
    public Maybe<int> Position { get; }
 
-   [Equatable]
    public string Text { get; }
 
    public List<DifferenceItem> SubItems => subItems;

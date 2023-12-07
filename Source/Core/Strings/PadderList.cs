@@ -23,7 +23,7 @@ public class PadderList
    {
       protected List<string> columns;
 
-      public Row() => columns = new List<string>();
+      public Row() => columns = [];
 
       public int Add(int index, string text)
       {
@@ -50,8 +50,8 @@ public class PadderList
 
    public PadderList()
    {
-      rows = new List<Row> { new() };
-      lengths = new List<int>();
+      rows = [new()];
+      lengths = [];
       currentIndex = 0;
    }
 

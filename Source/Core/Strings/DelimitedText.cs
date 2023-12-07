@@ -72,7 +72,7 @@ public class DelimitedText
       slicer = new LateLazy<Slicer>(true, "You must call Enumerable() before accessing this member");
       status = DelimitedTextStatus.Outside;
       TransformingMap = nil;
-      strings = new List<string>();
+      strings = [];
    }
 
    public DelimitedText(Pattern beginPattern, Pattern endPattern, Pattern exceptPattern) :
@@ -332,13 +332,9 @@ public class DelimitedText
 
    public string Transform(string source, string pattern, string replacement, bool ignoreCase = false)
    {
-      source.Must().Not.BeNull().OrThrow();
-      pattern.Must().Not.BeNull().OrThrow();
-      replacement.Must().Not.BeNull().OrThrow();
-
       var startIndex = 0;
       Status = DelimitedTextStatus.Outside;
-      var values = new List<string>();
+      List<string> values = [];
 
       foreach (var (text, sliceIndex, length) in pattern.UnjoinIntoSlices("'$' /d+; f").Where(s => s.Length > 0))
       {

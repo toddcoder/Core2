@@ -20,7 +20,7 @@ public class DictionaryAssertion<TKey, TValue> : IAssertion<Dictionary<TKey, TVa
    public DictionaryAssertion(Dictionary<TKey, TValue>? dictionary)
    {
       this.dictionary = dictionary;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Dictionary";
    }

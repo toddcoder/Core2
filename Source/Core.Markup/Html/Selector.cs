@@ -40,7 +40,7 @@ public class Selector : IEquatable<Selector>
    {
       Name = name;
 
-      styles = new List<Style>();
+      styles = [];
    }
 
    public string Name { get; }

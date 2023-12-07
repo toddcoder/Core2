@@ -24,7 +24,7 @@ public class SwitchHelpFormatter
          {
             var left = match.FirstGroup.Unjoin("/s* ',' /s*; f");
             var right = match.SecondGroup.Unjoin("/s* ',' /s*; f");
-            var list = new List<string>();
+            List<string> list = [];
             foreach (var leftItem in left)
             {
                foreach (var rightItem in right)

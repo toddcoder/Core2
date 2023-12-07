@@ -94,7 +94,7 @@ public class Table : Block
 
       alignment = Alignment.None;
       margins = new Margins();
-      representatives = new List<TableCell>();
+      representatives = [];
       startNewPage = false;
       titleRowCount = 0;
 
@@ -103,7 +103,7 @@ public class Table : Block
       RowAltBackgroundColor = nil;
       defaultCharFormat = new CharFormat();
 
-      rows = new List<List<CellData>>();
+      rows = [];
       maxColumnCount = 0;
       rowIndex = -1;
       arrayCreated = false;

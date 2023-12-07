@@ -12,7 +12,7 @@ public class CommandLineHistory
 
    public CommandLineHistory()
    {
-      lines = new List<string>();
+      lines = [];
       position = 0;
    }
 

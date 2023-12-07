@@ -234,7 +234,7 @@ public class ExRichTextBox : RichTextBox
 
    public void SetToUnmodifiedGlyphs(bool drawModificationGlyphs = true)
    {
-      modificationStates = Lines.Select(_ => ModificationState.Unmodified).ToList();
+      modificationStates = [.. Lines.Select(_ => ModificationState.Unmodified)];
 
       if (drawModificationGlyphs)
       {

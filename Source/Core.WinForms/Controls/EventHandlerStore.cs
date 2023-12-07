@@ -15,7 +15,7 @@ public abstract class EventHandlerStore<TEventArgs> where TEventArgs : EventArgs
       eventInfo = control.GetType().GetEvent(eventName)!;
 
       methodInfo = typeof(EventHandlerStore<TEventArgs>).GetMethod("Handler")!;
-      handlers = new List<Delegate>();
+      handlers = [];
    }
 
    public abstract void Handler(object sender, TEventArgs e);

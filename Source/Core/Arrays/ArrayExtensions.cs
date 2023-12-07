@@ -308,7 +308,7 @@ public static class ArrayExtensions
 
    public static (T1, T2)[] Zip<T1, T2>(this T1[] leftArray, T2[] rightArray)
    {
-      var list = new List<(T1, T2)>();
+      List<(T1, T2)> list = [];
       var length = Min(leftArray.Length, rightArray.Length);
       for (var i = 0; i < length; i++)
       {
@@ -320,7 +320,7 @@ public static class ArrayExtensions
 
    public static (T1, T2)[] Zip<T1, T2>(this T1[] leftArray, Func<T1, int, T2> generatorFunc)
    {
-      var list = new List<(T1, T2)>();
+      List<(T1, T2)> list = [];
       var length = leftArray.Length;
       for (var i = 0; i < length; i++)
       {
@@ -333,7 +333,7 @@ public static class ArrayExtensions
 
    public static T3[] Zip<T1, T2, T3>(this T1[] leftArray, T2[] rightArray, Func<T1, T2, T3> mappingFunc)
    {
-      var list = new List<T3>();
+      List<T3> list = [];
       var length = Min(leftArray.Length, rightArray.Length);
       for (var i = 0; i < length; i++)
       {
@@ -346,7 +346,7 @@ public static class ArrayExtensions
    public static T3[] Zip<T1, T2, T3>(this T1[] leftArray, Func<T1, int, T2> generatorFunc,
       Func<T1, T2, T3> mappingFunc)
    {
-      var list = new List<T3>();
+      List<T3> list = [];
       var length = leftArray.Length;
       for (var i = 0; i < length; i++)
       {
@@ -361,7 +361,7 @@ public static class ArrayExtensions
 
    public static Maybe<(T1, T2)>[] ZipUnevenly<T1, T2>(this T1[] leftArray, T2[] rightArray)
    {
-      var list = new List<Maybe<(T1, T2)>>();
+      List<Maybe<(T1, T2)>> list = [];
 
       var leftLength = leftArray.Length;
       var rightLength = rightArray.Length;
@@ -384,7 +384,7 @@ public static class ArrayExtensions
 
    public static T[] Repeat<T>(this T[] array, int count)
    {
-      var result = new List<T>();
+      List<T> result = [];
       for (var i = 0; i < count; i++)
       {
          result.AddRange(array);

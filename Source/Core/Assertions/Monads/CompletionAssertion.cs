@@ -23,7 +23,7 @@ public class CompletionAssertion<T> : IAssertion<T> where T : notnull
    public CompletionAssertion(Completion<T> completion)
    {
       this.completion = completion;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Async result";
    }

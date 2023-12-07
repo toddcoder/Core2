@@ -45,7 +45,7 @@ public class ComparableAssertion<T> : IAssertion<T> where T : struct, IComparabl
    public ComparableAssertion(IComparable comparable)
    {
       this.comparable = comparable;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Comparable";
    }

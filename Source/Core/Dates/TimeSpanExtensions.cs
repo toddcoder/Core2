@@ -20,7 +20,7 @@ public static class TimeSpanExtensions
 
    public static string ToString(this TimeSpan span, bool includeMilliseconds)
    {
-      var list = new List<string>();
+      List<string> list = [];
 
       if (span.Days > 0)
       {

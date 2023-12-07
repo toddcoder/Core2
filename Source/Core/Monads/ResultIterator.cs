@@ -44,50 +44,58 @@ internal class ResultIterator<T> where T : notnull
 
    public IEnumerable<T> SuccessesOnly()
    {
-      var list = new List<T>();
-
       foreach (var _result in enumerable)
       {
          handle(_result);
          if (_result is (true, var result))
          {
-            list.Add(result);
+            yield return result;
          }
       }
-
-      return list;
    }
 
    public IEnumerable<Exception> FailuresOnly()
    {
-      var list = new List<Exception>();
-
       foreach (var _result in enumerable)
       {
          handle(_result);
          if (!_result)
          {
-            list.Add(_result.Exception);
+            yield return _result.Exception;
          }
       }
-
-      return list;
    }
 
    public (IEnumerable<T> enumerable, Maybe<Exception> exception) SuccessesThenFailure()
    {
-      var list = new List<T>();
-
-      foreach (var _result in enumerable)
+      IEnumerable<Either<T, Exception>> getEnumerable()
       {
-         handle(_result);
-         if (_result is (true, var result))
+         foreach (var _result in enumerable)
          {
-            list.Add(result);
+            handle(_result);
+            if (_result is (true, var result))
+            {
+               yield return result;
+            }
+            else
+            {
+               yield return _result.Exception;
+
+               yield break;
+            }
          }
-         else
+      }
+
+      List<T> list = [];
+      foreach (var either in getEnumerable())
+      {
+         switch (either)
          {
-            return (list, _result.Exception);
+            case (true, var result, _):
+               list.Add(result);
+               break;
+            case (false, _, var exception):
+               return (list, exception);
          }
       }
 
@@ -96,7 +104,7 @@ internal class ResultIterator<T> where T : notnull
 
    public Result<IEnumerable<T>> IfAllSuccesses()
    {
-      var list = new List<T>();
+      List<T> list = [];
 
       foreach (var _result in enumerable)
       {

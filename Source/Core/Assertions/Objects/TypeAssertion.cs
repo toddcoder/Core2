@@ -19,7 +19,7 @@ public class TypeAssertion : IAssertion<Type>
    public TypeAssertion(Type? type)
    {
       this.type = type;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Type";
    }

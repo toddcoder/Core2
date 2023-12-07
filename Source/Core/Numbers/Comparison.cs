@@ -35,7 +35,7 @@ public class Comparison<T> where T : IComparable<T>
 
    public Comparison(T left, T right)
    {
-      pairs = new List<Pair> { new(left, right) };
+      pairs = [new(left, right)];
 
       _left = nil;
    }

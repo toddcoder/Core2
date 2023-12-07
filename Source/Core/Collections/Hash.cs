@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading;
 using Core.Monads;
@@ -8,6 +7,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
 
+//[System.Runtime.CompilerServices]
 public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    protected ReaderWriterLockSlim locker;
@@ -67,6 +67,8 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
    }
 
    public void Add((TKey key, TValue value) item) => Add(item.key, item.value);
+
+   public void Add(KeyValuePair<TKey, TValue> item) => this[item.Key] = item.Value;
 
    public new bool Remove(TKey key)
    {

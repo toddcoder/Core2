@@ -24,7 +24,7 @@ public class FileNameAssertion : IAssertion<FileName>
    public FileNameAssertion(FileName? file)
    {
       this.file = file;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "File";
    }

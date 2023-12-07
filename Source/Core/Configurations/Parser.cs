@@ -46,7 +46,7 @@ internal class Parser
 
       Result<(string, string, bool)> getLinesAsArray(string source)
       {
-         var lines = new List<string>();
+         List<string> lines = [];
          while (source.Length > 0)
          {
             var _length = lazy.maybe<int>();

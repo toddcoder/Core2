@@ -52,7 +52,7 @@ public class Style
 
    public Style()
    {
-      features = new Set<Feature>();
+      features = [];
       _alignment = nil;
       _foregroundColor = nil;
       _backgroundColor = nil;

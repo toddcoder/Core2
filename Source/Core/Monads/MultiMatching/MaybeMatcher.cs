@@ -56,7 +56,7 @@ public class MaybeMatcher<T, TResult> where T : notnull where TResult : notnull
 
    internal MaybeMatcher()
    {
-      maybeFunctions = new List<MaybeFunction>();
+      maybeFunctions = [];
       _defaultFunction = nil;
    }
 
@@ -147,7 +147,7 @@ public class MaybeMatcher<T> where T : notnull
 
    internal MaybeMatcher()
    {
-      maybeActions = new List<MaybeAction>();
+      maybeActions = [];
       _defaultAction = nil;
    }
 

@@ -19,7 +19,7 @@ public class NamedExceptions : IEnumerable<NamedException>, IServiceMessage
       this.title = title;
       this.retryLimit = retryLimit;
 
-      namedExceptions = new List<NamedException>();
+      namedExceptions = [];
    }
 
    public void Add(Exception exception) => namedExceptions.Add(new NamedException(name, exception));

@@ -17,7 +17,7 @@ public class LazyList<T> : IList<T>
 
    public LazyList()
    {
-      enumerables = new List<IEnumerable<T>>();
+      enumerables = [];
       _flattened = nil;
    }
 
@@ -54,7 +54,7 @@ public class LazyList<T> : IList<T>
          Unflattened?.Invoke(this, EventArgs.Empty);
       }
 
-      enumerables.Add(new List<T> { item });
+      enumerables.Add([item]);
    }
 
    public void Add(IEnumerable<T> enumerable)
@@ -132,7 +132,7 @@ public class LazyList<T> : IList<T>
       Flatten();
       if (_flattened is (true, var flattened))
       {
-         var flattenedList = flattened.ToList();
+         List<T> flattenedList = [.. flattened];
          flattenedList.Insert(0, item);
          Clear();
          Add(flattenedList);
@@ -144,7 +144,7 @@ public class LazyList<T> : IList<T>
       Flatten();
       if (_flattened is (true, var flattened))
       {
-         var flattenedList = flattened.ToList();
+         List<T> flattenedList = [.. flattened];
          flattenedList.RemoveAt(index);
          Clear();
          Add(flattenedList);

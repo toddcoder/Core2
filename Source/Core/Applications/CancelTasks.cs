@@ -11,7 +11,7 @@ public class CancelTasks<TTask, TState> : IList<TTask>, IDisposable
 {
    protected List<TTask> tasks;
 
-   public CancelTasks() => tasks = new List<TTask>();
+   public CancelTasks() => tasks = [];
 
    public IEnumerator<TTask> GetEnumerator() => ((IEnumerable<TTask>)tasks).GetEnumerator();
 

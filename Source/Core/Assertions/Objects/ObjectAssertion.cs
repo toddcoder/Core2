@@ -23,7 +23,7 @@ public class ObjectAssertion : IAssertion<object>
    public ObjectAssertion(object? obj)
    {
       this.obj = obj;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Object";
    }

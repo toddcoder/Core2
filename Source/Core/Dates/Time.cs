@@ -73,7 +73,7 @@ public class Time : IComparable<DateTime>, IComparable<Time>
 
    public static string ToLongString(int days, int hours, int minutes, int seconds, Maybe<int> _milliseconds)
    {
-      var builder = new List<string>();
+      List<string> builder = [];
 
       if (days > 0)
       {
@@ -122,7 +122,7 @@ public class Time : IComparable<DateTime>, IComparable<Time>
 
    public static string ToShortString(int days, int hours, int minutes, int seconds, Maybe<int> _milliseconds)
    {
-      var list = new List<string>();
+      List<string> list = [];
 
       if (days > 0)
       {
@@ -159,7 +159,7 @@ public class Time : IComparable<DateTime>, IComparable<Time>
 
    public static string ToVeryShortString(int days, int hours, int minutes, int seconds)
    {
-      var list = new List<string>();
+      List<string> list = [];
 
       if (days > 0)
       {

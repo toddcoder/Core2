@@ -23,7 +23,7 @@ public class Elements : IRendering
 
    public Elements()
    {
-      elements = new List<Element>();
+      elements = [];
       isHtml = false;
    }
 

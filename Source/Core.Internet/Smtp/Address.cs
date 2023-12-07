@@ -71,7 +71,7 @@ public class Address
 
    public override string ToString()
    {
-      var result = new List<string>();
+      List<string> result = [];
 
       if (Server.IsNotEmpty())
       {

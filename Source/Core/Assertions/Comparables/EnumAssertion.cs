@@ -19,7 +19,7 @@ public class EnumAssertion<TEnum> : IAssertion<TEnum> where TEnum : struct, Enum
    public EnumAssertion(TEnum value)
    {
       this.value = value;
-      constraints = new List<Constraint>();
+      constraints = [];
       not = false;
       name = "Enum";
    }

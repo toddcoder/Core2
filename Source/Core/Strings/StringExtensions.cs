@@ -60,7 +60,7 @@ public static class StringExtensions
          return string.Empty;
       }
 
-      var result = new List<string>();
+      List<string> result = [];
       for (var i = 0; i < count; i++)
       {
          result.Add(source);
@@ -1842,7 +1842,7 @@ public static class StringExtensions
       }
 
       var index = 0;
-      var list = new List<int> { 0 };
+      List<int> list = [0];
 
       while (index > -1)
       {

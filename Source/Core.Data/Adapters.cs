@@ -61,7 +61,7 @@ public class Adapters<T> : IEnumerable<Adapter<T>> where T : class
    {
       this.dataSettings = dataSettings;
       this.adapters = new StringHash<Adapter<T>>(adapters);
-      this.validAdapters = new StringSet(true, validAdapters);
+      this.validAdapters = [.. validAdapters];
       this.isValidAdapterName = isValidAdapterName;
    }
 
