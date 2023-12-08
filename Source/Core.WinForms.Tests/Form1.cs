@@ -459,24 +459,14 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      uiAction.EmptyTextTitle = "Click to add new items";
-      uiAction.AutoSizeText = true;
-      uiAction.AlternateDeletable("Merge Request Received", "Merge Request Rejected", "Merged to r-6.51.0-grp1", "Merged to r-6.51.0-grp7a",
-         "Add status");
-      uiAction.ClickOnAlternate += (_, e) => Text = e.Alternate;
-      uiAction.DeleteOnAlternate += (_, e) => uiAction.RemoveAlternate(e.RectangleIndex);
-      uiAction.DynamicToolTip += (_, e) =>
+      var random = new Random();
+      uiAction.Maximum = 1000;
+      foreach (var i in 1000.Times())
       {
-         if (e.RectangleIndex is (true, var index))
-         {
-            e.ToolTipText = index.ToString();
-         }
-
-         if (!e.ToolTipText)
-         {
-            e.ToolTipText = "not there";
-         }
-      };
+         uiAction.Progress(i.ToWords(), true);
+         var milliseconds = random.Next(100, 500);
+         Thread.Sleep(milliseconds);
+      }
    }
 
    protected void button2_Click(object sender, EventArgs e)

@@ -1,6 +1,7 @@
 ﻿using Core.Assertions;
 using Core.Enumerables;
 using Core.Monads;
+using Core.Numbers;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

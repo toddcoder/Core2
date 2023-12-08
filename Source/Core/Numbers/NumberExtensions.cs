@@ -215,6 +215,14 @@ public static class NumberExtensions
       return range;
    }
 
+   public static IntRange Times(this int times)
+   {
+      var range = new IntRange(0);
+      range.Until(times);
+
+      return range;
+   }
+
    public static T MinOf<T>(this T left, T right) where T : IComparable<T> => left.CompareTo(right) < 0 ? left : right;
 
    public static T MaxOf<T>(this T left, T right) where T : IComparable<T> => left.CompareTo(right) > 0 ? left : right;

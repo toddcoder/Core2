@@ -337,4 +337,19 @@ public static class DateTimeExtensions
       var now = NowServer.Now;
       return date.DescriptionBetweenDates(now);
    }
+
+   public static string DescriptionToGo(this TimeSpan elapsedTime) => NowServer.Now.DescriptionBetweenDates(DateTime.Now + elapsedTime);
+
+   public static string DescriptionToGo(this double milliseconds)
+   {
+      var descriptionToGo = TimeSpan.FromMilliseconds(milliseconds).DescriptionToGo();
+      if (descriptionToGo == "Just now")
+      {
+         return "Almost there";
+      }
+      else
+      {
+         return descriptionToGo.Substitute("/b 'ago' $; f", "to go");
+      }
+   }
 }

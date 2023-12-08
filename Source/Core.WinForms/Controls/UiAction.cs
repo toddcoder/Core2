@@ -165,6 +165,7 @@ public class UiAction : UserControl, ISubTextHost
    protected Maybe<KeyMatch> _keyMatch;
    protected Maybe<SymbolWriter> _symbolWriter;
    protected Maybe<AlternateWriter> _alternateWriter;
+   protected bool showToGo;
 
    public event EventHandler<AutomaticMessageArgs>? AutomaticMessage;
    public event EventHandler<PaintEventArgs>? Painting;
@@ -504,7 +505,8 @@ public class UiAction : UserControl, ISubTextHost
          case UiActionType.ProgressDefinite:
          {
             var clientRectangle = getClientRectangle();
-            _progressDefiniteProcessor.Activate(() => new ProgressDefiniteProcessor(Font, graphics, clientRectangle));
+            var _uiAction = maybe<UiAction>() & showToGo & this;
+            _progressDefiniteProcessor.Activate(() => new ProgressDefiniteProcessor(Font, graphics, clientRectangle, _uiAction));
             break;
          }
       }
@@ -1165,8 +1167,10 @@ public class UiAction : UserControl, ISubTextHost
       refresh();
    }
 
-   public void Progress(string text)
+   public void Progress(string text, bool showToGo = false)
    {
+      this.showToGo = showToGo;
+
       value = index++;
 
       Text = text;
@@ -1181,6 +1185,11 @@ public class UiAction : UserControl, ISubTextHost
       }
 
       refresh();
+   }
+
+   public void EndProgress()
+   {
+      showToGo = false;
    }
 
    public bool ProgressStripe { get; set; }
@@ -1379,7 +1388,8 @@ public class UiAction : UserControl, ISubTextHost
          {
             var autoSize = writer.Value.AutoSizeText;
             writer.Value.AutoSizeText = false;
-            var percentText = $"{getPercentage()}%";
+            var percentage = getPercentage();
+            var percentText = $"{percentage}%";
             writer.Value.Rectangle = progressDefiniteProcessor.PercentRectangle;
             writer.Value.Center(true);
             writer.Value.Color = Color.Black;
@@ -1394,6 +1404,8 @@ public class UiAction : UserControl, ISubTextHost
             {
                progressSubText.Draw(e.Graphics);
             }
+
+            progressDefiniteProcessor.OnPaint(percentage);
 
             break;
          }
@@ -1675,7 +1687,7 @@ public class UiAction : UserControl, ISubTextHost
          }
          case UiActionType.ProgressDefinite when _progressDefiniteProcessor is (true, var progressDefiniteProcessor):
          {
-            progressDefiniteProcessor.OnPaint(pevent.Graphics);
+            progressDefiniteProcessor.OnPaintBackground(pevent.Graphics);
             var textRectangle = progressDefiniteProcessor.TextRectangle;
 
             using var coralBrush = new SolidBrush(Color.Coral);
@@ -2164,7 +2176,8 @@ public class UiAction : UserControl, ISubTextHost
 
    public SubText SubText(string text, int x, int y, bool clickable = false)
    {
-      var subText = clickable ? new ClickableSubText(this, text, x, y, ClientSize, ClickGlyph) : new SubText(this, text, x, y, ClientSize, ClickGlyph);
+      var subText = clickable ? new ClickableSubText(this, text, x, y, ClientSize, ClickGlyph)
+         : new SubText(this, text, x, y, ClientSize, ClickGlyph);
       return SubText(subText);
    }
 
@@ -2661,7 +2674,8 @@ public class UiAction : UserControl, ISubTextHost
       return _result;
    }
 
-   public async Task<Completion<TResult>> ExecuteAsync<TArgument, TResult>(TArgument argument, Func<TArgument, Completion<TResult>> func) where TResult : notnull
+   public async Task<Completion<TResult>> ExecuteAsync<TArgument, TResult>(TArgument argument, Func<TArgument, Completion<TResult>> func)
+      where TResult : notnull
    {
       return await Task.Run(() => func(argument));
    }

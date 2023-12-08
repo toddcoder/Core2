@@ -1249,10 +1249,6 @@ public static class EnumerableExtensions
       return set.CaseIgnore(ignoreCase);
    }
 
-   public static IntegerEnumerable Times(this int size) => new(size);
-
-   public static IntegerEnumerable To(this int start, int stop) => new IntegerEnumerable(stop).From(start);
-
    public static IEnumerable<T> For<T>(this IEnumerable<T> enumerable, Action<T> action)
    {
       foreach (var item in enumerable)
