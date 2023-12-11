@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using Core.Dates.Now;
 using Core.Matching;
@@ -332,13 +333,60 @@ public static class DateTimeExtensions
       }
    }
 
+   public static string DescriptionToGo(this DateTime startDate, DateTime endDate)
+   {
+      static Maybe<string> secondsToGo(int seconds) => seconds switch
+      {
+         0 => "Calculating",
+         < 60 => seconds.Plural("second(s) to go"),
+         _ => nil
+      };
+
+      static Maybe<string> minutesToGo(int minutes) => minutes switch
+      {
+         < 60 => minutes.Plural("minute(s) to go"),
+         _ => nil
+      };
+
+      static Maybe<string> hoursToGo(int hours) => hours.Plural("hour(s) to go");
+
+      var dateOnly = startDate.Truncate();
+      var secondDifference = new Lazy<int>(() => (int)endDate.Subtract(startDate).TotalSeconds);
+      var _seconds = lazy.maybe<string>();
+      var minuteDifference = new Lazy<int>(() => (int)endDate.Subtract(startDate).TotalMinutes);
+      var _minutes = lazy.maybe<string>();
+      var hourDifference = new Lazy<int>(() => (int)endDate.Subtract(startDate).TotalHours);
+      var _hours = lazy.maybe<string>();
+      var dayDifference = new Lazy<int>(() => (int)endDate.Subtract(dateOnly).TotalDays);
+
+      if (_seconds.ValueOf(secondsToGo(secondDifference.Value)) is (true, var seconds))
+      {
+         return seconds;
+      }
+      else if (_minutes.ValueOf(minutesToGo(minuteDifference.Value)) is (true, var minutes))
+      {
+         return minutes;
+      }
+      else if (_hours.ValueOf(hoursToGo(hourDifference.Value)) is (true, var hours))
+      {
+         return hours;
+      }
+      else
+      {
+         return differenceInDays(dayDifference.Value, endDate, dateOnly);
+      }
+   }
+
    public static string DescriptionFromNow(this DateTime date)
    {
       var now = NowServer.Now;
       return date.DescriptionBetweenDates(now);
    }
 
-   public static string DescriptionToGo(this TimeSpan elapsedTime) => NowServer.Now.DescriptionBetweenDates(DateTime.Now + elapsedTime);
+   public static string DescriptionToGo(this TimeSpan elapsedTime)
+   {
+      return NowServer.Now.DescriptionToGo(NowServer.Now + elapsedTime);
+   }
 
    public static string DescriptionToGo(this double milliseconds)
    {
@@ -350,6 +398,32 @@ public static class DateTimeExtensions
       else
       {
          return descriptionToGo.Substitute("/b 'ago' $; f", "to go");
+      }
+   }
+
+   public static string DescriptionToGo(this TimeSpan elapsedTime, int percent)
+   {
+      switch (percent)
+      {
+         case 0:
+            return "Unknown";
+         case 100:
+            return "Done";
+         default:
+         {
+            var totalMilliseconds = elapsedTime.TotalMilliseconds;
+            var millisecondsPerPercent = totalMilliseconds / percent;
+            var remainingMilliseconds = millisecondsPerPercent * (100 - percent);
+
+            if (remainingMilliseconds == 0)
+            {
+               return "Unknown";
+            }
+            else
+            {
+               return remainingMilliseconds.DescriptionToGo();
+            }
+         }
       }
    }
 }

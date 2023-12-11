@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Core.Monads;
+using Core.Strings;
 using static Core.Dates.DateTimeExtensions;
 using static Core.Monads.MonadFunctions;
 
@@ -7,58 +8,87 @@ namespace Core.WinForms.Controls;
 
 public class ProgressDefiniteProcessor
 {
+   protected Font font;
    protected Rectangle percentRectangle;
    protected Rectangle textRectangle;
-   protected Font font;
    protected Maybe<Stopwatch> _stopwatch;
-   protected Maybe<SubText> _subText;
+   protected bool showToGo;
+   protected bool pendingRectangleChange;
 
-   public ProgressDefiniteProcessor(Font font, Graphics graphics, Rectangle clientRectangle, Maybe<UiAction> _uiAction)
+   public ProgressDefiniteProcessor(Font font, Graphics graphics, Rectangle clientRectangle, bool showToGo)
    {
       this.font = font;
 
-      percentRectangle = getPercentRectangle(graphics, clientRectangle);
+      percentRectangle = getPercentRectangle(graphics, clientRectangle, showToGo);
       textRectangle = getTextRectangle(clientRectangle);
 
-      if (_uiAction is (true, var uiAction))
-      {
-         _stopwatch = new Stopwatch();
-         _subText = uiAction.SubText("").Set.FontSize(8).Invert().Alignment(CardinalAlignment.SouthWest).SubText;
-      }
-      else
-      {
-         _stopwatch = nil;
-         _subText = nil;
-      }
+      _stopwatch = nil;
+      ShowToGo = showToGo;
+      pendingRectangleChange = false;
    }
 
    public Rectangle PercentRectangle => percentRectangle;
 
    public Rectangle TextRectangle => textRectangle;
 
-   protected Rectangle getPercentRectangle(Graphics graphics, Rectangle clientRectangle)
+   public bool ShowToGo
    {
-      var size = TextRenderer.MeasureText(graphics, "100%", font);
+      get => showToGo;
+      set
+      {
+         var lastShowToGo = showToGo;
+         showToGo = value;
+         if (!lastShowToGo && !_stopwatch)
+         {
+            _stopwatch = maybe<Stopwatch>() & showToGo & (() => new Stopwatch());
+         }
+
+         pendingRectangleChange = true;
+      }
+   }
+
+   protected Rectangle getPercentRectangle(Graphics graphics, Rectangle clientRectangle, bool showToGo)
+   {
+      var text = showToGo ? " 88 wwwwwww to go " : "100%";
+      var size = TextRenderer.MeasureText(graphics, text, font);
       size = size with { Height = clientRectangle.Height };
 
       return new Rectangle(clientRectangle.Location, size);
    }
 
-   protected Rectangle getTextRectangle(Rectangle clientRectangle)
+   protected Maybe<Rectangle> getTextRectangle(Rectangle clientRectangle)
    {
       return clientRectangle with { X = clientRectangle.X + percentRectangle.Width, Width = clientRectangle.Width - percentRectangle.Width };
    }
 
-   public void OnPaint(int percent)
+   public void OnPaint(Graphics g, int percent, Color foreColor, Rectangle clientRectangle)
    {
-      if (_subText is (true, var subText))
+      if (pendingRectangleChange)
+      {
+         percentRectangle = getPercentRectangle(g, clientRectangle, showToGo);
+         textRectangle = getTextRectangle(clientRectangle);
+         pendingRectangleChange = false;
+      }
+
+      if (_stopwatch)
       {
          var timeToGo = TimeToGo(percent);
-         subText.Text = timeToGo;
+         if (timeToGo.IsNotEmpty())
+         {
+            var size = UiActionWriter.TextSize(g, timeToGo, font, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+            var rectangle = percentRectangle with { Y = percentRectangle.Y + percentRectangle.Height - size.Height, Height = size.Height };
+            var stringFormat = new StringFormat
+            {
+               Alignment = StringAlignment.Center,
+               LineAlignment = StringAlignment.Center
+            };
+            using var brush = new SolidBrush(foreColor);
+            g.DrawString(timeToGo, font, brush, rectangle.ToRectangleF(), stringFormat);
+         }
       }
    }
 
-   public void OnPaintBackground(Graphics graphics)
+   public void OnPaintBackground(Graphics g)
    {
       if (_stopwatch is (true, { IsRunning: false } stopwatch))
       {
@@ -66,27 +96,8 @@ public class ProgressDefiniteProcessor
       }
 
       using var percentBrush = new SolidBrush(Color.LightSteelBlue);
-      graphics.FillRectangle(percentBrush, percentRectangle);
+      g.FillRectangle(percentBrush, percentRectangle);
    }
 
-   public string TimeToGo(int percent)
-   {
-      if (percent == 0)
-      {
-         return "Unknown";
-      }
-      else if (_stopwatch is (true, var stopwatch))
-      {
-         var elapsed = stopwatch.Elapsed;
-         var totalMilliseconds = elapsed.TotalMilliseconds;
-         var millisecondsPerPercent = totalMilliseconds / percent;
-         var remainingMilliseconds = millisecondsPerPercent * (100 - percent);
-
-         return remainingMilliseconds.DescriptionToGo();
-      }
-      else
-      {
-         return "";
-      }
-   }
+   public string TimeToGo(int percent) => _stopwatch.Map(sw => sw.Elapsed.DescriptionToGo(percent)) | "";
 }

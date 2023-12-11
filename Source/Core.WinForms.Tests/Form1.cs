@@ -457,21 +457,34 @@ public partial class Form1 : Form, IMessageQueueListener
       contextMenus.CreateContextMenu(textBox1);
    }
 
+   protected bool isRunning;
+
    protected void button1_Click(object sender, EventArgs e)
    {
+      isRunning = true;
+
       var random = new Random();
-      uiAction.Maximum = 1000;
-      foreach (var i in 1000.Times())
+      uiAction.Maximum = 100;
+      uiAction.ShowToGo = true;
+      foreach (var i in 100.Times())
       {
-         uiAction.Progress(i.ToWords(), true);
+         if (!isRunning)
+         {
+            uiAction.Failure("Stopped");
+            break;
+         }
+
+         uiAction.Progress(i.ToWords());
          var milliseconds = random.Next(100, 500);
          Thread.Sleep(milliseconds);
+         Application.DoEvents();
       }
    }
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      uiAction.CheckStyle = CheckStyle.Checked;
+      isRunning = false;
+      /*uiAction.CheckStyle = CheckStyle.Checked;
       uiAction.Legend("action");
       uiAction.ClickToCancel = true;
       //uiAction.Busy("with check");
@@ -484,7 +497,7 @@ public partial class Form1 : Form, IMessageQueueListener
       }
 
       uiAction.Busy(true);
-      uiAction.StopStopwatch();
+      uiAction.StopStopwatch();*/
    }
 
    protected void button3_Click(object sender, EventArgs e)

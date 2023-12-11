@@ -1140,6 +1140,12 @@ public class UiAction : UserControl, ISubTextHost
 
    public bool StopwatchInverted { get; set; }
 
+   public bool ShowToGo
+   {
+      get => showToGo;
+      set => showToGo = value;
+   }
+
    public Maybe<TimeSpan> Elapsed => maybe<TimeSpan>() & Stopwatch & (() => stopwatch.Value.Elapsed);
 
    public void Progress(int value, string text = "", bool asPercentage = false)
@@ -1167,9 +1173,12 @@ public class UiAction : UserControl, ISubTextHost
       refresh();
    }
 
-   public void Progress(string text, bool showToGo = false)
+   public void Progress(string text)
    {
-      this.showToGo = showToGo;
+      if (_progressDefiniteProcessor is (true, var processor))
+      {
+         processor.ShowToGo = showToGo;
+      }
 
       value = index++;
 
@@ -1185,11 +1194,6 @@ public class UiAction : UserControl, ISubTextHost
       }
 
       refresh();
-   }
-
-   public void EndProgress()
-   {
-      showToGo = false;
    }
 
    public bool ProgressStripe { get; set; }
@@ -1394,9 +1398,9 @@ public class UiAction : UserControl, ISubTextHost
             writer.Value.Center(true);
             writer.Value.Color = Color.Black;
             writer.Value.Write(e.Graphics, percentText);
-            writer.Value.AutoSizeText = autoSize;
 
             writer.Value.Rectangle = progressDefiniteProcessor.TextRectangle;
+            writer.Value.Center(true);
             writer.Value.Color = getForeColor();
             writer.Value.Write(e.Graphics, text);
 
@@ -1405,7 +1409,9 @@ public class UiAction : UserControl, ISubTextHost
                progressSubText.Draw(e.Graphics);
             }
 
-            progressDefiniteProcessor.OnPaint(percentage);
+            progressDefiniteProcessor.OnPaint(e.Graphics, percentage, Color.Black, clientRectangle);
+
+            writer.Value.AutoSizeText = autoSize;
 
             break;
          }
