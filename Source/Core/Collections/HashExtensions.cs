@@ -616,5 +616,6 @@ public static class HashExtensions
 
    public static IHashMaybe<TKey, TValue> Maybe<TKey, TValue>(this IHash<TKey, TValue> hash) where TKey : notnull where TValue : notnull => new(hash);
 
+   [Obsolete("Use kv function")]
    public static KeyValuePair<TKey, TValue> at<TKey, TValue>(this TKey key, TValue value) => new(key, value);
 }

@@ -2,6 +2,7 @@
 using Core.Collections;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Enumerables.EnumerableFunctions;
 
 namespace Core.Tests;
 
@@ -42,7 +43,7 @@ public class HashTest
    [TestMethod]
    public void StringHashTest()
    {
-      StringHash<int> hash = ["alpha".at(0), "bravo".at(1), "charlie".at(2)];
+      StringHash<int> hash = [.. kv(("alpha", 0), ("bravo", 1), ("charlie", 2))];
       hash.Must().HaveKeyOf("Bravo").OrThrow();
    }
 
@@ -64,7 +65,7 @@ public class HashTest
    [TestMethod]
    public void CollectionBuilderTest()
    {
-      Hash<char, int> hash = ['a'.at(0), 'b'.at(1)];
+      Hash<char, int> hash = [.. kv(('a', 0), ('b', 1))];
       Console.Write(hash['a']);
    }
 }
