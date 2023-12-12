@@ -1,4 +1,6 @@
-﻿using Core.Configurations;
+﻿using System.Text;
+using Core.Computers;
+using Core.Configurations;
 using Core.Dates;
 using Core.Matching;
 using Core.Monads;
@@ -127,5 +129,13 @@ public class Serializer
       }
 
       writer.EndObject();
+   }
+
+   public Result<string> Serialize(FileName file)
+   {
+      return
+         from json in Serialize()
+         from _ in file.TryTo.SetText(json, Encoding.UTF8)
+         select json;
    }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Buffers;
 using System.Text;
 using System.Text.Json;
+using Core.Computers;
 using Core.Configurations;
 using Core.Monads;
 using Core.Objects;
@@ -173,5 +174,13 @@ public class Deserializer
       {
          return exception;
       }
+   }
+
+   public Result<Setting> Deserialize(FileName file)
+   {
+      return
+         from json in file.TryTo.GetText(Encoding.UTF8)
+         from setting in Deserialize()
+         select setting;
    }
 }
