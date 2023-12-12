@@ -131,10 +131,11 @@ public class Serializer
       writer.EndObject();
    }
 
-   public Result<string> Serialize(FileName file)
+   public static Result<string> Serialize(FileName file, Setting setting)
    {
+      var serializer = new Serializer(setting);
       return
-         from json in Serialize()
+         from json in serializer.Serialize()
          from _ in file.TryTo.SetText(json, Encoding.UTF8)
          select json;
    }

@@ -176,11 +176,12 @@ public class Deserializer
       }
    }
 
-   public Result<Setting> Deserialize(FileName file)
+   public static Result<Setting> Deserialize(FileName file)
    {
       return
          from json in file.TryTo.GetText(Encoding.UTF8)
-         from setting in Deserialize()
+         let deserializer = new Deserializer(json)
+         from setting in deserializer.Deserialize()
          select setting;
    }
 }
