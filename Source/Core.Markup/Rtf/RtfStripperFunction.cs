@@ -98,7 +98,7 @@ public static class RtfStripperFunction
          return fail("Input string cannot be null");
       }
 
-      var stack = new MaybeStack<StackEntry>();
+      MaybeStack<StackEntry> stack = [];
       var ignorable = false;
       var numberOfAsciiToSkipAfterUnicode = 1;
       var numberOfAsciiLeftToSkip = 0;

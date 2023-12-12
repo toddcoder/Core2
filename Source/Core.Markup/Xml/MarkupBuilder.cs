@@ -29,7 +29,7 @@ public class MarkupBuilder
 
          var builder = new MarkupBuilder("html");
          var element = builder.Root;
-         var elementStack = new MaybeStack<Element>();
+         MaybeStack<Element> elementStack = [];
 
          while (reader.Read())
          {

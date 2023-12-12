@@ -1,6 +1,7 @@
 using System.Text;
 using Core.Collections;
 using Core.Computers;
+using static Core.Enumerables.EnumerableFunctions;
 
 namespace Core.Markup.Rtf;
 
@@ -40,8 +41,8 @@ public class Document : BlockList
       header = new HeaderFooter(HeaderFooterType.Header);
       footer = new HeaderFooter(HeaderFooterType.Footer);
 
-      fontTable = new StringHash<int> { [DefaultValue.FONT] = 0 };
-      colorTable = new Hash<Color, int> { [new Color()] = 0 };
+      fontTable = [.. kv((DefaultValue.FONT, 0))];
+      colorTable = [.. kv((new Color(), 0))];
       _ = Color("blue");
    }
 

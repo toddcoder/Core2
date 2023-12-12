@@ -84,7 +84,7 @@ public class JobPool
          return;
       }
 
-      var newQueue = new MaybeQueue<Action<int>>();
+      MaybeQueue<Action<int>> newQueue = [];
 
       for (var i = 0; i < processorCount; i++)
       {

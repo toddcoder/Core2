@@ -489,13 +489,9 @@ public class MonadTests
    [TestMethod]
    public void LazyRepeatingMonadsTest()
    {
-      var stack = new MaybeStack<string>();
-      foreach (var item in (string[]) ["a", "b", "c", "d", "e", "f"])
-      {
-         stack.Push(item);
-      }
-
+      MaybeStack<string> stack = ["a", "b", "c", "d", "e", "f"];
       var _item = lazyRepeating.maybe<string>();
+      
       while (_item.ValueOf(stack.Pop()) is (true, var item))
       {
          Console.WriteLine(item);

@@ -30,7 +30,7 @@ public class Logger : IDisposable
       MaxDateTime = nil;
 
       writer = new StringWriter();
-      indentations = new MaybeStack<string>();
+      indentations = [];
       now = DateTime.MinValue;
    }
 

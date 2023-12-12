@@ -95,7 +95,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
 
    public Hash<string, object> GetHash()
    {
-      var hash = new Hash<string, object>();
+      Hash<string, object> hash = [];
       var info = obj!.GetType().GetProperties();
 
       foreach (var pInfo in info)
@@ -119,7 +119,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
 
    Hash<Signature, object> IHash<Signature, object>.GetHash()
    {
-      var hash = new Hash<Signature, object>();
+      Hash<Signature, object> hash = [];
       var info = obj!.GetType().GetProperties();
 
       foreach (var pInfo in info)

@@ -249,7 +249,7 @@ public class MatchResult : IEnumerable<Match>
 
    public Hash<string, string> ToHash()
    {
-      var hash = new Hash<string, string>();
+      Hash<string, string> hash = [];
       for (var i = 0; i < GroupCount(0); i++)
       {
          var _name = indexesToNames.Maybe[i];

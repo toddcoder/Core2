@@ -9,7 +9,7 @@ public static class DatabaseRequestNotifier
 
    static DatabaseRequestNotifier()
    {
-      notifications = new MaybeStack<IDatabaseRequestNotification>();
+      notifications = [];
    }
 
    public static void EnterScope(IDatabaseRequestNotification notification) => notifications.Push(notification);

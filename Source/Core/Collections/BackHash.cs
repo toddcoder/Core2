@@ -9,7 +9,7 @@ public class BackHash<TKey, TValue> : Hash<TKey, TValue> where TKey : notnull wh
 
    public BackHash()
    {
-      backHash = new Hash<TValue, TKey>();
+      backHash = [];
    }
 
    public BackHash(BackHash<TValue, TKey> backHash) : this()
@@ -22,32 +22,32 @@ public class BackHash<TKey, TValue> : Hash<TKey, TValue> where TKey : notnull wh
 
    public BackHash(int capacity) : base(capacity)
    {
-      backHash = new Hash<TValue, TKey>();
+      backHash = [];
    }
 
    public BackHash(IEqualityComparer<TKey> comparer) : base(comparer)
    {
-      backHash = new Hash<TValue, TKey>();
+      backHash = [];
    }
 
    public BackHash(int capacity, IEqualityComparer<TKey> comparer) : base(capacity, comparer)
    {
-      backHash = new Hash<TValue, TKey>();
+      backHash = [];
    }
 
    public BackHash(IDictionary<TKey, TValue> dictionary) : base(dictionary)
    {
-      backHash = new Hash<TValue, TKey>();
+      backHash = [];
    }
 
    public BackHash(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) : base(dictionary, comparer)
    {
-      backHash = new Hash<TValue, TKey>();
+      backHash = [];
    }
 
    protected BackHash(SerializationInfo info, StreamingContext context) : base(info, context)
    {
-      backHash = new Hash<TValue, TKey>();
+      backHash = [];
    }
 
    public new TValue this[TKey key]
@@ -85,7 +85,7 @@ public class BackHash<TKey, TValue> : Hash<TKey, TValue> where TKey : notnull wh
 
    public void Deconstruct(out Hash<TKey, TValue> forward, out Hash<TValue, TKey> backward)
    {
-      forward = new Hash<TKey, TValue>(this, Comparer);
+      forward = [];
       backward = backHash;
    }
 }

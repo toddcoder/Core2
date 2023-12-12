@@ -30,8 +30,8 @@ public class AlternateWriter
       selectedIndex = 0;
       disabledIndex = -1;
       disabledFont = new Lazy<Font>(() => new Font(uiAction.Font, FontStyle.Italic));
-      foreColors = new Hash<int, Color>();
-      backColors = new Hash<int, Color>();
+      foreColors = [];
+      backColors = [];
    }
 
    protected virtual int getPenSize(Rectangle rectangle)

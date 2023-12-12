@@ -18,7 +18,7 @@ public static class MessageQueue
    {
       listeners = new AutoStringHash<List<IMessageQueueListener>>(_ => [], true);
       syncListeners = new AutoStringHash<List<IMessageQueueSyncListener>>(_ => [], true);
-      syncMessages = new MaybeQueue<Message>();
+      syncMessages = [];
       locker = new object();
    }
 

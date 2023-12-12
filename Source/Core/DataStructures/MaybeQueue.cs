@@ -63,6 +63,8 @@ public class MaybeQueue<T> : IQueue<T>, IEnumerable<T> where T : notnull
 
    public void Enqueue(T item) => queue.Enqueue(item);
 
+   public void Add(T item) => queue.Enqueue(item);
+
    public IEnumerator<T> GetEnumerator() => queue.GetEnumerator();
 
    public override bool Equals(object? obj) => obj is MaybeQueue<T> q && q == this;

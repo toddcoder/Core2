@@ -35,7 +35,7 @@ public static class AssertionFunctions
       }
 
       nameCache = new AutoHash<string, string>(getName, true);
-      valueCache = new Hash<string, object>();
+      valueCache = [];
    }
 
    public static TException getException<TException>(params object[] args) where TException : Exception

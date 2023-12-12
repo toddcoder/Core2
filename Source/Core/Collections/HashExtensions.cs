@@ -539,7 +539,7 @@ public static class HashExtensions
             hash[key].Add(value);
          }
 
-         var result = new Hash<TKey, TValue[]>();
+         Hash<TKey, TValue[]> result = [];
          foreach (var (key, value) in hash)
          {
             result[key] = [.. value];
@@ -564,7 +564,7 @@ public static class HashExtensions
             hash[key].Add(item);
          }
 
-         var result = new Hash<TKey, T[]>();
+         Hash<TKey, T[]> result = [];
          foreach (var (key, value) in hash)
          {
             result[key] = [.. value];
@@ -583,7 +583,7 @@ public static class HashExtensions
    {
       try
       {
-         var hash = new Hash<TKey, TValue>();
+         Hash<TKey, TValue> hash = [];
          foreach (var item in enumerable)
          {
             var key = keyFunc(item);

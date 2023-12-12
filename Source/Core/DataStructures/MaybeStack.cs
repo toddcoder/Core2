@@ -69,6 +69,8 @@ public class MaybeStack<T> : IEnumerable<T> where T : notnull
 
    public void Push(T item) => stack.Push(item);
 
+   public void Add(T item) => stack.Push(item);
+
    public T[] ToArray() => [.. stack];
 
    public IEnumerator<T> GetEnumerator() => stack.GetEnumerator();

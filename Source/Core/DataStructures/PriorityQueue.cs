@@ -71,6 +71,8 @@ public class PriorityQueue<T> : IQueue<T>, IEnumerable<T>, IEquatable<PriorityQu
       }
    }
 
+   public void Add(T item) => Enqueue(item);
+
    public Maybe<T> Peek() => maybe<T>() & IsNotEmpty & (() => list[0]);
 
    public Maybe<T> Dequeue()

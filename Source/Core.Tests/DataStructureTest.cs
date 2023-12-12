@@ -1,4 +1,5 @@
 ﻿using Core.DataStructures;
+using Core.Numbers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests;
@@ -9,11 +10,7 @@ public class DataStructureTest
    [TestMethod]
    public void StackEnumerableTest()
    {
-      var stack = new MaybeStack<int>();
-      for (var i = 0; i < 10; i++)
-      {
-         stack.Push(i);
-      }
+      MaybeStack<int> stack = [.. 0.Until(10)];
 
       foreach (var item in stack.Popping())
       {
@@ -36,11 +33,7 @@ public class DataStructureTest
    [TestMethod]
    public void StackWhileTest()
    {
-      var stack = new MaybeStack<int>();
-      for (var i = 0; i < 10; i++)
-      {
-         stack.Push(i);
-      }
+      MaybeStack<int> stack = [.. 0.Until(10)];
 
       while (stack.More())
       {

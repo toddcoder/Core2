@@ -1,6 +1,7 @@
 ﻿using Core.Assertions;
 using Core.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Enumerables.EnumerableFunctions;
 
 namespace Core.Tests;
 
@@ -57,7 +58,7 @@ public class AssertionTests
    [TestMethod]
    public void DictionaryAssertionTest()
    {
-      var hash = new Hash<char, string> { ['a'] = "alfa", ['b'] = "bravo", ['c'] = "charlie" };
+      Hash<char, string> hash = [.. kv(('a', "alpha"), ('b', "bravo"), ('c', "charlie"))];
       hash.Must().Not.BeNullOrEmpty().OrThrow();
       hash.Must().HaveKeyOf('b').OrThrow();
    }

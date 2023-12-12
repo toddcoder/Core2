@@ -84,7 +84,7 @@ public class ReflectorFormat
 
    protected static Result<MemberData> getMembers(Type type, string template)
    {
-      var members = new Hash<string, Pair>();
+      Hash<string, Pair> members = [];
       const MemberTypes memberTypes = Field | Property;
       const BindingFlags bindingFlags = BindingFlags.Instance | GetField | GetProperty | NonPublic | Public;
 

@@ -44,7 +44,7 @@ public class QueuedServiceLogger : ServiceLogger
    public QueuedServiceLogger(FolderName baseFolder, string jobName, int sizeLimit, TimeSpan expiry, Maybe<EventLogger> _eventLogger) :
       base(baseFolder, jobName, sizeLimit, expiry, _eventLogger)
    {
-      queue = new MaybeQueue<QueueItem>();
+      queue = [];
    }
 
    protected void dequeue()

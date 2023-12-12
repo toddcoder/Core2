@@ -25,7 +25,7 @@ internal class Parser
    public Result<Setting> Parse()
    {
       var rootSetting = new Setting();
-      var stack = new MaybeStack<ConfigurationItem>();
+      MaybeStack<ConfigurationItem> stack = [];
       stack.Push(rootSetting);
 
       Maybe<Setting> peekSetting()

@@ -10,7 +10,7 @@ public class Exister<T> where T : notnull
 
    public Exister()
    {
-      content = new Hash<T, Unit>();
+      content = [];
    }
 
    public Exister(IEqualityComparer<T> comparer)

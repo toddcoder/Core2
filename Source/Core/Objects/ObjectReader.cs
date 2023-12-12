@@ -46,7 +46,7 @@ public class ObjectReader
 
    protected static Result<Hash<string, object>> getValues(object obj, IEnumerable<MemberInfo> memberInfos)
    {
-      var hash = new Hash<string, object>();
+      Hash<string, object> hash = [];
 
       foreach (var info in memberInfos)
       {

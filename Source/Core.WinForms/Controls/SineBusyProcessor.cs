@@ -23,9 +23,9 @@ public class SineBusyProcessor : BusyProcessor
       margin = 2;
 
       start = 0.nextRandom(740, 20);
-      sineValues = new Hash<double, double>();
-      yValues = new Hash<double, int>();
-      xValues = new Hash<double, int>();
+      sineValues = [];
+      yValues = [];
+      xValues = [];
    }
 
    public override void Advance()

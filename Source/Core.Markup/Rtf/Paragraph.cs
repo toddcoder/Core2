@@ -405,7 +405,7 @@ public class Paragraph : Block
 
    public MaybeQueue<CharFormat> CharFormatTemplate(string charFormatTemplate)
    {
-      var queue = new MaybeQueue<CharFormat>();
+      MaybeQueue<CharFormat> queue = [];
       var _result = charFormatTemplate.Matches("'^'+; f");
       if (_result is (true, var result))
       {
@@ -454,7 +454,7 @@ public class Paragraph : Block
 
    public MaybeQueue<Formatter> FormatTemplate(string formatTemplate)
    {
-      var queue = new MaybeQueue<Formatter>();
+      MaybeQueue<Formatter> queue = [];
       var _result = formatTemplate.Matches("'^'+; f");
       if (_result is (true, var result))
       {

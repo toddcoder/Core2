@@ -9,7 +9,7 @@ public class TableBuilder
 
    public TableBuilder()
    {
-      items = new MaybeQueue<TableBuilderItem>();
+      items = [];
    }
 
    public void Add(TableBuilderItem item) => items.Enqueue(item);

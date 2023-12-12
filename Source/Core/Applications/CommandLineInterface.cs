@@ -44,7 +44,7 @@ public abstract class CommandLineInterface : IDisposable
       ExceptionWriter = exceptionWriter;
       Test = false;
       Running = false;
-      aliases = new Hash<string, string>();
+      aliases = [];
       Application = string.Empty;
       Shortcuts = string.Empty;
       ShortPrefix = "-";

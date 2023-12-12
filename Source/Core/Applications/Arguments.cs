@@ -106,7 +106,7 @@ public class Arguments : IEnumerable<Argument>
 
    public Hash<string, string> Switches(Pattern pattern, string keyReplacement = "$0", string valueReplacement = "$1")
    {
-      var result = new Hash<string, string>();
+      Hash<string, string> result = [];
 
       foreach (var text in arguments.Select(argument => argument.Text))
       {

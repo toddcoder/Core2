@@ -51,7 +51,7 @@ public class DataContainer : StringHash<object>
 
    public Hash<TKey, TValue> ToHash<TKey, TValue>(Func<string, TKey> toKey, Func<object, TValue> toValue) where TKey : class where TValue : class
    {
-      var result = new Hash<TKey, TValue>();
+      Hash<TKey, TValue> result = [];
 
       foreach (var (rawKey, rawValue) in this)
       {

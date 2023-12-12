@@ -123,8 +123,8 @@ public class ExTextBox : TextBox, ISubTextHost
       allowMessage = "allowed";
       trendMessage = "trending";
       denyMessage = "denied";
-      subTexts = new Hash<Guid, SubText>();
-      legends = new MaybeStack<SubText>();
+      subTexts = [];
+      legends = [];
       _lastSubText = nil;
       _leftMargin = nil;
       cueBanner = string.Empty;

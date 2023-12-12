@@ -225,7 +225,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
 
    public Hash<TKey, TValue> Merge(Hash<TKey, TValue> otherHash)
    {
-      var result = new Hash<TKey, TValue>();
+      Hash<TKey, TValue> result = [];
       foreach (var (key, value) in this)
       {
          result[key] = value;

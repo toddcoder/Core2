@@ -15,7 +15,7 @@ public class Scraper : IHash<string, string>
 
    static Scraper()
    {
-      scraperStack = new MaybeStack<Scraper>();
+      scraperStack = [];
    }
 
    protected Source source;

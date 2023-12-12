@@ -214,7 +214,7 @@ public class UiAction : UserControl, ISubTextHost
       _lastBackColor = nil;
       _lastStyle = nil;
       _image = nil;
-      subTexts = new Hash<Guid, SubText>();
+      subTexts = [];
       checkStyle = CheckStyle.None;
       MessageAlignment = CardinalAlignment.Center;
       stopwatch = new Lazy<Stopwatch>(() => new Stopwatch());
@@ -422,7 +422,7 @@ public class UiAction : UserControl, ISubTextHost
       control.Controls.Add(this);
       control.Resize += (_, _) => Refresh();
 
-      legends = new MaybeStack<SubText>();
+      legends = [];
       _working = nil;
       StopwatchInverted = true;
       EmptyTextTitle = nil;

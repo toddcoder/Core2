@@ -54,12 +54,7 @@ public class CollectionTest
    [TestMethod]
    public void PriorityQueueTest()
    {
-      var queue = new PriorityQueue<int>();
-
-      foreach (var item in (int[]) [1, 5, 3, 6, 9])
-      {
-         queue.Enqueue(item);
-      }
+      PriorityQueue<int> queue = [1, 5, 3, 6, 9];
 
       var _item = lazyRepeating.maybe<int>();
       while (_item.ValueOf(queue.Dequeue()) is (true, var item))
@@ -82,10 +77,7 @@ public class CollectionTest
    [TestMethod]
    public void MaybeStackItemTest()
    {
-      var stack = new MaybeStack<string>();
-      stack.Push("alpha");
-      stack.Push("bravo");
-      stack.Push("charlie");
+      MaybeStack<string> stack = ["alpha", "bravo", "charlie"];
 
       var _item = lazyRepeating.result<string>();
       if (_item.ValueOf(stack.Item(0)) is (true, var item))

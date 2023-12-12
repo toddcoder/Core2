@@ -107,7 +107,7 @@ public class Table : Block
       maxColumnCount = 0;
       rowIndex = -1;
       arrayCreated = false;
-      pendingMerges = new MaybeQueue<(int, int, int, int)>();
+      pendingMerges = [];
 
       _formatAction = nil;
       _currentCell = nil;
@@ -471,7 +471,7 @@ public class Table : Block
    {
       assertRepresentativeMustBeMerged(representative);
 
-      var statistics = new Hash<Border, int>();
+      Hash<Border, int> statistics = [];
       var limit = direction is Direction.Top or Direction.Bottom ? representative.MergeInfo.ColumnSpan : representative.MergeInfo.RowSpan;
 
       for (var i = 0; i < limit; i++)
@@ -491,9 +491,9 @@ public class Table : Block
 
          var border = cells[representative.RowIndex + rowSpan][representative.ColumnIndex + columnSpan].Borders[direction];
 
-         if (statistics.ContainsKey(border))
+         if (statistics.Maybe[border] is (true, var count))
          {
-            statistics[border] += 1;
+            statistics[border] = count + 1;
          }
          else
          {
