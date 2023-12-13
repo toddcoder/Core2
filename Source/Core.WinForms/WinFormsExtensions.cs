@@ -4,35 +4,48 @@ public static class WinFormsExtensions
 {
    public static void Do(this Control control, Action action)
    {
-      if (!control.IsDisposed)
+      try
       {
-         if (control.InvokeRequired)
+         if (!control.IsDisposed)
          {
-            control.Invoke(action);
+            if (control.InvokeRequired)
+            {
+               control.Invoke(action);
+            }
+            else
+            {
+               action();
+            }
          }
-         else
-         {
-            action();
-         }
+      }
+      catch
+      {
       }
    }
 
    public static T Get<T>(this Control control, Func<T> func)
    {
-      if (!control.IsDisposed)
+      try
       {
-         if (control.InvokeRequired)
+         if (!control.IsDisposed)
          {
-            return control.Invoke(func);
+            if (control.InvokeRequired)
+            {
+               return control.Invoke(func);
+            }
+            else
+            {
+               return func();
+            }
          }
          else
          {
             return func();
          }
       }
-      else
+      catch
       {
-         throw new ObjectDisposedException("Control already disposed");
+         return func();
       }
    }
 }
