@@ -377,6 +377,226 @@ public static class ConversionExtensions
       public Result<T> Cast<T>() where T : notnull => (T)obj;
    }
 
+   public class OptionalConverter(string source)
+   {
+      public Optional<bool> Boolean()
+      {
+         try
+         {
+            if (source.IsNotEmpty())
+            {
+               return source switch
+               {
+                  "1" => true,
+                  "0" => false,
+                  _ => bool.TryParse(source, out var result) ? result : nil
+               };
+            }
+            else
+            {
+               return nil;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public Optional<byte> Byte(NumberStyles numberStyles = NumberStyles.Integer)
+      {
+         try
+         {
+            if (source.IsNotEmpty())
+            {
+               return byte.TryParse(source, numberStyles, ValueConverter.FormatProvider(numberStyles), out var result) ? result : nil;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public Optional<int> Int32(NumberStyles numberStyles = NumberStyles.Integer)
+      {
+         try
+         {
+            if (source.IsNotEmpty())
+            {
+               return int.TryParse(source, numberStyles, ValueConverter.FormatProvider(numberStyles), out var result) ? result : nil;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public Optional<long> Int64(NumberStyles numberStyles = NumberStyles.Integer)
+      {
+         try
+         {
+            if (source.IsNotEmpty())
+            {
+               return long.TryParse(source, numberStyles, ValueConverter.FormatProvider(numberStyles), out var result) ? result : nil;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public Optional<float> Single(NumberStyles numberStyles = NumberStyles.Float)
+      {
+         try
+         {
+            if (source.IsNotEmpty())
+            {
+               return float.TryParse(source, numberStyles, ValueConverter.FormatProvider(numberStyles), out var result) ? result : nil;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public Optional<double> Double(NumberStyles numberStyles = NumberStyles.Float)
+      {
+         try
+         {
+            if (source.IsNotEmpty())
+            {
+               return double.TryParse(source, numberStyles, ValueConverter.FormatProvider(numberStyles), out var result) ? result : nil;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public Optional<decimal> Decimal(NumberStyles numberStyles = NumberStyles.Float)
+      {
+         try
+         {
+            if (source.IsNotEmpty())
+            {
+               return decimal.TryParse(source, numberStyles, ValueConverter.FormatProvider(numberStyles), out var result) ? result : nil;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public Optional<DateTime> DateTime()
+      {
+         try
+         {
+            if (source.IsNotEmpty())
+            {
+               return System.DateTime.TryParse(source, out var result) ? result : nil;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public Optional<Guid> Guid()
+      {
+         try
+         {
+            if (source.IsNotEmpty())
+            {
+               return System.Guid.TryParse(source, out var guid) ? guid : nil;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public Optional<T> Enumeration<T>(bool ignoreCase = true) where T : struct, Enum
+      {
+         try
+         {
+            return Enum.TryParse<T>(source, ignoreCase, out var result) ? result : nil;
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public Optional<object> Enumeration(Type type, bool ignoreCase = true)
+      {
+         try
+         {
+            return Enum.Parse(type, source, ignoreCase);
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+
+      public Optional<TimeSpan> TimeSpan() => getSpans(source).Optional();
+   }
+
+   public class OptionalCaster(object obj)
+   {
+      public Optional<T> Cast<T>() where T : notnull
+      {
+         try
+         {
+            return obj is T t ? t : nil;
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
+      }
+   }
+
    public static ValueConverter Value(this string source) => new(source);
 
    public static MaybeConverter Maybe(this string source) => new(source);
@@ -386,6 +606,10 @@ public static class ConversionExtensions
    public static ResultConverter Result(this string source) => new(source);
 
    public static ResultCaster Result(this object obj) => new(obj);
+
+   public static OptionalConverter Optional(this string source) => new(source);
+
+   public static OptionalCaster Optional(this object obj) => new(obj);
 
    private const string REGEX_TIMER_INTERVAL = "/(/d+) /s+ /(('milli')? 'sec' ('ond')? 's'? | 'min' ('ute')? 's'? | " +
       "'h' ('ou')? 'r' 's'? | 'days'?); f";

@@ -18,6 +18,8 @@ public abstract class ConfigurationItem
 
    public ConfigurationResult Result => new((IConfigurationItemGetter)this);
 
+   public ConfigurationOptional Optional => new((IConfigurationItemGetter)this);
+
    public ConfigurationValue Value => new((IConfigurationItemGetter)this);
 
    public ConfigurationRequired Required => new(this);

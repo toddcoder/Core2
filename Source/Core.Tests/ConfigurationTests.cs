@@ -442,8 +442,11 @@ public class ConfigurationTests
    {
       using var writer = new StringWriter();
       writer.WriteLine("[");
-      writer.WriteLine(@"   bravo: ""^(Enqueuing task `""\[)[^\]]+(\]`"").+$; u""");
-      writer.WriteLine("]");
+      writer.WriteLine("""
+                       [
+                          bravo: "^(Enqueuing task `"\[)[^\]]+(\]`").+$; u"
+                       ]
+                       """);
       var source = writer.ToString();
       _ = (Setting)Setting.FromString(source);
    }
