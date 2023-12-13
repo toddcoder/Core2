@@ -126,6 +126,12 @@ public class ChooserSet
       return this;
    }
 
+   public ChooserSet AutoSizeText(bool autoSizeText)
+   {
+      chooser.AutoSizeText = autoSizeText;
+      return this;
+   }
+
    public Maybe<Chosen> Choose()
    {
       var _chosen = chooser.Get();

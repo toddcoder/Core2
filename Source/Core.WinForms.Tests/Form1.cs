@@ -461,7 +461,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      isRunning = true;
+      /*isRunning = true;
 
       var random = new Random();
       uiAction.Maximum = 100;
@@ -478,7 +478,10 @@ public partial class Form1 : Form, IMessageQueueListener
          var milliseconds = random.Next(100, 500);
          Thread.Sleep(milliseconds);
          Application.DoEvents();
-      }
+      }*/
+      uiAction.Choose("foobar")
+         .Choices("1. Auto-sizing", "2. Is Schema Change, Is hotfix eligible, post-deploy script", "3. Is Hotfix Eligible", "4. Post Deploy Script")
+         .AutoSizeText(true).Choose();
    }
 
    protected void button2_Click(object sender, EventArgs e)

@@ -2,6 +2,7 @@
 using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
+using Core.WinForms.Drawing;
 using static Core.Monads.MonadFunctions;
 using static Core.Monads.Monads;
 
@@ -30,6 +31,7 @@ public partial class Chooser : Form
    protected bool working;
    protected ChooserSorting sorting;
    protected Maybe<Func<string, string>> _customSorter;
+   protected bool autoSizeText;
 
    public event EventHandler<AppearanceOverrideArgs>? AppearanceOverride;
 
@@ -49,6 +51,7 @@ public partial class Chooser : Form
       working = false;
       sorting = ChooserSorting.None;
       _customSorter = nil;
+      autoSizeText = false;
 
       InitializeComponent();
 
@@ -132,6 +135,12 @@ public partial class Chooser : Form
       set => _customSorter = value;
    }
 
+   public bool AutoSizeText
+   {
+      get => autoSizeText;
+      set => autoSizeText = value;
+   }
+
    public Maybe<Chosen> Choice { get; set; }
 
    protected void addItem(string text, Color foreColor, Color backColor)
@@ -171,7 +180,18 @@ public partial class Chooser : Form
       item.ForeColor = foreColor;
       item.BackColor = backColor;
 
-      if (sizeToText)
+      if (autoSizeText)
+      {
+         using var g = listViewItems.CreateGraphics();
+         var _smallFont = AutoSizingWriter.AdjustedFont(g, text, listViewItems.Font, listViewItems.ClientSize.Width, 6, 12,
+            TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+         if (_smallFont is (true, var smallFont))
+         {
+            item.UseItemStyleForSubItems = true;
+            item.Font = smallFont;
+         }
+      }
+      else if (sizeToText)
       {
          var width = TextRenderer.MeasureText(text, _font | listViewItems.Font, Size.Empty).Width;
          if (_maximumWidth is (true, var maximumWidth))
