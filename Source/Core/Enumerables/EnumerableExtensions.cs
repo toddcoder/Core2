@@ -1493,4 +1493,24 @@ public static class EnumerableExtensions
          _ => $"{array.Take(array.Length - 1).ToString(", ")}, and {array[^1]}"
       };
    }
+
+   public static IEnumerator<int> GetEnumerator(this Range range)
+   {
+      var start = range.Start.Value;
+      var end = range.End.Value;
+      if (end > start)
+      {
+         for (var i = start; i < end; i++)
+         {
+            yield return i;
+         }
+      }
+      else
+      {
+         for (var i = start; i > end; i--)
+         {
+            yield return i;
+         }
+      }
+   }
 }
