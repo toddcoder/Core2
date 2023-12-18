@@ -95,6 +95,8 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
    public override void SetItem(string key, ConfigurationItem item) => items[key] = item;
 
+   public override void RemoveItem(string key) => items.Maybe[key] = nil;
+
    public bool IsGeneratedKey => isGeneratedKey;
 
    public string this[string key]

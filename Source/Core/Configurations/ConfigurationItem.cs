@@ -7,6 +7,8 @@ public abstract class ConfigurationItem
    public abstract string Key { get; }
 
    public abstract void SetItem(string key, ConfigurationItem item);
+   
+   public abstract void RemoveItem(string key);
 
    public abstract IEnumerable<(string key, string text)> Items();
 

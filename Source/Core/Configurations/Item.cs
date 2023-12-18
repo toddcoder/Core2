@@ -30,6 +30,10 @@ public class Item : ConfigurationItem, IConfigurationItemGetter
    {
    }
 
+   public override void RemoveItem(string key)
+   {
+   }
+
    public override IEnumerable<(string key, string text)> Items()
    {
       yield break;
