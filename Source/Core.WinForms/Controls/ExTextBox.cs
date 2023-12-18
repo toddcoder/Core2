@@ -548,6 +548,30 @@ public class ExTextBox : TextBox, ISubTextHost
       }
    }
 
+   public Maybe<(int start, int length)> WordAtSelection()
+   {
+      var text = Text;
+      var (start, _) = Selection;
+      if (text.IsEmpty())
+      {
+         return nil;
+      }
+      else if (start < text.Length && char.IsLetterOrDigit(text, start))
+      {
+         var i = start;
+         for (; i > -1 && char.IsLetterOrDigit(text, i); i--)
+         {
+         }
+
+         i++;
+         return maybe<(int start, int length)>() & text.Drop(i).Matches("/w+; f").Map(r => (r.Index + i, r.Length));
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
    public IEnumerable<(char, Rectangle)> RectangleWhitespace(Graphics graphics)
    {
       var _result = Text.Matches("[' /t']; f");

@@ -345,7 +345,7 @@ public partial class Form1 : Form, IMessageQueueListener
       textBox = new ExTextBox(this);
       textBox.SetUpInPanel(panel4, dockStyle: DockStyle.Fill);
       //textBox.Allow = func<string, bool>(text => text.IsMatch(@"^ 'r-' /(/d+) '.' /(/d+) '.' /(/d+) $; f") || text == "master");
-      textBox.AllowMessage = "matching";
+      /*textBox.AllowMessage = "matching";
       textBox.TrendMessage = "matching 'master'";
       textBox.DenyMessage = "not matching";
       textBox.Validate = func<string, AllowanceStatus>(text =>
@@ -370,7 +370,7 @@ public partial class Form1 : Form, IMessageQueueListener
       });
       textBox.Trending += (_, e) => textBox.ShadowText = "master".StartsWith(e.Text) ? "master" : "r-#.##.# ";
       textBox.Denied += (_, _) => textBox.ShadowText = "r-#.##.# ";
-      textBox.RefreshOnTextChange = true;
+      textBox.RefreshOnTextChange = true;*/
       /*textBox.Paint += (_, e) =>
       {
          textBox.ClearSubTexts();
@@ -391,7 +391,7 @@ public partial class Form1 : Form, IMessageQueueListener
             e.Graphics.DrawLine(pen, point1, point2);
          }#1#
       };*/
-      textBox.ValidateMessages = true;
+      //textBox.ValidateMessages = true;
       /*textBox.Allowed += (_, _) =>
       {
          textBox.ClearSubTexts();
@@ -461,12 +461,14 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      /*isRunning = true;
+      isRunning = true;
+      var subText = uiAction.SubText("0 lines").Set.FontSize(8).Invert().Alignment(CardinalAlignment.SouthEast).SubText;
+      var lines = 0;
 
       var random = new Random();
       uiAction.Maximum = 100;
       uiAction.ShowToGo = true;
-      foreach (var i in 100.Times())
+      foreach (var i in ..100)
       {
          if (!isRunning)
          {
@@ -474,33 +476,24 @@ public partial class Form1 : Form, IMessageQueueListener
             break;
          }
 
-         uiAction.Progress(i.ToWords());
+         lines++;
+         subText.Text = lines.Plural("line(s)");
+         uiAction.Busy((string)i.ToWords());
          var milliseconds = random.Next(100, 500);
          Thread.Sleep(milliseconds);
          Application.DoEvents();
-      }*/
-      uiAction.Choose("foobar")
-         .Choices("1. Auto-sizing", "2. Is Schema Change, Is hotfix eligible, post-deploy script", "3. Is Hotfix Eligible", "4. Post Deploy Script")
-         .AutoSizeText(true).Choose();
+      }
    }
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      isRunning = false;
-      /*uiAction.CheckStyle = CheckStyle.Checked;
-      uiAction.Legend("action");
-      uiAction.ClickToCancel = true;
-      //uiAction.Busy("with check");
-      uiAction.Maximum = 100;
-      uiAction.Stopwatch = true;
-      uiAction.StartStopwatch();
-      for (var i = 0; i < 100; i++)
+      var _selection = textBox.WordAtSelection();
+      if (_selection is (true, var (start, length)))
       {
-         uiAction.Progress(i.ToWords());
+         //textBox.Select(start, length);
+         textBox.HideSelection = false;
+         textBox.Selection = (start, length);
       }
-
-      uiAction.Busy(true);
-      uiAction.StopStopwatch();*/
    }
 
    protected void button3_Click(object sender, EventArgs e)

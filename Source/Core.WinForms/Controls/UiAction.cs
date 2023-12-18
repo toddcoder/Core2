@@ -1635,7 +1635,7 @@ public class UiAction : UserControl, ISubTextHost
       }
    }
 
-   private void drawClickGlyph(PaintEventArgs e, Rectangle clientRectangle, Color color)
+   protected void drawClickGlyph(PaintEventArgs e, Rectangle clientRectangle, Color color)
    {
       if (ClickGlyph)
       {
