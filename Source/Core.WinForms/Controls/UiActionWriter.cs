@@ -208,8 +208,33 @@ public class UiActionWriter
       }
    }
 
+   protected static void negate(bool not, Graphics g, Rectangle rectangle, Color foreColor)
+   {
+      if (not)
+      {
+         var length = Math.Min(rectangle.Width, rectangle.Height);
+         var x = (rectangle.Width - length) / 2 + rectangle.X;
+         var y = (rectangle.Height - length) / 2 + rectangle.Y;
+         var lineRectangle = new Rectangle(x, y, length, length);
+         var circleRectangle = lineRectangle.Resize(-4, -4).OffsetX(2).OffsetY(2);
+
+         var color = Color.FromArgb(128, foreColor);
+         using var pen = new Pen(color);
+         g.DrawEllipse(pen, circleRectangle);
+         g.DrawLine(pen, lineRectangle.NorthEast(), lineRectangle.SouthWest());
+      }
+   }
+
    public Result<Unit> Write(Graphics g, string text)
    {
+      var not = false;
+      if (text.StartsWith("!"))
+      {
+         not = true;
+         text = text[1..];
+      }
+
+      text = text.Replace("/!", "!");
       text = text.EmojiSubstitutions();
 
       var _existingRectangle = lazy.result(_rectangle);
@@ -238,11 +263,13 @@ public class UiActionWriter
                drawButtonType(g, rectangle, color);
                var writer = new AutoSizingWriter(text, rectangle, color, font, isPath);
                writer.Write(g);
+               negate(not, g, rectangle, color);
             }
             else
             {
                drawButtonType(g, rectangle, color);
                TextRenderer.DrawText(g, text, font, rectangle, color, Flags);
+               negate(not, g, rectangle, color);
             }
 
             if (checkStyle is not CheckStyle.None)

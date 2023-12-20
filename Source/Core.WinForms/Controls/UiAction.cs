@@ -468,14 +468,11 @@ public class UiAction : UserControl, ISubTextHost
       _ceiling = nil;
       _keyMatch = nil;
       _symbolWriter = nil;
-      //_dynamicToolTip = nil;
       _alternateWriter = nil;
       Title = nil;
    }
 
    public bool AutoSizeText { get; set; }
-
-   //public Maybe<DeletableWriter> Deletable => _alternateWriter.Map(Maybe.Cast<DeletableWriter>);
 
    protected BusyProcessor getBusyProcessor(Rectangle clientRectangle) => busyStyle switch
    {
