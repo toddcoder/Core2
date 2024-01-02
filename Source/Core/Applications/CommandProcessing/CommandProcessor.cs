@@ -14,7 +14,6 @@ using Core.Objects;
 using Core.Strings;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
-using static Core.Monads.Monads;
 
 namespace Core.Applications.CommandProcessing;
 
@@ -607,7 +606,7 @@ public abstract class CommandProcessor : IDisposable
    protected Maybe<Unit> fillProperty(PropertyInfo propertyInfo, Maybe<string> _value)
    {
       var type = propertyInfo.PropertyType;
-      var _object = monads.maybe<object>();
+      Maybe<object> _object = nil;
       if (_value is (true, var value))
       {
          if (type == typeof(bool))

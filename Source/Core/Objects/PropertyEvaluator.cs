@@ -67,7 +67,7 @@ public class PropertyEvaluator : IEvaluator, IHash<string, object>, IHash<Signat
       {
          var current = obj;
 
-         var _lastInfo = monads.maybe<ObjectInfo>();
+         Maybe<ObjectInfo> _lastInfo = nil;
 
          foreach (var info in new SignatureCollection(signature).Select(s => new ObjectInfo(current, s)))
          {

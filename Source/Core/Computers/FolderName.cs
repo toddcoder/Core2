@@ -18,7 +18,6 @@ using static System.IO.Directory;
 using static Core.Computers.ComputerFunctions;
 using static Core.Computers.FullPathFunctions;
 using static Core.Monads.MonadFunctions;
-using static Core.Monads.Monads;
 
 namespace Core.Computers;
 
@@ -237,7 +236,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
    {
       if (count > 0)
       {
-         var _parent = monads.maybe<FolderName>();
+         Maybe<FolderName> _parent = nil;
          var self = this;
          for (var i = 0; i < count; i++)
          {

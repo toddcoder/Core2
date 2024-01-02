@@ -145,7 +145,7 @@ public partial class Chooser : Form
 
    protected void addItem(string text, Color foreColor, Color backColor)
    {
-      var _font = monads.maybe<Font>();
+      Maybe<Font> _font = nil;
 
       if (AppearanceOverride is not null)
       {

@@ -343,7 +343,7 @@ public static class MonadExtensions
    {
       try
       {
-         var _firstItem = monads.maybe<TResult>();
+         Maybe<TResult> _firstItem = nil;
          foreach (var _result in enumerable.Select(item => tryTo(() => func(item))))
          {
             if (_result is (true, var result))

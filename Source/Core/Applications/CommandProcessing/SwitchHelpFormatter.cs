@@ -9,7 +9,6 @@ using Core.Matching;
 using Core.Numbers;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
-using static Core.Monads.Monads;
 
 namespace Core.Applications.CommandProcessing;
 
@@ -89,8 +88,8 @@ public class SwitchHelpFormatter
          var length = firstLine.Length.MaxOf(80);
          writer.WriteLine("=".Repeat(length));
 
-         var _divider = monads.maybe<string>();
-         var _indent = monads.maybe<string>();
+         Maybe<string> _divider = nil;
+         Maybe<string> _indent = nil;
 
          foreach (var line in source.Unjoin("/s* ';' /s*; f"))
          {

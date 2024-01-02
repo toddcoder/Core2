@@ -96,7 +96,7 @@ public class ReflectorFormat
             var memberInfos = type.GetMember(reflectorReplacement.MemberName, memberTypes, bindingFlags);
             if (memberInfos.Length != 0)
             {
-               var _chosen = monads.maybe<IGetter>();
+               Maybe<IGetter> _chosen = nil;
                foreach (var info in memberInfos)
                {
                   if (info is FieldInfo fieldInfo)

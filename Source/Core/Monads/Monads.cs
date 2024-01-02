@@ -1,4 +1,5 @@
-﻿using static Core.Monads.MonadFunctions;
+﻿using System;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
@@ -24,11 +25,15 @@ public class Monads
       }
    }
 
+   [Obsolete("Use nil")]
    public Maybe<T> maybe<T>() where T : notnull => nil;
 
+   [Obsolete("Use nil")]
    public Result<T> result<T>() where T : notnull => nil;
 
+   [Obsolete("Use nil")]
    public Optional<T> optional<T>() where T : notnull => nil;
 
+   [Obsolete("Use nil")]
    public Completion<T> completion<T>() where T : notnull => nil;
 }

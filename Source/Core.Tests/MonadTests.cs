@@ -12,7 +12,6 @@ using static Core.Monads.AttemptFunctions;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.Lazy.LazyRepeatingMonads;
 using static Core.Monads.MonadFunctions;
-using static Core.Monads.Monads;
 using static Core.Monads.MultiMatching.MonadMatcherFunctions;
 
 namespace Core.Tests;
@@ -187,7 +186,7 @@ public class MonadTests
    {
       Maybe<int> _some1 = 1;
       Maybe<int> _some2 = 2;
-      var _none = monads.maybe<int>();
+      Maybe<int> _none = nil;
 
       var or1 = _some1 | _none;
       var or2 = _none | _some2;
@@ -253,7 +252,7 @@ public class MonadTests
    [TestMethod]
    public void BooleanTest()
    {
-      var _string = monads.maybe<string>();
+      Maybe<string> _string = nil;
       if (!_string)
       {
          Console.WriteLine("not");
@@ -399,9 +398,9 @@ public class MonadTests
    [TestMethod]
    public void MonadMatcherTest()
    {
-      var _one = monads.maybe<int>();
+      Maybe<int> _one = nil;
       Maybe<int> _two = 2;
-      var _three = monads.maybe<int>();
+      Maybe<int> _three = nil;
 
       var matcher = maybeMatcher<int, string>()
          & _one & (_ => "one")

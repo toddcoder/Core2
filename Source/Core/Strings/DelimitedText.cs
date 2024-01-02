@@ -141,7 +141,7 @@ public class DelimitedText
       var inside = false;
       var insideStart = 0;
       var outsideStart = 0;
-      var _endMatcher = monads.maybe<Pattern>();
+      Maybe<Pattern> _endMatcher = nil;
 
       var i = 0;
       while (i < source.Length)

@@ -9,7 +9,6 @@ using Core.Numbers;
 using Core.Objects;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
-using static Core.Monads.Monads;
 
 namespace Core.Enumerables;
 
@@ -1029,9 +1028,9 @@ public static class EnumerableExtensions
 
    public static Maybe<int> IndexOfMax<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
    {
-      var _index = monads.maybe<int>();
+      Maybe<int> _index = nil;
       var currentIndex = 0;
-      var _currentValue = monads.maybe<T>();
+      Maybe<T> _currentValue = nil;
       foreach (var item in enumerable)
       {
          if (_currentValue is (true, var currentValue))
@@ -1057,9 +1056,9 @@ public static class EnumerableExtensions
    public static Maybe<int> IndexOfMax<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
       where TResult : IComparable<TResult>
    {
-      var _index = monads.maybe<int>();
+      Maybe<int> _index = nil;
       var currentIndex = 0;
-      var _currentValue = monads.maybe<TResult>();
+      Maybe<TResult> _currentValue = nil;
       foreach (var item in enumerable)
       {
          var mappedItem = mappingFunc(item);
@@ -1085,9 +1084,9 @@ public static class EnumerableExtensions
 
    public static Maybe<int> IndexOfMin<T>(this IEnumerable<T> enumerable) where T : IComparable<T>
    {
-      var _index = monads.maybe<int>();
+      Maybe<int> _index = nil;
       var currentIndex = 0;
-      var _currentValue = monads.maybe<T>();
+      Maybe<T> _currentValue = nil;
       foreach (var item in enumerable)
       {
          if (_currentValue is (true, var currentValue))
@@ -1113,9 +1112,9 @@ public static class EnumerableExtensions
    public static Maybe<int> IndexOfMin<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
       where TResult : IComparable<TResult>
    {
-      var _index = monads.maybe<int>();
+      Maybe<int> _index = nil;
       var currentIndex = 0;
-      var _currentValue = monads.maybe<TResult>();
+      Maybe<TResult> _currentValue = nil;
       foreach (var item in enumerable)
       {
          var mappedItem = mappingFunc(item);

@@ -6,7 +6,6 @@ using Core.Configurations;
 using Core.Monads;
 using Core.Objects;
 using static Core.Monads.MonadFunctions;
-using static Core.Monads.Monads;
 
 namespace Core.Json;
 
@@ -26,7 +25,7 @@ public class Deserializer
       stack.Push(rootSetting);
       var parentSetting = rootSetting;
 
-      var _propertyName = monads.maybe<string>();
+      Maybe<string> _propertyName = nil;
 
       string getKey(Maybe<string> _propertyName)
       {
