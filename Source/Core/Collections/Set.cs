@@ -26,7 +26,7 @@ public class Set<T> : IEnumerable<T>, IEquatable<Set<T>>
 
    public Set()
    {
-      content = new HashSet<T>();
+      content = [];
       _equalityComparer = nil;
    }
 
@@ -188,5 +188,5 @@ public class Set<T> : IEnumerable<T>, IEquatable<Set<T>>
       }
    }
 
-   public HashSet<T> ToHashSet() => new(this);
+   public HashSet<T> ToHashSet() => [..this];
 }

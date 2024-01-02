@@ -85,8 +85,8 @@ public class KeyMatch
       if (message.IsNotEmpty())
       {
          var fullMessage = getPrefix().Map(p => $"{p} {message}");
-         _subText = uiAction.SubText(fullMessage).Set.FontSize(8).FontStyle(FontStyle.Bold).ForeColor(Color.Black).BackColor(Color.White).Outline()
-            .IncludeFloor(false).IncludeCeiling(false).Outline().SquareFirstCharacter().Alignment(Alignment).SubText;
+         _subText = uiAction.SubText(fullMessage).Set.FontSize(8).FontStyle(FontStyle.Bold).ForeColor(Color.Black).BackColor(Color.White)
+            .IncludeFloor(false).IncludeCeiling(false).SquareFirstCharacter().Alignment(Alignment).SubText;
       }
 
       uiAction.Refresh();
