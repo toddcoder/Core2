@@ -155,38 +155,13 @@ public class Set<T> : IEnumerable<T>, IEquatable<Set<T>>
 
    IEnumerator IEnumerable.GetEnumerator() => content.GetEnumerator();
 
-   public IEnumerator<T> GetEnumerator()
-   {
-      foreach (var item in content)
-      {
-         yield return item;
-      }
-   }
+   public IEnumerator<T> GetEnumerator() => ((IEnumerable<T>)content).GetEnumerator();
 
-   public bool Equals(Set<T>? other)
-   {
-      if (other is null)
-      {
-         return false;
-      }
-
-      if (ReferenceEquals(this, other))
-      {
-         return true;
-      }
-
-      return content.SetEquals(other.content) && Equals(_equalityComparer, other._equalityComparer);
-   }
+   public bool Equals(Set<T>? other) => other is not null && content.SetEquals(other.content) && Equals(_equalityComparer, other._equalityComparer);
 
    public override bool Equals(object? obj) => obj is Set<T> set && Equals(set);
 
-   public override int GetHashCode()
-   {
-      unchecked
-      {
-         return content.GetHashCode() * 397 ^ (_equalityComparer.Map(c => c.GetHashCode()) | 0);
-      }
-   }
+   public override int GetHashCode() => HashCode.Combine(content, _equalityComparer);
 
    public HashSet<T> ToHashSet() => [..this];
 }
