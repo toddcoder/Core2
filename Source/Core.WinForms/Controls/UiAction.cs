@@ -136,7 +136,9 @@ public class UiAction : UserControl, ISubTextHost
    protected Lazy<Stopwatch> stopwatch;
    protected Lazy<BackgroundWorker> backgroundWorker;
    protected bool oneTimeTimer;
+   protected Maybe<string> _workingText;
    protected Maybe<SubText> _working;
+   protected int workingAlpha;
    protected Timer workingTimer;
    protected MaybeStack<SubText> legends;
    protected bool isDirty;
@@ -424,20 +426,24 @@ public class UiAction : UserControl, ISubTextHost
 
       legends = [];
       _working = nil;
+      _workingText = nil;
+      workingAlpha = 255;
       StopwatchInverted = true;
       EmptyTextTitle = nil;
 
       workingTimer = new Timer { Interval = 1000 };
       workingTimer.Tick += (_, _) =>
       {
-         if (_working)
+         /*if (_working)
          {
             _working = nil;
          }
          else
          {
             _working = getWorking();
-         }
+         }*/
+
+         (_, _working) = _working.Create(getWorking);
 
          Refresh();
       };
@@ -519,11 +525,12 @@ public class UiAction : UserControl, ISubTextHost
 
    protected SubText getWorking()
    {
+      var workingText = _workingText | "working";
       using var font = new Font("Consolas", 8);
-      var size = TextRenderer.MeasureText("working", font);
+      var size = TextRenderer.MeasureText(workingText, font);
       var y = ClientSize.Height - size.Height - 4;
 
-      return new SubText(this, "working", 4, y, ClientSize, ClickGlyph).Set.FontSize(8).Invert().Outline().SubText;
+      return new SubText(this, workingText, 4, y, ClientSize, ClickGlyph).Set.FontSize(8).Invert().SubText;
    }
 
    public UiActionType Type
@@ -830,7 +837,7 @@ public class UiAction : UserControl, ISubTextHost
    {
       FloatingException(false);
       Busy(false);
-      Working = false;
+      Working = nil;
       this.type = type;
       Text = message;
 
@@ -1158,7 +1165,7 @@ public class UiAction : UserControl, ISubTextHost
 
       Text = text;
       type = UiActionType.ProgressDefinite;
-      Working = false;
+      Working = nil;
 
       MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
@@ -1181,7 +1188,7 @@ public class UiAction : UserControl, ISubTextHost
 
       Text = text;
       type = UiActionType.ProgressDefinite;
-      Working = false;
+      Working = nil;
 
       MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
@@ -1208,7 +1215,7 @@ public class UiAction : UserControl, ISubTextHost
       EmptyTextTitle = nil;
       Text = "";
       type = UiActionType.MuteProgress;
-      Working = false;
+      Working = nil;
 
       MessageShown?.Invoke(this, new MessageShownArgs("", type));
 
@@ -1230,7 +1237,7 @@ public class UiAction : UserControl, ISubTextHost
    {
       Text = text;
       type = UiActionType.BusyText;
-      Working = false;
+      Working = nil;
 
       MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
@@ -1618,7 +1625,13 @@ public class UiAction : UserControl, ISubTextHost
 
       if (Working && _working is (true, var working))
       {
-         working.Transparency = transparency;
+         if (workingAlpha >= 16)
+         {
+            working.Alpha = workingAlpha;
+            working.Transparency = SubTextTransparency.Custom;
+            workingAlpha -= 16;
+         }
+
          working.Draw(graphics, foreColor.Value, backColor.Value);
       }
 
@@ -1918,7 +1931,7 @@ public class UiAction : UserControl, ISubTextHost
       {
          Text = "";
          type = UiActionType.Busy;
-         Working = false;
+         Working = nil;
       }
 
       if (TaskBarProgress && !_taskBarProgress)
@@ -2644,11 +2657,12 @@ public class UiAction : UserControl, ISubTextHost
 
    public Maybe<SubText> CurrentLegend => legends.Peek();
 
-   public bool Working
+   public Maybe<string> Working
    {
-      get => workingTimer.Enabled;
+      get => _workingText;
       set
       {
+         _workingText = value;
          workingTimer.Enabled = value;
          _working = nil;
       }
@@ -3034,7 +3048,7 @@ public class UiAction : UserControl, ISubTextHost
    {
       FloatingException(false);
       Busy(false);
-      Working = false;
+      Working = nil;
       _taskBarProgress = nil;
 
       if (alternates.Length < 1)
@@ -3053,7 +3067,7 @@ public class UiAction : UserControl, ISubTextHost
    {
       FloatingException(false);
       Busy(false);
-      Working = false;
+      Working = nil;
       _taskBarProgress = nil;
 
       type = UiActionType.Alternate;
@@ -3066,7 +3080,7 @@ public class UiAction : UserControl, ISubTextHost
    {
       FloatingException(false);
       Busy(false);
-      Working = false;
+      Working = nil;
       _taskBarProgress = nil;
 
       type = UiActionType.CheckBox;
@@ -3238,5 +3252,11 @@ public class UiAction : UserControl, ISubTextHost
       {
          SetLocation(subText, index);
       }
+   }
+
+   public void GooseWorking()
+   {
+      workingAlpha = 255;
+      Refresh();
    }
 }

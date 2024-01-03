@@ -439,7 +439,7 @@ public class WinFormsTests
       uiButton.Message("Not Working");
       uiButton.Click += (_, _) =>
       {
-         uiButton.Working = !uiButton.Working;
+         uiButton.Working = uiButton.Working ? nil : "working";
          uiButton.Message(uiButton.Working ? "Working" : "Not Working");
       };
       uiButton.ClickText = "Toggle working";
@@ -472,7 +472,7 @@ public class WinFormsTests
       uiButton.Message("Not Working");
       uiButton.Click += (_, _) =>
       {
-         uiButton.Working = !uiButton.Working;
+         uiButton.Working = uiButton.Working ? nil : "working";
          uiButton.Message(uiButton.Working ? "Working" : "Not Working");
          uiButton.SuccessLegendTemp("saved");
       };

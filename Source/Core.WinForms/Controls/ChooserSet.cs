@@ -1,5 +1,6 @@
 ﻿using Core.Collections;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
@@ -28,7 +29,7 @@ public class ChooserSet
    {
       if (chooser.Working)
       {
-         chooser.UiAction.Working = true;
+         chooser.UiAction.Working = "working";
       }
    }
 
@@ -36,7 +37,7 @@ public class ChooserSet
    {
       if (chooser.Working)
       {
-         chooser.UiAction.Working = false;
+         chooser.UiAction.Working = nil;
       }
    }
 

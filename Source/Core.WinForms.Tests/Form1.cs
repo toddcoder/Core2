@@ -461,7 +461,8 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      isRunning = true;
+      uiAction.Working = "Goose me!";
+      /*isRunning = true;
       var subText = uiAction.SubText("0 lines").Set.FontSize(8).Invert().Alignment(CardinalAlignment.SouthEast).SubText;
       var lines = 0;
 
@@ -482,18 +483,19 @@ public partial class Form1 : Form, IMessageQueueListener
          var milliseconds = random.Next(100, 500);
          Thread.Sleep(milliseconds);
          Application.DoEvents();
-      }
+      }*/
    }
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      var _selection = textBox.WordAtSelection();
+      uiAction.GooseWorking();
+      /*var _selection = textBox.WordAtSelection();
       if (_selection is (true, var (start, length)))
       {
          //textBox.Select(start, length);
          textBox.HideSelection = false;
          textBox.Selection = (start, length);
-      }
+      }*/
    }
 
    protected void button3_Click(object sender, EventArgs e)

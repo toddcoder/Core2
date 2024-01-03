@@ -5,5 +5,6 @@ public enum SubTextTransparency
    None,
    Quarter,
    Half,
-   ThreeQuarters
+   ThreeQuarters,
+   Custom
 }

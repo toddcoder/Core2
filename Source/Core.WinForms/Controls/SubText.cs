@@ -6,58 +6,22 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class SubText : IEquatable<SubText>
+public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size size, bool clickGlyph, bool invert = false,
+   bool transparentBackground = false) : IEquatable<SubText>
 {
    protected const string POSITIVE = "✅";
    protected const string NEGATIVE = "❎";
 
-   protected ISubTextHost subTextHost;
-   protected string text;
-   protected Size size;
-   protected bool clickGlyph;
-   protected bool invert;
-   protected bool transparentBackground;
-   protected Maybe<Color> _foreColor;
-   protected Maybe<Color> _backColor;
-   protected Maybe<CardinalAlignment> _alignment;
-   protected int margin;
-   protected LocationLockStatus locationLockStatus;
-   protected Maybe<(SubText subText, int margin)> _rightSubText;
-   protected Maybe<(SubText subText, int margin)> _leftSubText;
+   protected Maybe<Color> _foreColor = nil;
+   protected Maybe<Color> _backColor = nil;
+   protected Maybe<CardinalAlignment> _alignment = nil;
+   protected int margin = 2;
+   protected LocationLockStatus locationLockStatus = LocationLockStatus.Floating;
+   protected Maybe<(SubText subText, int margin)> _rightSubText = nil;
+   protected Maybe<(SubText subText, int margin)> _leftSubText = nil;
 
    public event EventHandler<PaintEventArgs>? Painting;
    public event EventHandler<PaintEventArgs>? PaintingBackground;
-
-   public SubText(ISubTextHost subTextHost, string text, int x, int y, Size size, bool clickGlyph, bool invert = false,
-      bool transparentBackground = false)
-   {
-      this.subTextHost = subTextHost;
-      this.text = text;
-      X = x;
-      Y = y;
-      this.size = size;
-      this.clickGlyph = clickGlyph;
-      this.invert = invert;
-      this.transparentBackground = transparentBackground;
-      Option = SubTextOption.None;
-
-      Id = Guid.NewGuid();
-
-      _foreColor = nil;
-      _backColor = nil;
-      _alignment = nil;
-      margin = 2;
-      locationLockStatus = LocationLockStatus.Floating;
-      _rightSubText = nil;
-      _leftSubText = nil;
-
-      FontName = "Consolas";
-      FontSize = 12;
-      FontStyle = FontStyle.Regular;
-      Outline = false;
-      IncludeFloor = true;
-      IncludeCeiling = true;
-   }
 
    public string Text
    {
@@ -69,21 +33,29 @@ public class SubText : IEquatable<SubText>
       }
    }
 
-   public int X { get; set; }
+   public int X
+   {
+      get => x;
+      set => x = value;
+   }
 
-   public int Y { get; set; }
+   public int Y
+   {
+      get => y;
+      set => y = value;
+   }
 
    public Size Size => size;
 
-   public SubTextOption Option { get; set; }
+   public SubTextOption Option { get; set; } = SubTextOption.None;
 
    public SubTextSet Set => new(this, subTextHost);
 
-   public string FontName { get; set; }
+   public string FontName { get; set; } = "Consolas";
 
-   public float FontSize { get; set; }
+   public float FontSize { get; set; } = 12;
 
-   public FontStyle FontStyle { get; set; }
+   public FontStyle FontStyle { get; set; } = FontStyle.Regular;
 
    public bool Outline { get; set; }
 
@@ -99,7 +71,7 @@ public class SubText : IEquatable<SubText>
       set => transparentBackground = value;
    }
 
-   public Guid Id { get; }
+   public Guid Id { get; } = Guid.NewGuid();
 
    public Maybe<Color> ForeColor
    {
@@ -133,13 +105,15 @@ public class SubText : IEquatable<SubText>
 
    public void SetMargin(int margin) => this.margin = margin;
 
-   public bool IncludeFloor { get; set; }
+   public bool IncludeFloor { get; set; } = true;
 
-   public bool IncludeCeiling { get; set; }
+   public bool IncludeCeiling { get; set; } = true;
 
    public bool SquareFirstCharacter { get; set; }
 
    public SubTextTransparency Transparency { get; set; }
+
+   public int Alpha { get; set; } = 255;
 
    public (Size measuredSize, string text, TextFormatFlags flags, Font font) TextSize(Maybe<Graphics> _graphics)
    {
@@ -221,7 +195,7 @@ public class SubText : IEquatable<SubText>
       SubTextTransparency.Quarter => 64,
       SubTextTransparency.Half => 128,
       SubTextTransparency.ThreeQuarters => 192,
-      _ => 255
+      _ => Alpha
    };
 
    protected virtual SubText draw(Graphics g, Color foreColor, Color backColor)
@@ -254,7 +228,11 @@ public class SubText : IEquatable<SubText>
          foreColorToUse = Color.FromArgb(alpha, foreColorToUse);
          backColorToUse = Color.FromArgb(alpha, backColorToUse);
 
-         if (!transparentBackground)
+         if (transparentBackground)
+         {
+            TextRenderer.DrawText(g, sizedText, font, rectangle, foreColorToUse, flags);
+         }
+         else
          {
             using var brush = new SolidBrush(backColorToUse);
             g.FillRectangle(brush, rectangle);
@@ -264,10 +242,6 @@ public class SubText : IEquatable<SubText>
                g.DrawRectangle(pen, rectangle);
             }
 
-            TextRenderer.DrawText(g, sizedText, font, rectangle, foreColorToUse, backColorToUse, flags);
-         }
-         else
-         {
             TextRenderer.DrawText(g, sizedText, font, rectangle, foreColorToUse, flags);
          }
 
