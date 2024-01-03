@@ -140,6 +140,7 @@ public class UiAction : UserControl, ISubTextHost
    protected Maybe<SubText> _working;
    protected int workingAlpha;
    protected Timer workingTimer;
+   protected CardinalAlignment workingAlignment;
    protected MaybeStack<SubText> legends;
    protected bool isDirty;
    protected CheckStyle checkStyle;
@@ -428,6 +429,7 @@ public class UiAction : UserControl, ISubTextHost
       _working = nil;
       _workingText = nil;
       workingAlpha = 255;
+      workingAlignment = CardinalAlignment.SouthWest;
       StopwatchInverted = true;
       EmptyTextTitle = nil;
 
@@ -526,11 +528,8 @@ public class UiAction : UserControl, ISubTextHost
    protected SubText getWorking()
    {
       var workingText = _workingText | "working";
-      using var font = new Font("Consolas", 8);
-      var size = TextRenderer.MeasureText(workingText, font);
-      var y = ClientSize.Height - size.Height - 4;
-
-      return new SubText(this, workingText, 4, y, ClientSize, ClickGlyph).Set.FontSize(8).Invert().SubText;
+      return new SubText(this, workingText, 0, 0, ClientSize, ClickGlyph).Set.FontName("Consolas").FontSize(8).Invert().Alignment(workingAlignment)
+         .SubText;
    }
 
    public UiActionType Type
@@ -1632,6 +1631,7 @@ public class UiAction : UserControl, ISubTextHost
             workingAlpha -= 16;
          }
 
+         working.SetLocation(clientRectangle);
          working.Draw(graphics, foreColor.Value, backColor.Value);
       }
 
@@ -2666,6 +2666,12 @@ public class UiAction : UserControl, ISubTextHost
          workingTimer.Enabled = value;
          _working = nil;
       }
+   }
+
+   public CardinalAlignment WorkingAlignment
+   {
+      get => workingAlignment;
+      set => workingAlignment = value;
    }
 
    public void Validate(string text)
