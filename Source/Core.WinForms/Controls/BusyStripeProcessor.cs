@@ -51,7 +51,7 @@ public class BusyStripeProcessor : BusyProcessor
       using var backPen = new Pen(color, 4);
       if (!Enabled)
       {
-         backPen.DashPattern = new[] { 3.0f, 1.0f };
+         backPen.DashPattern = [3.0f, 1.0f];
       }
 
       g.DrawLine(backPen, currentX, top, currentX + lineWidth, top);

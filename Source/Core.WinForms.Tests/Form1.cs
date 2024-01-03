@@ -334,11 +334,10 @@ public partial class Form1 : Form, IMessageQueueListener
       /*FileName sourceFile = @"C:\Temp\GoogleChromeStandaloneEnterprise_108.0.5359.125_x64_tw60560-67391.msi";
       FolderName targetFolder = @"C:\Users\tebennett\Working";*/
 
-      messageAlignments = new EnumerableCycle<CardinalAlignment>(new[]
-      {
+      messageAlignments = new EnumerableCycle<CardinalAlignment>([
          CardinalAlignment.Center, CardinalAlignment.West, CardinalAlignment.East, CardinalAlignment.North, CardinalAlignment.South,
          CardinalAlignment.NorthWest, CardinalAlignment.NorthEast, CardinalAlignment.SouthWest, CardinalAlignment.SouthEast
-      });
+      ]);
       _subText = nil;
       test = "";
 

@@ -606,7 +606,8 @@ public class MonadTests
    [TestMethod]
    public void SequenceTest()
    {
-      var _first = new[] { 0, 1, 2 }.FirstOrNone(x => x == 1);
+      int[] ints = [0, 1, 2];
+      var _first = ints.FirstOrNone(x => x == 1);
       if (_first is (true, var first))
       {
          Console.WriteLine(first);
@@ -717,7 +718,7 @@ public class MonadTests
    [TestMethod]
    public void ItemTest()
    {
-      var array = new[] { "alpha", "bravo", "charlie" };
+      string[] array = ["alpha", "bravo", "charlie"];
       var _within = array.Item(0);
       if (_within is (true, var item0))
       {

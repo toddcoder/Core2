@@ -39,7 +39,6 @@ public class JsonTests
 
       stopwatch.Stop();
 
-
       if (_setting is (true, var setting))
       {
          Console.WriteLine(setting.Count);
@@ -78,7 +77,7 @@ public class JsonTests
    [TestMethod]
    public void PatchTest()
    {
-      var branchFilters = new[] { "+refs/heads/master", "+refs/heads/r-6.43.0*" };
+      string[] branchFilters = ["+refs/heads/master", "+refs/heads/r-6.43.0*"];
       using var writer = new JsonWriter();
       writer.BeginArray();
 
@@ -106,7 +105,7 @@ public class JsonTests
    {
       using var writer = new JsonWriter();
       writer.BeginObject();
-      writer.Write("array", new[] { "alpha", "bravo", "charlie" });
+      writer.Write("array", ["alpha", "bravo", "charlie"]);
       writer.EndObject();
       Console.WriteLine(writer);
    }

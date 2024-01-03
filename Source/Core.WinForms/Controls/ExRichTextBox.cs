@@ -493,7 +493,7 @@ public class ExRichTextBox : RichTextBox
       else
       {
          var size = graphics.MeasureString(text, font);
-         var ranges = new[] { new CharacterRange(0, text.Length) };
+         CharacterRange[] ranges = [new CharacterRange(0, text.Length)];
          var format = new StringFormat();
          format.SetMeasurableCharacterRanges(ranges);
          var regions = graphics.MeasureCharacterRanges(text, font, new RectangleF(0, 0, size.Width, size.Height), format);

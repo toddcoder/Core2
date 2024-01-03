@@ -836,7 +836,6 @@ public class UiAction : UserControl, ISubTextHost
    {
       FloatingException(false);
       Busy(false);
-      Working = nil;
       this.type = type;
       Text = message;
 
@@ -1164,7 +1163,6 @@ public class UiAction : UserControl, ISubTextHost
 
       Text = text;
       type = UiActionType.ProgressDefinite;
-      Working = nil;
 
       MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
@@ -1187,7 +1185,6 @@ public class UiAction : UserControl, ISubTextHost
 
       Text = text;
       type = UiActionType.ProgressDefinite;
-      Working = nil;
 
       MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
@@ -1214,7 +1211,6 @@ public class UiAction : UserControl, ISubTextHost
       EmptyTextTitle = nil;
       Text = "";
       type = UiActionType.MuteProgress;
-      Working = nil;
 
       MessageShown?.Invoke(this, new MessageShownArgs("", type));
 
@@ -1236,7 +1232,6 @@ public class UiAction : UserControl, ISubTextHost
    {
       Text = text;
       type = UiActionType.BusyText;
-      Working = nil;
 
       MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
 
@@ -1931,7 +1926,6 @@ public class UiAction : UserControl, ISubTextHost
       {
          Text = "";
          type = UiActionType.Busy;
-         Working = nil;
       }
 
       if (TaskBarProgress && !_taskBarProgress)
@@ -2029,9 +2023,7 @@ public class UiAction : UserControl, ISubTextHost
       using var pen = new Pen(color, penWidth);
       if (dashed)
       {
-         //pen.DashStyle = DashStyle.DashDotDot;
-         //pen.DashCap = DashCap.Round;
-         pen.DashPattern = new[] { 3.0f, 1.0f };
+         pen.DashPattern = [3.0f, 1.0f];
       }
 
       graphics.DrawLine(pen, x, y, x1, y1);
@@ -3054,7 +3046,6 @@ public class UiAction : UserControl, ISubTextHost
    {
       FloatingException(false);
       Busy(false);
-      Working = nil;
       _taskBarProgress = nil;
 
       if (alternates.Length < 1)
@@ -3073,7 +3064,6 @@ public class UiAction : UserControl, ISubTextHost
    {
       FloatingException(false);
       Busy(false);
-      Working = nil;
       _taskBarProgress = nil;
 
       type = UiActionType.Alternate;
@@ -3086,7 +3076,6 @@ public class UiAction : UserControl, ISubTextHost
    {
       FloatingException(false);
       Busy(false);
-      Working = nil;
       _taskBarProgress = nil;
 
       type = UiActionType.CheckBox;
@@ -3097,7 +3086,7 @@ public class UiAction : UserControl, ISubTextHost
    protected void setUpCheckBox(string message, bool initialValue)
    {
       RectangleCount = 1;
-      var checkBoxWriter = new CheckBoxWriter(this, new[] { message }, AutoSizeText, _floor, _ceiling) { BoxChecked = initialValue };
+      var checkBoxWriter = new CheckBoxWriter(this, [message], AutoSizeText, _floor, _ceiling) { BoxChecked = initialValue };
       _alternateWriter = checkBoxWriter;
    }
 

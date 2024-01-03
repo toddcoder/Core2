@@ -529,7 +529,7 @@ public abstract class CommandLineInterface : IDisposable
          try
          {
             Running = true;
-            methodInfo.Invoke(this, new[] { argument });
+            methodInfo.Invoke(this, [argument]);
          }
          catch (Exception exception)
          {

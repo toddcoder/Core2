@@ -22,9 +22,9 @@ public static class ConversionExtensions
 
    private static int[] paperDimensions(PaperSize paperSize) => paperSize switch
    {
-      PaperSize.A4 => new[] { 11906, 16838 },
-      PaperSize.Letter => new[] { 15840, 12240 },
-      PaperSize.A3 => new[] { 16838, 23811 },
+      PaperSize.A4 => [11906, 16838],
+      PaperSize.Letter => [15840, 12240],
+      PaperSize.A3 => [16838, 23811],
       _ => throw new Exception("Unknown paper size.")
    };
 
@@ -134,7 +134,7 @@ public static class ConversionExtensions
          }
          else
          {
-            result += ascii.GetChars(new[] { @byte })[0];
+            result += ascii.GetChars([@byte])[0];
          }
       }
 

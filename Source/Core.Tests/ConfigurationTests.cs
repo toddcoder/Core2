@@ -167,7 +167,7 @@ public class ConfigurationTests
          IntValue = 153,
          StringValue = "foobar",
          File = (FileName)@"C:\temp\temp.txt",
-         Doubles = new[] { 1.0, 5.0, 3.0 },
+         Doubles = [1.0, 5.0, 3.0],
          IsTrue = true,
          Escape = "\r \t \\ foobar"
       };
@@ -228,19 +228,19 @@ public class ConfigurationTests
 
       var container = new Container
       {
-         Tests = new[]
-         {
+         Tests =
+         [
             new Test
             {
-               Enum = TestEnum.Alpha, Doubles = new double[] { 1, 2, 3 }, Escape = "`1", File = file, IntValue = 123, IsTrue = true,
+               Enum = TestEnum.Alpha, Doubles = [1, 2, 3], Escape = "`1", File = file, IntValue = 123, IsTrue = true,
                StringValue = "foo"
             },
             new Test
             {
-               Enum = TestEnum.Bravo, Doubles = new[] { 1.0, 5, 3 }, Escape = "`2", File = file, IntValue = 153, IsTrue = false,
+               Enum = TestEnum.Bravo, Doubles = [1.0, 5, 3], Escape = "`2", File = file, IntValue = 153, IsTrue = false,
                StringValue = "bar"
             }
-         }
+         ]
       };
 
       var _container =
