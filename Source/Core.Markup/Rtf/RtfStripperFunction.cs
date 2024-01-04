@@ -4,9 +4,9 @@ using Core.Collections;
 using Core.DataStructures;
 using Core.Enumerables;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Objects;
 using Core.Strings;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf;
@@ -161,7 +161,7 @@ public static class RtfStripperFunction
             else if (word.IsNotEmpty())
             {
                numberOfAsciiLeftToSkip = 0;
-               var _word = lazy.maybe<string>();
+               LazyMaybe<string> _word = nil;
                if (destinations.Contains(word))
                {
                   ignorable = true;

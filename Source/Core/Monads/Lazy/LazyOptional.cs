@@ -13,6 +13,8 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>> where T 
 
    public static implicit operator LazyOptional<T>(Func<Optional<T>> func) => new(func);
 
+   public static implicit operator LazyOptional<T>(Nil _) => new();
+
    public static bool operator true(LazyOptional<T> optional)
    {
       optional.ensureValue();

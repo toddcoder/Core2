@@ -3,11 +3,11 @@ using Core.Configurations;
 using Core.Dates.DateIncrements;
 using Core.Dates.Now;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Objects;
 using Core.Services.Loggers;
 using Core.Services.Plugins;
 using Core.Services.Scheduling;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 using Timer = System.Timers.Timer;
 
@@ -61,8 +61,8 @@ public class Job : IDisposable, IEquatable<Job>, IAddServiceMessages
    {
       Result<string> getValue(string objectName, Func<Maybe<string>> defaultValue, string message)
       {
-         var _nameFromObjectName = lazy.maybe<string>();
-         var _nameFromDefaultValue = lazy.maybe<string>();
+         LazyMaybe<string> _nameFromObjectName = nil;
+         LazyMaybe<string> _nameFromDefaultValue = nil;
          if (_nameFromObjectName.ValueOf(setting.Maybe.String(objectName)) is (true, var nameFromObjectName))
          {
             return nameFromObjectName;

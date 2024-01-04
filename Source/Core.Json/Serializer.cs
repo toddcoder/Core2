@@ -4,8 +4,8 @@ using Core.Configurations;
 using Core.Dates;
 using Core.Matching;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Objects;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Json;
@@ -65,10 +65,10 @@ public class Serializer
 
    protected static void writeText(JsonWriter writer, Maybe<string> _name, string text)
    {
-      var _int = lazy.maybe<int>();
-      var _float = lazy.maybe<double>();
-      var _bool = lazy.maybe<bool>();
-      var _dateTime = lazy.maybe<DateTime>();
+      LazyMaybe<int> _int = nil;
+      LazyMaybe<double> _float = nil;
+      LazyMaybe<bool> _bool = nil;
+      LazyMaybe<DateTime> _dateTime = nil;
 
       writer.WritePropertyNameIf(_name);
 

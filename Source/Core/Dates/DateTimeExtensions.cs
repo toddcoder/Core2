@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Threading;
 using Core.Dates.Now;
 using Core.Matching;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Numbers;
 using Core.Objects;
 using Core.Strings;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Dates;
@@ -204,7 +203,7 @@ public static class DateTimeExtensions
 
    public static Result<DateTime> RelativeTo(this DateTime date, string pattern)
    {
-      var _result = lazy.maybe<MatchResult>();
+      LazyMaybe<MatchResult> _result = nil;
       if (pattern.IsMatch("^ ['//|'] /s* ['//|'] /s* ['//|'] $; f"))
       {
          return date;
@@ -212,9 +211,10 @@ public static class DateTimeExtensions
       else if (_result.ValueOf(pattern.Matches("/(['+-']? /d*) ['//|'] /(['+-']? /d*) ['//|'] /(['+-']? /d*); f")) is (true, var (year, month, day)))
       {
          DateIncrementer builder = date;
-         var _yearResult = lazy.result<DateTime>();
-         var _monthResult = lazy.result<DateTime>();
-         var _dayResult = lazy.result<DateTime>();
+         LazyResult<DateTime> _yearResult = nil;
+         LazyResult<DateTime> _monthResult = nil;
+         LazyResult<DateTime> _dayResult = nil;
+
          if (year.IsNotEmpty())
          {
             var yearAmount = year.Value().Int32();
@@ -314,9 +314,9 @@ public static class DateTimeExtensions
 
       var dateOnly = date.Truncate();
       var minuteDifference = new Lazy<int>(() => (int)now.Subtract(date).TotalMinutes);
-      var _minutes = lazy.maybe<string>();
+      LazyMaybe<string> _minutes = nil;
       var hourDifference = new Lazy<int>(() => (int)now.Subtract(date).TotalHours);
-      var _hours = lazy.maybe<string>();
+      LazyMaybe<string> _hours = nil;
       var dayDifference = new Lazy<int>(() => (int)now.Subtract(dateOnly).TotalDays);
 
       if (_minutes.ValueOf(differenceInMinutes(minuteDifference.Value)) is (true, var minutes))
@@ -352,11 +352,11 @@ public static class DateTimeExtensions
 
       var dateOnly = startDate.Truncate();
       var secondDifference = new Lazy<int>(() => (int)endDate.Subtract(startDate).TotalSeconds);
-      var _seconds = lazy.maybe<string>();
+      LazyMaybe<string> _seconds = nil;
       var minuteDifference = new Lazy<int>(() => (int)endDate.Subtract(startDate).TotalMinutes);
-      var _minutes = lazy.maybe<string>();
+      LazyMaybe<string> _minutes = nil;
       var hourDifference = new Lazy<int>(() => (int)endDate.Subtract(startDate).TotalHours);
-      var _hours = lazy.maybe<string>();
+      LazyMaybe<string> _hours = nil;
       var dayDifference = new Lazy<int>(() => (int)endDate.Subtract(dateOnly).TotalDays);
 
       if (_seconds.ValueOf(secondsToGo(secondDifference.Value)) is (true, var seconds))

@@ -5,9 +5,9 @@ using Core.Assertions;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Strings;
 using static System.Math;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Numbers;
@@ -360,7 +360,8 @@ public static class NumberExtensions
          var intAmount = (long)amount;
          var decAmount = (long)Round((amount - intAmount) * 100);
          var _words = intAmount.ToWords();
-         var _decimals = lazy.result<string>();
+         LazyResult<string> _decimals = nil;
+
          if (_words is (true, var words))
          {
             if (decAmount == 0)

@@ -13,6 +13,8 @@ public class LazyCompletion<T> : Completion<T> where T : notnull
 
    public static implicit operator LazyCompletion<T>(Func<Completion<T>> func) => new(func);
 
+   public static implicit operator LazyCompletion<T>(Nil _) => new();
+
    public static bool operator true(LazyCompletion<T> completion)
    {
       completion.ensureValue();

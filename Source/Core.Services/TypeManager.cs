@@ -6,9 +6,9 @@ using Core.Configurations;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
+using Core.Monads.Lazy;
 using static System.Reflection.Assembly;
 using static Core.Monads.AttemptFunctions;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Services;
@@ -75,16 +75,16 @@ public class TypeManager
    {
       try
       {
-         var _type = lazy.maybe<Type>();
-         var _typeName = lazy.result<string>();
+         LazyMaybe<Type> _type = nil;
+         LazyResult<string> _typeName = nil;
          if (_type.ValueOf(typeCache.Maybe[name]) is (true, var type))
          {
             return type;
          }
          else if (_typeName.ValueOf(getTypeName(name)) is (true, var typeName))
          {
-            var _result = lazy.maybe<MatchResult>();
-            var _assemblyType = lazy.result<Type>();
+            LazyMaybe<MatchResult> _result = nil;
+            LazyResult<Type> _assemblyType = nil;
 
             if (_result.ValueOf(typeName.Matches("^ -/{<} '<' -/{:} ':' /s* -/{>} '>' $; f")) is
                 (true, var (possibleTypeName, subTypeName, subAssemblyName)))
@@ -128,8 +128,8 @@ public class TypeManager
    {
       try
       {
-         var _assembly = lazy.maybe<Assembly>();
-         var _path = lazy.maybe<string>();
+         LazyMaybe<Assembly> _assembly = nil;
+         LazyMaybe<string> _path = nil;
          if (_assembly.ValueOf(assemblyCache.Maybe[name]) is (true, var assembly))
          {
             return assembly;

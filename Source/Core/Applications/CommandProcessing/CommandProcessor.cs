@@ -10,9 +10,9 @@ using Core.Configurations;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Objects;
 using Core.Strings;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.CommandProcessing;
@@ -185,8 +185,8 @@ public abstract class CommandProcessor : IDisposable
 
    protected static Maybe<(string command, string rest)> splitCommandFromRest(string commandLine)
    {
-      var _help = lazy.maybe<string>();
-      var _length = lazy.maybe<int>();
+      LazyMaybe<string> _help = nil;
+      LazyMaybe<int> _length = nil;
       if (commandLine.IsEmpty())
       {
          return ("help", "");
@@ -318,7 +318,7 @@ public abstract class CommandProcessor : IDisposable
    protected void generateHelp(string rest)
    {
       var generator = new HelpGenerator(this);
-      var _help = lazy.result<string>();
+      LazyResult<string> _help = nil;
       string help;
       if (rest.IsEmpty())
       {
@@ -384,8 +384,8 @@ public abstract class CommandProcessor : IDisposable
          var _result = rest.Matches($"^ /('{Prefix}set' | '{Prefix}get' | '{ShortCut}s' | '{ShortCut}g') /s+ /(/w [/w '-']*) /b /(.*) $; f");
          if (_result is (true, var (command, name, value)))
          {
-            var _command = lazy.maybe<string>();
-            var _command2 = lazy.maybe<string>();
+            LazyMaybe<string> _command = nil;
+            LazyMaybe<string> _command2 = nil;
             if (_command.ValueOf(command.Matches($"^ '{Prefix}' /('set' | 'get'); f").Map(r => r.FirstGroup)))
             {
                command = _command;
@@ -502,8 +502,8 @@ public abstract class CommandProcessor : IDisposable
             }
             else
             {
-               var _bareString = lazy.maybe<(string, int)>();
-               var _nonSpace = lazy.maybe<(string, int)>();
+               LazyMaybe<(string, int)> _bareString = nil;
+               LazyMaybe<(string, int)> _nonSpace = nil;
                if (_bareString.ValueOf(noStrings.Matches("^ /s* /([quote]) /(-[quote]*) /1; f").Map(r => r.SecondGroupAndLength)) is
                    (true, var (bareString, bareStringLength)))
                {

@@ -1,11 +1,11 @@
 ﻿using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Numbers;
 using Core.Strings;
 using Core.Strings.Emojis;
 using Core.WinForms.Drawing;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -237,7 +237,7 @@ public class UiActionWriter
       text = text.Replace("/!", "!");
       text = text.EmojiSubstitutions();
 
-      var _existingRectangle = lazy.result(_rectangle);
+      LazyResult<Rectangle> _existingRectangle = (Func<Result<Rectangle>>)(() => _rectangle);
       var _existingFont = _existingRectangle.Then(_font);
       var _existingColor = _existingFont.Then(_color);
       if (_existingColor)

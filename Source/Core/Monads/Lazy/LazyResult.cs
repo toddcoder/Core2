@@ -13,6 +13,8 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>> where T : notn
 
    public static implicit operator LazyResult<T>(Func<Result<T>> func) => new(func);
 
+   public static implicit operator LazyResult<T>(Nil _) => new();
+
    public static bool operator true(LazyResult<T> result)
    {
       result.ensureValue();

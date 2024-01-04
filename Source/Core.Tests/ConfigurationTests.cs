@@ -7,9 +7,9 @@ using Core.Configurations;
 using Core.Enumerables;
 using Core.Json;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Strings;
 using Core.Strings.Text;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
 
@@ -100,7 +100,7 @@ public class ConfigurationTests
       var resources = new Resources<ConfigurationTests>();
       var source = resources.String("TestData.connections.txt");
 
-      var _setting = lazy.result(() => Setting.FromString(source));
+      LazyResult<Setting> _setting = (Func<Result<Setting>>)(() => Setting.FromString(source));
       var _serverDatabase = _setting.Then(setting => getServerDatabase(setting).Result("Failed"));
 
       if (_serverDatabase is (true, var (server, database)))
@@ -116,7 +116,7 @@ public class ConfigurationTests
       var resources = new Resources<ConfigurationTests>();
       var source = resources.String("TestData.connections2.txt");
 
-      var _setting = lazy.result(() => Setting.FromString(source));
+      LazyResult<Setting> _setting = (Func<Result<Setting>>)(() => Setting.FromString(source));
       var _serverDatabase = _setting.Then(setting => getServerDatabase(setting).Result("Failed"));
 
       if (_serverDatabase is (true, var (server, database)))
@@ -472,8 +472,8 @@ public class ConfigurationTests
          return;
       }
 
-      var _releaseTarget = lazy.result<ReleaseTarget>();
-      var _serialized = lazy.result<Setting>();
+      LazyResult<ReleaseTarget> _releaseTarget = nil;
+      LazyResult<Setting> _serialized = nil;
       if (_releaseTarget.ValueOf(setting.Deserialize<ReleaseTarget>()) is (true, var releaseTarget))
       {
          if (_serialized.ValueOf(Setting.Serialize(typeof(ReleaseTarget), releaseTarget)) is (true, var serialized))
@@ -533,8 +533,8 @@ public class ConfigurationTests
    {
       var resources = new Resources<ConfigurationTests>();
       var source = resources.String("usesForeignKey.txt");
-      var _setting = lazy.result<Setting>();
-      var _container = lazy.result<NonConformanceInfoContainer>();
+      LazyResult<Setting> _setting = nil;
+      LazyResult<NonConformanceInfoContainer> _container = nil;
       if (_setting.ValueOf(Setting.FromString(source)) is (true, var setting))
       {
          Console.WriteLine(setting);

@@ -2,8 +2,8 @@
 using Core.Computers;
 using Core.Matching;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Strings;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Xml;
@@ -13,7 +13,7 @@ public class Element : IRendering
    public static implicit operator Element(string source)
    {
       var _tag = source.Matches("^ /(['a-zA-Z_'] [/w '-']*) /s* '>' /s* [quote]? /(.*) $; f");
-      var _link = lazy.maybe<MatchResult>();
+      LazyMaybe<MatchResult> _link = nil;
 
       if (_tag is (true, var (name, text)))
       {

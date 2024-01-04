@@ -13,6 +13,10 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>> where T : notnull
 
    public static implicit operator LazyMaybe<T>(Func<Maybe<T>> func) => new(func);
 
+   public static implicit operator LazyMaybe<T>(Func<T> func) => new(func);
+
+   public static implicit operator LazyMaybe<T>(Nil _) => new();
+
    public static bool operator true(LazyMaybe<T> maybe)
    {
       maybe.ensureValue();
@@ -34,6 +38,14 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>> where T : notnull
    internal LazyMaybe(Func<Maybe<T>> func)
    {
       this.func = func;
+
+      _value = nil;
+      ensured = false;
+   }
+
+   internal LazyMaybe(Func<T> func)
+   {
+      this.func = () => func();
 
       _value = nil;
       ensured = false;

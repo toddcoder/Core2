@@ -8,7 +8,6 @@ using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
 using static Core.Monads.MonadFunctions;
-using static Core.Monads.Monads;
 
 namespace Core.Strings;
 

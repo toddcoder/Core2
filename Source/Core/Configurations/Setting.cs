@@ -11,10 +11,10 @@ using Core.Computers;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Configurations;
@@ -287,7 +287,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       }
       else if (type.IsArray)
       {
-         var _arraySetting = lazy.result<Setting>();
+         LazyResult<Setting> _arraySetting = nil;
          var elementType = type.GetElementType();
          if (elementType is not null)
          {

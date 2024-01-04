@@ -4,8 +4,8 @@ using Core.DataStructures;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Strings;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
 
@@ -49,8 +49,8 @@ internal class Parser
          List<string> lines = [];
          while (source.Length > 0)
          {
-            var _length = lazy.maybe<int>();
-            var _result = lazy.maybe<MatchResult>();
+            LazyMaybe<int> _length = nil;
+            LazyMaybe<MatchResult> _result = nil;
 
             if (_length.ValueOf(source.Matches("^ /s* '}' ([/r /n]+ | $); f").Map(r => r.Length)))
             {
@@ -76,9 +76,9 @@ internal class Parser
 
       Result<(string newSource, string str, bool isArray)> getString(string source)
       {
-         var _quote = lazy.maybe<(string, int)>();
-         var _openBrace = lazy.maybe<MatchResult>();
-         var _endOfLine = lazy.maybe<MatchResult>();
+         LazyMaybe<(string, int)> _quote = nil;
+         LazyMaybe<MatchResult> _openBrace = nil;
+         LazyMaybe<MatchResult> _endOfLine = nil;
 
          if (_quote.ValueOf(source.Matches("^ /s* /[quote]; f").Map(result => result.FirstGroupAndLength)) is (true, var (group, length)))
          {
@@ -216,13 +216,14 @@ internal class Parser
 
       while (source.Length > 0)
       {
-         var _openSetting = lazy.maybe<int>();
-         var _settingKey = lazy.maybe<(string, int)>();
-         var _closeSetting = lazy.maybe<int>();
-         var _oneLineKey = lazy.maybe<(string, int)>();
-         var _comment = lazy.maybe<int>();
-         var _key = lazy.maybe<(string, int)>();
-         var _string = lazy.result<(string, string, bool)>();
+         LazyMaybe<int> _openSetting = nil;
+         LazyMaybe<(string, int)> _settingKey = nil;
+         LazyMaybe<int> _closeSetting = nil;
+         LazyMaybe<(string, int)> _oneLineKey = nil;
+         LazyMaybe<int> _comment = nil;
+         LazyMaybe<(string, int)> _key = nil;
+         LazyResult<(string, string, bool)> _string = nil;
+
          if (_openSetting.ValueOf(source.Matches("^ /s* '['; f").Map(r => r.Length)) is (true, var openSetting))
          {
             var key = GetKey("?");

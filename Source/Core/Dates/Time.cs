@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Core.Arrays;
 using Core.Assertions;
 using Core.Enumerables;
 using Core.Matching;

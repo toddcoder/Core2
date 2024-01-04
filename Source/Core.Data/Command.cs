@@ -2,6 +2,7 @@
 using Core.Configurations;
 using Core.Dates.DateIncrements;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Objects;
 using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
@@ -23,8 +24,8 @@ public class Command
       try
       {
          string command;
-         var _text = lazy.maybe<string>();
-         var _fileName = lazy.maybe<string>();
+         LazyMaybe<string> _text = nil;
+         LazyMaybe<string> _fileName = nil;
          if (_text.ValueOf(commandSetting.Maybe.String("text")))
          {
             command = _text;
@@ -52,8 +53,8 @@ public class Command
    public Command(Setting commandSetting)
    {
       Name = commandSetting.Key;
-      var _text = lazy.maybe<string>();
-      var _fileName = lazy.maybe<string>();
+      LazyMaybe<string> _text = nil;
+      LazyMaybe<string> _fileName = nil;
       if (_text.ValueOf(commandSetting.Maybe.String("text")) is (true, var text))
       {
          Text = text;

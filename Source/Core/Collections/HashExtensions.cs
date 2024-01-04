@@ -5,10 +5,10 @@ using Core.Computers;
 using Core.Configurations;
 using Core.Matching;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Objects;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
@@ -366,7 +366,7 @@ public static class HashExtensions
       Hash<TKey, TValue> result = [];
       foreach (var item in enumerable)
       {
-         var _value = lazy.result(() => valueSelector(item));
+         LazyResult<TValue> _value = (Func<Result<TValue>>)(() => valueSelector(item));
          var _key = _value.Then(_ => keySelector(item));
          if (_key)
          {
@@ -387,7 +387,7 @@ public static class HashExtensions
       StringHash<TValue> result = [];
       foreach (var item in enumerable)
       {
-         var _value = lazy.result(() => valueSelector(item));
+         LazyResult<TValue> _value = (Func<Result<TValue>>)(() => valueSelector(item));
          var _key = _value.Then(_ => keySelector(item));
          if (_key)
          {
@@ -408,7 +408,7 @@ public static class HashExtensions
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
       {
-         var _value = lazy.result(() => valueSelector(item));
+         LazyResult<TValue> _value = (Func<Result<TValue>>)(() => valueSelector(item));
          var _key = _value.Then(_ => keySelector(item));
          if (_key)
          {

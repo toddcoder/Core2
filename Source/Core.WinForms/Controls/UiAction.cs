@@ -278,9 +278,9 @@ public class UiAction : UserControl, ISubTextHost
       toolTip = new UiToolTip(this);
       toolTip.SetToolTip(this, "");
 
-      _busyTextProcessor = lazy.maybe<BusyTextProcessor>();
-      _progressDefiniteProcessor = lazy.maybe<ProgressDefiniteProcessor>();
-      _busyProcessor = lazy.maybe<BusyProcessor>();
+      _busyTextProcessor = nil;
+      _progressDefiniteProcessor = nil;
+      _busyProcessor = nil;
 
       Resize += (_, _) =>
       {
@@ -436,15 +436,6 @@ public class UiAction : UserControl, ISubTextHost
       workingTimer = new Timer { Interval = 1000 };
       workingTimer.Tick += (_, _) =>
       {
-         /*if (_working)
-         {
-            _working = nil;
-         }
-         else
-         {
-            _working = getWorking();
-         }*/
-
          (_, _working) = _working.Create(getWorking);
 
          Refresh();
@@ -1619,11 +1610,11 @@ public class UiAction : UserControl, ISubTextHost
 
       if (Working && _working is (true, var working))
       {
-         if (workingAlpha >= 16)
+         if (workingAlpha >= 8)
          {
             working.Alpha = workingAlpha;
             working.Transparency = SubTextTransparency.Custom;
-            workingAlpha -= 16;
+            workingAlpha -= 8;
          }
 
          working.SetLocation(clientRectangle);

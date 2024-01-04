@@ -2,7 +2,7 @@
 using Core.Data.Fields;
 using Core.Data.Parameters;
 using Core.Monads;
-using static Core.Monads.Lazy.LazyMonads;
+using Core.Monads.Lazy;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.Setups;
@@ -101,8 +101,8 @@ public class SqlSetupBuilder
    public Result<SqlSetup> Build()
    {
       var sqlSetup = new SqlSetup();
-      var _connectionString = lazy.result<SqlConnectionString>();
-      var _commandText = lazy.result<(string, TimeSpan)>();
+      LazyResult<SqlConnectionString> _connectionString = nil;
+      LazyResult<(string, TimeSpan)> _commandText = nil;
 
       if (_connectionStringBuilder is (true, var connectionStringBuilder))
       {

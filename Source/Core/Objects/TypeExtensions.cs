@@ -1,11 +1,11 @@
 ﻿using System;
 using Core.Matching;
 using Core.Monads;
+using Core.Monads.Lazy;
 using Core.Strings;
 using static System.Reflection.Assembly;
 using static System.Linq.Expressions.Expression;
 using static Core.Monads.AttemptFunctions;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Objects;
@@ -62,8 +62,8 @@ public static class TypeExtensions
    {
       try
       {
-         var _ungenericResult = lazy.maybe<MatchResult>();
-         var _genericResult = lazy.maybe<MatchResult>();
+         LazyMaybe<MatchResult> _ungenericResult = nil;
+         LazyMaybe<MatchResult> _genericResult = nil;
          if (_ungenericResult.ValueOf(source.Matches("^ -/{,} ','? /s* /{a-zA-Z_0-9.} $; f")) is (true, var ungenericResult))
          {
             return getUngenericType(ungenericResult.FirstGroup, ungenericResult.SecondGroup)!;
