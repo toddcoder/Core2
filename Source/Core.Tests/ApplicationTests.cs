@@ -405,4 +405,45 @@ public class ApplicationTests
       var processor = new TestProgram();
       processor.Run(@"foobar -f C:\Temp\max.txt");
    }
+
+   protected static IEnumerable<string> source()
+   {
+      yield return "alpha";
+      yield return "bravo";
+      yield return "charlie";
+   }
+
+   [TestMethod]
+   public void EventSourceTest()
+   {
+      var eventSource = new EventSource<string>(source);
+      eventSource.EventRaised += (_, e) => Console.WriteLine(e.Value);
+      eventSource.Evaluate();
+   }
+
+   protected static IEnumerable<Either<string, int>> source2()
+   {
+      yield return "delta";
+      yield return 42;
+      yield return "echo";
+   }
+
+   [TestMethod]
+   public void EventSource2Test()
+   {
+      var eventSource = new EventSource<Either<string, int>>(source2);
+      eventSource.EventRaised += (_, e) =>
+      {
+         switch (e.Value.ToObject())
+         {
+            case string s:
+               Console.WriteLine($"string: {s}");
+               break;
+            case int i:
+               Console.WriteLine($"int: {i}");
+               break;
+         }
+      };
+      eventSource.Evaluate();
+   }
 }

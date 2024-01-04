@@ -5,6 +5,8 @@ namespace Core.Monads;
 
 public class Right<TLeft, TRight> : Either<TLeft, TRight>, IEquatable<Right<TLeft, TRight>> where TLeft : notnull where TRight : notnull
 {
+   public static implicit operator TRight(Right<TLeft, TRight> right) => right.Value;
+
    protected TRight value;
 
    internal Right(TRight value) => this.value = value;
@@ -29,6 +31,8 @@ public class Right<TLeft, TRight> : Either<TLeft, TRight>, IEquatable<Right<TLef
       left = default!;
       right = value;
    }
+
+   public override object ToObject() => value;
 
    public bool Equals(Right<TLeft, TRight>? other) => other is not null && EqualityComparer<TRight>.Default.Equals(value, other.value);
 

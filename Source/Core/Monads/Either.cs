@@ -26,4 +26,6 @@ public abstract class Either<TLeft, TRight> where TLeft : notnull where TRight :
       Func<TRight, Either<TLeftResult, TRightResult>> rightMap) where TLeftResult : notnull where TRightResult : notnull;
 
    public abstract void Deconstruct(out bool isLeft, out TLeft left, out TRight right);
+
+   public abstract object ToObject();
 }
