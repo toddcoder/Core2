@@ -433,7 +433,7 @@ public class UiAction : UserControl, ISubTextHost
       StopwatchInverted = true;
       EmptyTextTitle = nil;
 
-      workingTimer = new Timer { Interval = 1000 };
+      workingTimer = new Timer { Interval = 2000 };
       workingTimer.Tick += (_, _) =>
       {
          (_, _working) = _working.Create(getWorking);
