@@ -4,8 +4,8 @@ using System.Linq;
 using Core.Assertions;
 using Core.Enumerables;
 using Core.Monads;
+using Core.Monads.Lazy;
 using static Core.Monads.AttemptFunctions;
-using static Core.Monads.Lazy.LazyRepeatingMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.DataStructures;
@@ -89,8 +89,8 @@ public class MaybeStack<T> : IEnumerable<T> where T : notnull
 
    public IEnumerable<T> Popping()
    {
-      var _item = lazyRepeating.maybe<T>();
-      while (_item.ValueOf(Pop()))
+      LazyMaybe<T> _item = nil;
+      while (_item.ValueOf(Pop(), true))
       {
          yield return _item;
       }

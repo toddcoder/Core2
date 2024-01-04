@@ -4,8 +4,8 @@ using Core.Collections;
 using Core.Computers;
 using Core.DataStructures;
 using Core.Monads;
+using Core.Monads.Lazy;
 using static Core.Markup.Rtf.ParagraphFunctions;
-using static Core.Monads.Lazy.LazyRepeatingMonads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf;
@@ -242,8 +242,8 @@ public class Table : Block
 
       if (TableBuilder is (true, var tableBuilder))
       {
-         var _tableBuilderItem = lazyRepeating.maybe<TableBuilderItem>();
-         while (_tableBuilderItem.ValueOf(tableBuilder.Next) is (true, var tableBuilderItem))
+         LazyMaybe<TableBuilderItem> _tableBuilderItem = nil;
+         while (_tableBuilderItem.ValueOf(tableBuilder.Next, true) is (true, var tableBuilderItem))
          {
             tableBuilderItem.SetItem(this);
          }
@@ -384,8 +384,8 @@ public class Table : Block
 
    public void ActivatePendingMerges()
    {
-      var _item = lazyRepeating.maybe<(int, int, int, int)>();
-      while (_item.ValueOf(pendingMerges.Dequeue()) is (true, var (topRow, leftColumn, rowSpan, colSpan)))
+      LazyMaybe<(int, int, int, int)> _item = nil;
+      while (_item.ValueOf(pendingMerges.Dequeue(), true) is (true, var (topRow, leftColumn, rowSpan, colSpan)))
       {
          Merge(topRow, leftColumn, rowSpan, colSpan);
       }

@@ -435,7 +435,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    public Maybe<Delegate> ReplaceHandler(string parentText, string text, EventHandler handler)
    {
-      LazyMaybe<Submenus> _submenus = (Func<Maybe<Submenus>>)(() => Submenus(parentText));
+      var _submenus = new LazyMaybe<Submenus>(() => Submenus(parentText));
       var _item = _submenus.Then(submenus => submenus.Items[text]);
       var _delegate = _item.Then(item => item.ClearEvent("Click"));
       if (_delegate is (true, var @delegate) && _item is (true, var item))

@@ -11,7 +11,11 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>> where T 
       return optional._value;
    }
 
+   [Obsolete("Use constructor")]
    public static implicit operator LazyOptional<T>(Func<Optional<T>> func) => new(func);
+
+   [Obsolete("Use constructor")]
+   public static implicit operator LazyOptional<T>(Func<T> func) => new(func);
 
    public static implicit operator LazyOptional<T>(Nil _) => new();
 
@@ -37,9 +41,17 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>> where T 
    protected Optional<T> _value;
    protected bool ensured;
 
-   internal LazyOptional(Func<Optional<T>> func)
+   public LazyOptional(Func<Optional<T>> func)
    {
       this.func = func;
+
+      _value = nil;
+      ensured = false;
+   }
+
+   public LazyOptional(Func<T> func)
+   {
+      this.func = () => func();
 
       _value = nil;
       ensured = false;
@@ -53,18 +65,18 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>> where T 
    {
    }
 
-   public void Activate()
+   public void Activate(bool repeating = false)
    {
-      if (Repeating || !ensured)
+      if (repeating || !ensured)
       {
          _value = func();
          ensured = _value;
       }
    }
 
-   public void Activate(Func<Optional<T>> func)
+   public void Activate(Func<Optional<T>> func, bool repeating = false)
    {
-      if (Repeating)
+      if (repeating)
       {
          Activate(func());
       }
@@ -74,18 +86,18 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>> where T 
       }
    }
 
-   public void Activate(Optional<T> value)
+   public void Activate(Optional<T> value, bool repeating = false)
    {
-      if (Repeating || !ensured)
+      if (repeating || !ensured)
       {
          _value = value;
          ensured = _value;
       }
    }
 
-   public LazyOptional<T> ValueOf(Func<Optional<T>> func)
+   public LazyOptional<T> ValueOf(Func<Optional<T>> func, bool repeating = false)
    {
-      if (Repeating)
+      if (repeating)
       {
          return ValueOf(func());
       }
@@ -96,9 +108,9 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>> where T 
       }
    }
 
-   public LazyOptional<T> ValueOf(Optional<T> value)
+   public LazyOptional<T> ValueOf(Optional<T> value, bool repeating = false)
    {
-      if (Repeating || !ensured)
+      if (repeating || !ensured)
       {
          _value = value;
          ensured = true;
@@ -146,8 +158,6 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>> where T 
          return _next.ValueOf(() => nil);
       }
    }
-
-   public bool Repeating { get; set; }
 
    protected void ensureValue()
    {

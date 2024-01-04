@@ -237,7 +237,7 @@ public class UiActionWriter
       text = text.Replace("/!", "!");
       text = text.EmojiSubstitutions();
 
-      LazyResult<Rectangle> _existingRectangle = (Func<Result<Rectangle>>)(() => _rectangle);
+      var _existingRectangle = new LazyResult<Rectangle>(() => _rectangle);
       var _existingFont = _existingRectangle.Then(_font);
       var _existingColor = _existingFont.Then(_color);
       if (_existingColor)

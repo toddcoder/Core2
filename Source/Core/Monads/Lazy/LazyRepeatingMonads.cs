@@ -1,4 +1,5 @@
-﻿using static Core.Monads.MonadFunctions;
+﻿using System;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads.Lazy;
 
@@ -24,11 +25,15 @@ public class LazyRepeatingMonads
       }
    }
 
-   public LazyMaybe<T> maybe<T>() where T : notnull => new() { Repeating = true };
+   [Obsolete("Use Maybe<T>")]
+   public LazyMaybe<T> maybe<T>() where T : notnull => new();
 
-   public LazyResult<T> result<T>() where T : notnull => new() { Repeating = true };
+   [Obsolete("Use Result<T>")]
+   public LazyResult<T> result<T>() where T : notnull => new();
 
-   public LazyOptional<T> optional<T>() where T : notnull => new() { Repeating = true };
+   [Obsolete("Use Optional<T>")]
+   public LazyOptional<T> optional<T>() where T : notnull => new();
 
-   public LazyCompletion<T> completion<T>() where T : notnull => new() { Repeating = true };
+   [Obsolete("Use Completion<T>")]
+   public LazyCompletion<T> completion<T>() where T : notnull => new();
 }

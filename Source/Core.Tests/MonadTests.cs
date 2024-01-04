@@ -10,7 +10,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Applications.Async.AsyncFunctions;
 using static Core.Lambdas.LambdaFunctions;
 using static Core.Monads.AttemptFunctions;
-using static Core.Monads.Lazy.LazyRepeatingMonads;
 using static Core.Monads.MonadFunctions;
 using static Core.Monads.MultiMatching.MonadMatcherFunctions;
 
@@ -430,19 +429,19 @@ public class MonadTests
    [TestMethod]
    public void LazyMaybeTest()
    {
-      LazyMaybe<string> _one = (Func<string>)(() =>
+      var _one = new LazyMaybe<string>(() =>
       {
          Console.WriteLine("Ensured _one");
          return "one";
       });
 
-      LazyMaybe<string> _two = (Func<Maybe<string>>)(() =>
+      var _two = new LazyMaybe<string>(() =>
       {
          Console.WriteLine("Ensured _two");
          return nil;
       });
 
-      LazyMaybe<string> _three = (Func<string>)(() =>
+      var _three = new LazyMaybe<string>(() =>
       {
          Console.WriteLine("Ensured _three");
          return "three";
@@ -489,9 +488,9 @@ public class MonadTests
    public void LazyRepeatingMonadsTest()
    {
       MaybeStack<string> stack = ["a", "b", "c", "d", "e", "f"];
-      var _item = lazyRepeating.maybe<string>();
+      LazyMaybe<string> _item = nil;
 
-      while (_item.ValueOf(stack.Pop()) is (true, var item))
+      while (_item.ValueOf(stack.Pop(), true) is (true, var item))
       {
          Console.WriteLine(item);
       }
@@ -500,7 +499,7 @@ public class MonadTests
    [TestMethod]
    public void ChainedLazyMonadsTest()
    {
-      LazyMaybe<string> _first = (Func<string>)(() => "foobar");
+      var _first = new LazyMaybe<string>(() => "foobar");
       var _second = _first.Then(s => s.Length);
       if (_second)
       {
@@ -513,7 +512,7 @@ public class MonadTests
    [TestMethod]
    public void ChainedResultsTest()
    {
-      LazyResult<string> _first = (Func<Result<string>>)(() => getResult("alpha", true, 1));
+      var _first = new LazyResult<string>(() => getResult("alpha", true, 1));
       var _second = _first.Then(_ => getResult("bravo", false, 2));
       var _third = _second.Then(_ => getResult("charlie", true, 3));
       if (_third is (true, var third))
@@ -531,7 +530,7 @@ public class MonadTests
    [TestMethod]
    public void ChainedResults2Test()
    {
-      LazyResult<string> _first = (Func<Result<string>>)(() => getResult("alpha", true, 1));
+      var _first = new LazyResult<string>(() => getResult("alpha", true, 1));
       var _second = _first.Then(_ => getResult("bravo", true, 2));
       var _third = _second.Then(_ => getResult("charlie", true, 3));
       if (_third)
@@ -549,7 +548,7 @@ public class MonadTests
    [TestMethod]
    public void ChainedResults3Test()
    {
-      LazyResult<string> _first = (Func<Result<string>>)(() => getResult("alpha", false, 1));
+      var _first = new LazyResult<string>(() => getResult("alpha", false, 1));
       var _second = _first.Then(_ => getResult("bravo", false, 2));
       var _third = _second.Then(_ => getResult("charlie", false, 3));
       if (_third)

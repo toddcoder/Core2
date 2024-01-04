@@ -4,8 +4,9 @@ using Core.Collections;
 using Core.Collections.Infix;
 using Core.DataStructures;
 using Core.Dates;
+using Core.Monads.Lazy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Monads.Lazy.LazyRepeatingMonads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests;
 
@@ -56,8 +57,8 @@ public class CollectionTest
    {
       PriorityQueue<int> queue = [1, 5, 3, 6, 9];
 
-      var _item = lazyRepeating.maybe<int>();
-      while (_item.ValueOf(queue.Dequeue()) is (true, var item))
+      LazyMaybe<int> _item = nil;
+      while (_item.ValueOf(queue.Dequeue(), true) is (true, var item))
       {
          Console.WriteLine(item);
       }
@@ -79,8 +80,8 @@ public class CollectionTest
    {
       MaybeStack<string> stack = ["alpha", "bravo", "charlie"];
 
-      var _item = lazyRepeating.result<string>();
-      if (_item.ValueOf(stack.Item(0)) is (true, var item))
+      LazyResult<string> _item = nil;
+      if (_item.ValueOf(stack.Item(0), true) is (true, var item))
       {
          Console.WriteLine(item);
       }
@@ -89,7 +90,7 @@ public class CollectionTest
          Console.WriteLine(_item.Exception.Message);
       }
 
-      if (_item.ValueOf(stack.Item(-1)) is (true, var item2))
+      if (_item.ValueOf(stack.Item(-1), true) is (true, var item2))
       {
          Console.WriteLine(item2);
       }

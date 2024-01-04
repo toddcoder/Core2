@@ -2,7 +2,8 @@
 using System.Data;
 using Core.Data.DataSources;
 using Core.Monads;
-using static Core.Monads.Lazy.LazyRepeatingMonads;
+using Core.Monads.Lazy;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Data;
 
@@ -47,8 +48,8 @@ public class Reader<T> : IDisposable, IEnumerable<T> where T : notnull
    {
       try
       {
-         var _entity = lazyRepeating.maybe<T>();
-         while (_entity.ValueOf(Next()) is (true, var entity))
+         LazyMaybe<T> _entity = nil;
+         while (_entity.ValueOf(Next(), true) is (true, var entity))
          {
             yield return entity;
          }

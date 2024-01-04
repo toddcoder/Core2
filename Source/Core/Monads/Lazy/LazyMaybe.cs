@@ -11,8 +11,10 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>> where T : notnull
       return maybe._value;
    }
 
+   [Obsolete("Use constructor")]
    public static implicit operator LazyMaybe<T>(Func<Maybe<T>> func) => new(func);
 
+   [Obsolete("Use constructor")]
    public static implicit operator LazyMaybe<T>(Func<T> func) => new(func);
 
    public static implicit operator LazyMaybe<T>(Nil _) => new();
@@ -35,7 +37,7 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>> where T : notnull
    protected Maybe<T> _value;
    protected bool ensured;
 
-   internal LazyMaybe(Func<Maybe<T>> func)
+   public LazyMaybe(Func<Maybe<T>> func)
    {
       this.func = func;
 
@@ -43,7 +45,7 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>> where T : notnull
       ensured = false;
    }
 
-   internal LazyMaybe(Func<T> func)
+   public LazyMaybe(Func<T> func)
    {
       this.func = () => func();
 
@@ -59,18 +61,18 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>> where T : notnull
    {
    }
 
-   public void Activate()
+   public void Activate(bool repeating = false)
    {
-      if (Repeating || !_value)
+      if (repeating || !_value)
       {
          _value = func();
          ensured = _value;
       }
    }
 
-   public void Activate(Func<Maybe<T>> func)
+   public void Activate(Func<Maybe<T>> func, bool repeating = false)
    {
-      if (Repeating)
+      if (repeating)
       {
          Activate(func());
       }
@@ -80,18 +82,18 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>> where T : notnull
       }
    }
 
-   public void Activate(Maybe<T> value)
+   public void Activate(Maybe<T> value, bool repeating = false)
    {
-      if (Repeating || !_value)
+      if (repeating || !_value)
       {
          _value = value;
          ensured = _value;
       }
    }
 
-   public LazyMaybe<T> ValueOf(Func<Maybe<T>> func)
+   public LazyMaybe<T> ValueOf(Func<Maybe<T>> func, bool repeating = false)
    {
-      if (Repeating)
+      if (repeating)
       {
          return ValueOf(func());
       }
@@ -102,9 +104,9 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>> where T : notnull
       }
    }
 
-   public LazyMaybe<T> ValueOf(Maybe<T> value)
+   public LazyMaybe<T> ValueOf(Maybe<T> value, bool repeating = false)
    {
-      if (Repeating || !ensured)
+      if (repeating || !ensured)
       {
          _value = value;
          ensured = true;
@@ -144,8 +146,6 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>> where T : notnull
          return _next.ValueOf(() => nil);
       }
    }
-
-   public bool Repeating { get; set; }
 
    protected void ensureValue()
    {

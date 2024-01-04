@@ -11,7 +11,11 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>> where T : notn
       return result._value;
    }
 
+   [Obsolete("Use constructor")]
    public static implicit operator LazyResult<T>(Func<Result<T>> func) => new(func);
+
+   [Obsolete("Use constructor")]
+   public static implicit operator LazyResult<T>(Func<T> func) => new(func);
 
    public static implicit operator LazyResult<T>(Nil _) => new();
 
@@ -37,11 +41,19 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>> where T : notn
    protected Result<T> _value;
    protected bool ensured;
 
-   internal LazyResult(Func<Result<T>> func)
+   public LazyResult(Func<Result<T>> func)
    {
       this.func = func;
 
-      _value = fail("Uninitialized");
+      _value = nil;
+      ensured = false;
+   }
+
+   public LazyResult(Func<T> func)
+   {
+      this.func = () => func();
+
+      _value = nil;
       ensured = false;
    }
 
@@ -51,23 +63,23 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>> where T : notn
 
    internal LazyResult()
    {
-      func = () => fail("Uninitialized");
+      func = () => nil;
       _value = func();
       ensured = false;
    }
 
-   public void Activate()
+   public void Activate(bool repeating = false)
    {
-      if (Repeating || !ensured)
+      if (repeating || !ensured)
       {
          _value = func();
          ensured = _value;
       }
    }
 
-   public void Activate(Func<Result<T>> func)
+   public void Activate(Func<Result<T>> func, bool repeating = false)
    {
-      if (Repeating)
+      if (repeating)
       {
          Activate(func());
       }
@@ -77,18 +89,18 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>> where T : notn
       }
    }
 
-   public void Activate(Result<T> value)
+   public void Activate(Result<T> value, bool repeating = false)
    {
-      if (Repeating || !ensured)
+      if (repeating || !ensured)
       {
          _value = value;
          ensured = _value;
       }
    }
 
-   public LazyResult<T> ValueOf(Func<Result<T>> func)
+   public LazyResult<T> ValueOf(Func<Result<T>> func, bool repeating = false)
    {
-      if (Repeating)
+      if (repeating)
       {
          return ValueOf(func());
       }
@@ -99,9 +111,9 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>> where T : notn
       }
    }
 
-   public LazyResult<T> ValueOf(Result<T> value)
+   public LazyResult<T> ValueOf(Result<T> value, bool repeating = false)
    {
-      if (Repeating || !ensured)
+      if (repeating || !ensured)
       {
          _value = value;
          ensured = true;
@@ -141,8 +153,6 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>> where T : notn
          return _next.ValueOf(() => _value.Exception);
       }
    }
-
-   public bool Repeating { get; set; }
 
    protected void ensureValue()
    {

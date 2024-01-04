@@ -100,7 +100,7 @@ public class ConfigurationTests
       var resources = new Resources<ConfigurationTests>();
       var source = resources.String("TestData.connections.txt");
 
-      LazyResult<Setting> _setting = (Func<Result<Setting>>)(() => Setting.FromString(source));
+      var _setting = new LazyResult<Setting>(() => Setting.FromString(source));
       var _serverDatabase = _setting.Then(setting => getServerDatabase(setting).Result("Failed"));
 
       if (_serverDatabase is (true, var (server, database)))
@@ -116,7 +116,7 @@ public class ConfigurationTests
       var resources = new Resources<ConfigurationTests>();
       var source = resources.String("TestData.connections2.txt");
 
-      LazyResult<Setting> _setting = (Func<Result<Setting>>)(() => Setting.FromString(source));
+      var _setting = new LazyResult<Setting>(() => Setting.FromString(source));
       var _serverDatabase = _setting.Then(setting => getServerDatabase(setting).Result("Failed"));
 
       if (_serverDatabase is (true, var (server, database)))

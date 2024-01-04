@@ -1,7 +1,8 @@
 ﻿using Core.Computers;
 using Core.Computers.Synchronization;
+using Core.Monads.Lazy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Monads.Lazy.LazyRepeatingMonads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests;
 
@@ -117,8 +118,8 @@ public class FileNameTests
          }
 
          using var reader = file.Reader();
-         var _line = lazyRepeating.optional<string>();
-         while (_line.ValueOf(reader.ReadLine()) is (true, var line))
+         LazyOptional<string> _line = nil;
+         while (_line.ValueOf(reader.ReadLine(), true) is (true, var line))
          {
             Console.WriteLine(line);
          }

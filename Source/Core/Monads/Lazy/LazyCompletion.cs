@@ -11,7 +11,11 @@ public class LazyCompletion<T> : Completion<T> where T : notnull
       return completion._value;
    }
 
+   [Obsolete("Use constructor")]
    public static implicit operator LazyCompletion<T>(Func<Completion<T>> func) => new(func);
+
+   [Obsolete("Use constructor")]
+   public static implicit operator LazyCompletion<T>(Func<T> func) => new(func);
 
    public static implicit operator LazyCompletion<T>(Nil _) => new();
 
@@ -37,9 +41,17 @@ public class LazyCompletion<T> : Completion<T> where T : notnull
    protected Completion<T> _value;
    protected bool ensured;
 
-   internal LazyCompletion(Func<Completion<T>> func)
+   public LazyCompletion(Func<Completion<T>> func)
    {
       this.func = func;
+
+      _value = nil;
+      ensured = false;
+   }
+
+   public LazyCompletion(Func<T> func)
+   {
+      this.func = () => func();
 
       _value = nil;
       ensured = false;
@@ -53,18 +65,18 @@ public class LazyCompletion<T> : Completion<T> where T : notnull
    {
    }
 
-   public void Activate()
+   public void Activate(bool repeating = false)
    {
-      if (Repeating || !ensured)
+      if (repeating || !ensured)
       {
          _value = func();
          ensured = _value;
       }
    }
 
-   public void Activate(Func<Completion<T>> func)
+   public void Activate(Func<Completion<T>> func, bool repeating = false)
    {
-      if (Repeating)
+      if (repeating)
       {
          Activate(func());
       }
@@ -74,18 +86,18 @@ public class LazyCompletion<T> : Completion<T> where T : notnull
       }
    }
 
-   public void Activate(Completion<T> value)
+   public void Activate(Completion<T> value, bool repeating = false)
    {
-      if (Repeating || !ensured)
+      if (repeating || !ensured)
       {
          _value = value;
          ensured = _value;
       }
    }
 
-   public LazyCompletion<T> ValueOf(Func<Completion<T>> func)
+   public LazyCompletion<T> ValueOf(Func<Completion<T>> func, bool repeating = false)
    {
-      if (Repeating)
+      if (repeating)
       {
          return ValueOf(func());
       }
@@ -96,9 +108,9 @@ public class LazyCompletion<T> : Completion<T> where T : notnull
       }
    }
 
-   public LazyCompletion<T> ValueOf(Completion<T> value)
+   public LazyCompletion<T> ValueOf(Completion<T> value, bool repeating = false)
    {
-      if (Repeating || !ensured)
+      if (repeating || !ensured)
       {
          _value = value;
          ensured = false;
@@ -146,8 +158,6 @@ public class LazyCompletion<T> : Completion<T> where T : notnull
          return _next.ValueOf(() => nil);
       }
    }
-
-   public bool Repeating { get; set; }
 
    protected void ensureValue()
    {

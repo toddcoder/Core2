@@ -366,7 +366,7 @@ public static class HashExtensions
       Hash<TKey, TValue> result = [];
       foreach (var item in enumerable)
       {
-         LazyResult<TValue> _value = (Func<Result<TValue>>)(() => valueSelector(item));
+         var _value = new LazyResult<TValue>(() => valueSelector(item));
          var _key = _value.Then(_ => keySelector(item));
          if (_key)
          {
@@ -387,7 +387,7 @@ public static class HashExtensions
       StringHash<TValue> result = [];
       foreach (var item in enumerable)
       {
-         LazyResult<TValue> _value = (Func<Result<TValue>>)(() => valueSelector(item));
+         var _value = new LazyResult<TValue>(() => valueSelector(item));
          var _key = _value.Then(_ => keySelector(item));
          if (_key)
          {
@@ -408,7 +408,7 @@ public static class HashExtensions
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
       {
-         LazyResult<TValue> _value = (Func<Result<TValue>>)(() => valueSelector(item));
+         var _value = new LazyResult<TValue>(() => valueSelector(item));
          var _key = _value.Then(_ => keySelector(item));
          if (_key)
          {

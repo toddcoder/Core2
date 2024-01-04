@@ -1,9 +1,10 @@
 ﻿using System.Text;
 using Core.Collections;
 using Core.Matching;
+using Core.Monads.Lazy;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Monads.Lazy.LazyRepeatingMonads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests;
 
@@ -125,8 +126,8 @@ public class StringClassTests
    {
       var text = "alpha\rbravo\rcharlie\n\ndelta\r\necho";
       var source = new Source(text);
-      var _line = lazyRepeating.maybe<string>();
-      while (_line.ValueOf(source.NextLine))
+      LazyMaybe<string> _line = nil;
+      while (_line.ValueOf(source.NextLine, true))
       {
          Console.WriteLine($"'{_line}'");
       }
@@ -145,22 +146,22 @@ public class StringClassTests
       var text = ":alpha\n:bravo\n-charlie\n-delta\n-echo\nfoxtrot";
       var source = new Source(text);
 
-      var _line = lazyRepeating.maybe<string>();
-      while (_line.ValueOf(source.NextLine("^ ':'")))
+      LazyMaybe<string> _line = nil;
+      while (_line.ValueOf(source.NextLine("^ ':'"), true))
       {
          Console.WriteLine($": -> '{_line}'");
       }
 
       Console.WriteLine("========");
 
-      while (_line.ValueOf(source.NextLine("^ '-'")))
+      while (_line.ValueOf(source.NextLine("^ '-'"), true))
       {
          Console.WriteLine($"- -> '{_line}'");
       }
 
       Console.WriteLine("========");
 
-      while (_line.ValueOf(source.NextLine))
+      while (_line.ValueOf(source.NextLine, true))
       {
          Console.WriteLine($"  -> '{_line}'");
       }
@@ -247,18 +248,18 @@ public class StringClassTests
          .Alias("yy1", "yValue", "Y!")
          .Alias("yy2", "extra", "Extra!")
          .Alias("zx", "xValue", "X!");
-      var _result = lazyRepeating.maybe<string>();
-      if (_result.ValueOf(variants.TemplateName("x").Evaluate("xx")) is (true, var result1))
+      LazyMaybe<string> _result = nil;
+      if (_result.ValueOf(variants.TemplateName("x").Evaluate("xx"), true) is (true, var result1))
       {
          Console.WriteLine(result1);
       }
 
-      if (_result.ValueOf(variants.TemplateName("y").Evaluate("yy1", "yy2")) is (true, var result2))
+      if (_result.ValueOf(variants.TemplateName("y").Evaluate("yy1", "yy2"), true) is (true, var result2))
       {
          Console.WriteLine(result2);
       }
 
-      if (_result.ValueOf(variants.TemplateName("z").Evaluate("zx")) is (true, var result3))
+      if (_result.ValueOf(variants.TemplateName("z").Evaluate("zx"), true) is (true, var result3))
       {
          Console.WriteLine(result3);
       }
