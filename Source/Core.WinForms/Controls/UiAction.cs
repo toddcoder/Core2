@@ -3240,7 +3240,7 @@ public class UiAction : UserControl, ISubTextHost
       }
    }
 
-   public void GooseWorking()
+   public void Pulse()
    {
       workingAlpha = 255;
       Refresh();

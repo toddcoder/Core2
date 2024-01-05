@@ -487,7 +487,7 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      uiAction.GooseWorking();
+      uiAction.Pulse();
       /*var _selection = textBox.WordAtSelection();
       if (_selection is (true, var (start, length)))
       {
