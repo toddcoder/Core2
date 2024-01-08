@@ -1321,7 +1321,7 @@ public static class StringExtensions
       }
    }
 
-   public static string ToNonNullString(this object value) => value.ToString() ?? "";
+   public static string ToNonNullString(this object? value) => value?.ToString() ?? "";
 
    public static Maybe<string> ToMaybeString(this object? value)
    {
