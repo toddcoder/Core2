@@ -100,6 +100,8 @@ public class SubTextSet
 
    public SubTextSet Exclude(bool excludeFloor = true, bool excludeCeiling = true) => IncludeFloor(!excludeFloor).IncludeCeiling(!excludeCeiling);
 
+   public SubTextSet MiniInverted() => FontSize(8).Invert();
+
    public SubTextSet SquareFirstCharacter(bool squareFirstCharacter = true)
    {
       subText.SquareFirstCharacter = squareFirstCharacter;
