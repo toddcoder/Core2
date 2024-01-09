@@ -3240,6 +3240,16 @@ public class UiAction : UserControl, ISubTextHost
       }
    }
 
+   public void ResetLocks()
+   {
+      foreach (var subText in subTexts.Values)
+      {
+         subText.ResetLock();
+      }
+
+      Refresh();
+   }
+
    public void Pulse()
    {
       workingAlpha = 255;

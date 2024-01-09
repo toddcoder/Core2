@@ -19,7 +19,8 @@ public partial class Form1 : Form, IMessageQueueListener
    protected UiAction uiButton = null!;
    protected UiAction uiTest = null!;
    protected EnumerableCycle<CardinalAlignment> messageAlignments = null!;
-   protected Maybe<SubText> _subText = nil;
+   protected Maybe<SubText> _subText1 = nil;
+   protected Maybe<SubText> _subText2 = nil;
    protected string test;
    protected ExTextBox textBox;
    protected StringSet set = null!;
@@ -338,7 +339,7 @@ public partial class Form1 : Form, IMessageQueueListener
          CardinalAlignment.Center, CardinalAlignment.West, CardinalAlignment.East, CardinalAlignment.North, CardinalAlignment.South,
          CardinalAlignment.NorthWest, CardinalAlignment.NorthEast, CardinalAlignment.SouthWest, CardinalAlignment.SouthEast
       ]);
-      _subText = nil;
+      _subText1 = nil;
       test = "";
 
       textBox = new ExTextBox(this);
@@ -460,41 +461,27 @@ public partial class Form1 : Form, IMessageQueueListener
 
    protected void button1_Click(object sender, EventArgs e)
    {
-      uiAction.Working = "Goose me!";
-      /*isRunning = true;
-      var subText = uiAction.SubText("0 lines").Set.FontSize(8).Invert().Alignment(CardinalAlignment.SouthEast).SubText;
-      var lines = 0;
-
-      var random = new Random();
-      uiAction.Maximum = 100;
-      uiAction.ShowToGo = true;
-      foreach (var i in ..100)
-      {
-         if (!isRunning)
-         {
-            uiAction.Failure("Stopped");
-            break;
-         }
-
-         lines++;
-         subText.Text = lines.Plural("line(s)");
-         uiAction.Busy((string)i.ToWords());
-         var milliseconds = random.Next(100, 500);
-         Thread.Sleep(milliseconds);
-         Application.DoEvents();
-      }*/
+      uiAction.Checked = true;
+      var legend = uiAction.Legend("legend");
+      var subText1 = uiAction.SubText("subText1").Set.FontName("Consolas").FontSize(8).Exclude().Invert().RightOf(legend).SubText;
+      _subText1 = subText1;
+      _subText2 = uiAction.SubText("subText2").Set.FontName("Consolas").FontSize(8).Exclude().Invert().RightOf(subText1).SubText;
+      uiAction.Refresh();
    }
 
    protected void button2_Click(object sender, EventArgs e)
    {
-      uiAction.Pulse();
-      /*var _selection = textBox.WordAtSelection();
-      if (_selection is (true, var (start, length)))
+      if (_subText1 is (true, var subText1))
       {
-         //textBox.Select(start, length);
-         textBox.HideSelection = false;
-         textBox.Selection = (start, length);
-      }*/
+         subText1.Text = "Now is the time for all good men";
+         /*if (_subText2 is (true, var subText2))
+         {
+            subText2.ResetLock();
+         }*/
+      }
+
+      uiAction.ResetLocks();
+      uiAction.Refresh();
    }
 
    protected void button3_Click(object sender, EventArgs e)

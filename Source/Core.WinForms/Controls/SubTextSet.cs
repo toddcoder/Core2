@@ -98,6 +98,8 @@ public class SubTextSet
       return this;
    }
 
+   public SubTextSet Exclude(bool excludeFloor = true, bool excludeCeiling = true) => IncludeFloor(!excludeFloor).IncludeCeiling(!excludeCeiling);
+
    public SubTextSet SquareFirstCharacter(bool squareFirstCharacter = true)
    {
       subText.SquareFirstCharacter = squareFirstCharacter;
@@ -228,7 +230,6 @@ public class SubTextSet
          return IncludeFloor(false).IncludeCeiling(false).Alignment(alignment);
       }
    }
-
 
    [Obsolete("Use SubText or ClickableSubText")]
    public SubText End => subText;
