@@ -102,6 +102,8 @@ public class SubTextSet
 
    public SubTextSet MiniInverted() => FontSize(8).Invert().Exclude();
 
+   public SubTextSet MiniInverted(CardinalAlignment alignment) => MiniInverted().Alignment(alignment);
+
    public SubTextSet SquareFirstCharacter(bool squareFirstCharacter = true)
    {
       subText.SquareFirstCharacter = squareFirstCharacter;
