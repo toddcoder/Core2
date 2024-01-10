@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Collections;
 using Core.Computers;
 
 namespace Core.Configurations;
@@ -41,4 +42,10 @@ public class ConfigurationRequired
    public TimeSpan TimeSpan(string key) => configurationItem.Result.TimeSpan(key);
 
    public string[] Strings(string key) => configurationItem.Result.Strings(key);
+
+   public string[] Array(string key) => configurationItem.Result.Array(key);
+
+   public string[] Keys(string key) => configurationItem.Result.Keys(key);
+
+   public StringHash Hash(string key) => configurationItem.Result.Hash(key);
 }

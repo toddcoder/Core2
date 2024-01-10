@@ -2,6 +2,7 @@
 using Core.Monads;
 using System;
 using System.Linq;
+using Core.Collections;
 using Core.Matching;
 using Core.Objects;
 using Core.Strings;
@@ -92,7 +93,9 @@ public class ConfigurationOptional
 
    public Optional<string[]> Strings(string key) => String(key).Map(s => s.Unjoin("/s* ',' /s*"));
 
-   public Optional<string[]> SettingTexts(string key) => Setting(key).Map(s => (string[])[.. s.Items().Select(i => i.text)]);
+   public Optional<string[]> Array(string key) => Setting(key).Map(s => (string[])[.. s.Items().Select(i => i.text)]);
 
-   public Optional<string[]> SettingKeys(string key) => Setting(key).Map(s => (string[])[.. s.Items().Select(i => i.key)]);
+   public Optional<string[]> Keys(string key) => Setting(key).Map(s => (string[])[.. s.Items().Select(i => i.key)]);
+
+   public Optional<StringHash> Hash(string key) => Setting(key).Map(s => s.Items().ToStringHash(i => i.key, i => i.text));
 }

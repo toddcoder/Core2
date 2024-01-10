@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Core.Collections;
 using Core.Computers;
 using Core.Matching;
 using Core.Objects;
@@ -46,7 +47,9 @@ public class ConfigurationValue
 
    public string[] Strings(string key) => String(key).Unjoin("/s* ',' /s*");
 
-   public string[] SettingTexts(string key) => [.. Setting(key).Items().Select(i => i.text)];
+   public string[] Array(string key) => [.. Setting(key).Items().Select(i => i.text)];
 
-   public string[] SettingKeys(string key) => [.. Setting(key).Items().Select(i => i.key)];
+   public string[] Keys(string key) => [.. Setting(key).Items().Select(i => i.key)];
+
+   public StringHash Hash(string key) => Setting(key).Items().ToStringHash(i => i.key, i => i.text);
 }

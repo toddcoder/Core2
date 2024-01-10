@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Core.Collections;
 using Core.Computers;
 using Core.Matching;
 using Core.Monads;
@@ -92,7 +93,9 @@ public class ConfigurationMaybe
 
    public Maybe<string[]> Strings(string key) => String(key).Map(s => s.Unjoin("/s* ',' /s*"));
 
-   public Maybe<string[]> SettingTexts(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.text)]);
+   public Maybe<string[]> Array(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.text)]);
 
-   public Maybe<string[]> SettingKeys(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.key)]);
+   public Maybe<string[]> Keys(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.key)]);
+
+   public Maybe<StringHash> Hash(string key) => Setting(key).Map(s => s.Items().ToStringHash(i => i.key, i => i.text));
 }

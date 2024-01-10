@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Core.Collections;
 using Core.Computers;
 using Core.Matching;
 using Core.Monads;
@@ -106,7 +107,9 @@ public class ConfigurationResult
 
    public Result<string[]> Strings(string key) => String(key).Map(s => s.Unjoin("/s* ',' /s*"));
 
-   public Result<string[]> SettingTexts(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.text)]);
+   public Result<string[]> Array(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.text)]);
 
-   public Result<string[]> SettingKeys(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.key)]);
+   public Result<string[]> Keys(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.key)]);
+
+   public Result<StringHash> Hash(string key) => Setting(key).Map(s => s.Items().ToStringHash(i => i.key, i => i.text));
 }
