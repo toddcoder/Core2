@@ -10,7 +10,7 @@ public class SettingSetter(Setting setting, string key)
 {
    public Setting Setting
    {
-      set => setting.SetItem(key, value);
+      set => setting.SetItem(key, value.Clone(key));
    }
 
    protected void setItem(string value) => setting.SetItem(key, new Item(key, value));

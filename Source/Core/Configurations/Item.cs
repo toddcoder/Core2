@@ -46,9 +46,15 @@ public class Item : ConfigurationItem, IConfigurationItemGetter
 
    public override int Count => 0;
 
+   public override Item Clone() => new(Key, Text) { IsArray = IsArray, IsHash = IsHash };
+
+   public override Item Clone(string key) => new(key, Text) { IsArray = IsArray, IsHash = IsHash };
+
    public string this[string key] => key == Key ? Text : string.Empty;
 
    public bool IsArray { get; set; }
+
+   public bool IsHash { get; set; }
 
    public int Indentation { get; set; }
 

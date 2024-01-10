@@ -7,7 +7,7 @@ public abstract class ConfigurationItem
    public abstract string Key { get; }
 
    public abstract void SetItem(string key, ConfigurationItem item);
-   
+
    public abstract void RemoveItem(string key);
 
    public abstract IEnumerable<(string key, string text)> Items();
@@ -25,4 +25,8 @@ public abstract class ConfigurationItem
    public ConfigurationValue Value => new((IConfigurationItemGetter)this);
 
    public ConfigurationRequired Required => new(this);
+
+   public abstract ConfigurationItem Clone();
+
+   public abstract ConfigurationItem Clone(string key);
 }

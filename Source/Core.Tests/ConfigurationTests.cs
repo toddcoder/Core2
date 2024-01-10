@@ -619,4 +619,18 @@ public class ConfigurationTests
 
       Console.Write(setting.ToString());
    }
+
+   [TestMethod]
+   public void Array2Test()
+   {
+      var setting = new Setting();
+      setting.Set("array").Setting = new Setting { Array = ["alpha", "bravo", "charlie"] };
+
+      var serializer = new Serializer(setting);
+      var _json = serializer.Serialize();
+      if (_json is (true, var json))
+      {
+         Console.WriteLine(json);
+      }
+   }
 }

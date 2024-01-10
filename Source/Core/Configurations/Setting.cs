@@ -67,6 +67,8 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
    public bool IsArray { get; set; }
 
+   public bool IsHash { get; set; }
+
    public SettingSetter Set(string key) => new(this, key);
 
    Maybe<Setting> IConfigurationItemGetter.GetSetting(string key)
@@ -187,7 +189,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
    protected static object makeArray(Type elementType, string[] sourceArray)
    {
       var length = sourceArray.Length;
-      var newArray = Array.CreateInstance(elementType, length);
+      var newArray = System.Array.CreateInstance(elementType, length);
       for (var i = 0; i < length; i++)
       {
          var item = sourceArray[i];
@@ -209,7 +211,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       }
 
       var length = settings.Length;
-      var newArray = Array.CreateInstance(elementType, length);
+      var newArray = System.Array.CreateInstance(elementType, length);
       for (var i = 0; i < length; i++)
       {
          var setting = settings[i];
@@ -588,5 +590,55 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       {
          this[$"${index++}"] = item;
       }
+   }
+
+   public string[] Array
+   {
+      set
+      {
+         foreach (var (index, item) in value.IndexedEnumerable())
+         {
+            this[$"${index}"] = item;
+         }
+
+         IsArray = true;
+         IsHash = false;
+      }
+   }
+
+   public StringHash Hash
+   {
+      set
+      {
+         foreach (var (key, item) in value)
+         {
+            this[key] = item;
+         }
+
+         IsHash = true;
+         IsArray = false;
+      }
+   }
+
+   public override Setting Clone()
+   {
+      var clone = new Setting(Key) { IsArray = IsArray, IsHash = IsHash };
+      foreach (var (key, item) in items)
+      {
+         clone.SetItem(key, item.Clone());
+      }
+
+      return clone;
+   }
+
+   public override Setting Clone(string key)
+   {
+      var clone = new Setting(key) { IsArray = IsArray, IsHash = IsHash };
+      foreach (var (itemKey, item) in items)
+      {
+         clone.SetItem(itemKey, item.Clone());
+      }
+
+      return clone;
    }
 }
