@@ -14,7 +14,6 @@ using Core.Strings;
 using Core.WinForms.ControlWrappers;
 using Core.WinForms.Drawing;
 using static Core.Lambdas.LambdaFunctions;
-using static Core.Monads.Lazy.LazyMonads;
 using static Core.Monads.MonadFunctions;
 using Timer = System.Windows.Forms.Timer;
 
@@ -2197,6 +2196,14 @@ public class UiAction : UserControl, ISubTextHost
    }
 
    public void RemoveSubText(SubText subText) => RemoveSubText(subText.Id);
+
+   public void RemoveSubText(Maybe<SubText> _subText)
+   {
+      if (_subText is (true, var subText))
+      {
+         RemoveSubText(subText);
+      }
+   }
 
    public void ClearSubTexts()
    {

@@ -4,7 +4,6 @@ using Core.Monads;
 using Core.Numbers;
 using Core.WinForms.Drawing;
 using static Core.Monads.MonadFunctions;
-using static Core.Monads.Monads;
 
 namespace Core.WinForms.Controls;
 

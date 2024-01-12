@@ -1,13 +1,10 @@
 ﻿using Core.Applications.Messaging;
 using Core.Collections;
 using Core.Enumerables;
-using Core.Matching;
 using Core.Monads;
-using Core.Numbers;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
-using static Core.Lambdas.LambdaFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.WinForms.Documents.MenuBuilderFunctions;
 
