@@ -11,6 +11,7 @@ using Core.Monads;
 using Core.Monads.Lazy;
 using Core.Numbers;
 using Core.Strings;
+using Core.Strings.Emojis;
 using Core.WinForms.ControlWrappers;
 using Core.WinForms.Drawing;
 using static Core.Lambdas.LambdaFunctions;
@@ -168,6 +169,7 @@ public class UiAction : UserControl, ISubTextHost
    protected Maybe<SymbolWriter> _symbolWriter;
    protected Maybe<AlternateWriter> _alternateWriter;
    protected bool showToGo;
+   protected Maybe<string> _title;
 
    public event EventHandler<AutomaticMessageArgs>? AutomaticMessage;
    public event EventHandler<PaintEventArgs>? Painting;
@@ -467,7 +469,7 @@ public class UiAction : UserControl, ISubTextHost
       _keyMatch = nil;
       _symbolWriter = nil;
       _alternateWriter = nil;
-      Title = nil;
+      _title = nil;
    }
 
    public bool AutoSizeText { get; set; }
@@ -592,7 +594,11 @@ public class UiAction : UserControl, ISubTextHost
       }
    }
 
-   public Maybe<string> Title { get; set; }
+   public Maybe<string> Title
+   {
+      get => _title;
+      set => _title = value.Map(t => t.EmojiSubstitutions());
+   }
 
    protected void setToolTip()
    {
@@ -1526,7 +1532,7 @@ public class UiAction : UserControl, ISubTextHost
 
    protected void drawTitle(Graphics g, Rectangle clientRectangle)
    {
-      if (Title is (true, var title))
+      if (_title is (true, var title))
       {
          var rectangle = AutoSizingWriter.NarrowRectangle(clientRectangle, _floor, _ceiling);
          var font = new Font(Font.FontFamily, 8, Font.Style);
