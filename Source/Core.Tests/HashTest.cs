@@ -68,4 +68,19 @@ public class HashTest
       Hash<char, int> hash = [.. kv(('a', 0), ('b', 1))];
       Console.Write(hash['a']);
    }
+
+   [TestMethod]
+   public void OneShotHashTest()
+   {
+      //OneShotHash<char, int> hash = [.. kv(('a', 0), ('b', 1), ('a', 1))];
+      OneShotHash<char, int> hash = [];
+      hash['a'] = 0;
+      hash['b'] = 1;
+      hash['a'] = 1;
+
+      foreach (var (key, value) in hash)
+      {
+         Console.WriteLine($"{key}: {value}");
+      }
+   }
 }
