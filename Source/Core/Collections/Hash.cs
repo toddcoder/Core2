@@ -7,7 +7,6 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
 
-//[System.Runtime.CompilerServices]
 public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    protected ReaderWriterLockSlim locker;
