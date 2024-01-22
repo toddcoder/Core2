@@ -20,7 +20,7 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace Core.WinForms.Controls;
 
-public class UiAction : UserControl, ISubTextHost
+public class UiAction : UserControl, ISubTextHost, IButtonControl
 {
    protected const float START_AMOUNT = .9f;
    protected const string CLICK_TO_CANCEL = "🖰 ⇒ 🛑";
@@ -170,6 +170,7 @@ public class UiAction : UserControl, ISubTextHost
    protected Maybe<AlternateWriter> _alternateWriter;
    protected bool showToGo;
    protected Maybe<string> _title;
+   protected UiActionButtonType buttonType;
 
    public event EventHandler<AutomaticMessageArgs>? AutomaticMessage;
    public event EventHandler<PaintEventArgs>? Painting;
@@ -470,6 +471,7 @@ public class UiAction : UserControl, ISubTextHost
       _symbolWriter = nil;
       _alternateWriter = nil;
       _title = nil;
+      buttonType = UiActionButtonType.Normal;
    }
 
    public bool AutoSizeText { get; set; }
@@ -1344,7 +1346,7 @@ public class UiAction : UserControl, ISubTextHost
          }
       }
 
-      var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, ButtonType)
+      var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, buttonType)
       {
          Rectangle = clientRectangle,
          Font = getFont(),
@@ -1940,6 +1942,18 @@ public class UiAction : UserControl, ISubTextHost
       Refresh();
    }
 
+   public void DefaultButton(string text)
+   {
+      ButtonType = UiActionButtonType.Default;
+      Button(text);
+   }
+
+   public void CancelButton(string text)
+   {
+      ButtonType = UiActionButtonType.Cancel;
+      Button(text);
+   }
+
    public void StartAutomatic()
    {
       Text = "";
@@ -2300,7 +2314,11 @@ public class UiAction : UserControl, ISubTextHost
       oneTimeTimer = false;
    }
 
+   public void NotifyDefault(bool value) => ButtonType = value ? UiActionButtonType.Default : UiActionButtonType.Cancel;
+
    public void PerformClick() => OnClick(EventArgs.Empty);
+
+   public DialogResult DialogResult { get; set; }
 
    public bool TimerEnabled => timer.Enabled;
 
@@ -3031,16 +3049,15 @@ public class UiAction : UserControl, ISubTextHost
       Symbol(symbol, foreColor, backColor);
    }
 
-   public UiActionButtonType ButtonType { get; set; }
-
-   /*public Func<UiAction, string> DynamicToolTip
+   public UiActionButtonType ButtonType
    {
+      get => buttonType;
       set
       {
-         _dynamicToolTip = value;
-         setToolTip();
+         buttonType = value;
+         Refresh();
       }
-   }*/
+   }
 
    public void Alternate(params string[] alternates) => createAlternate(alternates);
 

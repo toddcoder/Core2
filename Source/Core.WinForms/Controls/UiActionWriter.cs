@@ -192,7 +192,8 @@ public class UiActionWriter
          {
             var upper = rectangle.Reposition(1, 1).Location;
             var lower = upper with { Y = rectangle.Bottom - 1 };
-            using var pen = new Pen(foreColor, 2);
+            using var pen = new Pen(foreColor, 4);
+            pen.DashStyle = DashStyle.Dash;
             g.DrawLine(pen, upper, lower);
             break;
          }
@@ -200,7 +201,7 @@ public class UiActionWriter
          {
             var upper = rectangle.Reposition(1, 1).Location;
             var lower = upper with { Y = rectangle.Bottom - 1 };
-            using var pen = new Pen(Color.FromArgb(128, foreColor), 2);
+            using var pen = new Pen(Color.FromArgb(128, foreColor), 4);
             pen.DashStyle = DashStyle.Dot;
             g.DrawLine(pen, upper, lower);
             break;
