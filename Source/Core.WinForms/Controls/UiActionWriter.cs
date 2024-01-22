@@ -13,6 +13,8 @@ namespace Core.WinForms.Controls;
 public class UiActionWriter
 {
    protected const string CHECK_MARK = "\u2713";
+   protected const int REQUIRE_SIZE = 4;
+   protected const int REQUIRE_SIZE2 = 2 * REQUIRE_SIZE;
 
    public static TextFormatFlags GetFlags(bool center)
    {
@@ -146,6 +148,8 @@ public class UiActionWriter
       set => autoSizeText = value;
    }
 
+   public bool Required { get; set; }
+
    public Size TextSize(Graphics g, string text)
    {
       var font = _font | (() => new Font("Consolas", 12f));
@@ -226,6 +230,18 @@ public class UiActionWriter
       }
    }
 
+   protected void require(bool required, Graphics g, Color foreColor, string text)
+   {
+      if (required)
+      {
+         var textRectangle = TextRectangle(text, g);
+         var outerTextRectangle = textRectangle.Reposition(-REQUIRE_SIZE, -REQUIRE_SIZE).Resize(REQUIRE_SIZE2, REQUIRE_SIZE2);
+         var color = foreColor == Color.Coral ? Color.White : Color.Coral;
+         using var pen = new Pen(color, 4);
+         g.DrawRectangle(pen, outerTextRectangle);
+      }
+   }
+
    public Result<Unit> Write(Graphics g, string text)
    {
       var not = false;
@@ -265,12 +281,14 @@ public class UiActionWriter
                var writer = new AutoSizingWriter(text, rectangle, color, font, isPath);
                writer.Write(g);
                negate(not, g, rectangle, color);
+               require(Required, g, color, text);
             }
             else
             {
                drawButtonType(g, rectangle, color);
                TextRenderer.DrawText(g, text, font, rectangle, color, Flags);
                negate(not, g, rectangle, color);
+               require(Required, g, color, text);
             }
 
             if (checkStyle is not CheckStyle.None)

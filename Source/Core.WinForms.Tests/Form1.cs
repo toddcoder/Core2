@@ -15,11 +15,21 @@ public partial class Form1 : Form
       uiButton1.Click += (_, _) => uiButton1.Success("OK");
       uiButton1.ClickText = "OK";
 
-      var uiButton2 = new UiAction(this) { ButtonType = UiActionButtonType.Cancel };
+      var uiButton2 = new UiAction(this);
       uiButton2.CancelButton("button 2");
       uiButton2.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 1);
       CancelButton = uiButton2;
       uiButton2.Click += (_, _) => uiButton2.Success("Cancel");
       uiButton2.ClickText = "Cancel";
+
+      var uiButton3 = new UiAction(this) { AutoSizeText = true };
+      uiButton3.Button("emphasize");
+      uiButton3.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 2);
+      uiButton3.Click += (_, _) =>
+      {
+         uiButton3.Required = true;
+         uiButton3.Refresh();
+      };
+      uiButton3.ClickText = "Emphasize";
    }
 }

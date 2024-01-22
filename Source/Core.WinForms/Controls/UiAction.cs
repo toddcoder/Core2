@@ -1282,7 +1282,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             Font = Font,
             Color = Color.Black,
             EmptyTextTitle = EmptyTextTitle,
-            IsPath = IsPath
+            IsPath = IsPath,
+            Required = Required
          };
 
          var filledRectangle = disabledWriter.TextRectangle(text, e.Graphics, ClientRectangle);
@@ -1353,7 +1354,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          Color = getForeColor(),
          CheckStyle = checkStyle,
          EmptyTextTitle = EmptyTextTitle,
-         IsPath = IsPath
+         IsPath = IsPath,
+         Required = Required
       });
       var httpWriter = new Lazy<HttpWriter>(() => new HttpWriter(text, clientRectangle, getFont()));
 
@@ -3285,4 +3287,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       workingAlpha = 255;
       Refresh();
    }
+   
+   public bool Required { get; set; }
 }
