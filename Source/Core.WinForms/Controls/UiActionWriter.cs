@@ -188,28 +188,17 @@ public class UiActionWriter
 
    public Rectangle TextRectangle(string text, Graphics graphics) => TextRectangle(text, graphics, nil);
 
-   protected void drawButtonType(Graphics g, Rectangle rectangle, Color foreColor)
+   protected void drawButtonType(Graphics g, Lazy<Rectangle> textRectangle, Color foreColor)
    {
-      switch (buttonType)
+      if (buttonType is not UiActionButtonType.Normal)
       {
-         case UiActionButtonType.Default:
+         using var pen = new Pen(foreColor, 2);
+         if (buttonType is UiActionButtonType.Cancel)
          {
-            var upper = rectangle.Reposition(1, 1).Location;
-            var lower = upper with { Y = rectangle.Bottom - 1 };
-            using var pen = new Pen(foreColor, 4);
-            pen.DashStyle = DashStyle.Dash;
-            g.DrawLine(pen, upper, lower);
-            break;
-         }
-         case UiActionButtonType.Cancel:
-         {
-            var upper = rectangle.Reposition(1, 1).Location;
-            var lower = upper with { Y = rectangle.Bottom - 1 };
-            using var pen = new Pen(Color.FromArgb(128, foreColor), 4);
             pen.DashStyle = DashStyle.Dot;
-            g.DrawLine(pen, upper, lower);
-            break;
          }
+
+         g.DrawRectangle(pen, textRectangle.Value);
       }
    }
 
@@ -230,12 +219,11 @@ public class UiActionWriter
       }
    }
 
-   protected void require(bool required, Graphics g, Color foreColor, string text)
+   protected void require(bool required, Graphics g, Color foreColor, Lazy<Rectangle> textRectangle)
    {
       if (required)
       {
-         var textRectangle = TextRectangle(text, g);
-         var outerTextRectangle = textRectangle.Reposition(-REQUIRE_SIZE, -REQUIRE_SIZE).Resize(REQUIRE_SIZE2, REQUIRE_SIZE2);
+         var outerTextRectangle = textRectangle.Value.Reposition(-REQUIRE_SIZE, -REQUIRE_SIZE).Resize(REQUIRE_SIZE2, REQUIRE_SIZE2);
          var color = foreColor == Color.Coral ? Color.White : Color.Coral;
          using var pen = new Pen(color, 4);
          g.DrawRectangle(pen, outerTextRectangle);
@@ -274,21 +262,23 @@ public class UiActionWriter
                font = new Font(font, FontStyle.Italic);
             }
 
+            var textRectangle = new Lazy<Rectangle>(() => TextRectangle(text, g));
+
             if (autoSizeText)
             {
                rectangle = AutoSizingWriter.NarrowRectangle(rectangle, _floor, _ceiling);
-               drawButtonType(g, rectangle, color);
+               drawButtonType(g, textRectangle, color);
                var writer = new AutoSizingWriter(text, rectangle, color, font, isPath);
                writer.Write(g);
                negate(not, g, rectangle, color);
-               require(Required, g, color, text);
+               require(Required, g, color, textRectangle);
             }
             else
             {
-               drawButtonType(g, rectangle, color);
+               drawButtonType(g, textRectangle, color);
                TextRenderer.DrawText(g, text, font, rectangle, color, Flags);
                negate(not, g, rectangle, color);
-               require(Required, g, color, text);
+               require(Required, g, color, textRectangle);
             }
 
             if (checkStyle is not CheckStyle.None)
