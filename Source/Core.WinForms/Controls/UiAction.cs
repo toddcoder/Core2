@@ -1347,7 +1347,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          }
       }
 
-      var writer = new Lazy<UiActionWriter>(() => new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, buttonType)
+      var writer = new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, buttonType)
       {
          Rectangle = clientRectangle,
          Font = getFont(),
@@ -1356,7 +1356,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          EmptyTextTitle = EmptyTextTitle,
          IsPath = IsPath,
          Required = Required
-      });
+      };
       var httpWriter = new Lazy<HttpWriter>(() => new HttpWriter(text, clientRectangle, getFont()));
 
       determineFloorAndCeiling();
@@ -1364,7 +1364,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       switch (type)
       {
          case UiActionType.ProgressIndefinite:
-            writer.Value.Write(e.Graphics, text);
+            writer.Write(e.Graphics, text);
             break;
          case UiActionType.Busy when FlipFlop:
          {
@@ -1388,19 +1388,19 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             break;
          case UiActionType.ProgressDefinite when _progressDefiniteProcessor is (true, var progressDefiniteProcessor):
          {
-            var autoSize = writer.Value.AutoSizeText;
-            writer.Value.AutoSizeText = false;
+            var autoSize = writer.AutoSizeText;
+            writer.AutoSizeText = false;
             var percentage = getPercentage();
             var percentText = $"{percentage}%";
-            writer.Value.Rectangle = progressDefiniteProcessor.PercentRectangle;
-            writer.Value.Center(true);
-            writer.Value.Color = Color.Black;
-            writer.Value.Write(e.Graphics, percentText);
+            writer.Rectangle = progressDefiniteProcessor.PercentRectangle;
+            writer.Center(true);
+            writer.Color = Color.Black;
+            writer.Write(e.Graphics, percentText);
 
-            writer.Value.Rectangle = progressDefiniteProcessor.TextRectangle;
-            writer.Value.Center(true);
-            writer.Value.Color = getForeColor();
-            writer.Value.Write(e.Graphics, text);
+            writer.Rectangle = progressDefiniteProcessor.TextRectangle;
+            writer.Center(true);
+            writer.Color = getForeColor();
+            writer.Write(e.Graphics, text);
 
             if (_progressSubText is (true, var progressSubText))
             {
@@ -1409,14 +1409,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
             progressDefiniteProcessor.OnPaint(e.Graphics, percentage, Color.Black, clientRectangle);
 
-            writer.Value.AutoSizeText = autoSize;
+            writer.AutoSizeText = autoSize;
 
             break;
          }
          case UiActionType.MuteProgress:
          {
             var percentText = $"{getPercentage()}%";
-            writer.Value.Write(e.Graphics, percentText);
+            writer.Write(e.Graphics, percentText);
 
             if (_progressSubText is (true, var progressSubText))
             {
@@ -1427,7 +1427,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          }
          case UiActionType.BusyText when _busyTextProcessor is (true, var busyTextProcessor):
          {
-            var allRectangle = writer.Value.TextRectangle(text, e.Graphics, clientRectangle);
+            var allRectangle = writer.TextRectangle(text, e.Graphics, clientRectangle);
             var allX = allRectangle.X;
             var allY = allRectangle.Y;
             var drawRectangle = busyTextProcessor.DrawRectangle;
@@ -1438,13 +1438,13 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
                allRectangle = busyTextProcessor.TextRectangle;
             }
 
-            writer.Value.Rectangle = allRectangle;
-            writer.Value.Center(true);
-            writer.Value.Write(e.Graphics, text);
+            writer.Rectangle = allRectangle;
+            writer.Center(true);
+            writer.Write(e.Graphics, text);
             break;
          }
          case UiActionType.ControlLabel:
-            writer.Value.Write(e.Graphics, text);
+            writer.Write(e.Graphics, text);
             break;
          case UiActionType.Http:
          {
@@ -1455,14 +1455,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             scroller.Value.OnPaint(e.Graphics);
             break;
          case UiActionType.Display:
-            writer.Value.Color = ForeColor;
-            writer.Value.Write(e.Graphics, text);
+            writer.Color = ForeColor;
+            writer.Write(e.Graphics, text);
             break;
          case UiActionType.Symbol when _symbolWriter is (true, var symbolWriter):
             symbolWriter.OnPaint(e.Graphics, clientRectangle, Enabled);
             break;
          case UiActionType.Button:
-            writer.Value.Write(e.Graphics, text);
+            writer.Write(e.Graphics, text);
             break;
          case UiActionType.Alternate when _alternateWriter is (true, var alternateWriter):
             alternateWriter.OnPaint(e.Graphics);
@@ -1474,7 +1474,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          {
             if (type != UiActionType.Tape)
             {
-               writer.Value.Write(e.Graphics, text);
+               writer.Write(e.Graphics, text);
             }
 
             break;
@@ -3287,6 +3287,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       workingAlpha = 255;
       Refresh();
    }
-   
+
    public bool Required { get; set; }
 }

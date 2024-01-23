@@ -27,7 +27,7 @@ public partial class Form1 : Form
       uiButton3.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 2);
       uiButton3.Click += (_, _) =>
       {
-         uiButton3.Required = true;
+         uiButton3.Required = !uiButton3.Required;
          uiButton3.Refresh();
       };
       uiButton3.ClickText = "Emphasize";
