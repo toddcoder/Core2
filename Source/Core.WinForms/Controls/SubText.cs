@@ -296,6 +296,14 @@ public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size s
       }
    }
 
+   public void LeftOf(Maybe<SubText> _rightSubText, int margin = 2)
+   {
+      if (_rightSubText is (true, var rightSubText))
+      {
+         LeftOf(rightSubText, margin);
+      }
+   }
+
    public void AdjustRightSubText()
    {
       if (_rightSubText is (true, var (rightSubText, subTextMargin)))
@@ -312,6 +320,14 @@ public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size s
       if (!_leftSubText)
       {
          _leftSubText = (leftSubText, margin);
+      }
+   }
+
+   public void RightOf(Maybe<SubText> _leftSubText, int margin = 2)
+   {
+      if (_leftSubText is (true, var leftSubText))
+      {
+         RightOf(leftSubText, margin);
       }
    }
 
