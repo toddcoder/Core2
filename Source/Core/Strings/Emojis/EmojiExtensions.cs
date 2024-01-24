@@ -18,8 +18,8 @@ public static class EmojiExtensions
       Emoji.Diamond => "♦",
       Emoji.DoubleLeft => "«",
       Emoji.DoubleRight => "»",
-      Emoji.Times => "×",
-      Emoji.Divide => "÷",
+      Emoji.Times => "✖",
+      Emoji.Divide => "➗",
       Emoji.PawsLeft => "„",
       Emoji.PawsRight => "“",
       Emoji.NotEqual => "≠",
@@ -41,6 +41,8 @@ public static class EmojiExtensions
       Emoji.Refresh => "🗘",
       Emoji.CheckBox => "☒",
       Emoji.UncheckBox => "☐",
+      Emoji.Plus => "➕",
+      Emoji.Minus => "➖",
       _ => ""
    };
 
@@ -62,8 +64,8 @@ public static class EmojiExtensions
                "diamond" => "♦",
                "double-left" or "2left" => "«",
                "double-right" or "2right" => "»",
-               "times" => "×",
-               "divide" => "÷",
+               "times" => "✖",
+               "divide" => "➗",
                "paws-left" => "„",
                "paws-right" => "“",
                "not-equal" => "≠",
@@ -85,6 +87,8 @@ public static class EmojiExtensions
                "refresh" => "🗘",
                "checkbox" => "☒",
                "uncheckbox" => "☐",
+               "plus" => "➕",
+               "minus" => "➖",
                _ => nil
             };
             if (_replacement is (true, var replacement))

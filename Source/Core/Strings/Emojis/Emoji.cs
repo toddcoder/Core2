@@ -34,5 +34,7 @@ public enum Emoji
    No,
    Refresh,
    CheckBox,
-   UncheckBox
+   UncheckBox,
+   Plus,
+   Minus
 }
