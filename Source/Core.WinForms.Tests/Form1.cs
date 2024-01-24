@@ -8,6 +8,10 @@ public partial class Form1 : Form
    {
       InitializeComponent();
 
+      var uiAction = new UiAction(this) { AutoSizeText = true };
+      uiAction.SetUpInTableLayoutPanel(tableLayoutPanel, 1, 0);
+      uiAction.NoStatus("not set");
+
       var uiButton1 = new UiAction(this);
       uiButton1.DefaultButton("button 1");
       uiButton1.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 0);
@@ -31,5 +35,18 @@ public partial class Form1 : Form
          uiButton3.Refresh();
       };
       uiButton3.ClickText = "Emphasize";
+
+      var uiButton4 = new UiAction(this);
+      uiButton4.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 3);
+      uiButton4.Button("Release On");
+      uiButton4.Click += (_, _) =>
+      {
+         uiAction.ClearAllLegends();
+         uiAction.Legend("release on");
+         uiAction.Success("01-January-2024");
+         uiAction.SubText(DateTime.Now.ToString("d")).Set.MiniInverted().RightOfLegend();
+         uiAction.Refresh();
+      };
+      uiButton4.ClickText = "Release on";
    }
 }

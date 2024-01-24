@@ -239,17 +239,17 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
                   busyTextProcessor.OnTick();
                   break;
                case UiActionType.Automatic:
-               {
-                  var args = new AutomaticMessageArgs();
-                  AutomaticMessage?.Invoke(this, args);
-                  var _automaticText = args.GetText();
-                  if (_automaticText)
                   {
-                     Text = _automaticText;
-                  }
+                     var args = new AutomaticMessageArgs();
+                     AutomaticMessage?.Invoke(this, args);
+                     var _automaticText = args.GetText();
+                     if (_automaticText)
+                     {
+                        Text = _automaticText;
+                     }
 
-                  break;
-               }
+                     break;
+                  }
                case UiActionType.Busy or UiActionType.ProgressIndefinite when _busyProcessor is (true, var busyProcessor):
                   busyProcessor.Advance();
                   break;
@@ -322,40 +322,40 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          switch (type)
          {
             case UiActionType.Alternate:
-            {
-               for (var i = 0; i < rectangles.Length; i++)
                {
-                  if (rectangles[i].Contains(location) && DisabledIndex != i)
+                  for (var i = 0; i < rectangles.Length; i++)
                   {
-                     ClickOnRectangle?.Invoke(this, new UiActionRectangleArgs(i, location));
-
-                     if (_alternateWriter is (true, var alternateWriter))
+                     if (rectangles[i].Contains(location) && DisabledIndex != i)
                      {
-                        alternateWriter.SelectedIndex = i;
-                        refresh();
-                        ClickOnAlternate?.Invoke(this, new UiActionAlternateArgs(i, location, alternateWriter.Alternate, true));
+                        ClickOnRectangle?.Invoke(this, new UiActionRectangleArgs(i, location));
 
-                        if (_alternateWriter is (true, DeletableWriter deletableWriter))
+                        if (_alternateWriter is (true, var alternateWriter))
                         {
-                           var deletableRectangle = deletableWriter.DeletableRectangles[i];
-                           if (deletableRectangle.Contains(location))
+                           alternateWriter.SelectedIndex = i;
+                           refresh();
+                           ClickOnAlternate?.Invoke(this, new UiActionAlternateArgs(i, location, alternateWriter.Alternate, true));
+
+                           if (_alternateWriter is (true, DeletableWriter deletableWriter))
                            {
-                              DeleteOnAlternate?.Invoke(this, new UiActionAlternateArgs(i, location, alternateWriter.Alternate, true));
+                              var deletableRectangle = deletableWriter.DeletableRectangles[i];
+                              if (deletableRectangle.Contains(location))
+                              {
+                                 DeleteOnAlternate?.Invoke(this, new UiActionAlternateArgs(i, location, alternateWriter.Alternate, true));
+                              }
                            }
                         }
+
+                        return;
                      }
-
-                     return;
                   }
-               }
 
-               break;
-            }
+                  break;
+               }
             case UiActionType.CheckBox when _alternateWriter is (true, CheckBoxWriter checkBoxWriter):
-            {
-               checkBoxWriter.BoxChecked = !checkBoxWriter.BoxChecked;
-               break;
-            }
+               {
+                  checkBoxWriter.BoxChecked = !checkBoxWriter.BoxChecked;
+                  break;
+               }
          }
       };
 
@@ -490,24 +490,24 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       switch (type)
       {
          case UiActionType.BusyText:
-         {
-            var clientRectangle = getClientRectangle();
-            _busyTextProcessor.Activate(() => new BusyTextProcessor(Color.White, clientRectangle));
-            break;
-         }
+            {
+               var clientRectangle = getClientRectangle();
+               _busyTextProcessor.Activate(() => new BusyTextProcessor(Color.White, clientRectangle));
+               break;
+            }
          case UiActionType.Busy:
-         {
-            var clientRectangle = getClientRectangle();
-            _busyProcessor.Activate(() => getBusyProcessor(clientRectangle));
-            break;
-         }
+            {
+               var clientRectangle = getClientRectangle();
+               _busyProcessor.Activate(() => getBusyProcessor(clientRectangle));
+               break;
+            }
          case UiActionType.ProgressDefinite:
-         {
-            var clientRectangle = getClientRectangle();
-            var _uiAction = maybe<UiAction>() & showToGo & this;
-            _progressDefiniteProcessor.Activate(() => new ProgressDefiniteProcessor(Font, graphics, clientRectangle, _uiAction));
-            break;
-         }
+            {
+               var clientRectangle = getClientRectangle();
+               var _uiAction = maybe<UiAction>() & showToGo & this;
+               _progressDefiniteProcessor.Activate(() => new ProgressDefiniteProcessor(Font, graphics, clientRectangle, _uiAction));
+               break;
+            }
       }
    }
 
@@ -680,93 +680,93 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          switch (type)
          {
             case UiActionType.Failure:
-            {
-               if (!toolTip.Action)
                {
-                  _oldTitle = toolTip.ToolTipTitle.NotEmpty();
-               }
-
-               toolTip.ToolTipTitle = "failure";
-               toolTip.Text = text;
-               toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
-               {
-                  toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.Black, Color.Gold, e.Bounds);
-                  toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Gold, Color.Black, e.Bounds);
-               });
-               this.Do(() => toolTip.SetToolTip(this, text));
-               break;
-            }
-            case UiActionType.Exception:
-            {
-               if (!toolTip.Action)
-               {
-                  _oldTitle = toolTip.ToolTipTitle.NotEmpty();
-               }
-
-               toolTip.ToolTipTitle = "exception";
-               toolTip.Text = text;
-               toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
-               {
-                  toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.White, Color.Red, e.Bounds);
-                  toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Red, Color.White, e.Bounds);
-               });
-               this.Do(() => toolTip.SetToolTip(this, text));
-               break;
-            }
-            case UiActionType.NoStatus:
-            {
-               if (!toolTip.Action)
-               {
-                  _oldTitle = toolTip.ToolTipTitle.NotEmpty();
-               }
-
-               toolTip.ToolTipTitle = "no status";
-               toolTip.Text = text;
-               toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
-               {
-                  toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.Black, Color.White, e.Bounds);
-                  toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.White, Color.Black, e.Bounds);
-               });
-               this.Do(() => toolTip.SetToolTip(this, text));
-               break;
-            }
-            default:
-            {
-               if (Clickable && ClickText.IsNotEmpty())
-               {
-                  if (_oldTitle is (true, var oldTitle))
+                  if (!toolTip.Action)
                   {
-                     toolTip.ToolTipTitle = oldTitle;
-                     _oldTitle = nil;
-                  }
-                  else
-                  {
-                     toolTip.ToolTipTitle = "";
+                     _oldTitle = toolTip.ToolTipTitle.NotEmpty();
                   }
 
-                  toolTip.Text = ClickText;
-                  toolTip.Action = nil;
-                  this.Do(() => toolTip.SetToolTip(this, ClickText));
-               }
-               else
-               {
-                  if (_oldTitle is (true, var oldTitle))
-                  {
-                     toolTip.ToolTipTitle = oldTitle;
-                     _oldTitle = nil;
-                  }
-                  else
-                  {
-                     toolTip.ToolTipTitle = "";
-                  }
-
+                  toolTip.ToolTipTitle = "failure";
                   toolTip.Text = text;
-                  toolTip.Action = nil;
+                  toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+                  {
+                     toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.Black, Color.Gold, e.Bounds);
+                     toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Gold, Color.Black, e.Bounds);
+                  });
                   this.Do(() => toolTip.SetToolTip(this, text));
+                  break;
                }
+            case UiActionType.Exception:
+               {
+                  if (!toolTip.Action)
+                  {
+                     _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+                  }
 
-               break;
-            }
+                  toolTip.ToolTipTitle = "exception";
+                  toolTip.Text = text;
+                  toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+                  {
+                     toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.White, Color.Red, e.Bounds);
+                     toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.Red, Color.White, e.Bounds);
+                  });
+                  this.Do(() => toolTip.SetToolTip(this, text));
+                  break;
+               }
+            case UiActionType.NoStatus:
+               {
+                  if (!toolTip.Action)
+                  {
+                     _oldTitle = toolTip.ToolTipTitle.NotEmpty();
+                  }
+
+                  toolTip.ToolTipTitle = "no status";
+                  toolTip.Text = text;
+                  toolTip.Action = action<object, DrawToolTipEventArgs>((_, e) =>
+                  {
+                     toolTip.DrawTextInRectangle(e.Graphics, toolTip.Font, Color.Black, Color.White, e.Bounds);
+                     toolTip.DrawTitle(e.Graphics, toolTip.Font, Color.White, Color.Black, e.Bounds);
+                  });
+                  this.Do(() => toolTip.SetToolTip(this, text));
+                  break;
+               }
+            default:
+               {
+                  if (Clickable && ClickText.IsNotEmpty())
+                  {
+                     if (_oldTitle is (true, var oldTitle))
+                     {
+                        toolTip.ToolTipTitle = oldTitle;
+                        _oldTitle = nil;
+                     }
+                     else
+                     {
+                        toolTip.ToolTipTitle = "";
+                     }
+
+                     toolTip.Text = ClickText;
+                     toolTip.Action = nil;
+                     this.Do(() => toolTip.SetToolTip(this, ClickText));
+                  }
+                  else
+                  {
+                     if (_oldTitle is (true, var oldTitle))
+                     {
+                        toolTip.ToolTipTitle = oldTitle;
+                        _oldTitle = nil;
+                     }
+                     else
+                     {
+                        toolTip.ToolTipTitle = "";
+                     }
+
+                     toolTip.Text = text;
+                     toolTip.Action = nil;
+                     this.Do(() => toolTip.SetToolTip(this, text));
+                  }
+
+                  break;
+               }
          }
       }
 
@@ -1347,6 +1347,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          }
       }
 
+      determineFloorAndCeiling();
+
       var writer = new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, buttonType)
       {
          Rectangle = clientRectangle,
@@ -1359,98 +1361,96 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       };
       var httpWriter = new Lazy<HttpWriter>(() => new HttpWriter(text, clientRectangle, getFont()));
 
-      determineFloorAndCeiling();
-
       switch (type)
       {
          case UiActionType.ProgressIndefinite:
             writer.Write(e.Graphics, text);
             break;
          case UiActionType.Busy when FlipFlop:
-         {
-            var foreColor = flipOn ? Color.White : Color.Black;
-            var backColor = flipOn ? Color.Black : Color.White;
-            var flipFlop = SubText("starting").Set.ForeColor(foreColor).BackColor(backColor).GoToUpperLeft(2).SubText;
-            if (_flipFlop is (true, var oldFlipFlop))
             {
-               RemoveSubText(oldFlipFlop);
-               _flipFlop = flipFlop;
+               var foreColor = flipOn ? Color.White : Color.Black;
+               var backColor = flipOn ? Color.Black : Color.White;
+               var flipFlop = SubText("starting").Set.ForeColor(foreColor).BackColor(backColor).GoToUpperLeft(2).SubText;
+               if (_flipFlop is (true, var oldFlipFlop))
+               {
+                  RemoveSubText(oldFlipFlop);
+                  _flipFlop = flipFlop;
+               }
+
+               flipFlop.Draw(e.Graphics);
+
+               flipOn = !flipOn;
+
+               break;
             }
-
-            flipFlop.Draw(e.Graphics);
-
-            flipOn = !flipOn;
-
-            break;
-         }
          case UiActionType.Busy when _busyProcessor is (true, var busyProcessor):
             busyProcessor.OnPaint(e.Graphics);
             break;
          case UiActionType.ProgressDefinite when _progressDefiniteProcessor is (true, var progressDefiniteProcessor):
-         {
-            var autoSize = writer.AutoSizeText;
-            writer.AutoSizeText = false;
-            var percentage = getPercentage();
-            var percentText = $"{percentage}%";
-            writer.Rectangle = progressDefiniteProcessor.PercentRectangle;
-            writer.Center(true);
-            writer.Color = Color.Black;
-            writer.Write(e.Graphics, percentText);
-
-            writer.Rectangle = progressDefiniteProcessor.TextRectangle;
-            writer.Center(true);
-            writer.Color = getForeColor();
-            writer.Write(e.Graphics, text);
-
-            if (_progressSubText is (true, var progressSubText))
             {
-               progressSubText.Draw(e.Graphics);
+               var autoSize = writer.AutoSizeText;
+               writer.AutoSizeText = false;
+               var percentage = getPercentage();
+               var percentText = $"{percentage}%";
+               writer.Rectangle = progressDefiniteProcessor.PercentRectangle;
+               writer.Center(true);
+               writer.Color = Color.Black;
+               writer.Write(e.Graphics, percentText);
+
+               writer.Rectangle = progressDefiniteProcessor.TextRectangle;
+               writer.Center(true);
+               writer.Color = getForeColor();
+               writer.Write(e.Graphics, text);
+
+               if (_progressSubText is (true, var progressSubText))
+               {
+                  progressSubText.Draw(e.Graphics);
+               }
+
+               progressDefiniteProcessor.OnPaint(e.Graphics, percentage, Color.Black, clientRectangle);
+
+               writer.AutoSizeText = autoSize;
+
+               break;
             }
-
-            progressDefiniteProcessor.OnPaint(e.Graphics, percentage, Color.Black, clientRectangle);
-
-            writer.AutoSizeText = autoSize;
-
-            break;
-         }
          case UiActionType.MuteProgress:
-         {
-            var percentText = $"{getPercentage()}%";
-            writer.Write(e.Graphics, percentText);
-
-            if (_progressSubText is (true, var progressSubText))
             {
-               progressSubText.Draw(e.Graphics);
-            }
+               var percentText = $"{getPercentage()}%";
+               writer.Write(e.Graphics, percentText);
 
-            break;
-         }
+               if (_progressSubText is (true, var progressSubText))
+               {
+                  progressSubText.Draw(e.Graphics);
+               }
+
+               break;
+            }
          case UiActionType.BusyText when _busyTextProcessor is (true, var busyTextProcessor):
-         {
-            var allRectangle = writer.TextRectangle(text, e.Graphics, clientRectangle);
-            var allX = allRectangle.X;
-            var allY = allRectangle.Y;
-            var drawRectangle = busyTextProcessor.DrawRectangle;
-            var drawX = drawRectangle.X + drawRectangle.Width;
-            var drawY = drawRectangle.Y + drawRectangle.Height;
-            if (allX < drawX || allY < drawY)
             {
-               allRectangle = busyTextProcessor.TextRectangle;
-            }
+               var allRectangle = writer.TextRectangle(text, e.Graphics, clientRectangle);
+               var allX = allRectangle.X;
+               var allY = allRectangle.Y;
+               var drawRectangle = busyTextProcessor.DrawRectangle;
+               var drawX = drawRectangle.X + drawRectangle.Width;
+               var drawY = drawRectangle.Y + drawRectangle.Height;
+               if (allX < drawX || allY < drawY)
+               {
+                  allRectangle = busyTextProcessor.TextRectangle;
+               }
 
-            writer.Rectangle = allRectangle;
-            writer.Center(true);
-            writer.Write(e.Graphics, text);
-            break;
-         }
+               writer.Rectangle = allRectangle;
+               writer.Center(true);
+               writer.Write(e.Graphics, text);
+               break;
+            }
          case UiActionType.ControlLabel:
             writer.Write(e.Graphics, text);
             break;
          case UiActionType.Http:
-         {
-            httpWriter.Value.OnPaint(e.Graphics, isUrlGood);
-            break;
-         }
+            {
+               httpWriter.Value.OnPaint(e.Graphics, isUrlGood);
+               break;
+            }
          case UiActionType.Console:
             scroller.Value.OnPaint(e.Graphics);
             break;
@@ -1471,14 +1471,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             alternateWriter.OnPaint(e.Graphics);
             break;
          default:
-         {
-            if (type != UiActionType.Tape)
             {
-               writer.Write(e.Graphics, text);
-            }
+               if (type != UiActionType.Tape)
+               {
+                  writer.Write(e.Graphics, text);
+               }
 
-            break;
-         }
+               break;
+            }
       }
 
       drawStopwatch();
@@ -1548,7 +1548,9 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          {
             var titleRectangle = rectangle with
             {
-               X = rectangle.X + margin - 3, Height = size.Height + 2, Width = rectangle.Width - 2 * margin + 6
+               X = rectangle.X + margin - 3,
+               Height = size.Height + 2,
+               Width = rectangle.Width - 2 * margin + 6
             };
             var foreColor = Color.Black;
             var backColor = Color.AntiqueWhite;
@@ -1685,106 +1687,106 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       switch (type)
       {
          case UiActionType.Tape:
-         {
-            using var brush = new HatchBrush(HatchStyle.BackwardDiagonal, Color.Black, Color.Gold);
-            fillRectangle(pevent.Graphics, brush, clientRectangle);
-            break;
-         }
+            {
+               using var brush = new HatchBrush(HatchStyle.BackwardDiagonal, Color.Black, Color.Gold);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
+               break;
+            }
          case UiActionType.ProgressIndefinite or UiActionType.Busy:
-         {
-            using var brush = new SolidBrush(Color.DarkSlateGray);
-            fillRectangle(pevent.Graphics, brush, clientRectangle);
-            break;
-         }
+            {
+               using var brush = new SolidBrush(Color.DarkSlateGray);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
+               break;
+            }
          case UiActionType.ProgressDefinite when _progressDefiniteProcessor is (true, var progressDefiniteProcessor):
-         {
-            progressDefiniteProcessor.OnPaintBackground(pevent.Graphics);
-            var textRectangle = progressDefiniteProcessor.TextRectangle;
+            {
+               progressDefiniteProcessor.OnPaintBackground(pevent.Graphics);
+               var textRectangle = progressDefiniteProcessor.TextRectangle;
 
-            using var coralBrush = new SolidBrush(Color.Coral);
-            fillRectangle(pevent.Graphics, coralBrush, textRectangle);
-            var width = textRectangle.Width;
-            var percentWidth = getPercentage(width);
-            var location = textRectangle.Location;
-            var size = new Size(percentWidth, textRectangle.Height);
-            var rectangle = new Rectangle(location, size);
-            using var cornflowerBlueBrush = new SolidBrush(Color.CornflowerBlue);
-            fillRectangle(pevent.Graphics, cornflowerBlueBrush, rectangle);
+               using var coralBrush = new SolidBrush(Color.Coral);
+               fillRectangle(pevent.Graphics, coralBrush, textRectangle);
+               var width = textRectangle.Width;
+               var percentWidth = getPercentage(width);
+               var location = textRectangle.Location;
+               var size = new Size(percentWidth, textRectangle.Height);
+               var rectangle = new Rectangle(location, size);
+               using var cornflowerBlueBrush = new SolidBrush(Color.CornflowerBlue);
+               fillRectangle(pevent.Graphics, cornflowerBlueBrush, rectangle);
 
-            break;
-         }
+               break;
+            }
          case UiActionType.MuteProgress:
-         {
-            using var coralBrush = new SolidBrush(Color.Coral);
-            fillRectangle(pevent.Graphics, coralBrush, clientRectangle);
-            var width = clientRectangle.Width;
-            var percentWidth = getPercentage(width);
-            var location = clientRectangle.Location;
-            var size = new Size(percentWidth, clientRectangle.Height);
-            var rectangle = new Rectangle(location, size);
-            using var cornflowerBlueBrush = new SolidBrush(Color.CornflowerBlue);
-            fillRectangle(pevent.Graphics, cornflowerBlueBrush, rectangle);
+            {
+               using var coralBrush = new SolidBrush(Color.Coral);
+               fillRectangle(pevent.Graphics, coralBrush, clientRectangle);
+               var width = clientRectangle.Width;
+               var percentWidth = getPercentage(width);
+               var location = clientRectangle.Location;
+               var size = new Size(percentWidth, clientRectangle.Height);
+               var rectangle = new Rectangle(location, size);
+               using var cornflowerBlueBrush = new SolidBrush(Color.CornflowerBlue);
+               fillRectangle(pevent.Graphics, cornflowerBlueBrush, rectangle);
 
-            break;
-         }
+               break;
+            }
          case UiActionType.Unselected:
-         {
-            using var brush = new SolidBrush(Color.White);
-            fillRectangle(pevent.Graphics, brush, clientRectangle);
+            {
+               using var brush = new SolidBrush(Color.White);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
 
-            using var pen = new Pen(Color.DarkGray, 10);
-            drawRectangle(pevent.Graphics, pen, clientRectangle);
-            break;
-         }
+               using var pen = new Pen(Color.DarkGray, 10);
+               drawRectangle(pevent.Graphics, pen, clientRectangle);
+               break;
+            }
          case UiActionType.Selected:
-         {
-            using var brush = new SolidBrush(Color.White);
-            fillRectangle(pevent.Graphics, brush, clientRectangle);
+            {
+               using var brush = new SolidBrush(Color.White);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
 
-            using var pen = new Pen(Color.Black, 10);
-            drawRectangle(pevent.Graphics, pen, clientRectangle);
-            break;
-         }
+               using var pen = new Pen(Color.Black, 10);
+               drawRectangle(pevent.Graphics, pen, clientRectangle);
+               break;
+            }
          case UiActionType.BusyText when _busyTextProcessor is (true, var busyTextProcessor):
-         {
-            using var brush = new SolidBrush(Color.Teal);
-            fillRectangle(pevent.Graphics, brush, clientRectangle);
+            {
+               using var brush = new SolidBrush(Color.Teal);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
 
-            busyTextProcessor.OnPaint(pevent);
+               busyTextProcessor.OnPaint(pevent);
 
-            break;
-         }
+               break;
+            }
          case UiActionType.ControlLabel:
-         {
-            using var brush = new SolidBrush(Color.CadetBlue);
-            fillRectangle(pevent.Graphics, brush, clientRectangle);
-            break;
-         }
+            {
+               using var brush = new SolidBrush(Color.CadetBlue);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
+               break;
+            }
          case UiActionType.Http:
-         {
-            var httpWriter = new HttpWriter(text, clientRectangle, getFont());
-            httpWriter.OnPaintBackground(pevent.Graphics, isUrlGood, mouseInside);
-            break;
-         }
+            {
+               var httpWriter = new HttpWriter(text, clientRectangle, getFont());
+               httpWriter.OnPaintBackground(pevent.Graphics, isUrlGood, mouseInside);
+               break;
+            }
          case UiActionType.Console:
             scroller.Value.OnPaintBackground(pevent.Graphics);
             break;
          case UiActionType.Display:
-         {
-            using var brush = new SolidBrush(BackColor);
-            fillRectangle(pevent.Graphics, brush, clientRectangle);
-            break;
-         }
+            {
+               using var brush = new SolidBrush(BackColor);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
+               break;
+            }
          case UiActionType.Symbol when _symbolWriter is (true, var symbolWriter):
             symbolWriter.OnPaintBackground(pevent.Graphics, clientRectangle, Enabled);
             break;
          default:
-         {
-            var backColor = getBackColor();
-            using var brush = new SolidBrush(backColor);
-            fillRectangle(pevent.Graphics, brush, clientRectangle);
-            break;
-         }
+            {
+               var backColor = getBackColor();
+               using var brush = new SolidBrush(backColor);
+               fillRectangle(pevent.Graphics, brush, clientRectangle);
+               break;
+            }
       }
 
       if (isDirty)

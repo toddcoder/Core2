@@ -44,8 +44,8 @@
          // tableLayoutPanel
          // 
          tableLayoutPanel.ColumnCount = 3;
-         tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60F));
-         tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+         tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+         tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
          tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
          tableLayoutPanel.Dock = DockStyle.Fill;
          tableLayoutPanel.Location = new Point(0, 0);
