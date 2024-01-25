@@ -1621,7 +1621,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       if (Working && _working is (true, var working))
       {
-         if (workingAlpha >= 8)
+         if (workingAlpha > 0)
          {
             working.Alpha = workingAlpha;
             working.Transparency = SubTextTransparency.Custom;

@@ -27,27 +27,22 @@ public partial class Form1 : Form
       uiButton2.ClickText = "Cancel";
 
       var uiButton3 = new UiAction(this) { AutoSizeText = true };
-      uiButton3.Button("emphasize");
+      uiButton3.Button("Working");
       uiButton3.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 2);
       uiButton3.Click += (_, _) =>
       {
-         uiButton3.Required = !uiButton3.Required;
-         uiButton3.Refresh();
+         uiAction.Working = "working";
       };
-      uiButton3.ClickText = "Emphasize";
+      uiButton3.ClickText = "Working";
 
       var uiButton4 = new UiAction(this);
       uiButton4.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 3);
-      uiButton4.Button("Release On");
+      uiButton4.Button("Pulse");
       uiButton4.Click += (_, _) =>
       {
-         uiAction.ClearAllLegends();
-         uiAction.Legend("release on");
-         uiAction.Success("01-January-2024");
-         uiAction.SubText(DateTime.Now.ToString("d")).Set.MiniInverted().RightOfLegend();
-         uiAction.Refresh();
+         uiAction.Pulse();
       };
-      uiButton4.ClickText = "Release on";
+      uiButton4.ClickText = "Pulse";
 
       var stager = new UiStager(panel1);
 
