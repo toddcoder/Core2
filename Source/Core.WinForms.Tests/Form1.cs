@@ -49,20 +49,28 @@ public partial class Form1 : Form
       };
       uiButton4.ClickText = "Release on";
 
-      UiStager stager = [];
+      var stager = new UiStager(panel1);
 
       var uiButton5 = new UiAction(this);
       uiButton5.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 4);
       uiButton5.Button("Test stager");
       uiButton5.Click += (_, _) =>
       {
-         UiAction[] uiActions = [new UiAction(this), new UiAction(this), new UiAction(this)];
-         string[] texts = ["alpha", "bravo", "charlie"];
-         foreach (var (uiAction, text) in uiActions.Zip(texts))
+         foreach (var text in (string[])["alpha", "bravo", "charlie"])
          {
-            stager.Add(panel1, uiAction, text);
+            var uiAction = new UiAction(this);
+            stager.Add(uiAction, text);
          }
       };
       uiButton5.ClickText = "Test stager";
+
+      var uiButton6 = new UiAction(this);
+      uiButton6.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 5);
+      uiButton6.Button("Next stage");
+      uiButton6.Click += (_, _) =>
+      {
+         stager.NextStage(UiActionType.Success);
+      };
+      uiButton6.ClickText = "Next stage";
    }
 }

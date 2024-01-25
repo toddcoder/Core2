@@ -4,34 +4,57 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class UiStager : IList<UiAction>
+public class UiStager(Control container, string fontName = "Consolas", float fontSize = 12f) : IList<UiAction>
 {
    protected List<UiAction> uiActions = new();
-   protected Maybe<UiAction> _lastUiAction = nil;
    protected int stageIndex = -1;
 
    public IEnumerator<UiAction> GetEnumerator() => uiActions.GetEnumerator();
 
    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-   public void Add(Control containerControl, UiAction uiAction, string text, UiActionType type = UiActionType.NoStatus)
+   public void Add(UiAction uiAction, string text, UiActionType type = UiActionType.NoStatus)
    {
-      containerControl.Controls.Add(uiAction);
+      if (uiActions.Count == 0)
+      {
+         container.Resize += (_, _) => rearrange();
+      }
+
+      uiAction.AutoSize = false;
+      uiAction.Font = new Font(fontName, fontSize);
+      uiAction.Anchor = AnchorStyles.Left | AnchorStyles.Top;
+      container.Controls.Add(uiAction);
       uiAction.AutoSizeText = true;
       uiAction.ShowMessage(text, type);
       Add(uiAction);
    }
 
+   protected void rearrange()
+   {
+      if (uiActions.Count > 0)
+      {
+         var width = container.ClientSize.Width / uiActions.Count;
+         var left = 0;
+         var height = container.ClientSize.Height;
+         foreach (var uiAction in uiActions)
+         {
+            uiAction.Location = new Point(left, 0);
+            uiAction.Size = new Size(width, height);
+
+            left += width;
+         }
+      }
+   }
+
    public void Add(UiAction item)
    {
-      uiActions.Add(item);
-      if (_lastUiAction is (true, var lastUiAction))
+      item.PaintingBackground += (_, e) =>
       {
-         item.Location = lastUiAction.Location.OffsetX(lastUiAction.Size.Width);
-         item.Height = lastUiAction.Height;
-      }
-
-      _lastUiAction = item;
+         using var pen = new Pen(item.GetForeColor(item.Type));
+         e.Graphics.DrawRectangle(pen, item.ClientRectangle.Reposition(1, 1).Resize(-2, -2));
+      };
+      uiActions.Add(item);
+      rearrange();
    }
 
    public void Clear() => uiActions.Clear();
@@ -76,4 +99,16 @@ public class UiStager : IList<UiAction>
    }
 
    public Maybe<UiAction> CurrentUiAction => maybe<UiAction>() & stageIndex < uiActions.Count & (() => uiActions[stageIndex]);
+
+   public void Reset()
+   {
+      rearrange();
+      foreach (var uiAction in uiActions)
+      {
+         var text = uiAction.Text;
+         uiAction.Busy(text);
+      }
+
+      stageIndex = -1;
+   }
 }
