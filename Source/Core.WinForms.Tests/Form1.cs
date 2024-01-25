@@ -31,6 +31,7 @@ public partial class Form1 : Form
       uiButton3.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 2);
       uiButton3.Click += (_, _) =>
       {
+         uiAction.Busy("busy");
          uiAction.Working = "working";
       };
       uiButton3.ClickText = "Working";

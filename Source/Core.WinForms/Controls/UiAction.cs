@@ -69,7 +69,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          [UiActionType.Caution] = Color.CadetBlue,
          [UiActionType.ControlLabel] = Color.CadetBlue,
          [UiActionType.Button] = Color.LightGray,
-         [UiActionType.Console] = Color.Blue
+         [UiActionType.Console] = Color.Blue,
+         [UiActionType.Busy] = Color.Teal,
+         [UiActionType.ProgressDefinite] = Color.Coral,
+         [UiActionType.ProgressIndefinite] = Color.Coral
       };
       globalStyles = new Hash<UiActionType, MessageStyle>
       {
