@@ -48,5 +48,21 @@ public partial class Form1 : Form
          uiAction.Refresh();
       };
       uiButton4.ClickText = "Release on";
+
+      UiStager stager = [];
+
+      var uiButton5 = new UiAction(this);
+      uiButton5.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 4);
+      uiButton5.Button("Test stager");
+      uiButton5.Click += (_, _) =>
+      {
+         UiAction[] uiActions = [new UiAction(this), new UiAction(this), new UiAction(this)];
+         string[] texts = ["alpha", "bravo", "charlie"];
+         foreach (var (uiAction, text) in uiActions.Zip(texts))
+         {
+            stager.Add(panel1, uiAction, text);
+         }
+      };
+      uiButton5.ClickText = "Test stager";
    }
 }
