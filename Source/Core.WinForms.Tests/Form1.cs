@@ -1,4 +1,5 @@
 ﻿using Core.WinForms.Controls;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Tests;
 
@@ -6,11 +7,15 @@ public partial class Form1 : Form
 {
    public Form1()
    {
+      var progressIndex = 1;
+
       InitializeComponent();
 
       var uiAction = new UiAction(this) { AutoSizeText = true };
       uiAction.SetUpInTableLayoutPanel(tableLayoutPanel, 1, 0);
       uiAction.NoStatus("not set");
+      uiAction.WorkingAlignment = CardinalAlignment.SouthEast;
+      uiAction.Maximum = 100;
 
       var uiButton1 = new UiAction(this);
       uiButton1.DefaultButton("button 1");
@@ -37,13 +42,9 @@ public partial class Form1 : Form
          {
             uiAction.Busy("busy");
          }
-         else
+         else if(progressIndex <= 100)
          {
-            uiAction.Maximum = 100;
-            for (var i = 0; i < 100; i++)
-            {
-               uiAction.Progress(i);
-            }
+            uiAction.Progress(progressIndex++);
          }
       };
       uiButton3.ClickText = "Working";
@@ -61,7 +62,7 @@ public partial class Form1 : Form
       uiButton5.Button("Test stager");
       uiButton5.Click += (_, _) =>
       {
-         foreach (var text in (string[]) ["alpha", "bravo", "charlie"])
+         foreach (var text in (string[])["alpha", "bravo", "charlie"])
          {
             var uiAction = new UiAction(this);
             stager.Add(uiAction, text);
@@ -74,5 +75,27 @@ public partial class Form1 : Form
       uiButton6.Button("Next stage");
       uiButton6.Click += (_, _) => { stager.NextStage(UiActionType.Success); };
       uiButton6.ClickText = "Next stage";
+
+      var uiButton7 = new UiAction(this);
+      uiButton7.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 6);
+      uiButton7.Button("Busy");
+      uiButton7.Click += (_, _) =>
+      {
+         if (uiAction.Stopwatch)
+         {
+            uiAction.StopStopwatch();
+            uiAction.Stopwatch = false;
+            uiAction.Success("Done");
+            uiAction.Working = nil;
+         }
+         else
+         {
+            uiAction.Stopwatch = true;
+            uiAction.StartStopwatch();
+            uiAction.Busy("[r-6.56.6] | [r-6.56.6_Prod_6.56.6.17]");
+            uiAction.Working = "building";
+         }
+      };
+      uiButton7.ClickText = "Busy";
    }
 }

@@ -53,7 +53,8 @@
          tableLayoutPanel.Dock = DockStyle.Fill;
          tableLayoutPanel.Location = new Point(0, 0);
          tableLayoutPanel.Name = "tableLayoutPanel";
-         tableLayoutPanel.RowCount = 7;
+         tableLayoutPanel.RowCount = 8;
+         tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
