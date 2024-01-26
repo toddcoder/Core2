@@ -27,22 +27,31 @@ public partial class Form1 : Form
       uiButton2.ClickText = "Cancel";
 
       var uiButton3 = new UiAction(this) { AutoSizeText = true };
+      uiButton3.KeyMatch("progress", "busy");
       uiButton3.Button("Working");
       uiButton3.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 2);
       uiButton3.Click += (_, _) =>
       {
-         uiAction.Busy("busy");
          uiAction.Working = "working";
+         if (uiButton3.IsKeyDown)
+         {
+            uiAction.Busy("busy");
+         }
+         else
+         {
+            uiAction.Maximum = 100;
+            for (var i = 0; i < 100; i++)
+            {
+               uiAction.Progress(i);
+            }
+         }
       };
       uiButton3.ClickText = "Working";
 
       var uiButton4 = new UiAction(this);
       uiButton4.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 3);
       uiButton4.Button("Pulse");
-      uiButton4.Click += (_, _) =>
-      {
-         uiAction.Pulse();
-      };
+      uiButton4.Click += (_, _) => { uiAction.Pulse(); };
       uiButton4.ClickText = "Pulse";
 
       var stager = new UiStager(panel1);
@@ -52,7 +61,7 @@ public partial class Form1 : Form
       uiButton5.Button("Test stager");
       uiButton5.Click += (_, _) =>
       {
-         foreach (var text in (string[])["alpha", "bravo", "charlie"])
+         foreach (var text in (string[]) ["alpha", "bravo", "charlie"])
          {
             var uiAction = new UiAction(this);
             stager.Add(uiAction, text);
@@ -63,10 +72,7 @@ public partial class Form1 : Form
       var uiButton6 = new UiAction(this);
       uiButton6.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 5);
       uiButton6.Button("Next stage");
-      uiButton6.Click += (_, _) =>
-      {
-         stager.NextStage(UiActionType.Success);
-      };
+      uiButton6.Click += (_, _) => { stager.NextStage(UiActionType.Success); };
       uiButton6.ClickText = "Next stage";
    }
 }
