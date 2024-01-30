@@ -1,5 +1,4 @@
-﻿using System.Drawing.Drawing2D;
-using Core.Arrays;
+﻿using Core.Arrays;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Monads;
@@ -136,9 +135,10 @@ public class AlternateWriter
       using var blackBrush = new SolidBrush(Color.Black);
       var filledRectangle = rectangle.Reposition(2, 2).Resize(-4, -4);
       g.FillEllipse(blackBrush, filledRectangle);
-      using var greenBrush = new SolidBrush(Color.Teal);
+      var alternateBackColor = GetAlternateBackColor(selectedIndex);
+      using var backBrush = new SolidBrush(alternateBackColor);
       filledRectangle = filledRectangle.Reposition(1, 1).Resize(-2, -2);
-      g.FillEllipse(greenBrush, filledRectangle);
+      g.FillEllipse(backBrush, filledRectangle);
    }
 
    protected virtual void drawUnselected(Graphics g, Pen pen, Rectangle rectangle, Color backColor)
