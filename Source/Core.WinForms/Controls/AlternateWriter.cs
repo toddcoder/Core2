@@ -127,7 +127,7 @@ public class AlternateWriter
       g.FillRectangle(brush, rectangle);
    }
 
-   protected virtual void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor, int penSize)
+   protected virtual void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor, int penSize, bool isSelected)
    {
       g.HighQuality();
       using var pen = new Pen(foreColor, penSize);
@@ -139,6 +139,19 @@ public class AlternateWriter
       using var backBrush = new SolidBrush(alternateBackColor);
       filledRectangle = filledRectangle.Reposition(1, 1).Resize(-2, -2);
       g.FillEllipse(backBrush, filledRectangle);
+
+      if (isSelected)
+      {
+         void drawCheck(Color color, int size, int offset)
+         {
+            using var pen = new Pen(color, size);
+            g.DrawLine(pen, rectangle.West(offset), rectangle.South(offset));
+            g.DrawLine(pen, rectangle.South(offset), rectangle.NorthEast(offset));
+         }
+
+         drawCheck(Color.White, 4, 3);
+         drawCheck(Color.Red, 4, 2);
+      }
    }
 
    protected virtual void drawUnselected(Graphics g, Pen pen, Rectangle rectangle, Color backColor)
@@ -192,8 +205,16 @@ public class AlternateWriter
    {
       var (penSize, textRectangle, smallRectangle) = splitRectangle(rectangle);
 
-      using var whitePen = new Pen(Color.White);
+      /*using var whitePen = new Pen(Color.White);
       g.DrawRectangle(whitePen, textRectangle);
+      if (index == selectedIndex)
+      {
+         var foreColor = GetAlternateForeColor(index);
+         var surroundingRectangle = writer.TextRectangle(alternate, g);
+         using var pen = new Pen(foreColor);
+         pen.DashStyle = DashStyle.Dot;
+         g.DrawRectangle(pen, surroundingRectangle);
+      }*/
 
       if (index == disabledIndex)
       {
@@ -206,7 +227,7 @@ public class AlternateWriter
          writer.Color = foreColor;
          if (index == selectedIndex)
          {
-            drawSelected(g, smallRectangle, Color.Black, Color.LightGray, penSize);
+            drawSelected(g, smallRectangle, Color.Black, Color.LightGray, penSize, true);
          }
          else
          {
@@ -222,7 +243,7 @@ public class AlternateWriter
 
          if (index == selectedIndex)
          {
-            drawSelected(g, smallRectangle, Color.Black, Color.White, penSize);
+            drawSelected(g, smallRectangle, Color.Black, Color.White, penSize, true);
          }
          else
          {
