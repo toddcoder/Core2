@@ -22,7 +22,7 @@ public class CheckBoxWriter : AlternateWriter
       g.DrawRectangle(pen, rectangle);
    }
 
-   protected override void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor, int penSize, bool isSelected)
+   protected override void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor, int penSize)
    {
       g.HighQuality();
       penSize = 2;
