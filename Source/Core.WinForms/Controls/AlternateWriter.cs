@@ -130,19 +130,22 @@ public class AlternateWriter
 
    protected virtual void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor, int penSize)
    {
+      g.HighQuality();
       using var pen = new Pen(foreColor, penSize);
       drawUnselected(g, pen, rectangle, backColor);
-      pen.StartCap = LineCap.Triangle;
-      pen.EndCap = LineCap.Triangle;
-      g.DrawLine(pen, rectangle.NorthWest(penSize), rectangle.SouthEast(penSize));
-      g.DrawLine(pen, rectangle.NorthEast(penSize), rectangle.SouthWest(penSize));
+      using var blackBrush = new SolidBrush(Color.Black);
+      var filledRectangle = rectangle.Reposition(2, 2).Resize(-4, -4);
+      g.FillEllipse(blackBrush, filledRectangle);
+      using var greenBrush = new SolidBrush(Color.Teal);
+      filledRectangle = filledRectangle.Reposition(1, 1).Resize(-2, -2);
+      g.FillEllipse(greenBrush, filledRectangle);
    }
 
    protected virtual void drawUnselected(Graphics g, Pen pen, Rectangle rectangle, Color backColor)
    {
       using var brush = new SolidBrush(backColor);
-      g.FillRectangle(brush, rectangle);
-      g.DrawRectangle(pen, rectangle);
+      g.FillEllipse(brush, rectangle);
+      g.DrawEllipse(pen, rectangle);
    }
 
    protected void drawUnselected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor, int penSize)

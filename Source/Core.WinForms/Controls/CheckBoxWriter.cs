@@ -15,6 +15,13 @@ public class CheckBoxWriter : AlternateWriter
       set => selectedIndex = value ? 0 : -1;
    }
 
+   protected override void drawUnselected(Graphics g, Pen pen, Rectangle rectangle, Color backColor)
+   {
+      using var brush = new SolidBrush(backColor);
+      g.FillRectangle(brush, rectangle);
+      g.DrawRectangle(pen, rectangle);
+   }
+
    protected override void drawSelected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor, int penSize)
    {
       g.HighQuality();
