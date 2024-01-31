@@ -53,7 +53,7 @@
          tableLayoutPanel.Dock = DockStyle.Fill;
          tableLayoutPanel.Location = new Point(0, 0);
          tableLayoutPanel.Name = "tableLayoutPanel";
-         tableLayoutPanel.RowCount = 8;
+         tableLayoutPanel.RowCount = 9;
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
@@ -61,8 +61,9 @@
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
+         tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-         tableLayoutPanel.Size = new Size(938, 524);
+         tableLayoutPanel.Size = new Size(938, 656);
          tableLayoutPanel.TabIndex = 0;
          // 
          // panel1
@@ -77,7 +78,7 @@
          // 
          AutoScaleDimensions = new SizeF(7F, 15F);
          AutoScaleMode = AutoScaleMode.Font;
-         ClientSize = new Size(938, 524);
+         ClientSize = new Size(938, 656);
          Controls.Add(tableLayoutPanel);
          Margin = new Padding(4, 3, 4, 3);
          Name = "Form1";

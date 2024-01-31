@@ -1,5 +1,4 @@
 ﻿using Core.WinForms.Controls;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Tests;
 
@@ -16,6 +15,11 @@ public partial class Form1 : Form
       uiAction.NoStatus("not set");
       uiAction.WorkingAlignment = CardinalAlignment.SouthEast;
       uiAction.Maximum = 100;
+
+      var uiDivider = new UiAction(this);
+      uiDivider.SetUpInTableLayoutPanel(tableLayoutPanel, 0, 7, 3);
+      uiDivider.Legend("part 2");
+      uiDivider.Divider();
 
       var uiButton1 = new UiAction(this);
       uiButton1.DefaultButton("alternates");
@@ -42,7 +46,7 @@ public partial class Form1 : Form
          {
             uiAction.Busy("busy");
          }
-         else if(progressIndex <= 100)
+         else if (progressIndex <= 100)
          {
             uiAction.Progress(progressIndex++);
          }
@@ -62,7 +66,7 @@ public partial class Form1 : Form
       uiButton5.Button("Test stager");
       uiButton5.Click += (_, _) =>
       {
-         foreach (var text in (string[])["alpha", "bravo", "charlie"])
+         foreach (var text in (string[]) ["alpha", "bravo", "charlie"])
          {
             var uiAction = new UiAction(this);
             stager.Add(uiAction, text);
@@ -78,24 +82,12 @@ public partial class Form1 : Form
 
       var uiButton7 = new UiAction(this);
       uiButton7.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 6);
-      uiButton7.Button("Busy");
+      uiButton7.Button("Divider");
       uiButton7.Click += (_, _) =>
       {
-         if (uiAction.Stopwatch)
-         {
-            uiAction.StopStopwatch();
-            uiAction.Stopwatch = false;
-            uiAction.Success("Done");
-            uiAction.Working = nil;
-         }
-         else
-         {
-            uiAction.Stopwatch = true;
-            uiAction.StartStopwatch();
-            uiAction.Busy("[r-6.56.6] | [r-6.56.6_Prod_6.56.6.17]");
-            uiAction.Working = "building";
-         }
+         uiAction.Legend("divider");
+         uiAction.Divider();
       };
-      uiButton7.ClickText = "Busy";
+      uiButton7.ClickText = "Divider";
    }
 }

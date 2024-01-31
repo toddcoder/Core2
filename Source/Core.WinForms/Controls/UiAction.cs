@@ -16,6 +16,7 @@ using Core.WinForms.ControlWrappers;
 using Core.WinForms.Drawing;
 using static Core.Lambdas.LambdaFunctions;
 using static Core.Monads.MonadFunctions;
+using SolidBrush = System.Drawing.SolidBrush;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Core.WinForms.Controls;
@@ -52,7 +53,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          [UiActionType.Button] = Color.Black,
          [UiActionType.Console] = Color.White,
          [UiActionType.Busy] = Color.White,
-         [UiActionType.MuteProgress] = Color.White
+         [UiActionType.MuteProgress] = Color.White,
+         [UiActionType.Divider] = Color.Black
       };
       globalBackColors = new Hash<UiActionType, Color>
       {
@@ -74,7 +76,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          [UiActionType.BusyText] = Color.Teal,
          [UiActionType.ProgressDefinite] = Color.CadetBlue,
          [UiActionType.ProgressIndefinite] = Color.CadetBlue,
-         [UiActionType.MuteProgress] = Color.CadetBlue
+         [UiActionType.MuteProgress] = Color.CadetBlue,
+         [UiActionType.Divider] = Color.White
       };
       globalStyles = new Hash<UiActionType, MessageStyle>
       {
@@ -1478,6 +1481,16 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          case UiActionType.CheckBox when _alternateWriter is (true, var alternateWriter):
             alternateWriter.OnPaint(e.Graphics);
             break;
+         case UiActionType.Divider:
+         {
+            var rectangle = getDividerRectangle();
+            using var brush = new SolidBrush(Color.Gray);
+            e.Graphics.FillRectangle(brush, rectangle);
+            rectangle = rectangle.Reposition(2, 0);
+            using var pen = new Pen(Color.White);
+            e.Graphics.DrawLine(pen, rectangle.Location, rectangle.NorthEast());
+            break;
+         }
          default:
          {
             if (type != UiActionType.Tape)
@@ -1791,6 +1804,12 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          case UiActionType.Symbol when _symbolWriter is (true, var symbolWriter):
             symbolWriter.OnPaintBackground(pevent.Graphics, clientRectangle, Enabled);
             break;
+         case UiActionType.Divider:
+         {
+            using var brush = new SolidBrush(SystemColors.Window);
+            fillArrowRectangle(pevent.Graphics, brush, clientRectangle);
+            break;
+         }
          default:
          {
             var backColor = getBackColor();
@@ -3304,4 +3323,19 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    }
 
    public bool Required { get; set; }
+
+   public void Divider() => ShowMessage("", UiActionType.Divider);
+
+   protected Rectangle getDividerRectangle()
+   {
+      var rectangle = getClientRectangle();
+      var location = CardinalAlignment switch
+      {
+         CardinalAlignment.Center => rectangle.West(),
+         CardinalAlignment.North => rectangle.NorthWest(),
+         _ => rectangle.SouthWest()
+      };
+
+      return rectangle with { Location = location, Height = 4 };
+   }
 }
