@@ -33,6 +33,14 @@ public class Triggers : StringHash<Triggers.TriggerType>
       }
    }
 
+   public void UpdateAllToSet()
+   {
+      foreach (var key in Keys)
+      {
+         this[key] = TriggerType.Set;
+      }
+   }
+
    public void Trigger(string key)
    {
       if (Maybe[key] is (true, TriggerType.Set))
@@ -41,9 +49,25 @@ public class Triggers : StringHash<Triggers.TriggerType>
       }
    }
 
+   public void UpdateAllToTrigger()
+   {
+      foreach (var key in Keys)
+      {
+         this[key] = TriggerType.Triggered;
+      }
+   }
+
    public void Read(string key)
    {
       if (Maybe[key] is (true, TriggerType.Triggered))
+      {
+         this[key] = TriggerType.Read;
+      }
+   }
+
+   public void UpdateAllToRead()
+   {
+      foreach (var key in Keys)
       {
          this[key] = TriggerType.Read;
       }
