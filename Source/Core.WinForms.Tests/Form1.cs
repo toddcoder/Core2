@@ -18,8 +18,7 @@ public partial class Form1 : Form
 
       var uiDivider = new UiAction(this);
       uiDivider.SetUpInTableLayoutPanel(tableLayoutPanel, 0, 7, 3);
-      uiDivider.Legend("part 2");
-      uiDivider.Divider();
+      uiDivider.Divider("part 2");
 
       var uiButton1 = new UiAction(this);
       uiButton1.DefaultButton("alternates");
@@ -85,8 +84,7 @@ public partial class Form1 : Form
       uiButton7.Button("Divider");
       uiButton7.Click += (_, _) =>
       {
-         uiAction.Legend("divider");
-         uiAction.Divider();
+         uiAction.Divider("divider");
       };
       uiButton7.ClickText = "Divider";
    }

@@ -1484,11 +1484,12 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          case UiActionType.Divider:
          {
             var rectangle = getDividerRectangle();
-            using var brush = new SolidBrush(Color.Gray);
+            using var brush = new SolidBrush(Color.DarkBlue);
             e.Graphics.FillRectangle(brush, rectangle);
-            rectangle = rectangle.Reposition(2, 0);
+            var textRectangle = getDividerTextRectangle(e.Graphics, clientRectangle);
             using var pen = new Pen(Color.White);
-            e.Graphics.DrawLine(pen, rectangle.Location, rectangle.NorthEast());
+            TextRenderer.DrawText(e.Graphics, text, Font, textRectangle, Color.White, Color.CadetBlue,
+               TextFormatFlags.Left | TextFormatFlags.EndEllipsis);
             break;
          }
          default:
@@ -1806,8 +1807,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             break;
          case UiActionType.Divider:
          {
-            using var brush = new SolidBrush(SystemColors.Window);
-            fillArrowRectangle(pevent.Graphics, brush, clientRectangle);
+            using var brush = new SolidBrush(Color.White); //new SolidBrush(SystemColors.Window);
+            fillRectangle(pevent.Graphics, brush, clientRectangle);
             break;
          }
          default:
@@ -3324,18 +3325,20 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    public bool Required { get; set; }
 
-   public void Divider() => ShowMessage("", UiActionType.Divider);
+   public void Divider(string message) => ShowMessage(message, UiActionType.Divider);
 
    protected Rectangle getDividerRectangle()
    {
       var rectangle = getClientRectangle();
-      var location = CardinalAlignment switch
-      {
-         CardinalAlignment.Center => rectangle.West(),
-         CardinalAlignment.North => rectangle.NorthWest(),
-         _ => rectangle.SouthWest()
-      };
+      return rectangle with { Location = rectangle.West(), Height = 4 };
+   }
 
-      return rectangle with { Location = location, Height = 4 };
+   protected Rectangle getDividerTextRectangle(Graphics g, Rectangle rectangleRectangle)
+   {
+      var textSize = UiActionWriter.TextSize(g, text, Font, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis)
+         .Resize(2, 2);
+      var top = rectangleRectangle.Height / 2 - textSize.Height / 2;
+
+      return new Rectangle(rectangleRectangle.X + 4, top, textSize.Width, textSize.Height);
    }
 }
