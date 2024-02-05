@@ -884,6 +884,37 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
       Flush();
    }
 
+   protected void appendTextLine(string text) => appendTextLine(text, Encoding);
+
+   protected void appendTextLine(string text, Encoding encoding)
+   {
+      folder.CreateIfNonExistent();
+      using var file = File.Open(fullPath, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+      using var writer = new StreamWriter(file, encoding);
+      writer.WriteLine(text);
+   }
+
+   public void AppendLine(string text) => AppendLine(text, Encoding);
+
+   public void AppendLine(string text, Encoding encoding)
+   {
+      if (useBuffer)
+      {
+         var textBuffer = getBuffer();
+         folder.CreateIfNonExistent();
+         textBuffer.Append(text);
+         if (textBuffer.Length > BufferSize)
+         {
+            appendTextLine(textBuffer.ToString());
+            textBuffer.Length = 0;
+         }
+      }
+      else
+      {
+         appendTextLine(text, encoding);
+      }
+   }
+
    public void Flush()
    {
       var stringBuffer = getBuffer();
@@ -1116,9 +1147,6 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
 
          yield return line;
       }
-
-      reader.Dispose();
-      file.Dispose();
    }
 
    protected enum CopyProgressResult : uint
