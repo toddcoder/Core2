@@ -1806,11 +1806,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             symbolWriter.OnPaintBackground(pevent.Graphics, clientRectangle, Enabled);
             break;
          case UiActionType.Divider:
-         {
-            using var brush = new SolidBrush(Color.White); //new SolidBrush(SystemColors.Window);
-            fillRectangle(pevent.Graphics, brush, clientRectangle);
             break;
-         }
          default:
          {
             var backColor = getBackColor();
