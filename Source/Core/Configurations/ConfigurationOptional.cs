@@ -97,5 +97,5 @@ public class ConfigurationOptional
 
    public Optional<string[]> Keys(string key) => Setting(key).Map(s => (string[])[.. s.Items().Select(i => i.key)]);
 
-   public Optional<StringHash> Hash(string key) => Setting(key).Map(s => s.Items().ToStringHash(i => i.key, i => i.text));
+   public Optional<StringHash> StringHash(string key) => Setting(key).Map(s => s.Items().ToStringHash(i => i.key, i => i.text));
 }

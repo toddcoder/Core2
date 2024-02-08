@@ -111,5 +111,5 @@ public class ConfigurationResult
 
    public Result<string[]> Keys(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.key)]);
 
-   public Result<StringHash> Hash(string key) => Setting(key).Map(s => s.Items().ToStringHash(i => i.key, i => i.text));
+   public Result<StringHash> StringHash(string key) => Setting(key).Map(s => s.Items().ToStringHash(i => i.key, i => i.text));
 }

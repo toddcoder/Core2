@@ -47,5 +47,5 @@ public class ConfigurationRequired
 
    public string[] Keys(string key) => configurationItem.Result.Keys(key);
 
-   public StringHash Hash(string key) => configurationItem.Result.Hash(key);
+   public StringHash StringHash(string key) => configurationItem.Result.StringHash(key);
 }

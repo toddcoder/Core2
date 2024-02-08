@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Core.Arrays;
+using Core.Collections;
 using Core.Computers;
 using Core.Enumerables;
 
@@ -85,5 +86,19 @@ public class SettingSetter(Setting setting, string key)
    public string[] SettingTexts
    {
       set => setting.SetItem(key, new Setting(value.Indexed().Select(t => (key: $"${t.index}", value: t.item))));
+   }
+
+   public StringHash StringHash
+   {
+      set
+      {
+         var innerSetting = new Setting(key);
+         foreach (var (hashKey, hashValue) in value)
+         {
+            innerSetting[hashKey] = hashValue;
+         }
+
+         setting.SetItem(key, innerSetting);
+      }
    }
 }

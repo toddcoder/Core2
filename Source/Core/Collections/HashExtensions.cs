@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using Core.Computers;
 using Core.Configurations;
@@ -483,14 +482,12 @@ public static class HashExtensions
       return result;
    }
 
-   public static IEnumerator<T> AsEnumerator<T>(this IEnumerable enumerable) => ((IEnumerable<T>)enumerable).GetEnumerator();
-
-   public static Result<Setting> ToSetting<TKey, TValue>(this IHash<TKey, TValue> hash) where TKey : notnull where TValue : notnull
+   public static Result<Setting> ToSetting<TKey, TValue>(this IHash<TKey, TValue> hash, string name = Setting.ROOT_NAME) where TKey : notnull where TValue : notnull
    {
       try
       {
          var internalHash = hash.GetHash();
-         var toSetting = new Setting();
+         var toSetting = new Setting(name);
          foreach (var (key, value) in internalHash)
          {
             var keyAsString = key.ToString()!;

@@ -51,5 +51,5 @@ public class ConfigurationValue
 
    public string[] Keys(string key) => [.. Setting(key).Items().Select(i => i.key)];
 
-   public StringHash Hash(string key) => Setting(key).Items().ToStringHash(i => i.key, i => i.text);
+   public StringHash StringHash(string key) => Setting(key).Items().ToStringHash(i => i.key, i => i.text);
 }

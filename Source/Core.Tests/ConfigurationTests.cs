@@ -172,9 +172,9 @@ public class ConfigurationTests
          Escape = "\r \t \\ foobar"
       };
       var _setting = Setting.Serialize(test, "test");
-      if (_setting)
+      if (_setting is (true, var setting))
       {
-         Console.Write(_setting);
+         Console.Write(setting);
       }
       else
       {
@@ -616,8 +616,26 @@ public class ConfigurationTests
       setting.Set("index").Int32 = 153;
       setting.Set("name").String = "foobar";
       setting.Set("now").DateTime = DateTime.Now;
+      setting.Set("data").StringHash = new StringHash() { ["alpha"] = "a", ["bravo"] = "b", ["charlie"] = "c" };
 
       Console.Write(setting.ToString());
+
+      var serializer = new Serializer(setting);
+      if (serializer.Serialize() is (true, var json))
+      {
+         Console.WriteLine(json);
+
+         var deserializer = new Deserializer(json);
+         var _setting = deserializer.Deserialize();
+         if (_setting is (true, var newSetting))
+         {
+            var hash = newSetting.Value.StringHash("data");
+            foreach (var (hKey, hValue) in hash)
+            {
+               Console.WriteLine($"{hKey}: {hValue}");
+            }
+         }
+      }
    }
 
    [TestMethod]

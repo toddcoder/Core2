@@ -97,5 +97,5 @@ public class ConfigurationMaybe
 
    public Maybe<string[]> Keys(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.key)]);
 
-   public Maybe<StringHash> Hash(string key) => Setting(key).Map(s => s.Items().ToStringHash(i => i.key, i => i.text));
+   public Maybe<StringHash> StringHash(string key) => Setting(key).Map(s => s.Items().ToStringHash(i => i.key, i => i.text));
 }
