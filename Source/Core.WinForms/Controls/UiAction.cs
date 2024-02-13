@@ -129,6 +129,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    internal Maybe<string> _clickText;
    protected LazyMaybe<BusyTextProcessor> _busyTextProcessor;
    protected LazyMaybe<ProgressDefiniteProcessor> _progressDefiniteProcessor;
+   protected LazyMaybe<ProgressMiniProcessor> _progressMiniProcessor;
    protected LazyMaybe<BusyProcessor> _busyProcessor;
    protected Maybe<int> _percentage;
    protected Maybe<Color> _foreColor;
@@ -290,6 +291,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       _busyTextProcessor = nil;
       _progressDefiniteProcessor = nil;
+      _progressMiniProcessor = nil;
       _busyProcessor = nil;
 
       Resize += (_, _) =>
@@ -514,6 +516,12 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             var clientRectangle = getClientRectangle();
             var _uiAction = maybe<UiAction>() & showToGo & this;
             _progressDefiniteProcessor.Activate(() => new ProgressDefiniteProcessor(Font, graphics, clientRectangle, _uiAction));
+            break;
+         }
+         case UiActionType.ProgressMini:
+         {
+            var clientRectangle = getClientRectangle();
+            _progressMiniProcessor.Activate(() => new ProgressMiniProcessor(clientRectangle));
             break;
          }
       }
@@ -1202,6 +1210,20 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       refresh();
    }
 
+   public void ProgressMini()
+   {
+      value = index++;
+      Text = "";
+      type = UiActionType.ProgressMini;
+
+      if (_taskBarProgress is (true, var taskBarProgress))
+      {
+         taskBarProgress.Value = value;
+      }
+
+      refresh();
+   }
+
    public bool ProgressStripe { get; set; }
 
    public void Progress()
@@ -1738,6 +1760,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             using var cornflowerBlueBrush = new SolidBrush(Color.CornflowerBlue);
             fillRectangle(pevent.Graphics, cornflowerBlueBrush, rectangle);
 
+            break;
+         }
+         case UiActionType.ProgressMini when _progressMiniProcessor is (true, var progressMiniProcessor):
+         {
+            progressMiniProcessor.OnPaintBackground(pevent.Graphics, value, maximum);
             break;
          }
          case UiActionType.MuteProgress:

@@ -14,6 +14,7 @@ public enum UiActionType
    Tape,
    ProgressIndefinite,
    ProgressDefinite,
+   ProgressMini,
    BusyText,
    Automatic,
    Disabled,
