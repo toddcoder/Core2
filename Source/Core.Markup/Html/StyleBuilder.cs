@@ -5,6 +5,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Html;
 
+[Obsolete("Use HtmlBuilder")]
 public class StyleBuilder
 {
    // ReSharper disable once CollectionNeverUpdated.Global

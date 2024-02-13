@@ -1,4 +1,5 @@
 ﻿using Core.WinForms.Controls;
+using Core.WinForms.Drawing;
 
 namespace Core.WinForms.Tests;
 
@@ -76,16 +77,23 @@ public partial class Form1 : Form
       var uiButton6 = new UiAction(this);
       uiButton6.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 5);
       uiButton6.Button("Next stage");
-      uiButton6.Click += (_, _) => { stager.NextStage(UiActionType.Success); };
+      uiButton6.Click += (_, _) => stager.NextStage(UiActionType.Success);
       uiButton6.ClickText = "Next stage";
 
       var uiButton7 = new UiAction(this);
       uiButton7.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 6);
-      uiButton7.Button("Divider");
+      uiButton7.Button("Fader");
       uiButton7.Click += (_, _) =>
       {
-         uiAction.Divider("divider");
+         var fader = new ColorFader(Color.Coral, Color.CadetBlue);
+         for (var i = 0; i <= 100; i++)
+         {
+            using var g = uiAction.CreateGraphics();
+            fader.OnPaint(g, uiAction.ClientRectangle, i, 100);
+            Thread.Sleep(500);
+         }
+         uiAction.Success("Faded");
       };
-      uiButton7.ClickText = "Divider";
+      uiButton7.ClickText = "Fader";
    }
 }

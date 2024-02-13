@@ -10,14 +10,16 @@ public class MarkupTests
    [TestMethod]
    public void StyleBuildTest()
    {
-      var builder = new StyleBuilder();
-      builder.Add("table, th, td", "border", "1px solid black");
-      builder.Add("border-collapse", "collapse");
-      builder.Add("padding", "5px");
-      builder.Add("font-family", "Verdana");
+      var builder = new HtmlBuilder();
 
-      builder.Add("tr:nth-child(even)", "color", "white");
-      builder.Add("background-color", "salmon");
+      var tableThTd = builder + "table, th, td {";
+      _ = tableThTd + "border: collapse";
+      _ = tableThTd + "padding: 5px";
+      _ = tableThTd + "front-family: Verdana";
+
+      var trNthChildEven = builder + "tr:nth-child(even) {";
+      _ = trNthChildEven + "color: white";
+      _ = trNthChildEven + "background-color: salmon";
 
       Console.WriteLine(builder);
    }

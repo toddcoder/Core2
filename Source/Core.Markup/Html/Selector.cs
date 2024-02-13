@@ -5,7 +5,7 @@ using static Core.Objects.GetHashCodeGenerator;
 
 namespace Core.Markup.Html;
 
-public class Selector : IEquatable<Selector>
+public class Selector(string name) : IEquatable<Selector>
 {
    public static implicit operator Selector(string source)
    {
@@ -34,24 +34,17 @@ public class Selector : IEquatable<Selector>
       return selector;
    }
 
-   protected List<Style> styles;
+   protected List<Style> styles = [];
 
-   public Selector(string name)
-   {
-      Name = name;
-
-      styles = [];
-   }
-
-   public string Name { get; }
+   public string Name => name;
 
    public void Add(Style style) => styles.Add(style);
 
-   public bool Equals(Selector? other) => other is not null && Equals(styles, other.styles) && Name == other.Name;
+   public bool Equals(Selector? other) => other is not null && Equals(styles, other.styles) && name == other.Name;
 
    public override bool Equals(object? obj) => obj is Selector other && Equals(other);
 
-   public override int GetHashCode() => hashCode() + styles + Name;
+   public override int GetHashCode() => hashCode() + styles + name;
 
    public static bool operator ==(Selector left, Selector right) => Equals(left, right);
 
@@ -61,7 +54,7 @@ public class Selector : IEquatable<Selector>
    {
       using var writer = new StringWriter();
       writer.WriteLine();
-      writer.WriteLine($"   {Name} {{");
+      writer.WriteLine($"   {name} {{");
       foreach (var style in styles)
       {
          writer.WriteLine($"      {style};");
