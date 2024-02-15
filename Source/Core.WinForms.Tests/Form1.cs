@@ -82,18 +82,8 @@ public partial class Form1 : Form
 
       var uiButton7 = new UiAction(this);
       uiButton7.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 6);
-      uiButton7.Button("Fader");
-      uiButton7.Click += (_, _) =>
-      {
-         var fader = new ColorFader(Color.Coral, Color.CadetBlue);
-         for (var i = 0; i <= 100; i++)
-         {
-            using var g = uiAction.CreateGraphics();
-            fader.OnPaint(g, uiAction.ClientRectangle, i, 100);
-            Thread.Sleep(500);
-         }
-         uiAction.Success("Faded");
-      };
-      uiButton7.ClickText = "Fader";
+      uiButton7.Button("Divider");
+      uiButton7.Click += (_, _) => uiButton7.Divider("divider");
+      uiButton7.ClickText = "Divider";
    }
 }

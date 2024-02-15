@@ -1511,7 +1511,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             var textRectangle = getDividerTextRectangle(e.Graphics, clientRectangle);
             using var pen = new Pen(Color.White);
             TextRenderer.DrawText(e.Graphics, text, Font, textRectangle, Color.White, Color.CadetBlue,
-               TextFormatFlags.Left | TextFormatFlags.EndEllipsis);
+               TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis);
             break;
          }
          default:
@@ -3358,10 +3358,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    protected Rectangle getDividerTextRectangle(Graphics g, Rectangle rectangleRectangle)
    {
-      var textSize = UiActionWriter.TextSize(g, text, Font, TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis)
+      var textSize = UiActionWriter.TextSize(g, text, Font, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis)
          .Resize(2, 2);
       var top = rectangleRectangle.Height / 2 - textSize.Height / 2;
 
-      return new Rectangle(rectangleRectangle.X + 4, top, textSize.Width, textSize.Height);
+      return new Rectangle(rectangleRectangle.X + 4, top, rectangleRectangle.Width, textSize.Height);
    }
 }
