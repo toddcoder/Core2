@@ -1509,9 +1509,12 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             using var brush = new SolidBrush(Color.DarkBlue);
             e.Graphics.FillRectangle(brush, rectangle);
             var textRectangle = getDividerTextRectangle(e.Graphics, clientRectangle);
+            using var backBrush = new SolidBrush(Color.CadetBlue);
+            fillRectangle(e.Graphics, backBrush, textRectangle);
             using var pen = new Pen(Color.White);
-            TextRenderer.DrawText(e.Graphics, text, Font, textRectangle, Color.White, Color.CadetBlue,
-               TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis);
+            var flags = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis |
+               TextFormatFlags.LeftAndRightPadding;
+            TextRenderer.DrawText(e.Graphics, text, Font, textRectangle, Color.White, flags);
             break;
          }
          default:
@@ -3358,10 +3361,17 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    protected Rectangle getDividerTextRectangle(Graphics g, Rectangle rectangleRectangle)
    {
-      var textSize = UiActionWriter.TextSize(g, text, Font, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis)
-         .Resize(2, 2);
-      var top = rectangleRectangle.Height / 2 - textSize.Height / 2;
+      var flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis;
+      var textSize = UiActionWriter.TextSize(g, text, Font, flags);
 
-      return new Rectangle(rectangleRectangle.X + 4, top, rectangleRectangle.Width, textSize.Height);
+      var offset = 4;
+
+      var left = (rectangleRectangle.Width - textSize.Width) / 2 - offset;
+      var top = rectangleRectangle.Height / 2 - textSize.Height / 2 - offset;
+      var width = textSize.Width + 2 * offset;
+      var height = textSize.Height + 2 * offset;
+
+      var rectangle = new Rectangle(left, top, width, height);
+      return rectangle;
    }
 }
