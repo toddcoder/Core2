@@ -1513,9 +1513,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             fillRectangle(e.Graphics, backBrush, textRectangle);
             if (isDirty)
             {
-               using var dirtyBrush = new HatchBrush(HatchStyle.WideDownwardDiagonal, ControlPaint.Light(Color.CadetBlue), Color.White);
+               using var dirtyBrush = new HatchBrush(HatchStyle.NarrowHorizontal, ControlPaint.Light(Color.CadetBlue), Color.White);
                using var dirtyPen = new Pen(dirtyBrush, 6);
-               e.Graphics.DrawRectangle(dirtyPen, textRectangle);
+               var leftSide = textRectangle.Location;
+               var rightSide = textRectangle.NorthEast();
+               e.Graphics.DrawLine(dirtyPen, leftSide, rightSide);
             }
             using var pen = new Pen(Color.White);
             var flags = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis |
@@ -1856,9 +1858,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       {
          var backColor = getBackColor();
          var foreColor = ControlPaint.Light(backColor);
-         using var brush = new HatchBrush(HatchStyle.WideDownwardDiagonal, foreColor, backColor);
+         using var brush = new HatchBrush(HatchStyle.NarrowHorizontal, foreColor, backColor);
          using var pen = new Pen(brush, 10);
-         pevent.Graphics.DrawRectangle(pen, clientRectangle);
+         var leftSide = clientRectangle.Location;
+         var rightSide = clientRectangle.NorthEast();
+         pevent.Graphics.DrawLine(pen, leftSide, rightSide);
       }
 
       if (Is3D)

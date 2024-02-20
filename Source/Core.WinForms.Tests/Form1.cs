@@ -1,4 +1,5 @@
 ﻿using Core.WinForms.Controls;
+using System.Drawing.Drawing2D;
 
 namespace Core.WinForms.Tests;
 
@@ -15,6 +16,14 @@ public partial class Form1 : Form
       uiAction.NoStatus("not set");
       uiAction.WorkingAlignment = CardinalAlignment.SouthEast;
       uiAction.Maximum = 100;
+      /*uiAction.Painting += (_, e) =>
+      {
+         using var dirtyBrush = new HatchBrush(HatchStyle.NarrowHorizontal, Color.Black, Color.White);
+         using var dirtyPen = new Pen(dirtyBrush, 10);
+         var leftSide = e.ClipRectangle.Location;
+         var rightSide = e.ClipRectangle.NorthEast();
+         e.Graphics.DrawLine(dirtyPen, leftSide, rightSide);
+      };*/
 
       var uiDivider = new UiAction(this);
       uiDivider.SetUpInTableLayoutPanel(tableLayoutPanel, 0, 8, 3);
