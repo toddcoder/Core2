@@ -1,5 +1,4 @@
 ﻿using Core.WinForms.Controls;
-using Core.WinForms.Drawing;
 
 namespace Core.WinForms.Tests;
 
@@ -18,7 +17,7 @@ public partial class Form1 : Form
       uiAction.Maximum = 100;
 
       var uiDivider = new UiAction(this);
-      uiDivider.SetUpInTableLayoutPanel(tableLayoutPanel, 0, 7, 3);
+      uiDivider.SetUpInTableLayoutPanel(tableLayoutPanel, 0, 8, 3);
       uiDivider.Divider("part 2");
 
       var uiButton1 = new UiAction(this);
@@ -85,5 +84,20 @@ public partial class Form1 : Form
       uiButton7.Button("Divider");
       uiButton7.Click += (_, _) => uiButton7.Divider("divider");
       uiButton7.ClickText = "Divider";
+
+      var uiButton8 = new UiAction(this);
+      uiButton8.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 7);
+      uiButton8.Button("Dirty");
+      uiButton8.Click += (_, _) =>
+      {
+         uiDivider.IsDirty = !uiDivider.IsDirty;
+         if (uiAction.Type is not UiActionType.Success)
+         {
+            uiAction.Success("Is Dirty");
+         }
+
+         uiAction.IsDirty = !uiAction.IsDirty;
+      };
+      uiButton8.ClickText = "Dirty";
    }
 }

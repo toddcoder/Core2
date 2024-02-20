@@ -1511,6 +1511,12 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             var textRectangle = getDividerTextRectangle(e.Graphics, clientRectangle);
             using var backBrush = new SolidBrush(Color.CadetBlue);
             fillRectangle(e.Graphics, backBrush, textRectangle);
+            if (isDirty)
+            {
+               using var dirtyBrush = new HatchBrush(HatchStyle.WideDownwardDiagonal, ControlPaint.Light(Color.CadetBlue), Color.White);
+               using var dirtyPen = new Pen(dirtyBrush, 6);
+               e.Graphics.DrawRectangle(dirtyPen, textRectangle);
+            }
             using var pen = new Pen(Color.White);
             var flags = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis |
                TextFormatFlags.LeftAndRightPadding;
@@ -1519,7 +1525,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          }
          default:
          {
-            if (type != UiActionType.Tape)
+            if (type is not UiActionType.Tape)
             {
                writer.Write(e.Graphics, text);
             }
@@ -1846,12 +1852,13 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          }
       }
 
-      if (isDirty)
+      if (isDirty && type is not UiActionType.Divider)
       {
          var backColor = getBackColor();
          var foreColor = ControlPaint.Light(backColor);
          using var brush = new HatchBrush(HatchStyle.WideDownwardDiagonal, foreColor, backColor);
-         fillRectangle(pevent.Graphics, brush, clientRectangle);
+         using var pen = new Pen(brush, 10);
+         pevent.Graphics.DrawRectangle(pen, clientRectangle);
       }
 
       if (Is3D)

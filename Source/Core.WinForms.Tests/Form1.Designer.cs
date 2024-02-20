@@ -61,7 +61,7 @@
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
-         tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 40F));
+         tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
          tableLayoutPanel.Size = new Size(938, 656);
          tableLayoutPanel.TabIndex = 0;
