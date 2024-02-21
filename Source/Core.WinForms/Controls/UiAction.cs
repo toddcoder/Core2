@@ -1513,7 +1513,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             fillRectangle(e.Graphics, backBrush, textRectangle);
             if (isDirty)
             {
-               using var dirtyBrush = new HatchBrush(HatchStyle.NarrowHorizontal, ControlPaint.Light(Color.CadetBlue), Color.White);
+               using var dirtyBrush = new HatchBrush(HatchStyle.DiagonalCross, ControlPaint.Light(Color.CadetBlue), Color.White);
                using var dirtyPen = new Pen(dirtyBrush, 6);
                var leftSide = textRectangle.Location;
                var rightSide = textRectangle.NorthEast();
@@ -1858,8 +1858,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       {
          var backColor = getBackColor();
          var foreColor = ControlPaint.Light(backColor);
-         using var brush = new HatchBrush(HatchStyle.NarrowHorizontal, foreColor, backColor);
-         using var pen = new Pen(brush, 10);
+         using var brush = new HatchBrush(HatchStyle.DiagonalCross, foreColor, backColor);
+         using var pen = new Pen(brush, 14);
          var leftSide = clientRectangle.Location;
          var rightSide = clientRectangle.NorthEast();
          pevent.Graphics.DrawLine(pen, leftSide, rightSide);
