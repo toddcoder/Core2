@@ -48,7 +48,7 @@ public partial class Form1 : Form
       uiButton3.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 2);
       uiButton3.Click += (_, _) =>
       {
-         uiAction.Working = "working";
+         /*uiAction.Working = "working";
          if (uiButton3.IsKeyDown)
          {
             uiAction.Busy("busy");
@@ -56,14 +56,18 @@ public partial class Form1 : Form
          else if (progressIndex <= 100)
          {
             uiAction.Progress(progressIndex++);
-         }
+         }*/
+         var textBox = new ExRichTextBox();
+         uiButton3.Controls.Add(textBox);
+         textBox.Location = new Point(0, 0);
+         textBox.Size = uiButton3.ClientSize;
       };
       uiButton3.ClickText = "Working";
 
       var uiButton4 = new UiAction(this);
       uiButton4.SetUpInTableLayoutPanel(tableLayoutPanel, 2, 3);
       uiButton4.Button("Pulse");
-      uiButton4.Click += (_, _) => { uiAction.Pulse(); };
+      uiButton4.Click += (_, _) => uiAction.Pulse();
       uiButton4.ClickText = "Pulse";
 
       var stager = new UiStager(panel1);
