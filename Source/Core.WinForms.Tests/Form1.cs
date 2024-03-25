@@ -19,21 +19,21 @@ public partial class Form1 : Form
       _ = builder * 8 + 60.RowPixels();
       _ = builder + 100.RowPercent() + setup;
 
-      _ = builder + panel1 + 0.At(0) + control;
+      _ = builder + panel1 + (0, 0) + control;
 
       var uiDivider = new UiAction(this);
-      _ = builder + uiDivider + 0.At(8) + 3.ColSpan() + control;
+      _ = builder + uiDivider + (0, 8) + 3.ColSpan() + control;
       uiDivider.Divider("part 2");
 
-      var uiAction1 = new UiAction(this) { AutoSizeText = true };
-      _ = builder + uiAction1 + 1.At(0) + down;
-      uiAction1.NoStatus("action 1");
-      uiAction1.WorkingAlignment = CardinalAlignment.SouthEast;
-      uiAction1.Maximum = 100;
+      var uiAlternates = new UiAction(this) { AutoSizeText = true };
+      _ = builder + uiAlternates + (1, 0) + down;
+      uiAlternates.NoStatus("alternates action");
+      uiAlternates.WorkingAlignment = CardinalAlignment.SouthEast;
+      uiAlternates.Maximum = 100;
 
-      var uiAction2 = new UiAction(this) { AutoSizeText = true };
-      _ = builder + uiAction2 + down;
-      uiAction2.NoStatus("action 2");
+      var uiCheckBox = new UiAction(this) { AutoSizeText = true };
+      _ = builder + uiCheckBox + down;
+      uiCheckBox.NoStatus("checkbox action");
 
       var uiAction3 = new UiAction(this) { AutoSizeText = true };
       _ = builder + uiAction3 + down;
@@ -41,16 +41,16 @@ public partial class Form1 : Form
 
       var uiButton1 = new UiAction(this);
       uiButton1.DefaultButton("alternates");
-      _ = builder + uiButton1 + 2.At(0) + down;
+      _ = builder + uiButton1 + (2, 0) + down;
       AcceptButton = uiButton1;
-      uiButton1.Click += (_, _) => uiAction1.Alternate("alpha", "bravo", "charlie");
+      uiButton1.Click += (_, _) => uiAlternates.Alternate("alpha", "bravo", "charlie");
       uiButton1.ClickText = "alternates";
 
       var uiButton2 = new UiAction(this);
       uiButton2.CancelButton("checkbox");
       _ = builder + uiButton2 + down;
       CancelButton = uiButton2;
-      uiButton2.Click += (_, _) => uiAction2.CheckBox("Fixed", false);
+      uiButton2.Click += (_, _) => uiCheckBox.CheckBox("Fixed", false);
       uiButton2.ClickText = "Cancel";
 
       var uiButton3 = new UiAction(this) { AutoSizeText = true };
@@ -67,7 +67,7 @@ public partial class Form1 : Form
       var uiButton4 = new UiAction(this);
       _ = builder + uiButton4 + down;
       uiButton4.Button("Pulse");
-      uiButton4.Click += (_, _) => uiAction1.Pulse();
+      uiButton4.Click += (_, _) => uiAction3.Pulse();
       uiButton4.ClickText = "Pulse";
 
       var stager = new UiStager(panel1);
@@ -103,12 +103,12 @@ public partial class Form1 : Form
       uiButton8.Click += (_, _) =>
       {
          uiDivider.IsDirty = !uiDivider.IsDirty;
-         if (uiAction1.Type is not UiActionType.Success)
+         if (uiAlternates.Type is not UiActionType.Success)
          {
-            uiAction1.Success("Is Dirty");
+            uiAlternates.Success("Is Dirty");
          }
 
-         uiAction1.IsDirty = !uiAction1.IsDirty;
+         uiAlternates.IsDirty = !uiAlternates.IsDirty;
       };
       uiButton8.ClickText = "Dirty";
    }

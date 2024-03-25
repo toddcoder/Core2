@@ -65,7 +65,7 @@ public class ColumnBuilder(Control control, Builder builder)
    {
       Terminator.Control => builder.Builder.AddColumn(builder, true),
       Terminator.Row => builder.Builder.NextRow(builder),
-      Terminator.Down=>builder.Builder.Down(builder),
+      Terminator.Down => builder.Builder.Down(builder),
       _ => builder.Builder
    };
 

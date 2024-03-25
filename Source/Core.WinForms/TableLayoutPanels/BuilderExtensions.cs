@@ -2,13 +2,10 @@
 
 using SpanInfo = (Span span, int amount);
 using AxisInfo = (Axis axis, int amount);
-using Location = (int column, int row);
 using BuilderSetup = (Setup setup, Axis axis, float amount);
 
 public static class BuilderExtensions
 {
-   public static Location At(this int column, int row) => (column, row);
-
    public static AxisInfo Col(this int amount) => (Axis.Column, amount);
 
    public static AxisInfo Row(this int amount) => (Axis.Row, amount);
