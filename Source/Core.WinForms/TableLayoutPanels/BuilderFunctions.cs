@@ -12,6 +12,8 @@ public static class BuilderFunctions
 
    public static readonly Terminator down = Terminator.Down;
 
+   public static readonly Terminator skip = Terminator.Skip;
+
    public static BuilderSetup colAutoSize() => (Setup.AutoSize, Axis.Column, 0);
 
    public static BuilderSetup rowAutoSize() => (Setup.AutoSize, Axis.Row, 0);

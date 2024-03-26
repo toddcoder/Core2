@@ -206,25 +206,13 @@ public class Builder(TableLayoutPanel tableLayoutPanel)
       {
          currentColumn = column;
       }
-      else
-      {
-         column = currentColumn;
-         if (incrementColumn)
-         {
-            currentColumn++;
-         }
-      }
 
       if (columnBuilder.Row is (true, var row))
       {
          currentRow = row;
       }
-      else
-      {
-         row = currentRow;
-      }
 
-      tableLayoutPanel.Controls.Add(control, column, row);
+      tableLayoutPanel.Controls.Add(control, currentColumn, currentRow);
 
       if (columnBuilder.ColumnSpan is (true, var columnSpan))
       {
@@ -238,12 +226,17 @@ public class Builder(TableLayoutPanel tableLayoutPanel)
 
       control.Font = new Font(columnBuilder.FontName, columnBuilder.FontSize);
 
+      if (incrementColumn)
+      {
+         currentColumn++;
+      }
+
       return this;
    }
 
    public Builder NextRow(ColumnBuilder builder)
    {
-      AddColumn(builder, true);
+      AddColumn(builder, false);
       currentRow++;
       currentColumn = 0;
 
@@ -255,6 +248,12 @@ public class Builder(TableLayoutPanel tableLayoutPanel)
       AddColumn(builder, false);
       currentRow++;
 
+      return this;
+   }
+
+   public Builder Skip()
+   {
+      currentColumn++;
       return this;
    }
 }

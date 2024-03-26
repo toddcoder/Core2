@@ -12,70 +12,70 @@ public partial class Form1 : Form
    {
       InitializeComponent();
 
-      panel1 = new Panel();
-
       var builder = new Builder(tableLayoutPanel);
-      _ = builder + 50.ColPercent() + 30.ColPercent() + 20.ColPercent();
+      _ = builder + 80.ColPercent() + 20.ColPercent();
       _ = builder * 8 + 60.RowPixels();
       _ = builder + 100.RowPercent() + setup;
 
-      _ = builder + panel1 + (0, 0) + control;
-
       var uiDivider = new UiAction(this);
-      _ = builder + uiDivider + (0, 8) + 3.ColSpan() + control;
+      _ = builder + uiDivider + (0, 8) - (2, 0) + control;
       uiDivider.Divider("part 2");
 
       var uiAlternates = new UiAction(this) { AutoSizeText = true };
-      _ = builder + uiAlternates + (1, 0) + down;
+      _ = builder + uiAlternates + (0, 0) + control;
       uiAlternates.NoStatus("alternates action");
       uiAlternates.WorkingAlignment = CardinalAlignment.SouthEast;
       uiAlternates.Maximum = 100;
 
-      var uiCheckBox = new UiAction(this) { AutoSizeText = true };
-      _ = builder + uiCheckBox + down;
-      uiCheckBox.NoStatus("checkbox action");
-
-      var uiAction3 = new UiAction(this) { AutoSizeText = true };
-      _ = builder + uiAction3 + down;
-      uiAction3.NoStatus("action 3");
-
       var uiButton1 = new UiAction(this);
       uiButton1.DefaultButton("alternates");
-      _ = builder + uiButton1 + (2, 0) + down;
+      _ = builder + uiButton1 + row;
       AcceptButton = uiButton1;
       uiButton1.Click += (_, _) => uiAlternates.Alternate("alpha", "bravo", "charlie");
       uiButton1.ClickText = "alternates";
 
+      var uiCheckBox = new UiAction(this) { AutoSizeText = true };
+      _ = builder + uiCheckBox + control;
+      uiCheckBox.NoStatus("checkbox action");
+
       var uiButton2 = new UiAction(this);
       uiButton2.CancelButton("checkbox");
-      _ = builder + uiButton2 + down;
+      _ = builder + uiButton2 + row;
       CancelButton = uiButton2;
       uiButton2.Click += (_, _) => uiCheckBox.CheckBox("Fixed", false);
       uiButton2.ClickText = "Cancel";
 
+      var uiWorking = new UiAction(this) { AutoSizeText = true };
+      _ = builder + uiWorking + control;
+      uiWorking.NoStatus("working action");
+
       var uiButton3 = new UiAction(this) { AutoSizeText = true };
       uiButton3.KeyMatch("progress", "busy");
       uiButton3.Button("Working");
-      _ = builder + uiButton3 + down;
+      _ = builder + uiButton3 + row;
       uiButton3.Click += (_, _) =>
       {
-         uiAction3.WorkingAlignment = CardinalAlignment.SouthEast;
-         uiAction3.Working = "working";
+         if (uiWorking.Working)
+         {
+            uiWorking.Pulse();
+         }
+         else
+         {
+            uiWorking.WorkingAlignment = CardinalAlignment.SouthEast;
+            uiWorking.Working = "working";
+         }
       };
       uiButton3.ClickText = "Working";
 
-      var uiButton4 = new UiAction(this);
-      _ = builder + uiButton4 + down;
-      uiButton4.Button("Pulse");
-      uiButton4.Click += (_, _) => uiAction3.Pulse();
-      uiButton4.ClickText = "Pulse";
+      panel1 = new Panel();
+      _ = builder + panel1 + control;
 
       var stager = new UiStager(panel1);
 
-      var uiButton5 = new UiAction(this);
-      _ = builder + uiButton5 + down;
-      uiButton5.Button("Test stager");
-      uiButton5.Click += (_, _) =>
+      var uiButton4 = new UiAction(this);
+      _ = builder + uiButton4 + row;
+      uiButton4.Button("Test stager");
+      uiButton4.Click += (_, _) =>
       {
          foreach (var text in (string[]) ["alpha", "bravo", "charlie"])
          {
@@ -83,33 +83,31 @@ public partial class Form1 : Form
             stager.Add(uiAction, text);
          }
       };
-      uiButton5.ClickText = "Test stager";
+      uiButton4.ClickText = "Test stager";
+
+      var uiButton5 = new UiAction(this);
+      _ = builder + uiButton5 + (1, -1) + row;
+      uiButton5.Button("Next stage");
+      uiButton5.Click += (_, _) => stager.NextStage(UiActionType.Success);
+      uiButton5.ClickText = "Next stage";
+
+      var uiDirty = new UiAction(this);
+      _ = builder + uiDirty + control;
+      uiDirty.Success("Not Dirty");
 
       var uiButton6 = new UiAction(this);
       _ = builder + uiButton6 + down;
-      uiButton6.Button("Next stage");
-      uiButton6.Click += (_, _) => stager.NextStage(UiActionType.Success);
-      uiButton6.ClickText = "Next stage";
-
-      var uiButton7 = new UiAction(this);
-      _ = builder + uiButton7 + down;
-      uiButton7.Button("Divider");
-      uiButton7.Click += (_, _) => uiButton7.Divider("divider");
-      uiButton7.ClickText = "Divider";
-
-      var uiButton8 = new UiAction(this);
-      _ = builder + uiButton8 + down;
-      uiButton8.Button("Dirty");
-      uiButton8.Click += (_, _) =>
+      uiButton6.Button("Dirty");
+      uiButton6.Click += (_, _) =>
       {
          uiDivider.IsDirty = !uiDivider.IsDirty;
-         if (uiAlternates.Type is not UiActionType.Success)
+         if (uiDirty.Type is not UiActionType.Success)
          {
-            uiAlternates.Success("Is Dirty");
+            uiDirty.Success("Is Dirty");
          }
 
-         uiAlternates.IsDirty = !uiAlternates.IsDirty;
+         uiDirty.IsDirty = !uiDirty.IsDirty;
       };
-      uiButton8.ClickText = "Dirty";
+      uiButton6.ClickText = "Dirty";
    }
 }

@@ -7,8 +7,23 @@ public class ColumnBuilder(Control control, Builder builder)
 {
    public static ColumnBuilder operator +(ColumnBuilder builder, (int column, int row) location)
    {
-      builder.Column = location.column;
-      builder.Row = location.row;
+      builder.Column = maybe<int>() & location.column > -1 & location.column;
+      builder.Row = maybe<int>() & location.row > -1 & location.row;
+
+      return builder;
+   }
+
+   public static ColumnBuilder operator -(ColumnBuilder builder, (int columnSpan, int rowSpan) span)
+   {
+      if (span.columnSpan > 0)
+      {
+         builder.ColumnSpan = span.columnSpan;
+      }
+
+      if (span.rowSpan > 0)
+      {
+         builder.RowSpan = span.rowSpan;
+      }
 
       return builder;
    }
@@ -66,6 +81,7 @@ public class ColumnBuilder(Control control, Builder builder)
       Terminator.Control => builder.Builder.AddColumn(builder, true),
       Terminator.Row => builder.Builder.NextRow(builder),
       Terminator.Down => builder.Builder.Down(builder),
+      Terminator.Skip => builder.Builder.Skip(),
       _ => builder.Builder
    };
 

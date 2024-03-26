@@ -5,5 +5,6 @@ public enum Terminator
    Setup,
    Control,
    Row,
-   Down
+   Down,
+   Skip
 }
