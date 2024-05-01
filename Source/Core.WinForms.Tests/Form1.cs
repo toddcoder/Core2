@@ -164,11 +164,10 @@ public partial class Form1 : Form
 
       string[] choices =
       [
-         "alfa", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel", "india", "juliett", "kilo", "lima", "mike", "november", "oscar",
+         "alfa", "bravo", "charlie", "delta" , "echo", "foxtrot", "golf", "hotel", "india", "juliett", "kilo", "lima", "mike", "november", "oscar",
          "papa", "quebec", "romeo", "sierra", "tango", "uniform", "victor", "whiskey", "xray", "yankee", "zulu", "/not X"
       ];
 
-      StringSet selected = [];
       Set<Chosen> chosenSet = [];
 
       var uiButton7 = new UiAction(this) { AutoSizeText = true };
@@ -189,24 +188,8 @@ public partial class Form1 : Form
             }
          }
       };
-      uiButton7.ChosenItemSelected += (_, e) =>
-      {
-         var chosen = e.Chosen;
-         if (chosen.IsChecked)
-         {
-            selected.Add(chosen.Value);
-         }
-         else
-         {
-            selected.Remove(chosen.Value);
-         }
-
-         if (chosen.IsChecked)
-         {
-            uiButton7.Success(selected.Select(s => s.Keep(1)).Order().ToString("|"));
-            chosenSet = e.ChosenSet;
-         }
-      };
+      uiButton7.ChosenItemSelected += (_, e) => chosenSet = e.ChosenSet;
+      uiButton7.ChooserClosed += (_, _) => uiButton7.Success(chosenSet.Select(c => c.Key.Keep(1)).Order().ToString(""));
       uiButton7.ClickText = "Choose";
 
       var uiSubText = new UiAction(this);

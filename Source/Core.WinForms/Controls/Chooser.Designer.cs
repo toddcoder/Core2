@@ -69,6 +69,7 @@
          MinimizeBox = false;
          Name = "Chooser";
          StartPosition = FormStartPosition.Manual;
+         FormClosed += Chooser_FormClosed;
          Load += Chooser_Load;
          MouseDown += Chooser_MouseDown;
          ResumeLayout(false);

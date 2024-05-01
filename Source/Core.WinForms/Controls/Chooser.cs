@@ -64,6 +64,8 @@ public partial class Chooser : Form
 
    public event EventHandler<AppearanceOverrideArgs>? AppearanceOverride;
    public event EventHandler<ChosenArgs>? ChosenItemSelected;
+   public event EventHandler<EventArgs>? ChooserOpened;
+   public event EventHandler<EventArgs>? ChooserClosed;
 
    public Chooser(string title, UiAction uiAction, Maybe<int> _width)
    {
@@ -340,6 +342,8 @@ public partial class Chooser : Form
       SetScrollInfo(listViewItems.Handle, SB_VERTICAL, ref info, true);
 
       CheckFromChosenSet();
+
+      ChooserOpened?.Invoke(this, EventArgs.Empty);
    }
 
    protected void Chooser_MouseDown(object sender, MouseEventArgs e)
@@ -421,4 +425,6 @@ public partial class Chooser : Form
          }
       }
    }
+
+   protected void Chooser_FormClosed(object sender, FormClosedEventArgs e) => ChooserClosed?.Invoke(this, EventArgs.Empty);
 }

@@ -212,6 +212,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    public event EventHandler<UiActionAlternateArgs>? DeleteOnAlternate;
    public event EventHandler<DynamicToolTipArgs>? DynamicToolTip;
    public event EventHandler<ChosenArgs>? ChosenItemSelected;
+   public event EventHandler<EventArgs>? ChooserOpened;
+   public event EventHandler<EventArgs>? ChooserClosed;
 
    public UiAction(Control control, bool is3D = false)
    {
@@ -2848,6 +2850,16 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       if (ChosenItemSelected is not null)
       {
          chooser.ChosenItemSelected += (_, e) => ChosenItemSelected.Invoke(this, e);
+      }
+
+      if (ChooserOpened is not null)
+      {
+         chooser.ChooserOpened += (_, e) => ChooserOpened.Invoke(this, e);
+      }
+
+      if (ChooserClosed is not null)
+      {
+         chooser.ChooserClosed += (_, e) => ChooserClosed.Invoke(this, e);
       }
 
       return new ChooserSet(chooser);
