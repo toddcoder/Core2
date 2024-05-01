@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.2.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Data\Core.Data.csproj" />
+    <ProjectReference Include="..\Core.Internet\Core.Internet.csproj" />
+    <ProjectReference Include="..\Core.Io\Core.Io.csproj" />
+    <ProjectReference Include="..\Core.Json\Core.Json.csproj" />
+    <ProjectReference Include="..\Core.Markup\Core.Markup.csproj" />
+    <ProjectReference Include="..\Core.WinForms\Core.WinForms.csproj" />
+    <ProjectReference Include="..\Core.Zip\Core.Zip.csproj" />
+    <ProjectReference Include="..\Core\Core.csproj" />
+  </ItemGroup>
+
+</Project>

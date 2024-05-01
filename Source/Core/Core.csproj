@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <OutputType>Library</OutputType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <LangVersion>preview</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Core.snk</AssemblyOriginatorKeyFile>
+    <AssemblyTitle>Core</AssemblyTitle>
+    <Product>Core</Product>
+    <Copyright>Copyright © 2020</Copyright>
+    <AssemblyVersion>1.8.0.0</AssemblyVersion>
+    <FileVersion>1.8.0.0</FileVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Core.Data.Sqlite\**" />
+    <Compile Remove="Core.Data\**" />
+    <Compile Remove="Core.Git\**" />
+    <Compile Remove="Core.Internet\**" />
+    <Compile Remove="Core.Io\**" />
+    <Compile Remove="Core.Json\**" />
+    <Compile Remove="Core.Markup\**" />
+    <Compile Remove="Core.Services\**" />
+    <Compile Remove="Core.Sqlite\**" />
+    <Compile Remove="Core.Tests\**" />
+    <Compile Remove="Core.Test\**" />
+    <Compile Remove="Core.WinForms\**" />
+    <Compile Remove="Core.Zip\**" />
+    <Compile Remove="WinFormsTest\**" />
+    <EmbeddedResource Remove="Core.Data.Sqlite\**" />
+    <EmbeddedResource Remove="Core.Data\**" />
+    <EmbeddedResource Remove="Core.Git\**" />
+    <EmbeddedResource Remove="Core.Internet\**" />
+    <EmbeddedResource Remove="Core.Io\**" />
+    <EmbeddedResource Remove="Core.Json\**" />
+    <EmbeddedResource Remove="Core.Markup\**" />
+    <EmbeddedResource Remove="Core.Services\**" />
+    <EmbeddedResource Remove="Core.Sqlite\**" />
+    <EmbeddedResource Remove="Core.Tests\**" />
+    <EmbeddedResource Remove="Core.Test\**" />
+    <EmbeddedResource Remove="Core.WinForms\**" />
+    <EmbeddedResource Remove="Core.Zip\**" />
+    <EmbeddedResource Remove="WinFormsTest\**" />
+    <None Remove="Core.Data.Sqlite\**" />
+    <None Remove="Core.Data\**" />
+    <None Remove="Core.Git\**" />
+    <None Remove="Core.Internet\**" />
+    <None Remove="Core.Io\**" />
+    <None Remove="Core.Json\**" />
+    <None Remove="Core.Markup\**" />
+    <None Remove="Core.Services\**" />
+    <None Remove="Core.Sqlite\**" />
+    <None Remove="Core.Tests\**" />
+    <None Remove="Core.Test\**" />
+    <None Remove="Core.WinForms\**" />
+    <None Remove="Core.Zip\**" />
+    <None Remove="WinFormsTest\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="8.0.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.2.0" />
+    <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+    <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
+  </ItemGroup>
+</Project>
