@@ -3445,25 +3445,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
             (var statusBusyProcessor, _statusBusyProcessor) = _statusBusyProcessor.Create(() => new BusyTextProcessor(getForeColor(), rectangle)
             {
-               SpokeThickness = 1, OuterRadius = diameter / 2
+               SpokeThickness = 1, OuterRadius = diameter / 2, InnerRadius = diameter / 2 - 2
             });
             statusBusyProcessor.OnTick();
             statusBusyProcessor.OnPaint(g);
-
-            /*var foreColor = Color.White;
-            var backColor = Color.DarkSeaGreen;
-            using var brush = new SolidBrush(backColor);
-            g.FillEllipse(brush, rectangle);
-            using var pen = new Pen(foreColor, 2);
-            g.DrawEllipse(pen, rectangle);
-            var angle = hour * 30;
-            var radius = diameter / 2.0;
-            var xOffset = (int)(rectangle.X + radius + 1);
-            var yOffset = (int)(rectangle.Y + radius + 1);
-            var coordinates1 = polarToCartesian(angle, radius).OffsetX(xOffset).OffsetY(yOffset);
-            var coordinates2 = polarToCartesian(angle, 0).OffsetX(xOffset).OffsetY(yOffset);
-            using var handPen = new Pen(Color.Red, 2);
-            g.DrawLine(handPen, coordinates1, coordinates2);*/
 
             break;
          }
