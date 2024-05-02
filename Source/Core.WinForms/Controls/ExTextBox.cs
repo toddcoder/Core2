@@ -83,18 +83,18 @@ public class ExTextBox : TextBox, ISubTextHost
 
    protected WindowExtender windowExtender;
    protected int updatingCount;
-   protected Maybe<Func<string, bool>> _allow;
-   protected Maybe<Func<string, bool>> _trend;
-   protected Maybe<Func<string, bool>> _deny;
-   protected string allowMessage;
-   protected string trendMessage;
-   protected string denyMessage;
-   protected Hash<Guid, SubText> subTexts;
-   protected MaybeStack<SubText> legends;
-   protected Maybe<SubText> _lastSubText;
-   protected Maybe<int> _leftMargin;
-   protected string cueBanner;
-   protected Maybe<SubText> _validateSubText;
+   protected Maybe<Func<string, bool>> _allow = nil;
+   protected Maybe<Func<string, bool>> _trend = nil;
+   protected Maybe<Func<string, bool>> _deny = nil;
+   protected string allowMessage = "allowed";
+   protected string trendMessage = "trending";
+   protected string denyMessage = "denied";
+   protected Hash<Guid, SubText> subTexts = [];
+   protected MaybeStack<SubText> legends = [];
+   protected Maybe<SubText> _lastSubText = nil;
+   protected Maybe<int> _leftMargin = nil;
+   protected string cueBanner = string.Empty;
+   protected Maybe<SubText> _validateSubText = nil;
    protected bool validatesMessages;
 
    public new event EventHandler<PaintEventArgs>? Paint;
@@ -112,23 +112,25 @@ public class ExTextBox : TextBox, ISubTextHost
    {
       windowExtender = new WindowExtender(this);
       windowExtender.AssignHandle(Handle);
-      _allow = nil;
-      _trend = nil;
-      _deny = nil;
-      allowMessage = "allowed";
-      trendMessage = "trending";
-      denyMessage = "denied";
-      subTexts = [];
-      legends = [];
-      _lastSubText = nil;
-      _leftMargin = nil;
-      cueBanner = string.Empty;
-      _validateSubText = nil;
-      validatesMessages = false;
-      ShadowText = nil;
 
       TextChanged += (_, _) => validateText();
+      GotFocus += (_, _) =>
+      {
+         if (AutoSelectAll)
+         {
+            SelectAll();
+         }
+      };
+      MouseClick += (_, _) =>
+      {
+         if (AutoSelectAll)
+         {
+            SelectAll();
+         }
+      };
    }
+
+   public bool AutoSelectAll { get; set; } = false;
 
    protected void validateText()
    {
@@ -336,7 +338,7 @@ public class ExTextBox : TextBox, ISubTextHost
       Refresh();
    }
 
-   public Maybe<string> ShadowText { get; set; }
+   public Maybe<string> ShadowText { get; set; } = nil;
 
    public bool RefreshOnTextChange { get; set; }
 

@@ -40,7 +40,7 @@ public partial class Form1 : Form
       _ = builder + uiDivider + (0, 8) - (2, 0) + control;
       uiDivider.Divider("part 2");
 
-      textBox = new ExTextBox(this);
+      textBox = new ExTextBox(this) { BorderStyle = BorderStyle.None, AutoSelectAll = true };
       _ = builder + textBox + (0, 9) - (2, 0) + control;
       textBox.Text = "test text";
 

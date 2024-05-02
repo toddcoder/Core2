@@ -92,23 +92,6 @@ public class WinFormsTests
    }
 
    [TestMethod]
-   public void ResponderTest()
-   {
-      var form = new Form
-      {
-         BackColor = Color.Aqua
-      };
-      var responder = new Responder(form, "!Yes|yes", "?No|no", "$Stop|stop", ".Maybe|maybe", "???")
-      {
-         BackColor = Color.White
-      };
-      responder.SetUp(0, 0, 500, 100, 24);
-      responder.Dock = DockStyle.Fill;
-      responder.ButtonClick += (_, e) => { form.Text = e.Key; };
-      form.ShowDialog();
-   }
-
-   [TestMethod]
    public void EnabledTest1()
    {
       var form = new Form();
@@ -130,46 +113,12 @@ public class WinFormsTests
    }
 
    [TestMethod]
-   public void EnabledTest2()
-   {
-      var form = new Form();
-      var responder = new Responder(form, "!OK|ok", "?Cancel|cancel");
-      responder.SetUp(0, 0, 300, 30, 30);
-      responder.ButtonClick += (_, e) => form.Text = e.Key;
-      responder["ok"].CheckStyle = CheckStyle.Checked;
-      responder["cancel"].CheckStyle = CheckStyle.Unchecked;
-
-      var checkBox = new CheckBox
-      {
-         Text = "Enabled",
-         Checked = true
-      };
-      checkBox.Click += (_, _) => responder.Enabled = checkBox.Checked;
-      checkBox.Location = new Point(0, 35);
-      form.Controls.Add(checkBox);
-
-      form.ShowDialog();
-   }
-
-   [TestMethod]
    public void ArrowMessageTest()
    {
       var form = new Form();
       var message = new UiAction(form) { Arrow = true };
       message.SetUp(4, 4, form.ClientSize.Width - 20, 100, AnchorStyles.Left);
       message.Message("Arrow");
-      form.ShowDialog();
-   }
-
-   [TestMethod]
-   public void ClickableRoundedMessageTest()
-   {
-      var form = new Form();
-      var message = new RoundedUiAction(form);
-      message.SetUp(4, 4, form.ClientSize.Width - 20, 100, AnchorStyles.Left);
-      message.Message("Round");
-      message.Click += (_, _) => message.Message("Clicked");
-      message.ClickText = "Click me!";
       form.ShowDialog();
    }
 

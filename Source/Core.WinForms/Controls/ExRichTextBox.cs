@@ -94,7 +94,7 @@ public class ExRichTextBox : RichTextBox
    protected bool updateLocked;
    protected int updatingCount;
    protected int leftMargin;
-   protected List<ModificationState> modificationStates;
+   protected List<ModificationState> modificationStates = [];
 
    public new event EventHandler<PaintEventArgs>? Paint;
    public event EventHandler<LineChangedEventArgs>? LineChanged;
@@ -110,13 +110,6 @@ public class ExRichTextBox : RichTextBox
       windowExtender.AssignHandle(Handle);
 
       SelectionTabs = [32, 64, 96, 128, 160, 192, 224];
-      ModifiedGlyphColor = Color.Gold;
-      SavedGlyphColor = Color.Green;
-      ModificationGlyphWidth = 4f;
-      ModificationGlyphLeftMargin = 2;
-      AnnotationFont = new Font("Calibri", 12f, FontStyle.Bold);
-      leftMargin = 0;
-      modificationStates = [];
 
       TextChanged += (_, _) =>
       {
@@ -156,13 +149,13 @@ public class ExRichTextBox : RichTextBox
       };
    }
 
-   public Color ModifiedGlyphColor { get; set; }
+   public Color ModifiedGlyphColor { get; set; } = Color.Gold;
 
-   public Color SavedGlyphColor { get; set; }
+   public Color SavedGlyphColor { get; set; } = Color.Green;
 
-   public float ModificationGlyphWidth { get; set; }
+   public float ModificationGlyphWidth { get; set; } = 4f;
 
-   public int ModificationGlyphLeftMargin { get; set; }
+   public int ModificationGlyphLeftMargin { get; set; } = 2;
 
    public int LeftMargin => leftMargin;
 
@@ -254,7 +247,7 @@ public class ExRichTextBox : RichTextBox
 
    public void SetTabs(params int[] tabs) => SelectionTabs = tabs;
 
-   public Font AnnotationFont { get; set; }
+   public Font AnnotationFont { get; set; } = new("Calibri", 12f, FontStyle.Bold);
 
    public bool ModificationLocked { get; set; }
 

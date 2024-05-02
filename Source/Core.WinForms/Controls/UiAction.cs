@@ -16,7 +16,6 @@ using Core.WinForms.ControlWrappers;
 using Core.WinForms.Drawing;
 using static Core.Lambdas.LambdaFunctions;
 using static Core.Monads.MonadFunctions;
-using static Core.WinForms.GraphicsFunctions;
 using SolidBrush = System.Drawing.SolidBrush;
 using Timer = System.Windows.Forms.Timer;
 
@@ -186,9 +185,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    protected int statusAlpha = 255;
    protected Timer statusTimer = new()
    {
-      Interval = 1000,
+      Interval = 100,
       Enabled = false
    };
+   protected Maybe<BusyTextProcessor> _statusBusyProcessor = nil;
 
    public event EventHandler<AutomaticMessageArgs>? AutomaticMessage;
    public event EventHandler<PaintEventArgs>? Painting;
@@ -216,10 +216,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    public event EventHandler<EventArgs>? ChooserOpened;
    public event EventHandler<EventArgs>? ChooserClosed;
 
-   public UiAction(Control control, bool is3D = false)
+   public UiAction(Control control)
    {
-      Is3D = is3D;
-
       italicFont = new Font(base.Font, FontStyle.Italic);
       boldFont = new Font(base.Font, FontStyle.Bold);
       italicBoldFont = new Font(base.Font, FontStyle.Italic | FontStyle.Bold);
@@ -430,7 +428,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
                   break;
                default:
                {
-                  statusAlpha -= 30;
+                  statusAlpha -= 5;
                   if (statusAlpha <= 0)
                   {
                      _status = nil;
@@ -781,7 +779,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       }
    }
 
-   public bool Is3D { get; set; }
+   public bool Is3D { get; set; } = false;
 
    public AutoHash<UiActionType, Color> ForeColors => foreColors;
 
@@ -3457,7 +3455,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             var top = clientRectangle.Height / 2 - diameter / 2;
             var rectangle = new Rectangle(4, top, diameter, diameter);
 
-            var foreColor = Color.White;
+            (var statusBusyProcessor, _statusBusyProcessor) = _statusBusyProcessor.Create(() => new BusyTextProcessor(getForeColor(), rectangle)
+            {
+               SpokeThickness = 1, OuterRadius = diameter / 2
+            });
+            statusBusyProcessor.OnTick();
+            statusBusyProcessor.OnPaint(g);
+
+            /*var foreColor = Color.White;
             var backColor = Color.DarkSeaGreen;
             using var brush = new SolidBrush(backColor);
             g.FillEllipse(brush, rectangle);
@@ -3470,7 +3475,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             var coordinates1 = polarToCartesian(angle, radius).OffsetX(xOffset).OffsetY(yOffset);
             var coordinates2 = polarToCartesian(angle, 0).OffsetX(xOffset).OffsetY(yOffset);
             using var handPen = new Pen(Color.Red, 2);
-            g.DrawLine(handPen, coordinates1, coordinates2);
+            g.DrawLine(handPen, coordinates1, coordinates2);*/
 
             break;
          }
