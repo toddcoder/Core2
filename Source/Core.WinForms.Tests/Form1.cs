@@ -1,4 +1,6 @@
 ﻿using Core.Collections;
+using Core.Computers;
+using Core.Dates.DateIncrements;
 using Core.Enumerables;
 using Core.Strings;
 using Core.WinForms.Controls;
@@ -14,6 +16,7 @@ public partial class Form1 : Form
    protected Panel panel1;
    protected ExTextBox textBox;
    protected ExRichTextBox richTextBox;
+   protected UiAction uiButton6;
 
    public Form1()
    {
@@ -21,7 +24,7 @@ public partial class Form1 : Form
 
       var menus = new FreeMenus { Form = this };
       menus.Menu("File");
-      _ = menus + "&Open" + (() => { }) + menu;
+      _ = menus + "&Open" + (() => uiButton6!.RunWorkerAsync()) + menu;
       _ = menus + "Tests" + subMenu;
       _ = menus + "Alpha" + (() => { }) + menu;
       _ = menus + "Bravo" + (() => { }) + menu;
@@ -140,23 +143,35 @@ public partial class Form1 : Form
       _ = builder + uiDirty + control;
       uiDirty.Success("Not Dirty");
 
-      var uiButton6 = new UiAction(this);
+      uiButton6 = new UiAction(this);
       _ = builder + uiButton6 + row;
       uiButton6.Button("Dirty");
-      uiButton6.Status = UiActionType.Busy;
       uiButton6.Click += (_, _) =>
       {
          uiDivider.IsDirty = !uiDivider.IsDirty;
-         if (uiDirty.Type is not UiActionType.Success)
-         {
-            uiDirty.Success("Is Dirty");
-         }
-
          uiDirty.IsDirty = !uiDirty.IsDirty;
-         //uiButton6.Status = UiActionType.Success;
-         uiButton6.FailureStatus("Set to dirty");
+         uiButton6.Status = uiDirty.IsDirty ? UiActionType.Success : UiActionType.Busy;
       };
       uiButton6.ClickText = "Dirty";
+      uiButton6.Initialize += (_, e) =>
+      {
+         uiButton6.Status = UiActionType.Busy;
+         FolderName folder = @"C:\Temp";
+         e.Argument = folder;
+      };
+      uiButton6.DoWork += (_, e) =>
+      {
+         if (e.Argument is FolderName folder)
+         {
+            var timeSpan = 3.Seconds();
+            foreach (var file in folder.Files)
+            {
+               uiDivider.Message(file.NameExtension);
+               Thread.Sleep(timeSpan);
+            }
+         }
+      };
+      uiButton6.RunWorkerCompleted += (_, _) => uiButton6.Status = UiActionType.Success;
 
       var uiChosen = new UiAction(this);
       _ = builder + uiChosen + control;

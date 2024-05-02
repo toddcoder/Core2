@@ -181,7 +181,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    protected Maybe<string> _title = nil;
    protected UiActionButtonType buttonType = UiActionButtonType.Normal;
    protected Maybe<UiActionType> _status = nil;
-   protected int hour;
    protected int statusAlpha = 255;
    protected Timer statusTimer = new()
    {
@@ -418,28 +417,17 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       {
          if (_status is (true, var status))
          {
-            switch (status)
+            if (status is not UiActionType.Busy)
             {
-               case UiActionType.Busy when hour == 11:
-                  hour = 0;
-                  break;
-               case UiActionType.Busy:
-                  hour++;
-                  break;
-               default:
+               statusAlpha -= 5;
+               if (statusAlpha <= 0)
                {
-                  statusAlpha -= 5;
-                  if (statusAlpha <= 0)
-                  {
-                     _status = nil;
-                     statusTimer.Enabled = false;
-                     _successToolTip = nil;
-                     _failureToolTip = nil;
-                     _exceptionToolTip = nil;
-                     toolTip.ToolTipBox = false;
-                  }
-
-                  break;
+                  _status = nil;
+                  statusTimer.Enabled = false;
+                  _successToolTip = nil;
+                  _failureToolTip = nil;
+                  _exceptionToolTip = nil;
+                  toolTip.ToolTipBox = false;
                }
             }
 
