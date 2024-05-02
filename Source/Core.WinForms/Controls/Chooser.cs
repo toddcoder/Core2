@@ -59,10 +59,12 @@ public partial class Chooser : Form
    protected Maybe<Func<string, string>> _customSorter = nil;
    protected bool autoSizeText;
    protected bool multiChoice;
+   protected bool autoClose = true;
    protected Set<Chosen> chosenSet = [];
    protected bool isCheckingLocked;
 
    public event EventHandler<AppearanceOverrideArgs>? AppearanceOverride;
+   public event EventHandler<ChosenArgs>? ChosenItemChecked;
    public event EventHandler<ChosenArgs>? ChosenItemSelected;
    public event EventHandler<EventArgs>? ChooserOpened;
    public event EventHandler<EventArgs>? ChooserClosed;
@@ -172,6 +174,12 @@ public partial class Chooser : Form
       }
    }
 
+   public bool AutoClose
+   {
+      get => autoClose;
+      set => autoClose = value;
+   }
+
    public Maybe<Chosen> Choice { get; set; }
 
    public IEnumerable<Chosen> AllChosen => listViewItems.AllCheckedItems().Select(getChosen).WhereIsSome();
@@ -182,6 +190,41 @@ public partial class Chooser : Form
 
       text = text.EmojiSubstitutions();
 
+      if (overrideAppearance(text, foreColor, backColor) is (true, var tuple))
+      {
+         (text, foreColor, backColor, _font) = tuple;
+      }
+
+      var item = listViewItems.Items.Add(text);
+      item.UseItemStyleForSubItems = true;
+      item.ForeColor = foreColor;
+      item.BackColor = backColor;
+
+      updateText(item, text, _font);
+   }
+
+   protected void updateItem(ListViewItem item, string text, Color foreColor, Color backColor)
+   {
+      Maybe<Font> _font = nil;
+
+      text = text.EmojiSubstitutions();
+
+      if (overrideAppearance(text, foreColor, backColor) is (true, var tuple))
+      {
+         (text, foreColor, backColor, _font) = tuple;
+      }
+
+      item.Text = text;
+      item.UseItemStyleForSubItems = true;
+      item.ForeColor = foreColor;
+      item.BackColor = backColor;
+
+      updateText(item, text, _font);
+   }
+
+   protected Maybe<(string text, Color foreColor, Color backColor, Maybe<Font> _font)> overrideAppearance(string text, Color foreColor,
+      Color backColor)
+   {
       if (AppearanceOverride is not null)
       {
          var args = new AppearanceOverrideArgs(text, foreColor, backColor);
@@ -206,15 +249,23 @@ public partial class Chooser : Form
                modified = true;
             }
 
-            _font = maybe<Font>() & modified & (() => new Font(listViewItems.Font, style));
+            var _font = maybe<Font>() & modified & (() => new Font(listViewItems.Font, style));
+
+            return (text, foreColor, backColor, _font);
+         }
+         else
+         {
+            return nil;
          }
       }
+      else
+      {
+         return nil;
+      }
+   }
 
-      var item = listViewItems.Items.Add(text);
-      item.UseItemStyleForSubItems = true;
-      item.ForeColor = foreColor;
-      item.BackColor = backColor;
-
+   protected void updateText(ListViewItem item, string text, Maybe<Font> _font)
+   {
       if (autoSizeText)
       {
          using var g = listViewItems.CreateGraphics();
@@ -271,7 +322,7 @@ public partial class Chooser : Form
    protected void Chooser_Load(object sender, EventArgs e)
    {
       locate();
-      if (_nilItem is (true, var nilItem) && !multiChoice)
+      if (_nilItem is (true, var nilItem) && !multiChoice && autoClose)
       {
          addItem(nilItem, _foreColor | Color.White, _backColor | Color.Blue);
       }
@@ -364,9 +415,31 @@ public partial class Chooser : Form
    protected void listViewItems_SelectedIndexChanged(object sender, EventArgs e)
    {
       Choice = listViewItems.SelectedItem().Map(item => maybe<Chosen>() & returnSome(item.Index) & (() => getChosen(item)));
-      if (!multiChoice)
+      if (autoClose)
       {
-         Close();
+         if (!multiChoice)
+         {
+            Close();
+         }
+      }
+      else if (Choice is (true, var chosen))
+      {
+         var key = chosen.Key;
+         var value = choices.Maybe[key] | key;
+         var args = new ChosenArgs(chosen, chosenSet);
+         ChosenItemSelected?.Invoke(this, args);
+         chosen = args.Chosen;
+         var item = listViewItems.Items[chosen.Index];
+         if (key != chosen.Key)
+         {
+            choices.Maybe[key] = nil;
+            choices[chosen.Key] = chosen.Value;
+         }
+         else if (value != chosen.Value)
+         {
+            choices[key] = chosen.Value;
+         }
+         updateItem(item, chosen.Key, chosen.ForeColor, chosen.BackColor);
       }
    }
 
@@ -397,7 +470,7 @@ public partial class Chooser : Form
                chosenSet.Remove(chosen);
             }
 
-            ChosenItemSelected?.Invoke(this, new ChosenArgs(chosen, chosenSet));
+            ChosenItemChecked?.Invoke(this, new ChosenArgs(chosen, chosenSet));
          }
       }
    }

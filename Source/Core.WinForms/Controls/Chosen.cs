@@ -6,19 +6,42 @@ public class Chosen(string value, string key, int index, Color foreColor, Color 
    {
    }
 
-   public string Key => key;
+   public string Key
+   {
+      get => key;
+      set => key = value;
+   }
 
-   public string Value => value;
+   protected void setValue(string newValue) => value = newValue;
+
+   public string Value
+   {
+      get => value;
+      set => setValue(value);
+   }
 
    public int Index => index;
 
-   public Color ForeColor => foreColor;
+   public Color ForeColor
+   {
+      get => foreColor;
+      set => foreColor = value;
+   }
 
-   public Color BackColor => backColor;
+   public Color BackColor
+   {
+      get => backColor;
+      set => backColor = value;
+   }
 
-   public bool IsChecked => isChecked;
+   public bool IsChecked
+   {
+      get => isChecked;
+      set => isChecked = value;
+   }
 
-   public void Deconstruct(out string outKey, out string outValue, out int outIndex, out Color outForeColor, out Color outBackColor, out bool outIsChecked)
+   public void Deconstruct(out string outKey, out string outValue, out int outIndex, out Color outForeColor, out Color outBackColor,
+      out bool outIsChecked)
    {
       outKey = Key;
       outValue = Value;

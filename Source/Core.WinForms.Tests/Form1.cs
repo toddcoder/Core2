@@ -164,18 +164,23 @@ public partial class Form1 : Form
 
       string[] choices =
       [
-         "alfa", "bravo", "charlie", "delta" , "echo", "foxtrot", "golf", "hotel", "india", "juliett", "kilo", "lima", "mike", "november", "oscar",
-         "papa", "quebec", "romeo", "sierra", "tango", "uniform", "victor", "whiskey", "xray", "yankee", "zulu", "/not X"
+         "alfa", "bravo", "charlie", "delta", "echo", "foxtrot", "golf", "hotel", "india", "juliett", "kilo", "lima", "mike", "november", "oscar",
+         "papa", "quebec", "romeo", "sierra", "tango", "uniform", "victor", "whiskey", "xray", "yankee", "zulu"
       ];
 
       Set<Chosen> chosenSet = [];
+      var counts = choices.ToStringHash(c => c, _ => 0);
 
       var uiButton7 = new UiAction(this) { AutoSizeText = true };
       _ = builder + uiButton7 + row;
       uiButton7.NoStatus("choose");
       uiButton7.Click += (_, _) =>
       {
-         if (uiCheckBox.BoxChecked)
+         if (uiDirty.IsDirty)
+         {
+            uiButton7.Choose("Non-Auto-Close").AutoClose(false).Choices(choices).Choose();
+         }
+         else if (uiCheckBox.BoxChecked)
          {
             uiButton7.Choose("Multi-Choose").MultiChoice(chosenSet).Choices(choices).Choose();
          }
@@ -188,8 +193,14 @@ public partial class Form1 : Form
             }
          }
       };
-      uiButton7.ChosenItemSelected += (_, e) => chosenSet = e.ChosenSet;
+      uiButton7.ChosenItemChecked += (_, e) => chosenSet = e.ChosenSet;
       uiButton7.ChooserClosed += (_, _) => uiButton7.Success(chosenSet.Select(c => c.Key.Keep(1)).Order().ToString(""));
+      uiButton7.ChosenItemSelected += (_, e) =>
+      {
+         var count = (counts.Maybe[e.Chosen.Value] | 0) + 1;
+         counts[e.Chosen.Value] = count;
+         e.Chosen.Key = $"{e.Chosen.Value} ({count})";
+      };
       uiButton7.ClickText = "Choose";
 
       var uiSubText = new UiAction(this);

@@ -136,14 +136,23 @@ public class ChooserSet
    public ChooserSet MultiChoice(bool multiChoice)
    {
       chooser.MultiChoice = multiChoice;
+      chooser.NilItem = nil;
       return this;
    }
 
    public ChooserSet MultiChoice(IEnumerable<Chosen> chosenEnumerable)
    {
       chooser.MultiChoice = true;
+      chooser.NilItem = nil;
       chooser.ChosenSet.AddRange(chosenEnumerable);
 
+      return this;
+   }
+
+   public ChooserSet AutoClose(bool autoClose = true)
+   {
+      chooser.AutoClose = autoClose;
+      chooser.NilItem = nil;
       return this;
    }
 

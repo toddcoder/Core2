@@ -212,6 +212,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    public event EventHandler<UiActionAlternateArgs>? DeleteOnAlternate;
    public event EventHandler<DynamicToolTipArgs>? DynamicToolTip;
    public event EventHandler<ChosenArgs>? ChosenItemSelected;
+   public event EventHandler<ChosenArgs>? ChosenItemChecked;
    public event EventHandler<EventArgs>? ChooserOpened;
    public event EventHandler<EventArgs>? ChooserClosed;
 
@@ -2845,6 +2846,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       if (AppearanceOverride is not null)
       {
          chooser.AppearanceOverride += (_, e) => AppearanceOverride.Invoke(this, e);
+      }
+
+      if (ChosenItemChecked is not null)
+      {
+         chooser.ChosenItemChecked += (_, e) => ChosenItemChecked.Invoke(this, e);
       }
 
       if (ChosenItemSelected is not null)
