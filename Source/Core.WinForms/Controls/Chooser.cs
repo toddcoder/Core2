@@ -332,12 +332,9 @@ public partial class Chooser : Form
       LoadChoices();
    }
 
-   public void LoadChoices(bool clearListView = false)
+   public void LoadChoices()
    {
-      if (clearListView)
-      {
-         listViewItems.Items.Clear();
-      }
+      listViewItems.Items.Clear();
 
       if (_nilItem is (true, var nilItem) && !multiChoice && autoClose)
       {
@@ -381,36 +378,33 @@ public partial class Chooser : Form
             goto case ChooserSorting.None;
       }
 
-      if (listViewItems.Items.Count > 0)
+      listViewItems.Columns[0].Width = ClientSize.Width;
+      listViewItems.Columns[0].Text = title;
+
+      var lastItem = listViewItems.Items[^1];
+      var bottom = lastItem.Bounds.Bottom;
+      if (listViewItems.ClientRectangle.Height > bottom)
       {
-         listViewItems.Columns[0].Width = ClientSize.Width;
-         listViewItems.Columns[0].Text = title;
-
-         var lastItem = listViewItems.Items[^1];
-         var bottom = lastItem.Bounds.Bottom;
-         if (listViewItems.ClientRectangle.Height > bottom)
-         {
-            Height = bottom + lastItem.Bounds.Height;
-         }
-
-         if (_maximumWidth is (true, var maximumWidth))
-         {
-            columnHeader1.Width = maximumWidth;
-            Width = maximumWidth + 8;
-         }
-
-         ShowScrollBar(listViewItems.Handle, SB_VERTICAL, true);
-
-         var info = new ScrollInfo
-         {
-            mask = SIF_RANGE | SIF_PAGE,
-            size = (uint)Marshal.SizeOf(typeof(ScrollInfo))
-         };
-         GetScrollInfo(listViewItems.Handle, SB_VERTICAL, ref info);
-         info.max = listViewItems.Items.Count - 1;
-         info.page = (uint)info.max / 10;
-         SetScrollInfo(listViewItems.Handle, SB_VERTICAL, ref info, true);
+         Height = bottom + lastItem.Bounds.Height;
       }
+
+      if (_maximumWidth is (true, var maximumWidth))
+      {
+         columnHeader1.Width = maximumWidth;
+         Width = maximumWidth + 8;
+      }
+
+      ShowScrollBar(listViewItems.Handle, SB_VERTICAL, true);
+
+      var info = new ScrollInfo
+      {
+         mask = SIF_RANGE | SIF_PAGE,
+         size = (uint)Marshal.SizeOf(typeof(ScrollInfo))
+      };
+      GetScrollInfo(listViewItems.Handle, SB_VERTICAL, ref info);
+      info.max = listViewItems.Items.Count - 1;
+      info.page = (uint)info.max / 10;
+      SetScrollInfo(listViewItems.Handle, SB_VERTICAL, ref info, true);
 
       CheckFromChosenSet();
 
@@ -534,31 +528,31 @@ public partial class Chooser : Form
    public void Update(StringHash choices)
    {
       this.choices = choices;
-      LoadChoices(true);
+      LoadChoices();
    }
 
    public void Update(params string[] choices)
    {
       this.choices = choices.ToStringHash(c => c, c => c);
-      LoadChoices(true);
+      LoadChoices();
    }
 
    public void Update(params (string key, string value)[] choices)
    {
       this.choices = choices.ToStringHash();
-      LoadChoices(true);
+      LoadChoices();
    }
 
    public void Update(IEnumerable<string> choices)
    {
       Update([.. choices]);
-      LoadChoices(true);
+      LoadChoices();
    }
 
    public void ClearChoices()
    {
       choices.Clear();
-      LoadChoices(true);
+      LoadChoices();
    }
 
    public void HookEvents()
