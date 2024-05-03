@@ -52,14 +52,14 @@
          tableLayoutPanel.RowCount = 2;
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-         tableLayoutPanel.Size = new Size(938, 656);
+         tableLayoutPanel.Size = new Size(938, 809);
          tableLayoutPanel.TabIndex = 0;
          // 
          // Form1
          // 
          AutoScaleDimensions = new SizeF(7F, 15F);
          AutoScaleMode = AutoScaleMode.Font;
-         ClientSize = new Size(938, 656);
+         ClientSize = new Size(938, 809);
          Controls.Add(tableLayoutPanel);
          Margin = new Padding(4, 3, 4, 3);
          Name = "Form1";

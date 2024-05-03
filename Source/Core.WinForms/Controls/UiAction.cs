@@ -2820,10 +2820,30 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       var chooser = new Chooser(title, this, width);
       if (AppearanceOverride is not null)
       {
-         chooser.AppearanceOverride += (sender, args) => AppearanceOverride.Invoke(sender, args);
+         chooser.AppearanceOverride += (_, e) => AppearanceOverride.Invoke(this, e);
       }
 
-      return new ChooserSet(chooser);
+      if (ChosenItemChecked is not null)
+      {
+         chooser.ChosenItemChecked += (_, e) => ChosenItemChecked.Invoke(this, e);
+      }
+
+      if (ChosenItemSelected is not null)
+      {
+         chooser.ChosenItemSelected += (_, e) => ChosenItemSelected.Invoke(this, e);
+      }
+
+      if (ChooserOpened is not null)
+      {
+         chooser.ChooserOpened += (_, e) => ChooserOpened.Invoke(this, e);
+      }
+
+      if (ChooserClosed is not null)
+      {
+         chooser.ChooserClosed += (_, e) => ChooserClosed.Invoke(this, e);
+      }
+
+      return new ChooserSet(chooser, this);
    }
 
    public ChooserSet Choose(string title)
@@ -2854,8 +2874,56 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          chooser.ChooserClosed += (_, e) => ChooserClosed.Invoke(this, e);
       }
 
-      return new ChooserSet(chooser);
+      return new ChooserSet(chooser, this);
    }
+
+   public void HookAppearanceOverride(Chooser chooser)
+   {
+      if (AppearanceOverride is not null)
+      {
+         chooser.AppearanceOverride += (_, e) => AppearanceOverride.Invoke(this, e);
+      }
+   }
+
+   public void HookChosenItemChecked(Chooser chooser)
+   {
+      if (ChosenItemChecked is not null)
+      {
+         chooser.ChosenItemChecked += (_, e) => ChosenItemChecked.Invoke(this, e);
+      }
+   }
+
+   public void HookChosenItemSelected(Chooser chooser)
+   {
+      if (ChosenItemSelected is not null)
+      {
+         chooser.ChosenItemSelected += (_, e) => ChosenItemSelected.Invoke(this, e);
+      }
+   }
+
+   public void HookChooserOpened(Chooser chooser)
+   {
+      if (ChooserOpened is not null)
+      {
+         chooser.ChooserOpened += (_, e) => ChooserOpened.Invoke(this, e);
+      }
+   }
+
+   public void HookChooserClosed(Chooser chooser)
+   {
+      if (ChooserClosed is not null)
+      {
+         chooser.ChooserClosed += (_, e) => ChooserClosed.Invoke(this, e);
+      }
+   }
+
+   internal bool ChosenItemCheckedIsNotNull => ChosenItemChecked is not null;
+
+   internal bool ChosenItemSelectedIsNotNull => ChosenItemSelected is not null;
+
+   internal bool ChooserOpenedIsNotNull => ChooserOpened is not null;
+
+   internal bool ChooserClosedIsNotNull => ChooserClosed is not null;
 
    public bool Arrow { get; set; }
 
@@ -3440,12 +3508,13 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          case UiActionType.Busy:
          {
             var diameter = getDiameter();
-            var top = clientRectangle.Height / 2 - diameter / 2;
+            var radius = diameter / 2;
+            var top = clientRectangle.Height / 2 - radius;
             var rectangle = new Rectangle(4, top, diameter, diameter);
 
             (var statusBusyProcessor, _statusBusyProcessor) = _statusBusyProcessor.Create(() => new BusyTextProcessor(getForeColor(), rectangle)
             {
-               SpokeThickness = 1, OuterRadius = diameter / 2, InnerRadius = diameter / 2 - 2
+               SpokeThickness = 1, OuterRadius = radius, InnerRadius = radius - 2
             });
             statusBusyProcessor.OnTick();
             statusBusyProcessor.OnPaint(g);

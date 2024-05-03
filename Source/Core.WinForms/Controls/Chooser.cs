@@ -28,7 +28,7 @@ public partial class Chooser : Form
    protected const int SIF_RANGE = 0x1;
    protected const int SIF_PAGE = 0x2;
 
-   public Maybe<Chosen> Get()
+   public Maybe<Chosen> Open()
    {
       ShowDialog();
       return Choice;
@@ -62,6 +62,7 @@ public partial class Chooser : Form
    protected bool autoClose = true;
    protected Set<Chosen> chosenSet = [];
    protected bool isCheckingLocked;
+   protected Guid choicesGuid = Guid.NewGuid();
 
    public event EventHandler<AppearanceOverrideArgs>? AppearanceOverride;
    public event EventHandler<ChosenArgs>? ChosenItemChecked;
@@ -88,7 +89,7 @@ public partial class Chooser : Form
 
    public UiAction UiAction => uiAction;
 
-   public ChooserSet Set => new(this);
+   public ChooserSet Set => new(this, uiAction);
 
    public string Title
    {
@@ -178,6 +179,12 @@ public partial class Chooser : Form
    {
       get => autoClose;
       set => autoClose = value;
+   }
+
+   public Guid ChoicesGuid
+   {
+      get => choicesGuid;
+      set => choicesGuid = value;
    }
 
    public Maybe<Chosen> Choice { get; set; }
@@ -322,6 +329,16 @@ public partial class Chooser : Form
    protected void Chooser_Load(object sender, EventArgs e)
    {
       locate();
+      LoadChoices();
+   }
+
+   public void LoadChoices(bool clearListView = false)
+   {
+      if (clearListView)
+      {
+         listViewItems.Items.Clear();
+      }
+
       if (_nilItem is (true, var nilItem) && !multiChoice && autoClose)
       {
          addItem(nilItem, _foreColor | Color.White, _backColor | Color.Blue);
@@ -394,6 +411,8 @@ public partial class Chooser : Form
 
       CheckFromChosenSet();
 
+      choicesGuid = Guid.NewGuid();
+
       ChooserOpened?.Invoke(this, EventArgs.Empty);
    }
 
@@ -427,19 +446,27 @@ public partial class Chooser : Form
          var key = chosen.Key;
          var value = choices.Maybe[key] | key;
          var args = new ChosenArgs(chosen, chosenSet);
+
+         var originalGuid = choicesGuid;
+
          ChosenItemSelected?.Invoke(this, args);
-         chosen = args.Chosen;
-         var item = listViewItems.Items[chosen.Index];
-         if (key != chosen.Key)
+
+         if (originalGuid == choicesGuid)
          {
-            choices.Maybe[key] = nil;
-            choices[chosen.Key] = chosen.Value;
+            chosen = args.Chosen;
+            var item = listViewItems.Items[chosen.Index];
+            if (key != chosen.Key)
+            {
+               choices.Maybe[key] = nil;
+               choices[chosen.Key] = chosen.Value;
+            }
+            else if (value != chosen.Value)
+            {
+               choices[key] = chosen.Value;
+            }
+
+            updateItem(item, chosen.Key, chosen.ForeColor, chosen.BackColor);
          }
-         else if (value != chosen.Value)
-         {
-            choices[key] = chosen.Value;
-         }
-         updateItem(item, chosen.Key, chosen.ForeColor, chosen.BackColor);
       }
    }
 
@@ -500,4 +527,43 @@ public partial class Chooser : Form
    }
 
    protected void Chooser_FormClosed(object sender, FormClosedEventArgs e) => ChooserClosed?.Invoke(this, EventArgs.Empty);
+
+   public void Update(StringHash choices)
+   {
+      this.choices = choices;
+      LoadChoices(true);
+   }
+
+   public void Update(params string[] choices)
+   {
+      this.choices = choices.ToStringHash(c => c, c => c);
+      LoadChoices(true);
+   }
+
+   public void Update(params (string key, string value)[] choices)
+   {
+      this.choices = choices.ToStringHash();
+      LoadChoices(true);
+   }
+
+   public void Update(IEnumerable<string> choices)
+   {
+      Update([.. choices]);
+      LoadChoices(true);
+   }
+
+   public void ClearChoices()
+   {
+      choices.Clear();
+      LoadChoices(true);
+   }
+
+   public void HookEvents()
+   {
+      uiAction.HookAppearanceOverride(this);
+      uiAction.HookChosenItemSelected(this);
+      uiAction.HookChosenItemChecked(this);
+      uiAction.HookChooserOpened(this);
+      uiAction.HookChooserClosed(this);
+   }
 }

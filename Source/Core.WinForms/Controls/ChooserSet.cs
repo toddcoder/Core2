@@ -4,15 +4,8 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class ChooserSet
+public class ChooserSet(Chooser chooser, UiAction uiAction)
 {
-   protected Chooser chooser;
-
-   internal ChooserSet(Chooser chooser)
-   {
-      this.chooser = chooser;
-   }
-
    public ChooserSet Title(string title)
    {
       chooser.Title = title;
@@ -158,7 +151,7 @@ public class ChooserSet
 
    public Maybe<Chosen> Choose()
    {
-      var _chosen = chooser.Get();
+      var _chosen = chooser.Open();
       if (chooser.ModifyTitle)
       {
          if (_chosen is (true, var chosen))
@@ -176,5 +169,16 @@ public class ChooserSet
       }
 
       return _chosen;
+   }
+
+   public Chooser Chooser()
+   {
+      uiAction.HookAppearanceOverride(chooser);
+      uiAction.HookChosenItemSelected(chooser);
+      uiAction.HookChosenItemChecked(chooser);
+      uiAction.HookChooserOpened(chooser);
+      uiAction.HookChooserClosed(chooser);
+
+      return chooser;
    }
 }

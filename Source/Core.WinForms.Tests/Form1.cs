@@ -24,7 +24,7 @@ public partial class Form1 : Form
 
       var menus = new FreeMenus { Form = this };
       menus.Menu("File");
-      _ = menus + "&Open" + (() => uiButton6!.RunWorkerAsync()) + menu;
+      _ = menus + @"Show C:\Temp" + (() => uiButton6!.RunWorkerAsync()) + menu;
       _ = menus + "Tests" + subMenu;
       _ = menus + "Alpha" + (() => { }) + menu;
       _ = menus + "Bravo" + (() => { }) + menu;
@@ -36,7 +36,7 @@ public partial class Form1 : Form
 
       var builder = new Builder(tableLayoutPanel);
       _ = builder + 80.ColPercent() + 20.ColPercent();
-      _ = builder * 10 + 60.RowPixels();
+      _ = builder * 11 + 60.RowPixels();
       _ = builder + 100.RowPercent() + setup;
 
       var uiDivider = new UiAction(this);
@@ -183,6 +183,12 @@ public partial class Form1 : Form
          "papa", "quebec", "romeo", "sierra", "tango", "uniform", "victor", "whiskey", "xray", "yankee", "zulu"
       ];
 
+      string[] alternateChoices =
+      [
+         "alpha", "beta", "delta", "eta", "phi", "gamma", "iota", "kappa", "lambda", "mu", "nu", "omega", "pi", "rho", "sigma", "tau", "upsilon",
+         "xi", "zeta"
+      ];
+
       Set<Chosen> chosenSet = [];
       var counts = choices.ToStringHash(c => c, _ => 0);
 
@@ -235,5 +241,25 @@ public partial class Form1 : Form
          uiButton8.Status = UiActionType.Success;
       };
       uiButton8.ClickText = "Create subTexts";
+
+      var uiButton9 = new UiAction(this);
+      _ = builder + uiButton9 + row;
+      uiButton9.Button("Update Choices");
+      var chooser = uiButton9.Choose("Update").AutoClose(false).Choices(choices).Chooser();
+      uiButton9.Click += (_, _) => chooser.Open();
+      uiButton9.ClickText = "Update choices";
+      uiButton9.KeyMatch("clear", "open");
+      uiButton9.ChosenItemSelected += (_, _) =>
+      {
+         if (uiButton9.IsKeyDown)
+         {
+            chooser.ClearChoices();
+         }
+         else
+         {
+            chooser.Update(alternateChoices);
+         }
+      };
+      chooser.HookEvents();
    }
 }
