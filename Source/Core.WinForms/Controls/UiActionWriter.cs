@@ -79,12 +79,12 @@ public class UiActionWriter
    protected bool autoSizeText;
    protected Maybe<int> _floor;
    protected Maybe<int> _ceiling;
-   protected CheckStyle checkStyle;
-   protected Maybe<string> _emptyTextTitle;
+   protected CheckStyle checkStyle = CheckStyle.None;
+   protected Maybe<string> _emptyTextTitle = nil;
    protected bool isPath;
-   protected Result<Rectangle> _rectangle;
-   protected Result<Font> _font;
-   protected Result<Color> _color;
+   protected Result<Rectangle> _rectangle = fail("Rectangle not set");
+   protected Result<Font> _font = fail("Font not set");
+   protected Result<Color> _color = fail("Color not set");
    protected UiActionButtonType buttonType;
 
    public UiActionWriter(CardinalAlignment messageAlignment, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling, UiActionButtonType buttonType)
@@ -94,14 +94,6 @@ public class UiActionWriter
       this._floor = _floor;
       this._ceiling = _ceiling;
       this.buttonType = buttonType;
-
-      isPath = false;
-      checkStyle = CheckStyle.None;
-      _emptyTextTitle = nil;
-
-      _rectangle = fail("Rectangle not set");
-      _font = fail("Font not set");
-      _color = fail("Color not set");
    }
 
    public void Center(bool center) => Flags = GetFlags(center);
@@ -230,7 +222,7 @@ public class UiActionWriter
       }
    }
 
-   public Result<Unit> Write(Graphics g, string text)
+   public virtual Result<Unit> Write(Graphics g, string text)
    {
       var not = false;
       if (text.StartsWith("!"))

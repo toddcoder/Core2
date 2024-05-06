@@ -34,6 +34,7 @@ public partial class Form1 : Form
       _ = menus + "Charlie" + (() => { }) + menu;
       menus.Menu("Edit");
       menus.StandardEditMenu();
+      _ = menus + "Enabled" + (() => uiButton6!.Enabled = !uiButton6.Enabled) + menu;
       menus.RenderMainMenu();
 
       var builder = new Builder(tableLayoutPanel);

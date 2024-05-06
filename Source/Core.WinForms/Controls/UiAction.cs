@@ -1276,19 +1276,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       if (!Enabled && !_symbolWriter)
       {
-         var disabledWriter = new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, UiActionButtonType.Normal)
-         {
-            Rectangle = ClientRectangle,
-            Font = Font,
-            Color = Color.Black,
-            EmptyTextTitle = EmptyTextTitle,
-            IsPath = IsPath,
-            Required = Required
-         };
-
-         var filledRectangle = disabledWriter.TextRectangle(text, e.Graphics, ClientRectangle);
-         fillRectangle(e.Graphics, Brushes.Gold, filledRectangle);
-         drawRectangle(e.Graphics, Pens.Black, filledRectangle);
+         var disabledWriter = DisabledWriter.FromUiAction(this);
 
          disabledWriter.Write(e.Graphics, text);
 
@@ -1699,9 +1687,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    {
       if (!Enabled && !_symbolWriter)
       {
-         using var disabledBrush = new HatchBrush(HatchStyle.BackwardDiagonal, Color.Black, Color.Gold);
-         fillRectangle(pevent.Graphics, disabledBrush, ClientRectangle);
-
+         DisabledWriter.OnPaintBackground(pevent.Graphics, ClientRectangle);
          return;
       }
 
