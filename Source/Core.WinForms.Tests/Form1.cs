@@ -22,6 +22,8 @@ public partial class Form1 : Form
    {
       InitializeComponent();
 
+      var uiDivider = new UiAction(this);
+
       var menus = new FreeMenus { Form = this };
       menus.Menu("File");
       _ = menus + @"Show C:\Temp" + (() => uiButton6!.RunWorkerAsync()) + menu;
@@ -38,30 +40,6 @@ public partial class Form1 : Form
       _ = builder + 80.ColPercent() + 20.ColPercent();
       _ = builder * 11 + 60.RowPixels();
       _ = builder + 100.RowPercent() + setup;
-
-      var uiDivider = new UiAction(this);
-      _ = builder + uiDivider + (0, 8) - (2, 0) + control;
-      uiDivider.Divider("part 2");
-
-      textBox = new ExTextBox(this) { BorderStyle = BorderStyle.None, AutoSelectAll = true };
-      _ = builder + textBox + (0, 9) - (2, 0) + control;
-      textBox.Text = "test text";
-
-      richTextBox = new ExRichTextBox();
-      _ = builder + richTextBox + (0, 10) - (2, 0) + control;
-      richTextBox.Text = "test text";
-
-      var textBoxMenu = new Menus();
-      _ = textBoxMenu + textBox + "Open" + (() => { }) + contextMenu;
-      textBoxMenu.ContextMenuSeparator();
-      textBoxMenu.StandardContextEdit();
-      textBoxMenu.CreateContextMenu();
-
-      var richTextBoxMenu = new Menus();
-      _ = richTextBoxMenu + richTextBox + "Open" + (() => { }) + contextMenu;
-      richTextBoxMenu.ContextMenuSeparator();
-      richTextBoxMenu.StandardContextEdit();
-      richTextBoxMenu.CreateContextMenu();
 
       var uiAlternates = new UiAction(this) { AutoSizeText = true };
       _ = builder + uiAlternates + (0, 0) + control;
@@ -242,6 +220,10 @@ public partial class Form1 : Form
       };
       uiButton8.ClickText = "Create subTexts";
 
+      var uiChoices = new UiAction(this);
+      _ = builder + uiChoices + control;
+      uiChoices.NoStatus("choices");
+
       var uiButton9 = new UiAction(this);
       _ = builder + uiButton9 + row;
       uiButton9.Button("Update Choices");
@@ -261,5 +243,28 @@ public partial class Form1 : Form
          }
       };
       chooser.HookEvents();
+
+      _ = builder + uiDivider - (2, 0) + row;
+      uiDivider.Divider("part 2");
+
+      textBox = new ExTextBox(this) { BorderStyle = BorderStyle.None, AutoSelectAll = true };
+      _ = builder + textBox - (2, 0) + row;
+      textBox.Text = "test text";
+
+      richTextBox = new ExRichTextBox();
+      _ = builder + richTextBox - (2, 0) + control;
+      richTextBox.Text = "test text";
+
+      var textBoxMenu = new Menus();
+      _ = textBoxMenu + textBox + "Open" + (() => { }) + contextMenu;
+      textBoxMenu.ContextMenuSeparator();
+      textBoxMenu.StandardContextEdit();
+      textBoxMenu.CreateContextMenu();
+
+      var richTextBoxMenu = new Menus();
+      _ = richTextBoxMenu + richTextBox + "Open" + (() => { }) + contextMenu;
+      richTextBoxMenu.ContextMenuSeparator();
+      richTextBoxMenu.StandardContextEdit();
+      richTextBoxMenu.CreateContextMenu();
    }
 }
