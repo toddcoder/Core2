@@ -1270,6 +1270,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    public bool ClickGlyph { get; set; } = true;
 
+   public bool ChooserGlyph { get; set; }
+
    protected override void OnPaint(PaintEventArgs e)
    {
       base.OnPaint(e);
@@ -1679,6 +1681,17 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          else
          {
             e.Graphics.DrawLine(pen, clientRectangle.Right - 4, 4, clientRectangle.Right - 4, clientRectangle.Bottom - 4);
+            if (ChooserGlyph)
+            {
+               using var thinPen = new Pen(color, 1);
+               var x1 = clientRectangle.Right - 8;
+               var x2 = clientRectangle.Right - 16;
+               var bottom = clientRectangle.Bottom - 4;
+               for (var y = 4; y <= bottom; y += 2)
+               {
+                  e.Graphics.DrawLine(thinPen, x1, y, x2, y);
+               }
+            }
          }
       }
    }

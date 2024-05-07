@@ -171,7 +171,7 @@ public partial class Form1 : Form
       Set<Chosen> chosenSet = [];
       var counts = choices.ToStringHash(c => c, _ => 0);
 
-      var uiButton7 = new UiAction(this) { AutoSizeText = true };
+      var uiButton7 = new UiAction(this) { AutoSizeText = true, ChooserGlyph = true };
       _ = builder + uiButton7 + row;
       uiButton7.NoStatus("choose");
       uiButton7.Click += (_, _) =>
@@ -225,7 +225,7 @@ public partial class Form1 : Form
       _ = builder + uiChoices + control;
       uiChoices.NoStatus("choices");
 
-      var uiButton9 = new UiAction(this);
+      var uiButton9 = new UiAction(this) { ChooserGlyph = true };
       _ = builder + uiButton9 + row;
       uiButton9.Button("Update Choices");
       var chooser = uiButton9.Choose("Update").AutoClose(false).Choices(choices).Chooser();

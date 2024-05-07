@@ -12,18 +12,5 @@ public class HashInterfaceMaybe<TKey, TValue> where TKey : notnull where TValue 
       this.hash = hash;
    }
 
-   public Maybe<TValue> this[TKey key]
-   {
-      get
-      {
-         if (hash.ContainsKey(key))
-         {
-            return hash[key];
-         }
-         else
-         {
-            return nil;
-         }
-      }
-   }
+   public Maybe<TValue> this[TKey key] => hash.ContainsKey(key) ? hash[key] : nil;
 }
