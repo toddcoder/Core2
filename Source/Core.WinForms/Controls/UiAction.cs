@@ -188,6 +188,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       Enabled = false
    };
    protected Maybe<BusyTextProcessor> _statusBusyProcessor = nil;
+   protected Fader fader;
 
    public event EventHandler<AutomaticMessageArgs>? AutomaticMessage;
    public event EventHandler<PaintEventArgs>? Painting;
@@ -393,7 +394,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       backgroundWorker = new Lazy<BackgroundWorker>(() =>
       {
-         var worker = new BackgroundWorker();
+         var worker = new BackgroundWorker { WorkerSupportsCancellation = true };
          worker.DoWork += (_, e) => DoWork?.Invoke(this, e);
          worker.ProgressChanged += (_, e) => ProgressChanged?.Invoke(this, e);
          worker.RunWorkerCompleted += (_, e) => RunWorkerCompleted?.Invoke(this, e);
@@ -434,6 +435,9 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             this.Do(Refresh);
          }
       };
+
+      fader = new Fader(this);
+      fader.FadeComplete += (_, _) => fader.ClearTransparentLayeredWindow();
    }
 
    public bool AutoSizeText { get; set; }
@@ -3546,5 +3550,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          var diameter = clientRectangle.Height / 4;
          return diameter < 10 ? 10 : diameter;
       }
+   }
+
+   public void ShowAndFadeOut()
+   {
+      fader.SetTransparentLayeredWindow();
+      fader.Start(0);
    }
 }

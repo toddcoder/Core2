@@ -17,6 +17,7 @@ public partial class Form1 : Form
    protected ExTextBox textBox;
    protected ExRichTextBox richTextBox;
    protected UiAction uiButton6;
+   protected UiAction uiDirty;
 
    public Form1()
    {
@@ -27,6 +28,7 @@ public partial class Form1 : Form
       var menus = new FreeMenus { Form = this };
       menus.Menu("File");
       _ = menus + @"Show C:\Temp" + (() => uiButton6!.RunWorkerAsync()) + menu;
+      _ = menus + "ShowAndFade" + (() => uiDirty!.ShowAndFadeOut()) + menu;
       _ = menus + "Tests" + subMenu;
       _ = menus + "Alpha" + (() => { }) + menu;
       _ = menus + "Bravo" + (() => { }) + menu;
@@ -118,7 +120,7 @@ public partial class Form1 : Form
       uiButton5.Click += (_, _) => stager.NextStage(UiActionType.Success);
       uiButton5.ClickText = "Next stage";
 
-      var uiDirty = new UiAction(this);
+      uiDirty = new UiAction(this);
       _ = builder + uiDirty + control;
       uiDirty.Success("Not Dirty");
 

@@ -354,10 +354,11 @@ public static class User32
    public static extern int SetWindowPos(IntPtr handle, IntPtr handleInsertAfter, int x, int y, int cx, int cy, uint flags);
 
    [DllImport("user32.dll", SetLastError = true)]
-   public static extern uint GetWindowLong(IntPtr handle, uint index);
+   public static extern long GetWindowLong(IntPtr handle, int index);
 
    [DllImport("user32.dll")]
-   public static extern int SetWindowLong(IntPtr handle, uint index, uint newLong);
+   public static extern long SetWindowLong(IntPtr handle, int index, long newLong);
+
 
    [DllImport("user32.dll")]
    public static extern int SendMessage(IntPtr handle, int message, bool boolParameter, int intParameter);
@@ -373,4 +374,26 @@ public static class User32
    public static void windowShow(IntPtr handle) => ShowWindow(handle, (int)Show.Show);
 
    public static void windowHide(IntPtr handle) => ShowWindow(handle, (int)Show.Hide);
+
+   [DllImport("user32.dll")]
+   private static extern bool SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
+
+   public const int GWL_EXSTYLE = -20;
+   public const int WS_EX_LAYERED = 0x80000;
+   public const int LWA_ALPHA = 0x2;
+   public const int LWA_COLORKEY = 0x1;
+
+   public static void EnableOpacity(IntPtr handle, bool enabled)
+   {
+      if (enabled)
+      {
+         SetWindowLong(handle, GWL_EXSTYLE, GetWindowLong(handle, GWL_EXSTYLE) | WS_EX_LAYERED);
+      }
+      else
+      {
+         SetWindowLong(handle, GWL_EXSTYLE, GetWindowLong(handle, GWL_EXSTYLE) & ~WS_EX_LAYERED);
+      }
+   }
+
+   public static void SetOpacity(IntPtr handle, byte alpha) => SetLayeredWindowAttributes(handle, 0, alpha, LWA_ALPHA);
 }
