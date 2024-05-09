@@ -28,5 +28,6 @@ public enum UiActionType
    Symbol,
    Alternate,
    CheckBox,
-   Divider
+   Divider,
+   Done
 }

@@ -3422,10 +3422,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       {
          case UiActionType.Busy:
          {
-            var diameter = getDiameter();
-            var radius = diameter / 2;
-            var top = clientRectangle.Height / 2 - radius;
-            var rectangle = new Rectangle(4, top, diameter, diameter);
+            var (radius, rectangle) = getRectangle();
 
             (var statusBusyProcessor, _statusBusyProcessor) = _statusBusyProcessor.Create(() => new BusyTextProcessor(getForeColor(), rectangle)
             {
@@ -3436,11 +3433,22 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
             break;
          }
+         case UiActionType.Done:
+         {
+            var (_, rectangle) = getRectangle();
+
+            var foreColor = Color.White.WithAlpha(statusAlpha);
+            var backColor = Color.CadetBlue.WithAlpha(statusAlpha);
+            using var brush = new SolidBrush(backColor);
+            g.FillRectangle(brush, rectangle);
+            using var pen = new Pen(foreColor, 2);
+            g.DrawRectangle(pen, rectangle);
+
+            break;
+         }
          case UiActionType actionType:
          {
-            var diameter = getDiameter();
-            var top = clientRectangle.Height / 2 - diameter / 2;
-            var rectangle = new Rectangle(4, top, diameter, diameter);
+            var (_, rectangle) = getRectangle();
 
             var foreColor = getForeColor(actionType).WithAlpha(statusAlpha);
             var backColor = getBackColor(actionType).WithAlpha(statusAlpha);
@@ -3461,6 +3469,13 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       {
          var diameter = clientRectangle.Height / 4;
          return diameter < 10 ? 10 : diameter;
+      }
+
+      (int radius, Rectangle rectangle) getRectangle()
+      {
+         var diameter = getDiameter();
+         var top = clientRectangle.Height / 2 - diameter / 2;
+         return (diameter / 2, new Rectangle(4, top, diameter, diameter));
       }
    }
 

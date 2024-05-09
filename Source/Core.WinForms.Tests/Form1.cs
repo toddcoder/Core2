@@ -219,7 +219,7 @@ public partial class Form1 : Form
          var subText1 = uiSubText.SubText("alfa").Set.FontSize(8).Invert().Alignment(CardinalAlignment.SouthWest).SubText;
          uiSubText.SubText("bravo").Set.FontSize(8).Invert().RightOf(subText1);
          uiSubText.Refresh();
-         uiButton8.Status = UiActionType.Success;
+         uiButton8.Status = UiActionType.Done;
       };
       uiButton8.ClickText = "Create subTexts";
 
