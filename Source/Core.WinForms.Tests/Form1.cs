@@ -245,7 +245,6 @@ public partial class Form1 : Form
             chooser.Update(alternateChoices);
          }
       };
-      chooser.HookEvents();
 
       _ = builder + uiDivider - (2, 0) + row;
       uiDivider.Divider("part 2");

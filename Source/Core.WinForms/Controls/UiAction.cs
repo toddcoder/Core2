@@ -2821,58 +2821,24 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    public ChooserSet Choose(string title, int width)
    {
       var chooser = new Chooser(title, this, width);
-      chooser.HookEvents();
-
-      return new ChooserSet(chooser, this);
+      return new ChooserSet(chooser);
    }
 
    public ChooserSet Choose(string title)
    {
       var chooser = new Chooser(title, this, nil);
-      chooser.HookEvents();
-
-      return new ChooserSet(chooser, this);
+      return new ChooserSet(chooser);
    }
 
-   public void HookAppearanceOverride(Chooser chooser)
-   {
-      if (AppearanceOverride is not null)
-      {
-         chooser.AppearanceOverride += (_, e) => AppearanceOverride.Invoke(this, e);
-      }
-   }
+   public void OnAppearanceOverride(AppearanceOverrideArgs e) => AppearanceOverride?.Invoke(this, e);
 
-   public void HookChosenItemChecked(Chooser chooser)
-   {
-      if (ChosenItemChecked is not null)
-      {
-         chooser.ChosenItemChecked += (_, e) => ChosenItemChecked.Invoke(this, e);
-      }
-   }
+   public void OnChosenItemChecked(ChosenArgs e) => ChosenItemChecked?.Invoke(this, e);
 
-   public void HookChosenItemSelected(Chooser chooser)
-   {
-      if (ChosenItemSelected is not null)
-      {
-         chooser.ChosenItemSelected += (_, e) => ChosenItemSelected.Invoke(this, e);
-      }
-   }
+   public void OnChosenItemSelected(ChosenArgs e) => ChosenItemSelected?.Invoke(this, e);
 
-   public void HookChooserOpened(Chooser chooser)
-   {
-      if (ChooserOpened is not null)
-      {
-         chooser.ChooserOpened += (_, e) => ChooserOpened.Invoke(this, e);
-      }
-   }
+   public void OnChooserOpened() => ChooserOpened?.Invoke(this, EventArgs.Empty);
 
-   public void HookChooserClosed(Chooser chooser)
-   {
-      if (ChooserClosed is not null)
-      {
-         chooser.ChooserClosed += (_, e) => ChooserClosed.Invoke(this, e);
-      }
-   }
+   public void OnChooserClosed() => ChooserClosed?.Invoke(this, EventArgs.Empty);
 
    public bool Arrow { get; set; }
 

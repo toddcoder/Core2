@@ -66,10 +66,10 @@ public partial class Chooser : Form
    protected bool isHooked;
 
    public event EventHandler<AppearanceOverrideArgs>? AppearanceOverride;
-   public event EventHandler<ChosenArgs>? ChosenItemChecked;
+   /*public event EventHandler<ChosenArgs>? ChosenItemChecked;
    public event EventHandler<ChosenArgs>? ChosenItemSelected;
    public event EventHandler<EventArgs>? ChooserOpened;
-   public event EventHandler<EventArgs>? ChooserClosed;
+   public event EventHandler<EventArgs>? ChooserClosed;*/
 
    public Chooser(string title, UiAction uiAction, Maybe<int> _width)
    {
@@ -90,7 +90,7 @@ public partial class Chooser : Form
 
    public UiAction UiAction => uiAction;
 
-   public ChooserSet Set => new(this, uiAction);
+   public ChooserSet Set => new(this);
 
    public string Title
    {
@@ -411,7 +411,7 @@ public partial class Chooser : Form
 
       choicesGuid = Guid.NewGuid();
 
-      ChooserOpened?.Invoke(this, EventArgs.Empty);
+      uiAction.OnChooserOpened();
    }
 
    protected void Chooser_MouseDown(object sender, MouseEventArgs e)
@@ -447,7 +447,7 @@ public partial class Chooser : Form
 
          var originalGuid = choicesGuid;
 
-         ChosenItemSelected?.Invoke(this, args);
+         uiAction.OnChosenItemSelected(args);
 
          if (originalGuid == choicesGuid)
          {
@@ -495,7 +495,7 @@ public partial class Chooser : Form
                chosenSet.Remove(chosen);
             }
 
-            ChosenItemChecked?.Invoke(this, new ChosenArgs(chosen, chosenSet));
+            uiAction.OnChosenItemChecked(new ChosenArgs(chosen, chosenSet));
          }
       }
    }
@@ -524,7 +524,7 @@ public partial class Chooser : Form
       }
    }
 
-   protected void Chooser_FormClosed(object sender, FormClosedEventArgs e) => ChooserClosed?.Invoke(this, EventArgs.Empty);
+   protected void Chooser_FormClosed(object sender, FormClosedEventArgs e) => uiAction.OnChooserClosed();
 
    public void Update(StringHash choices)
    {
@@ -554,19 +554,5 @@ public partial class Chooser : Form
    {
       choices.Clear();
       LoadChoices();
-   }
-
-   public void HookEvents()
-   {
-      if (!isHooked)
-      {
-         uiAction.HookAppearanceOverride(this);
-         uiAction.HookChosenItemSelected(this);
-         uiAction.HookChosenItemChecked(this);
-         uiAction.HookChooserOpened(this);
-         uiAction.HookChooserClosed(this);
-
-         isHooked = true;
-      }
    }
 }
