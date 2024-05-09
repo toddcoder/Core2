@@ -2874,14 +2874,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       }
    }
 
-   internal bool ChosenItemCheckedIsNotNull => ChosenItemChecked is not null;
-
-   internal bool ChosenItemSelectedIsNotNull => ChosenItemSelected is not null;
-
-   internal bool ChooserOpenedIsNotNull => ChooserOpened is not null;
-
-   internal bool ChooserClosedIsNotNull => ChooserClosed is not null;
-
    public bool Arrow { get; set; }
 
    public void ControlLabel(string text) => ShowMessage(text, UiActionType.ControlLabel);
