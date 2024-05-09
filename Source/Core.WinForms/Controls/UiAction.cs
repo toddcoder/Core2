@@ -2821,30 +2821,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    public ChooserSet Choose(string title, int width)
    {
       var chooser = new Chooser(title, this, width);
-      if (AppearanceOverride is not null)
-      {
-         chooser.AppearanceOverride += (_, e) => AppearanceOverride.Invoke(this, e);
-      }
-
-      if (ChosenItemChecked is not null)
-      {
-         chooser.ChosenItemChecked += (_, e) => ChosenItemChecked.Invoke(this, e);
-      }
-
-      if (ChosenItemSelected is not null)
-      {
-         chooser.ChosenItemSelected += (_, e) => ChosenItemSelected.Invoke(this, e);
-      }
-
-      if (ChooserOpened is not null)
-      {
-         chooser.ChooserOpened += (_, e) => ChooserOpened.Invoke(this, e);
-      }
-
-      if (ChooserClosed is not null)
-      {
-         chooser.ChooserClosed += (_, e) => ChooserClosed.Invoke(this, e);
-      }
+      chooser.HookEvents();
 
       return new ChooserSet(chooser, this);
    }
@@ -2852,30 +2829,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    public ChooserSet Choose(string title)
    {
       var chooser = new Chooser(title, this, nil);
-      if (AppearanceOverride is not null)
-      {
-         chooser.AppearanceOverride += (_, e) => AppearanceOverride.Invoke(this, e);
-      }
-
-      if (ChosenItemChecked is not null)
-      {
-         chooser.ChosenItemChecked += (_, e) => ChosenItemChecked.Invoke(this, e);
-      }
-
-      if (ChosenItemSelected is not null)
-      {
-         chooser.ChosenItemSelected += (_, e) => ChosenItemSelected.Invoke(this, e);
-      }
-
-      if (ChooserOpened is not null)
-      {
-         chooser.ChooserOpened += (_, e) => ChooserOpened.Invoke(this, e);
-      }
-
-      if (ChooserClosed is not null)
-      {
-         chooser.ChooserClosed += (_, e) => ChooserClosed.Invoke(this, e);
-      }
+      chooser.HookEvents();
 
       return new ChooserSet(chooser, this);
    }

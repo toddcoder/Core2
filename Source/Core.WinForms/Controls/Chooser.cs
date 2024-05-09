@@ -63,6 +63,7 @@ public partial class Chooser : Form
    protected Set<Chosen> chosenSet = [];
    protected bool isCheckingLocked;
    protected Guid choicesGuid = Guid.NewGuid();
+   protected bool isHooked;
 
    public event EventHandler<AppearanceOverrideArgs>? AppearanceOverride;
    public event EventHandler<ChosenArgs>? ChosenItemChecked;
@@ -557,10 +558,15 @@ public partial class Chooser : Form
 
    public void HookEvents()
    {
-      uiAction.HookAppearanceOverride(this);
-      uiAction.HookChosenItemSelected(this);
-      uiAction.HookChosenItemChecked(this);
-      uiAction.HookChooserOpened(this);
-      uiAction.HookChooserClosed(this);
+      if (!isHooked)
+      {
+         uiAction.HookAppearanceOverride(this);
+         uiAction.HookChosenItemSelected(this);
+         uiAction.HookChosenItemChecked(this);
+         uiAction.HookChooserOpened(this);
+         uiAction.HookChooserClosed(this);
+
+         isHooked = true;
+      }
    }
 }
