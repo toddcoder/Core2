@@ -7,11 +7,15 @@ public abstract class ConfigurationItem
 {
    public abstract string Key { get; }
 
+   public abstract string Text { get; }
+
    public abstract void SetItem(string key, ConfigurationItem item);
 
    public abstract void RemoveItem(string key);
 
    public abstract IEnumerable<(string key, string text)> Items();
+
+   public abstract IEnumerable<(string key, ConfigurationItem)> ConfigurationItems();
 
    public abstract IEnumerable<(string key, Setting setting)> Settings();
 

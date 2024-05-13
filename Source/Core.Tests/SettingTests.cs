@@ -5,6 +5,7 @@ using Core.Collections;
 using Core.Computers;
 using Core.Configurations;
 using Core.DataStructures;
+using Core.Dates.DateIncrements;
 using Core.Enumerables;
 using Core.Json;
 using Core.Monads;
@@ -744,14 +745,16 @@ public class SettingTests
       }
    }
 
-   [TestMethod]
-   public void Array5Test()
+   protected Setting getTestClassesSetting()
    {
       TestClass[] testClasses =
       [
          new TestClass { Name = "alfa", Letter = "a", Number = 0 },
          new TestClass { Name = "bravo", Letter = "b", Number = 1 },
-         new TestClass { Name = "charlie", Letter = "c", Number = 2 }
+         new TestClass { Name = "charlie", Letter = "c", Number = 2 },
+         new TestClass { Name = "delta", Letter = "d", Number = 3 },
+         new TestClass { Name = "echo", Letter = "e", Number = 4 },
+         new TestClass { Name = "foxtrot", Letter = "f", Number = 5 }
       ];
 
       var setting = new Setting();
@@ -760,6 +763,14 @@ public class SettingTests
       {
          setting.Set(subSetting.Key).Setting = subSetting;
       }
+
+      return setting;
+   }
+
+   [TestMethod]
+   public void Array5Test()
+   {
+      var setting = getTestClassesSetting();
 
       var _json = Serializer.Serialize(setting);
       if (_json is (true, var json))
@@ -771,6 +782,92 @@ public class SettingTests
       else
       {
          Console.WriteLine(_json.Exception.Message);
+      }
+   }
+
+   [TestMethod]
+   public void SettingPathTest()
+   {
+      var setting = getTestClassesSetting();
+
+      Console.WriteLine("All names");
+      foreach (var item in setting.SelectItems("nato..name"))
+      {
+         Console.WriteLine(item.Text);
+      }
+
+      Console.WriteLine();
+
+      Console.WriteLine("First name");
+      foreach (var item in setting.SelectItems("nato..name[1]"))
+      {
+         Console.WriteLine(item.Text);
+      }
+
+      Console.WriteLine();
+
+      Console.WriteLine("Skip 2, take 3");
+      foreach (var item in setting.SelectItems("nato..letter(2:3)"))
+      {
+         Console.Write(item.Text);
+      }
+
+      Console.WriteLine();
+      Console.WriteLine();
+
+      Console.WriteLine("Text ends in o");
+      foreach (var item in setting.SelectItems("nato..t/'o' $; f/"))
+      {
+         Console.WriteLine($"{item.Key}: {item.Text}");
+      }
+   }
+
+   [TestMethod]
+   public void SettingPathFromJsonTest()
+   {
+      using var writer = new JsonWriter();
+      writer.BeginObject();
+      writer.Write("count", 1);
+
+      writer.BeginArray("value");
+      writer.BeginObject();
+      writer.Write("id", 112449);
+
+      writer.BeginObject("project");
+      writer.Write("id", Guid.NewGuid());
+      writer.Write("name", "Foobar");
+      writer.EndObject();
+
+      var now = DateTime.Now;
+      writer.Write("startedDate", now - 45.Minutes());
+      writer.Write("completedDate", now);
+
+      writer.BeginObject("testCase");
+      writer.Write("name", "Bad");
+      writer.EndObject();
+
+      writer.EndObject();
+      writer.EndArray();
+
+      writer.EndObject();
+
+      var json = writer.ToString();
+
+      Console.WriteLine(json);
+      Console.WriteLine();
+
+      var _setting = Deserializer.Deserialize(json);
+      if (_setting is (true, var setting))
+      {
+         foreach (var item in setting.SelectItems("value..testCase.name"))
+         {
+            Console.WriteLine(item.Text);
+         }
+
+         if (setting.SelectItems("value..startedDate").FirstOrNone() is (true, var firstItem))
+         {
+            Console.WriteLine($"{firstItem.Key}: {firstItem.Text}");
+         }
       }
    }
 }

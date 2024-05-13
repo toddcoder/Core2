@@ -18,7 +18,7 @@ public class Item : ConfigurationItem, IConfigurationItemGetter
 
    public override string Key { get; }
 
-   public string Text { get; }
+   public override string Text { get; }
 
    public bool IsNull { get; set; }
 
@@ -35,6 +35,11 @@ public class Item : ConfigurationItem, IConfigurationItemGetter
    }
 
    public override IEnumerable<(string key, string text)> Items()
+   {
+      yield break;
+   }
+
+   public override IEnumerable<(string key, ConfigurationItem)> ConfigurationItems()
    {
       yield break;
    }

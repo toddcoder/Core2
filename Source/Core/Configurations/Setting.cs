@@ -8,6 +8,7 @@ using Core.Arrays;
 using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
+using Core.DataStructures;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
@@ -65,6 +66,8 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
    public override string Key { get; }
 
+   public override string Text => items.Values.Select(i => i.Text).ToString(" ");
+
    public bool IsArray { get; set; }
 
    public bool IsHash { get; set; }
@@ -120,6 +123,14 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       foreach (var item in items.Where(i => i.Value is Item).Select(i => (Item)i.Value))
       {
          yield return (item.Key, item.Text);
+      }
+   }
+
+   public override IEnumerable<(string key, ConfigurationItem)> ConfigurationItems()
+   {
+      foreach (var (key, item) in items)
+      {
+         yield return (key, item);
       }
    }
 
@@ -642,4 +653,180 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
       return clone;
    }
+
+   public IEnumerable<ConfigurationItem> SelectItems(string path)
+   {
+      MaybeQueue<string> pathPartQueue = [.. path.Unjoin("'.'; f")];
+      ConfigurationItem[] configurationItems = [.. items.Values];
+      while (pathPartQueue.Dequeue() is (true, var pathPart))
+      {
+         configurationItems = [.. selectItems(configurationItems, pathPart)];
+      }
+
+      return configurationItems;
+   }
+
+   protected static IEnumerable<ConfigurationItem> selectItems(IEnumerable<ConfigurationItem> items, string pathPart)
+   {
+      if (getNameCount() is (true, var (name, count)))
+      {
+         return getCount(name, count);
+      }
+      else if (getSkipAndTake() is (true, var (name2, skip, take)))
+      {
+         return getSkipTake(name2, skip, take);
+      }
+      else if (pathPart.IsEmpty())
+      {
+         return getAll();
+      }
+      else
+      {
+         return getPart();
+      }
+
+
+      Func<ConfigurationItem, bool> getPredicate(string text)
+      {
+
+         if (getPattern(text) is (true, var (pattern, target)))
+         {
+            return target switch
+            {
+               'k' => i => i.Key.IsMatch(pattern),
+               't' => i => i.Text.IsMatch(pattern),
+               _ => _ => false
+            };
+         }
+         else
+         {
+            return i => i.Key.Same(text);
+         }
+
+      }
+      IEnumerable<ConfigurationItem> getPart()
+      {
+         var predicate = getPredicate(pathPart);
+
+         foreach (var item in items.Where(predicate))
+         {
+            switch (item)
+            {
+               case Setting setting:
+                  foreach (var (_, subItem) in setting.ConfigurationItems())
+                  {
+                     yield return subItem;
+                  }
+
+                  break;
+               case Item configurationItem:
+                  yield return configurationItem;
+
+                  break;
+            }
+         }
+      }
+
+      IEnumerable<ConfigurationItem> getAll()
+      {
+         foreach (var item in items)
+         {
+            switch (item)
+            {
+               case Setting setting:
+                  foreach (var (_, subItem) in setting.ConfigurationItems())
+                  {
+                     yield return subItem;
+                  }
+
+                  break;
+               case Item configurationItem:
+                  yield return configurationItem;
+
+                  break;
+            }
+         }
+      }
+
+      Maybe<(string name, int count)> getNameCount()
+      {
+         return
+            from matchResult in pathPart.Matches("^ /(-['[']+) '[' /(/d+) ']' $; f")
+            let tuple = (name: matchResult.FirstGroup, count: matchResult.SecondGroup)
+            from countAsInt in tuple.count.Maybe().Int32()
+            select (tuple.name, count: countAsInt);
+      }
+
+      IEnumerable<ConfigurationItem> getCount(string name, int count)
+      {
+         var predicate = getPredicate(name);
+
+         foreach (var item in items.Where(predicate).Take(count))
+         {
+            switch (item)
+            {
+               case Setting setting:
+                  foreach (var (_, subItem) in setting.ConfigurationItems())
+                  {
+                     yield return subItem;
+                  }
+
+                  break;
+               case Item configurationItem:
+                  yield return configurationItem;
+
+                  break;
+            }
+         }
+      }
+
+      Maybe<(string name, int skip, int take)> getSkipAndTake()
+      {
+         return
+            from matchResult in pathPart.Matches("^ /(-['(']+) '(' /(/d+) ':' /(/d+) ')' $; f")
+            let tuple = (name: matchResult.FirstGroup, skip: matchResult.SecondGroup, take: matchResult.ThirdGroup)
+            from skipAsInt in tuple.skip.Maybe().Int32()
+            from takeAsInt in tuple.take.Maybe().Int32()
+            select (tuple.name, skipAsInt, takeAsInt);
+      }
+
+      IEnumerable<ConfigurationItem> getSkipTake(string name, int skip, int take)
+      {
+         var predicate = getPredicate(name);
+
+         foreach (var item in items.Where(predicate).Skip(skip).Take(take))
+         {
+            switch (item)
+            {
+               case Setting setting:
+                  foreach (var (_, subItem) in setting.ConfigurationItems())
+                  {
+                     yield return subItem;
+                  }
+
+                  break;
+               case Item configurationItem:
+                  yield return configurationItem;
+
+                  break;
+            }
+         }
+      }
+
+      Maybe<(Pattern pattern, char target)> getPattern(string text)
+      {
+         if (text.Matches("^ /('k' | 't') '//' /(.+) '//'; f").Map(r => (r.FirstGroup, r.SecondGroup)) is (true, var (target, patternSource)))
+         {
+            return (patternSource, target[0]);
+         }
+         else
+         {
+            return nil;
+         }
+      }
+   }
+
+   public IEnumerable<Setting> SelectOnlySettings(string path) => SelectItems(path).OfType<Setting>();
+
+   public IEnumerable<Item> SelectOnlyItems(string path) => SelectItems(path).OfType<Item>();
 }
