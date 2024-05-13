@@ -66,10 +66,6 @@ public partial class Chooser : Form
    protected bool isHooked;
 
    public event EventHandler<AppearanceOverrideArgs>? AppearanceOverride;
-   /*public event EventHandler<ChosenArgs>? ChosenItemChecked;
-   public event EventHandler<ChosenArgs>? ChosenItemSelected;
-   public event EventHandler<EventArgs>? ChooserOpened;
-   public event EventHandler<EventArgs>? ChooserClosed;*/
 
    public Chooser(string title, UiAction uiAction, Maybe<int> _width)
    {
