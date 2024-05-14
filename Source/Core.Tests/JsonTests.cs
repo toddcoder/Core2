@@ -2,6 +2,7 @@
 using Core.Computers;
 using Core.Dates;
 using Core.Json;
+using Core.Json.Building;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests;
@@ -72,6 +73,12 @@ public class JsonTests
       writer.EndObject();
 
       Console.WriteLine(writer);
+
+      var builder = JsonBuilder.WithObject();
+      var metaData = builder.Object("metadata") + ("id", "Core") + ("version", "1.4.4.6") + ("title", "Core") + ("authors", "Todd Bennett") +
+         ("copyright", 2021);
+      _ = metaData.Array("tags") + "Core" + "Async" + "Types";
+      Console.WriteLine(builder.End());
    }
 
    [TestMethod]
@@ -98,6 +105,11 @@ public class JsonTests
       writer.EndArray();
       var json = writer.ToString();
       Console.WriteLine(json);
+
+      var builder = JsonBuilder.WithArray();
+      var obj = builder.Object() + ("op", "replace") + ("path", "/triggers/branchFilters");
+      _ = obj.Array("value") + branchFilters;
+      Console.WriteLine(builder);
    }
 
    [TestMethod]
@@ -108,5 +120,9 @@ public class JsonTests
       writer.Write("array", ["alpha", "bravo", "charlie"]);
       writer.EndObject();
       Console.WriteLine(writer);
+
+      var builder = JsonBuilder.WithObject();
+      _ = builder.Array("array") + ["alpha", "bravo", "charlie"];
+      Console.WriteLine(builder);
    }
 }

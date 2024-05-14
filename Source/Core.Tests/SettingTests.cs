@@ -8,6 +8,7 @@ using Core.DataStructures;
 using Core.Dates.DateIncrements;
 using Core.Enumerables;
 using Core.Json;
+using Core.Json.Building;
 using Core.Monads;
 using Core.Monads.Lazy;
 using Core.Strings;
@@ -395,6 +396,12 @@ public class SettingTests
       {
          throw _setting.Exception;
       }
+
+      var builder = JsonBuilder.WithObject();
+      _ = builder.Object("o1") + ("value1", 111) + ("value2", "$1") + nil;
+      _ = builder.Object("o2") + ("value1", 123) + ("value2", "$2") + nil;
+      _ = builder.Object("o3") + ("value1", 153) + ("value2", "$3") + nil;
+      Console.WriteLine(builder);
    }
 
    [TestMethod]
@@ -419,6 +426,10 @@ public class SettingTests
             }
          }
       }
+
+      var builder = JsonBuilder.WithObject();
+      _ = builder.Array("items") + ["alpha", "bravo", "charlie"];
+      Console.WriteLine(builder);
    }
 
    [TestMethod]
@@ -638,13 +649,17 @@ public class SettingTests
             }
          }
       }
+
+      var builder = JsonBuilder.WithObject();
+      _ = builder.Outer + ("index", 153) + ("name", "foobar") + ("now", DateTime.Now);
+      _ = builder.Outer.Object("data") + ("alpha", "a") + ("bravo", "b") + ("charlie", "c");
+      Console.WriteLine(builder);
    }
 
    [TestMethod]
    public void NestedSettingsTest()
    {
       var setting = new Setting();
-      //var subSetting = new Setting();
       string[] keys = ["alfa", "bravo", "charlie", "delta", "echo", "foxtrot"];
       MaybeQueue<string> keysQueue = [.. keys];
       string[] values1 = ["a", "b", "c", "d", "e", "f"];
@@ -668,6 +683,26 @@ public class SettingTests
    }
 
    [TestMethod]
+   public void NestedBuilderSettingsTest()
+   {
+      var builder = JsonBuilder.WithObject();
+      string[] keys = ["alfa", "bravo", "charlie", "delta", "echo", "foxtrot"];
+      MaybeQueue<string> keysQueue = [.. keys];
+      string[] values1 = ["a", "b", "c", "d", "e", "f"];
+      MaybeQueue<string> values1Queue = [.. values1];
+      string[] values2 = ["alpha", "beta", "kappa", "delta", "eta", "phi"];
+      MaybeQueue<string> values2Queue = [.. values2];
+
+      while (keysQueue.Dequeue() is (true, var key) && values1Queue.Dequeue() is (true, var value1) && values2Queue.Dequeue() is (true, var value2))
+      {
+         var obj = builder.Object(key);
+         _ = obj + ("value1", value1) + ("value2", value2) + nil;
+      }
+
+      Console.WriteLine(builder);
+   }
+
+   [TestMethod]
    public void Array2Test()
    {
       var setting = new Setting();
@@ -679,6 +714,10 @@ public class SettingTests
       {
          Console.WriteLine(json);
       }
+
+      var builder = JsonBuilder.WithObject();
+      _ = builder.Array(Setting.ROOT_NAME) + ["alpha", "bravo", "charlie"];
+      Console.WriteLine(builder);
    }
 
    [TestMethod]
@@ -711,6 +750,10 @@ public class SettingTests
       {
          Console.WriteLine($"Exception: {_json.Exception.Message}");
       }
+
+      var builder = JsonBuilder.WithObject();
+      _ = builder.Array("array") + ["alfa", "bravo", "charlie"];
+      Console.WriteLine(builder);
    }
 
    protected class TestClass
@@ -743,6 +786,14 @@ public class SettingTests
       {
          Console.WriteLine(_json.Exception.Message);
       }
+
+      var builder = JsonBuilder.WithObject();
+      foreach (var testClass in testClasses)
+      {
+         _ = builder.Outer.Object(testClass.Name) + ("name", testClass.Name) + ("letter", testClass.Letter) + ("number", testClass.Number) + nil;
+      }
+
+      Console.WriteLine(builder);
    }
 
    protected Setting getTestClassesSetting()
