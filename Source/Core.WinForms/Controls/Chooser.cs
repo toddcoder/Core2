@@ -65,8 +65,6 @@ public partial class Chooser : Form
    protected Guid choicesGuid = Guid.NewGuid();
    protected bool isHooked;
 
-   public event EventHandler<AppearanceOverrideArgs>? AppearanceOverride;
-
    public Chooser(string title, UiAction uiAction, Maybe<int> _width)
    {
       this.title = title;
@@ -229,38 +227,31 @@ public partial class Chooser : Form
    protected Maybe<(string text, Color foreColor, Color backColor, Maybe<Font> _font)> overrideAppearance(string text, Color foreColor,
       Color backColor)
    {
-      if (AppearanceOverride is not null)
+      var args = new AppearanceOverrideArgs(text, foreColor, backColor);
+      uiAction.OnAppearanceOverride(args);
+      if (args.Override)
       {
-         var args = new AppearanceOverrideArgs(text, foreColor, backColor);
-         AppearanceOverride.Invoke(this, args);
-         if (args.Override)
+         text = args.Text;
+         foreColor = args.ForeColor;
+         backColor = args.BackColor;
+
+         Bits32<FontStyle> style = FontStyle.Regular;
+         var modified = false;
+         if (args.Italic)
          {
-            text = args.Text;
-            foreColor = args.ForeColor;
-            backColor = args.BackColor;
-
-            Bits32<FontStyle> style = FontStyle.Regular;
-            var modified = false;
-            if (args.Italic)
-            {
-               style[FontStyle.Italic] = true;
-               modified = true;
-            }
-
-            if (args.Bold)
-            {
-               style[FontStyle.Bold] = true;
-               modified = true;
-            }
-
-            var _font = maybe<Font>() & modified & (() => new Font(listViewItems.Font, style));
-
-            return (text, foreColor, backColor, _font);
+            style[FontStyle.Italic] = true;
+            modified = true;
          }
-         else
+
+         if (args.Bold)
          {
-            return nil;
+            style[FontStyle.Bold] = true;
+            modified = true;
          }
+
+         var _font = maybe<Font>() & modified & (() => new Font(listViewItems.Font, style));
+
+         return (text, foreColor, backColor, _font);
       }
       else
       {
