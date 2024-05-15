@@ -131,12 +131,12 @@ public partial class Form1 : Form
       {
          uiDivider.IsDirty = !uiDivider.IsDirty;
          uiDirty.IsDirty = !uiDirty.IsDirty;
-         uiButton6.Status = uiDirty.IsDirty ? UiActionType.Success : UiActionType.Busy;
+         uiButton6.Status = uiDirty.IsDirty ? StatusType.Success : StatusType.Busy;
       };
       uiButton6.ClickText = "Dirty";
       uiButton6.Initialize += (_, e) =>
       {
-         uiButton6.Status = UiActionType.Busy;
+         uiButton6.Status = StatusType.Busy;
          FolderName folder = @"C:\Temp";
          e.Argument = folder;
       };
@@ -152,7 +152,7 @@ public partial class Form1 : Form
             }
          }
       };
-      uiButton6.RunWorkerCompleted += (_, _) => uiButton6.Status = UiActionType.Success;
+      uiButton6.RunWorkerCompleted += (_, _) => uiButton6.Status = StatusType.Success;
 
       var uiChosen = new UiAction(this);
       _ = builder + uiChosen + control;
@@ -212,14 +212,17 @@ public partial class Form1 : Form
       var uiButton8 = new UiAction(this);
       _ = builder + uiButton8 + row;
       uiButton8.Button("SubTexts");
-      uiButton8.Status = UiActionType.NoStatus;
+      //uiButton8.Status = UiActionType.NoStatus;
+      uiButton8.Maximum = 20;
+      uiButton8.Status = StatusType.Progress;
       uiButton8.Click += (_, _) =>
       {
+         uiButton8.Status = StatusType.ProgressStep;
          uiSubText.ClearSubTexts();
          var subText1 = uiSubText.SubText("alfa").Set.FontSize(8).Invert().Alignment(CardinalAlignment.SouthWest).SubText;
          uiSubText.SubText("bravo").Set.FontSize(8).Invert().RightOf(subText1);
          uiSubText.Refresh();
-         uiButton8.Status = UiActionType.Done;
+         //uiButton8.Status = UiActionType.Done;
       };
       uiButton8.ClickText = "Create subTexts";
 

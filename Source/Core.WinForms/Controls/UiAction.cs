@@ -180,7 +180,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    protected bool showToGo;
    protected Maybe<string> _title = nil;
    protected UiActionButtonType buttonType = UiActionButtonType.Normal;
-   protected Maybe<UiActionType> _status = nil;
+   protected StatusType status = StatusType.None;
    protected int statusAlpha = 255;
    protected Timer statusTimer = new()
    {
@@ -189,6 +189,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    };
    protected Maybe<BusyTextProcessor> _statusBusyProcessor = nil;
    protected Fader fader;
+   protected Maybe<PieProgressProcessor> _pieProgressProcessor = nil;
 
    public event EventHandler<AutomaticMessageArgs>? AutomaticMessage;
    public event EventHandler<PaintEventArgs>? Painting;
@@ -416,22 +417,22 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       statusTimer.Tick += (_, _) =>
       {
-         if (_status is (true, var status))
+         if (status is not StatusType.Busy and not StatusType.Progress and not StatusType.ProgressStep)
          {
-            if (status is not UiActionType.Busy)
+            statusAlpha -= 5;
+            if (statusAlpha <= 0)
             {
-               statusAlpha -= 5;
-               if (statusAlpha <= 0)
-               {
-                  _status = nil;
-                  statusTimer.Enabled = false;
-                  _successToolTip = nil;
-                  _failureToolTip = nil;
-                  _exceptionToolTip = nil;
-                  toolTip.ToolTipBox = false;
-               }
+               status = StatusType.None;
+               statusTimer.Enabled = false;
+               _successToolTip = nil;
+               _failureToolTip = nil;
+               _exceptionToolTip = nil;
+               toolTip.ToolTipBox = false;
             }
+         }
 
+         if (status is not StatusType.None)
+         {
             this.Do(Refresh);
          }
       };
@@ -1245,6 +1246,32 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    protected Color getForeColor(UiActionType type) => foreColors[type];
 
+   protected Color getForeColor(StatusType type) => type switch
+   {
+      StatusType.None => getForeColor(),
+      StatusType.Busy => getForeColor(UiActionType.Busy),
+      StatusType.Success => getForeColor(UiActionType.Success),
+      StatusType.Failure => getForeColor(UiActionType.Failure),
+      StatusType.Exception => getForeColor(UiActionType.Exception),
+      StatusType.Done => getForeColor(UiActionType.Done),
+      StatusType.Progress => getForeColor(UiActionType.ProgressDefinite),
+      StatusType.ProgressStep => getForeColor(UiActionType.ProgressDefinite),
+      _ => getForeColor()
+   };
+
+   protected Color getBackColor(StatusType type) => type switch
+   {
+      StatusType.None => getBackColor(),
+      StatusType.Busy => getBackColor(UiActionType.Busy),
+      StatusType.Success => getBackColor(UiActionType.Success),
+      StatusType.Failure => getBackColor(UiActionType.Failure),
+      StatusType.Exception => getBackColor(UiActionType.Exception),
+      StatusType.Done => getBackColor(UiActionType.Done),
+      StatusType.Progress => getBackColor(UiActionType.ProgressDefinite),
+      StatusType.ProgressStep => getBackColor(UiActionType.ProgressDefinite),
+      _ => getBackColor()
+   };
+
    protected Color getForeColor() => type == UiActionType.Display ? ForeColor : _foreColor | (() => foreColors[type]);
 
    protected Color getBackColor(UiActionType type) => backColors[type];
@@ -1298,6 +1325,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          return;
       }
 
+      if (status is StatusType.Progress or StatusType.ProgressStep && _pieProgressProcessor is (true, var pieProgressProcessor))
+      {
+         pieProgressProcessor.OnPaint(e.Graphics);
+      }
+
       if (PaintOnRectangle is not null && rectangles.Length > 0)
       {
          for (var i = 0; i < rectangles.Length; i++)
@@ -1311,35 +1343,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       activateProcessor(e.Graphics);
 
       var clientRectangle = getClientRectangle();
-
-      void drawStopwatch()
-      {
-         if (Stopwatch)
-         {
-            var elapsed = stopwatch.Value.Elapsed.ToString(@"mm\:ss");
-            using var font = new Font("Consolas", 8);
-            var size = TextRenderer.MeasureText(e.Graphics, elapsed, font);
-            var location = new Point(clientRectangle.Width - size.Width - 8, 4);
-            var rectangle = new Rectangle(location, size);
-            if (StopwatchInverted)
-            {
-               var foreColor = getBackColor();
-               var backColor = getForeColor();
-               using var brush = new SolidBrush(backColor);
-               e.Graphics.FillRectangle(brush, rectangle);
-               TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, foreColor);
-               using var pen = new Pen(foreColor);
-               e.Graphics.DrawRectangle(pen, rectangle);
-            }
-            else
-            {
-               var foreColor = getForeColor();
-               TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, foreColor);
-               using var pen = new Pen(foreColor);
-               e.Graphics.DrawRectangle(pen, rectangle);
-            }
-         }
-      }
 
       determineFloorAndCeiling();
 
@@ -1551,6 +1554,36 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       drawStatus(e.Graphics, clientRectangle);
 
       Painting?.Invoke(this, e);
+      return;
+
+      void drawStopwatch()
+      {
+         if (Stopwatch)
+         {
+            var elapsed = stopwatch.Value.Elapsed.ToString(@"mm\:ss");
+            using var font = new Font("Consolas", 8);
+            var size = TextRenderer.MeasureText(e.Graphics, elapsed, font);
+            var location = new Point(clientRectangle.Width - size.Width - 8, 4);
+            var rectangle = new Rectangle(location, size);
+            if (StopwatchInverted)
+            {
+               var foreColor = getBackColor();
+               var backColor = getForeColor();
+               using var brush = new SolidBrush(backColor);
+               e.Graphics.FillRectangle(brush, rectangle);
+               TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, foreColor);
+               using var pen = new Pen(foreColor);
+               e.Graphics.DrawRectangle(pen, rectangle);
+            }
+            else
+            {
+               var foreColor = getForeColor();
+               TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, foreColor);
+               using var pen = new Pen(foreColor);
+               e.Graphics.DrawRectangle(pen, rectangle);
+            }
+         }
+      }
    }
 
    protected void drawTitle(Graphics g, Rectangle clientRectangle)
@@ -3379,18 +3412,42 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       return rectangle;
    }
 
-   public Maybe<UiActionType> Status
+   public StatusType Status
    {
-      get => _status;
+      get => status;
       set
       {
-         _status = value;
-         if (_status)
+         status = value;
+         if (status is not StatusType.None)
          {
             statusAlpha = 255;
          }
 
-         this.Do(() => statusTimer.Enabled = _status);
+         switch (status)
+         {
+            case StatusType.Progress:
+            {
+               var (_, rectangle) = getRectangle(getClientRectangle());
+               var pieProgressProcessor = new PieProgressProcessor(rectangle, maximum, getForeColor());
+               _pieProgressProcessor = pieProgressProcessor;
+               this.Do(Refresh);
+               break;
+            }
+            case StatusType.ProgressStep:
+            {
+               if (_pieProgressProcessor is (true, var pieProgressProcessor))
+               {
+                  pieProgressProcessor.Advance();
+                  this.Do(Refresh);
+               }
+
+               break;
+            }
+            default:
+               _pieProgressProcessor = nil;
+               this.Do(() => statusTimer.Enabled = status is not StatusType.None);
+               break;
+         }
       }
    }
 
@@ -3398,31 +3455,31 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    {
       _successToolTip = message;
       setToolTip();
-      Status = UiActionType.Success;
+      Status = StatusType.Success;
    }
 
    public void FailureStatus(string message)
    {
       _failureToolTip = message;
       setToolTip();
-      Status = UiActionType.Failure;
+      Status = StatusType.Failure;
    }
 
    public void ExceptionStatus(Exception exception)
    {
       _exceptionToolTip = exception.Message;
       setToolTip();
-      Status = UiActionType.Exception;
+      Status = StatusType.Exception;
    }
 
    protected void drawStatus(Graphics g, Rectangle clientRectangle)
    {
       g.HighQuality();
-      switch (Status.ToObject())
+      switch (status)
       {
-         case UiActionType.Busy:
+         case StatusType.Busy:
          {
-            var (radius, rectangle) = getRectangle();
+            var (radius, rectangle) = getRectangle(clientRectangle);
 
             (var statusBusyProcessor, _statusBusyProcessor) = _statusBusyProcessor.Create(() => new BusyTextProcessor(getForeColor(), rectangle)
             {
@@ -3433,9 +3490,9 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
             break;
          }
-         case UiActionType.Done:
+         case StatusType.Done:
          {
-            var (_, rectangle) = getRectangle();
+            var (_, rectangle) = getRectangle(clientRectangle);
 
             var foreColor = Color.White.WithAlpha(statusAlpha);
             var backColor = Color.CadetBlue.WithAlpha(statusAlpha);
@@ -3446,12 +3503,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
             break;
          }
-         case UiActionType actionType:
+         case StatusType.None or StatusType.Progress or StatusType.ProgressStep:
+            break;
+         default:
          {
-            var (_, rectangle) = getRectangle();
+            var (_, rectangle) = getRectangle(clientRectangle);
 
-            var foreColor = getForeColor(actionType).WithAlpha(statusAlpha);
-            var backColor = getBackColor(actionType).WithAlpha(statusAlpha);
+            var foreColor = getForeColor(status).WithAlpha(statusAlpha);
+            var backColor = getBackColor(status).WithAlpha(statusAlpha);
             using var brush = new SolidBrush(backColor);
             g.FillEllipse(brush, rectangle);
             using var pen = new Pen(foreColor, 2);
@@ -3459,24 +3518,20 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
             break;
          }
-         case Nil:
-            break;
       }
+   }
 
-      return;
+   protected static int getDiameter(Rectangle clientRectangle)
+   {
+      var diameter = clientRectangle.Height / 4;
+      return diameter < 10 ? 10 : diameter;
+   }
 
-      int getDiameter()
-      {
-         var diameter = clientRectangle.Height / 4;
-         return diameter < 10 ? 10 : diameter;
-      }
-
-      (int radius, Rectangle rectangle) getRectangle()
-      {
-         var diameter = getDiameter();
-         var top = clientRectangle.Height / 2 - diameter / 2;
-         return (diameter / 2, new Rectangle(4, top, diameter, diameter));
-      }
+   protected static (int radius, Rectangle rectangle) getRectangle(Rectangle clientRectangle)
+   {
+      var diameter = getDiameter(clientRectangle);
+      var top = clientRectangle.Height / 2 - diameter / 2;
+      return (diameter / 2, new Rectangle(4, top, diameter, diameter));
    }
 
    public void ShowAndFadeOut()

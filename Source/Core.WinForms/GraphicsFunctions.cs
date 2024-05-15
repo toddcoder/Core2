@@ -2,9 +2,9 @@
 
 public class GraphicsFunctions
 {
-   private static double toRadians(double degrees) => degrees * Math.PI / 180;
+   public static double toRadians(double degrees) => degrees * Math.PI / 180;
 
-   private static double toDegrees(double radians) => radians * 180 / Math.PI;
+   public static double toDegrees(double radians) => radians * 180 / Math.PI;
 
    public static Point polarToCartesian(double angle, double radius)
    {
