@@ -97,4 +97,6 @@ public static class ListViewExtensions
 
       return nil;
    }
+
+   public static bool AnyChecked(this ListView listView) => listView.CheckedItems.Count > 0;
 }
