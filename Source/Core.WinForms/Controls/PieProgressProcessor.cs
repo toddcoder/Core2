@@ -20,7 +20,7 @@ public class PieProgressProcessor(Rectangle clientRectangle, int maximum, Color 
       g.HighQuality();
       g.FillEllipse(Brushes.CadetBlue, clientRectangle);
       g.FillPie(Brushes.Coral, clientRectangle, 0, sweepAngle);
-      using var pen = new Pen(foreColor, 2);
+      using var pen = new Pen(foreColor, 1);
       g.DrawEllipse(pen, clientRectangle);
    }
 }
