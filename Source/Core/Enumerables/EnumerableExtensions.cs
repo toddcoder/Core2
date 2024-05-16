@@ -1325,6 +1325,11 @@ public static class EnumerableExtensions
       }
    }
 
+   public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, IEnumerable<string> keys) where T : notnull
+   {
+      return enumerable.SortByList(keyMap, [.. keys]);
+   }
+
    public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, Func<T, T, int> compareFunc,
       params string[] keys)
    {
@@ -1361,6 +1366,12 @@ public static class EnumerableExtensions
       {
          yield return item;
       }
+   }
+
+   public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, Func<T, T, int> compareFunc,
+      IEnumerable<string> keys)
+   {
+      return enumerable.SortByList(keyMap, compareFunc, [.. keys]);
    }
 
    private static AutoHash<T, int> getPaired<T>(IEnumerable<T> orderItems, int defaultValue) where T : notnull
