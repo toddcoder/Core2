@@ -96,6 +96,14 @@ public class UiActionWriter
       this.buttonType = buttonType;
    }
 
+   public UiActionWriter(Rectangle rectangle, Font font, Color color, CardinalAlignment messageAlignment = CardinalAlignment.Center,
+      bool autoSizeText = true) : this(messageAlignment, autoSizeText, nil, nil, UiActionButtonType.Normal)
+   {
+      _rectangle = rectangle;
+      _font = font;
+      _color = color;
+   }
+
    public void Center(bool center) => Flags = GetFlags(center);
 
    public void Align(CardinalAlignment messageAlignment) => Flags = getFlags(messageAlignment);
