@@ -34,6 +34,11 @@ public partial class Form1 : Form
       _ = menus + "Bravo" + (() => { }) + menu;
       menus.GoUpTo("File");
       _ = menus + "Charlie" + (() => { }) + menu;
+      _ = menus + "Form2" + (() =>
+      {
+         var form2 = new Form2();
+         form2.Show();
+      }) + menu;
       menus.Menu("Edit");
       menus.StandardEditMenu();
       _ = menus + "Enabled" + (() => uiButton6!.Enabled = !uiButton6.Enabled) + menu;

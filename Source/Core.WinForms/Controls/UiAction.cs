@@ -24,7 +24,6 @@ namespace Core.WinForms.Controls;
 public class UiAction : UserControl, ISubTextHost, IButtonControl
 {
    protected const float START_AMOUNT = .9f;
-   protected const string CLICK_TO_CANCEL = "🖰 ⇒ 🛑";
 
    protected static Hash<UiActionType, Color> globalForeColors = new()
    {
@@ -1547,8 +1546,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       drawAllSubTexts(e.Graphics, type, clientRectangle);
 
-      drawClipToCancel(e, clientRectangle);
-
       drawTitle(e.Graphics, clientRectangle);
 
       drawStatus(e.Graphics, clientRectangle);
@@ -1637,24 +1634,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             };
             g.DrawString(title, font, textBrush, titleRectangle.ToRectangleF(), stringFormat);
          }
-      }
-   }
-
-   protected void drawClipToCancel(PaintEventArgs e, Rectangle clientRectangle)
-   {
-      if (clickToCancel)
-      {
-         using var font = new Font("Consolas", 8);
-         var textSize = TextRenderer.MeasureText(e.Graphics, CLICK_TO_CANCEL, font);
-         var x = clientRectangle.Width - textSize.Width - 8;
-         var y = clientRectangle.Height - textSize.Height - 8;
-         var textLocation = new Point(x, y);
-         var textBounds = new Rectangle(textLocation, textSize);
-         var foreColor = getBackColor();
-         var backColor = getForeColor();
-         using var brush = new SolidBrush(backColor);
-         e.Graphics.FillRectangle(brush, textBounds);
-         TextRenderer.DrawText(e.Graphics, CLICK_TO_CANCEL, font, textBounds, foreColor);
       }
    }
 
@@ -2240,17 +2219,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          var location = new Point(ClientRectangle.Width - size.Width - 8, 4);
          var rectangle = new Rectangle(location, size);
          setFloorAndCeiling(rectangle, true, true);
-      }
-
-      if (clickToCancel)
-      {
-         using var font = new Font("Consolas", 9);
-         var textSize = TextRenderer.MeasureText(CLICK_TO_CANCEL, font, Size.Empty);
-         var x = ClientRectangle.Width - textSize.Width - 8;
-         var y = ClientRectangle.Height - textSize.Height - 8;
-         var textLocation = new Point(x, y);
-         var textBounds = new Rectangle(textLocation, textSize);
-         setFloorAndCeiling(textBounds, true, true);
       }
 
       if (type is UiActionType.BusyText)
