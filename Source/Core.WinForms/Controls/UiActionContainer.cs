@@ -1,4 +1,5 @@
-﻿using Core.Lists;
+﻿using System.Drawing.Drawing2D;
+using Core.Lists;
 using Core.Monads;
 using Core.Numbers;
 using static Core.Monads.MonadFunctions;
@@ -12,11 +13,23 @@ public class UiActionContainer : UserControl
    protected Maybe<int> _height = nil;
    protected int padding = 3;
    protected UiActionDirection direction = UiActionDirection.Horizontal;
+   protected bool showLastClicked = true;
+   protected Maybe<int> _indexLastClicked = nil;
 
    public void Add(UiAction uiAction)
    {
+      var index = uiActions.Count;
+
       uiActions.Add(uiAction);
       Controls.Add(uiAction);
+      if (showLastClicked)
+      {
+         uiAction.Click += (_, _) =>
+         {
+            _indexLastClicked = index;
+            Invalidate();
+         };
+      }
       resize();
    }
 
@@ -142,10 +155,39 @@ public class UiActionContainer : UserControl
       }
    }
 
+   public bool ShowLastClicked
+   {
+      get => showLastClicked;
+      set
+      {
+         if (padding > 0)
+         {
+            showLastClicked = value;
+            resize();
+         }
+      }
+   }
+
    protected override void OnResize(EventArgs e)
    {
       base.OnResize(e);
 
       resize();
+   }
+
+   protected override void OnPaint(PaintEventArgs e)
+   {
+      base.OnPaint(e);
+
+      if (showLastClicked && _indexLastClicked is (true, var index))
+      {
+         var uiAction = uiActions[index];
+         var location = uiAction.Location.Reposition(-1, -1);
+         var size = uiAction.Size.Resize(2, 2);
+         var rectangle = new Rectangle(location, size);
+         using var pen = new Pen(Color.Black);
+         pen.DashStyle = DashStyle.Dash;
+         e.Graphics.DrawRectangle(pen, rectangle);
+      }
    }
 }
