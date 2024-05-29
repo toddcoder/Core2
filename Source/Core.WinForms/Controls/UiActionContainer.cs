@@ -9,15 +9,15 @@ public class UiActionContainer : UserControl
 {
    protected List<UiAction> uiActions = [];
    protected Maybe<int> _width = nil;
+   protected Maybe<int> _height = nil;
    protected int padding = 3;
+   protected UiActionDirection direction = UiActionDirection.Horizontal;
 
    public void Add(UiAction uiAction)
    {
       uiActions.Add(uiAction);
       Controls.Add(uiAction);
-      setWidth();
-      arrangeUiActions();
-      Refresh();
+      resize();
    }
 
    protected void setWidth()
@@ -33,32 +33,86 @@ public class UiActionContainer : UserControl
       }
    }
 
+   protected void setHeight()
+   {
+      var count = uiActions.Count;
+      if (count == 0)
+      {
+         _height = nil;
+      }
+      else
+      {
+         _height = (clientHeight() - (count + 1) * padding) / count;
+      }
+   }
+
    protected int clientWidth() => ClientSize.Width;
 
    protected int clientHeight() => ClientSize.Height;
 
    protected void arrangeUiActions()
    {
-      if (_width is (true, var width))
+      switch (direction)
       {
-         var left = padding;
-         var top = padding;
-         var height = clientHeight() - 2 * padding;
-         var size = new Size(width, height);
-         foreach (var uiAction in uiActions)
-         {
-            uiAction.Location = new Point(left, top);
-            uiAction.Size = size;
-            left += width + padding;
-            uiAction.Refresh();
-         }
+         case UiActionDirection.Horizontal when _width is (true, var width):
+            arrangeHorizontal(width);
+            break;
+         case UiActionDirection.Vertical when _height is (true, var height):
+            arrangeVertical(height);
+            break;
       }
+   }
+
+   protected void arrangeHorizontal(int width)
+   {
+      var left = padding;
+      var top = padding;
+      var height = clientHeight() - 2 * padding;
+      var size = new Size(width, height);
+
+      foreach (var uiAction in uiActions)
+      {
+         uiAction.Location = new Point(left, top);
+         uiAction.Size = size;
+         left += width + padding;
+         uiAction.Refresh();
+      }
+   }
+
+   protected void arrangeVertical(int height)
+   {
+      var left = padding;
+      var top = padding;
+      var width = clientWidth() - 2 * padding;
+      var size = new Size(width, height);
+
+      foreach (var uiAction in uiActions)
+      {
+         uiAction.Location = new Point(left, top);
+         uiAction.Size = size;
+         top += height + padding;
+         uiAction.Refresh();
+      }
+   }
+
+   protected void resize()
+   {
+      setWidth();
+      setHeight();
+      arrangeUiActions();
    }
 
    public Maybe<UiAction> this[int index]
    {
       get => uiActions.Get(index);
-      set => uiActions.Set(index, value);
+      set
+      {
+         uiActions.Set(index, value);
+         if (!value)
+         {
+            resize();
+         }
+      }
    }
 
    public new int Padding
@@ -69,6 +123,7 @@ public class UiActionContainer : UserControl
          if (value.Between(0).And(10))
          {
             padding = value;
+            resize();
          }
          else
          {
@@ -77,11 +132,20 @@ public class UiActionContainer : UserControl
       }
    }
 
+   public UiActionDirection Direction
+   {
+      get => direction;
+      set
+      {
+         direction = value;
+         resize();
+      }
+   }
+
    protected override void OnResize(EventArgs e)
    {
       base.OnResize(e);
 
-      setWidth();
-      arrangeUiActions();
+      resize();
    }
 }
