@@ -1,4 +1,5 @@
-﻿using System.Drawing.Drawing2D;
+﻿using System.Collections;
+using System.Drawing.Drawing2D;
 using Core.Enumerables;
 using Core.Lists;
 using Core.Monads;
@@ -7,7 +8,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class UiActionContainer : UserControl
+public class UiActionContainer : UserControl, IEnumerable<UiAction>
 {
    public static UiActionContainer HorizontalContainer() => new();
 
@@ -35,6 +36,7 @@ public class UiActionContainer : UserControl
             Invalidate();
          };
       }
+
       resize();
    }
 
@@ -206,5 +208,66 @@ public class UiActionContainer : UserControl
          pen.DashStyle = DashStyle.Dash;
          e.Graphics.DrawRectangle(pen, rectangle);
       }
+   }
+
+   public IEnumerator<UiAction> GetEnumerator() => uiActions.GetEnumerator();
+
+   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+   public int Count => uiActions.Count;
+
+   public Maybe<UiAction> Remove(string caption)
+   {
+      for (var i = 0; i < uiActions.Count; i++)
+      {
+         if (uiActions[i].Text == caption)
+         {
+            var uiAction = uiActions[i];
+            uiActions.RemoveAt(i);
+            resize();
+
+            return uiAction;
+         }
+      }
+
+      return nil;
+   }
+
+   public Maybe<UiAction> RemoveAt(int index)
+   {
+      var _uiAction = uiActions.Get(index);
+      if (_uiAction)
+      {
+         uiActions.RemoveAt(index);
+         resize();
+      }
+
+      return _uiAction;
+   }
+
+   public void Insert(int index, UiAction uiAction)
+   {
+      uiActions.Insert(index, uiAction);
+      Controls.Add(uiAction);
+      if (showLastClicked)
+      {
+         uiAction.Click += (_, _) =>
+         {
+            _indexLastClicked = index;
+            Invalidate();
+         };
+      }
+
+      resize();
+   }
+
+   public UiAction Insert(int index, string caption)
+   {
+      var uiAction = new UiAction(this);
+      uiAction.Button(caption);
+
+      Insert(index, uiAction);
+
+      return uiAction;
    }
 }
