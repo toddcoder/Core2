@@ -1,4 +1,5 @@
 ﻿using System.Drawing.Drawing2D;
+using Core.Enumerables;
 using Core.Lists;
 using Core.Monads;
 using Core.Numbers;
@@ -8,6 +9,10 @@ namespace Core.WinForms.Controls;
 
 public class UiActionContainer : UserControl
 {
+   public static UiActionContainer HorizontalContainer() => new();
+
+   public static UiActionContainer VerticalContainer() => new() { Direction = UiActionDirection.Vertical };
+
    protected List<UiAction> uiActions = [];
    protected Maybe<int> _width = nil;
    protected Maybe<int> _height = nil;
@@ -31,6 +36,16 @@ public class UiActionContainer : UserControl
          };
       }
       resize();
+   }
+
+   public UiAction Add(string caption)
+   {
+      var uiAction = new UiAction(this);
+      uiAction.Button(caption);
+
+      Add(uiAction);
+
+      return uiAction;
    }
 
    protected void setWidth()
@@ -127,6 +142,8 @@ public class UiActionContainer : UserControl
          }
       }
    }
+
+   public Maybe<UiAction> this[string caption] => uiActions.FirstOrNone(a => a.Text == caption);
 
    public new int Padding
    {
