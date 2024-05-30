@@ -130,7 +130,7 @@ public class ExTextBox : TextBox, ISubTextHost
       };
    }
 
-   public bool AutoSelectAll { get; set; } = false;
+   public bool AutoSelectAll { get; set; }
 
    protected void validateText()
    {
@@ -262,7 +262,7 @@ public class ExTextBox : TextBox, ISubTextHost
 
    public SubText SubText(string text, Color foreColor, Color backColor)
    {
-      var subText = new SubText(this, text, 0, 0, ClientSize, false)
+      var subText = new SubText(this, text, 0, 0, ClientSize, false, false)
          .Set
          .ForeColor(foreColor)
          .BackColor(backColor)
@@ -304,7 +304,7 @@ public class ExTextBox : TextBox, ISubTextHost
 
    public SubText Legend(string text)
    {
-      var legend = new SubText(this, text, 0, 0, ClientSize, false)
+      var legend = new SubText(this, text, 0, 0, ClientSize, false, false)
          .Set
          .FontName("Consolas")
          .FontSize(9)

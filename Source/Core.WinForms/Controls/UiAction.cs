@@ -505,7 +505,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    protected SubText getWorking()
    {
       var workingText = _workingText | "working";
-      return new SubText(this, workingText, 0, 0, ClientSize, ClickGlyph).Set.MiniInverted(workingAlignment, false, false).SubText;
+      return new SubText(this, workingText, 0, 0, ClientSize, ClickGlyph, ChooserGlyph).Set.MiniInverted(workingAlignment, false, false).SubText;
    }
 
    public UiActionType Type
@@ -2263,8 +2263,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    public SubText SubText(string text, int x, int y, bool clickable = false)
    {
-      var subText = clickable ? new ClickableSubText(this, text, x, y, ClientSize, ClickGlyph)
-         : new SubText(this, text, x, y, ClientSize, ClickGlyph);
+      var subText = clickable ? new ClickableSubText(this, text, x, y, ClientSize, ClickGlyph, ChooserGlyph)
+         : new SubText(this, text, x, y, ClientSize, ClickGlyph, ChooserGlyph);
       return SubText(subText);
    }
 
@@ -2272,7 +2272,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    public ClickableSubText ClickableSubText(string text, int x, int y)
    {
-      return (ClickableSubText)SubText(new ClickableSubText(this, text, x, y, ClientSize, ClickGlyph));
+      return (ClickableSubText)SubText(new ClickableSubText(this, text, x, y, ClientSize, ClickGlyph, ChooserGlyph));
    }
 
    public ClickableSubText ClickableSubText(string text) => ClickableSubText(text, 0, 0);
@@ -2396,7 +2396,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    public SubText Legend(string text, bool invert = true)
    {
       var (x, y) = legendLocation();
-      var legend = new SubText(this, text, x, y, ClientSize, true)
+      var legend = new SubText(this, text, x, y, ClientSize, true, ChooserGlyph)
          .Set
          .FontSize(8)
          .Outline()
@@ -2411,7 +2411,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    public SubText Legend(string text, int x, int y, bool invert = true)
    {
-      var legend = new SubText(this, text, x, y, ClientSize, true)
+      var legend = new SubText(this, text, x, y, ClientSize, true, ChooserGlyph)
          .Set
          .FontSize(8)
          .Outline()

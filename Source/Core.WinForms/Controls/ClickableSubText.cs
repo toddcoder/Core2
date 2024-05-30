@@ -7,8 +7,8 @@ public class ClickableSubText : SubText
 {
    public event EventHandler? Click;
 
-   public ClickableSubText(UiAction subTextHost, string text, int x, int y, Size size, bool clickGlyph, bool invert = false,
-      bool transparentBackground = false) : base(subTextHost, text, x, y, size, clickGlyph, invert, transparentBackground)
+   public ClickableSubText(UiAction subTextHost, string text, int x, int y, Size size, bool clickGlyph, bool chooserGlyph, bool invert = false,
+      bool transparentBackground = false) : base(subTextHost, text, x, y, size, clickGlyph, chooserGlyph, invert, transparentBackground)
    {
    }
 

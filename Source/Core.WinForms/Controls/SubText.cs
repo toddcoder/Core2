@@ -6,7 +6,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size size, bool clickGlyph, bool invert = false,
+public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size size, bool clickGlyph, bool chooserGlyph, bool invert = false,
    bool transparentBackground = false) : IEquatable<SubText>
 {
    protected const string POSITIVE = "✅";
@@ -140,13 +140,6 @@ public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size s
       {
          var (measuredSize, _, _, _) = TextSize(nil);
 
-         int centerX() => (clientRectangle.Width - measuredSize.Width) / 2 + clientRectangle.X;
-         int centerY() => (clientRectangle.Height - measuredSize.Height) / 2 + clientRectangle.Y;
-         int nearX() => clientRectangle.X + margin;
-         int nearY() => clientRectangle.Y + margin;
-         int farX() => clientRectangle.Right - measuredSize.Width - margin - (clickGlyph ? 8 : 0);
-         int farY() => clientRectangle.Bottom - measuredSize.Height - margin;
-
          locationLockStatus = LocationLockStatus.Locked;
 
          return alignment switch
@@ -162,6 +155,18 @@ public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size s
             CardinalAlignment.Center => (centerX(), centerY()),
             _ => (X, Y)
          };
+
+         int centerX() => (clientRectangle.Width - measuredSize.Width) / 2 + clientRectangle.X;
+
+         int centerY() => (clientRectangle.Height - measuredSize.Height) / 2 + clientRectangle.Y;
+
+         int nearX() => clientRectangle.X + margin;
+
+         int nearY() => clientRectangle.Y + margin;
+
+         int farX() => clientRectangle.Right - measuredSize.Width - margin - (clickGlyph ? 8 : 0) - (chooserGlyph ? 8 : 0);
+
+         int farY() => clientRectangle.Bottom - measuredSize.Height - margin;
       }
       else
       {
