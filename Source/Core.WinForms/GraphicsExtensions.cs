@@ -76,32 +76,9 @@ public static class GraphicsExtensions
 
    public static Point OffsetY(this Point point, int yOffset) => point with { Y = point.Y + yOffset };
 
-   public static Point North(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Left + rectangle.Width / 2, rectangle.Top + xOffset);
-
-   public static Point North(this Rectangle rectangle, int xOffset, int yOffset)
-   {
-      return new Point(rectangle.Left + rectangle.Width / 2 + xOffset, rectangle.Top + yOffset);
-   }
-
-   public static Point NorthEast(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Right - xOffset, rectangle.Top + xOffset);
-
-   public static Point NorthEast(this Rectangle rectangle, int xOffset, int yOffset) => new(rectangle.Right + xOffset, rectangle.Top + yOffset);
-
    public static Rectangle Align(this Rectangle innerRectangle, Rectangle outerRectangle, CardinalAlignment alignment, int xMargin = 0,
       int yMargin = 0)
    {
-      int north() => outerRectangle.Y + yMargin;
-
-      int south() => outerRectangle.Bottom - innerRectangle.Height - yMargin;
-
-      int west() => outerRectangle.X + xMargin;
-
-      int east() => outerRectangle.Right - innerRectangle.Width - xMargin;
-
-      int centerX() => outerRectangle.X + (outerRectangle.Width - innerRectangle.Width) / 2;
-
-      int centerY() => outerRectangle.Y + (outerRectangle.Height - innerRectangle.Height) / 2;
-
       return alignment switch
       {
          CardinalAlignment.NorthWest => innerRectangle with { X = west(), Y = north() },
@@ -115,6 +92,39 @@ public static class GraphicsExtensions
          CardinalAlignment.Center => innerRectangle with { X = centerX(), Y = centerY() },
          _ => innerRectangle
       };
+
+      int north() => outerRectangle.Y + yMargin;
+
+      int south() => outerRectangle.Bottom - innerRectangle.Height - yMargin;
+
+      int west() => outerRectangle.X + xMargin;
+
+      int east() => outerRectangle.Right - innerRectangle.Width - xMargin;
+
+      int centerX() => outerRectangle.X + (outerRectangle.Width - innerRectangle.Width) / 2;
+
+      int centerY() => outerRectangle.Y + (outerRectangle.Height - innerRectangle.Height) / 2;
+   }
+
+   public static Point North(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Left + rectangle.Width / 2, rectangle.Top + xOffset);
+
+   public static Point North(this Rectangle rectangle, int xOffset, int yOffset)
+   {
+      return new Point(rectangle.Left + rectangle.Width / 2 + xOffset, rectangle.Top + yOffset);
+   }
+
+   public static Rectangle North(this Size size, Rectangle outerRectangle, int xMargin = 0, int yMargin = 0)
+   {
+      return new Rectangle(Point.Empty, size).Align(outerRectangle, CardinalAlignment.North, xMargin, yMargin);
+   }
+
+   public static Point NorthEast(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Right - xOffset, rectangle.Top + xOffset);
+
+   public static Point NorthEast(this Rectangle rectangle, int xOffset, int yOffset) => new(rectangle.Right + xOffset, rectangle.Top + yOffset);
+
+   public static Rectangle NorthEast(this Size size, Rectangle outerRectangle, int xMargin = 0, int yMargin = 0)
+   {
+      return new Rectangle(Point.Empty, size).Align(outerRectangle, CardinalAlignment.NorthEast, xMargin, yMargin);
    }
 
    public static Point East(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Right - xOffset, rectangle.Top + rectangle.Height / 2);
@@ -124,9 +134,19 @@ public static class GraphicsExtensions
       return new Point(rectangle.Right + xOffset, rectangle.Top + rectangle.Height / 2 + yOffset);
    }
 
+   public static Rectangle East(this Size size, Rectangle outerRectangle, int xMargin = 0, int yMargin = 0)
+   {
+      return new Rectangle(Point.Empty, size).Align(outerRectangle, CardinalAlignment.East, xMargin, yMargin);
+   }
+
    public static Point SouthEast(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Right - xOffset, rectangle.Bottom - xOffset);
 
    public static Point SouthEast(this Rectangle rectangle, int xOffset, int yOffset) => new(rectangle.Right + xOffset, rectangle.Bottom + yOffset);
+
+   public static Rectangle SouthEast(this Size size, Rectangle outerRectangle, int xMargin = 0, int yMargin = 0)
+   {
+      return new Rectangle(Point.Empty, size).Align(outerRectangle, CardinalAlignment.SouthEast, xMargin, yMargin);
+   }
 
    public static Point South(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Left + rectangle.Width / 2, rectangle.Bottom - xOffset);
 
@@ -135,9 +155,19 @@ public static class GraphicsExtensions
       return new Point(rectangle.Left + rectangle.Width / 2 + xOffset, rectangle.Bottom + yOffset);
    }
 
+   public static Rectangle South(this Size size, Rectangle outerRectangle, int xMargin = 0, int yMargin = 0)
+   {
+      return new Rectangle(Point.Empty, size).Align(outerRectangle, CardinalAlignment.South, xMargin, yMargin);
+   }
+
    public static Point SouthWest(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Left + xOffset, rectangle.Bottom - xOffset);
 
    public static Point SouthWest(this Rectangle rectangle, int xOffset, int yOffset) => new(rectangle.Left + xOffset, rectangle.Bottom + yOffset);
+
+   public static Rectangle SouthWest(this Size size, Rectangle outerRectangle, int xMargin = 0, int yMargin = 0)
+   {
+      return new Rectangle(Point.Empty, size).Align(outerRectangle, CardinalAlignment.SouthWest, xMargin, yMargin);
+   }
 
    public static Point West(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Left + xOffset, rectangle.Top + rectangle.Height / 2);
 
@@ -146,9 +176,19 @@ public static class GraphicsExtensions
       return new Point(rectangle.Left + xOffset, rectangle.Top + rectangle.Height / 2 + yOffset);
    }
 
+   public static Rectangle West(this Size size, Rectangle outerRectangle, int xMargin = 0, int yMargin = 0)
+   {
+      return new Rectangle(Point.Empty, size).Align(outerRectangle, CardinalAlignment.West, xMargin, yMargin);
+   }
+
    public static Point NorthWest(this Rectangle rectangle, int xOffset = 0) => new(rectangle.Left + xOffset, rectangle.Top + xOffset);
 
    public static Point NorthWest(this Rectangle rectangle, int xOffset, int yOffset) => new(rectangle.Left + xOffset, rectangle.Top + yOffset);
+
+   public static Rectangle NorthWest(this Size size, Rectangle outerRectangle, int xMargin = 0, int yMargin = 0)
+   {
+      return new Rectangle(Point.Empty, size).Align(outerRectangle, CardinalAlignment.NorthWest, xMargin, yMargin);
+   }
 
    public static Rectangle Shrink(this Rectangle rectangle, int offset = 0)
    {

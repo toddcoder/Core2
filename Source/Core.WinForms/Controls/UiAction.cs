@@ -189,6 +189,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    protected Maybe<BusyTextProcessor> _statusBusyProcessor = nil;
    protected Fader fader;
    protected Maybe<PieProgressProcessor> _pieProgressProcessor = nil;
+   protected bool locked;
 
    public event EventHandler<AutomaticMessageArgs>? AutomaticMessage;
    public event EventHandler<PaintEventArgs>? Painting;
@@ -441,6 +442,16 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    }
 
    public bool AutoSizeText { get; set; }
+
+   public bool Locked
+   {
+      get => locked;
+      set
+      {
+         locked = value;
+         Enabled = !value;
+      }
+   }
 
    protected static BusyProcessor getBusyProcessor(Rectangle clientRectangle) => busyStyle switch
    {
@@ -1306,7 +1317,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    {
       base.OnPaint(e);
 
-      if (!Enabled && !_symbolWriter)
+      if (!Enabled && !_symbolWriter && !locked)
       {
          var disabledWriter = DisabledWriter.FromUiAction(this);
 
@@ -1322,6 +1333,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          }
 
          return;
+      }
+
+      if (locked)
+      {
+         var size = UiActionWriter.TextSize(e.Graphics, "/locked", Font, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+         var rectangle = size.West(getClientRectangle());
+         var lockedWriter = new UiActionWriter(rectangle, Font, getForeColor());
+         lockedWriter.Write(e.Graphics, "/locked");
       }
 
       if (status is StatusType.Progress or StatusType.ProgressStep && _pieProgressProcessor is (true, var pieProgressProcessor))

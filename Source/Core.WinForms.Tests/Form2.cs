@@ -21,13 +21,24 @@ public partial class Form2 : Form
       _ = builder + container1 + (0, 0) + row;
       _ = builder + container2 + control;
 
-      var uiAction = container1.Add("Alfa");
-      uiAction.Click += (_, _) => Text = "Alfa";
-      uiAction.ClickText = "Alfa";
+      var uiAction = container1.Add("Lock Test");
+      var uiAlfa = uiAction;
+      uiAction.Click += (_, _) =>
+      {
+         if (uiAlfa.Locked)
+         {
+            MessageBox.Show(this, "You should not see this");
+         }
+         else
+         {
+            uiAlfa.Locked = true;
+         }
+      };
+      uiAction.ClickText = "Locking = disabling";
 
-      uiAction = container1.Add("Bravo");
-      uiAction.Click += (_, _) => Text = "Bravo";
-      uiAction.ClickText = "Bravo";
+      uiAction = container1.Add("Unlock Previous Button");
+      uiAction.Click += (_, _) => uiAlfa.Locked = false;
+      uiAction.ClickText = "Unlock previous button";
 
       uiAction = container1.Add("Charlie");
       uiAction.Click += (_, _) => Text = "Charlie";
