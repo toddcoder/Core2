@@ -23,6 +23,7 @@ public partial class Form2 : Form
 
       var uiAction = container1.Add("Lock Test");
       var uiAlfa = uiAction;
+      uiAction.StatusFaded += (_, _) => uiAlfa.Locked = true;
       uiAction.Click += (_, _) =>
       {
          if (uiAlfa.Locked)
@@ -31,7 +32,7 @@ public partial class Form2 : Form
          }
          else
          {
-            uiAlfa.Locked = true;
+            uiAlfa.Status = StatusType.Success;
          }
       };
       uiAction.ClickText = "Locking = disabling";

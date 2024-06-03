@@ -216,6 +216,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    public event EventHandler<ChosenArgs>? ChosenItemChecked;
    public event EventHandler<EventArgs>? ChooserOpened;
    public event EventHandler<EventArgs>? ChooserClosed;
+   public event EventHandler<EventArgs>? StatusFaded;
 
    public UiAction(Control control)
    {
@@ -428,6 +429,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
                _failureToolTip = nil;
                _exceptionToolTip = nil;
                toolTip.ToolTipBox = false;
+               StatusFaded?.Invoke(this, EventArgs.Empty);
             }
          }
 
