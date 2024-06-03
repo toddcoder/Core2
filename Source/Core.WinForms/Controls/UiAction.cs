@@ -1337,10 +1337,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       if (locked)
       {
-         var size = UiActionWriter.TextSize(e.Graphics, "/locked", Font, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+         using var font = new Font("Consolas", 20f, FontStyle.Regular);
+         var size = UiActionWriter.TextSize(e.Graphics, "/big-x", font, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
          var rectangle = size.West(getClientRectangle());
-         var lockedWriter = new UiActionWriter(rectangle, Font, getForeColor());
-         lockedWriter.Write(e.Graphics, "/locked");
+         var lockedWriter = new UiActionWriter(rectangle, font, Color.White);
+         lockedWriter.Write(e.Graphics, "/big-x");
       }
 
       if (status is StatusType.Progress or StatusType.ProgressStep && _pieProgressProcessor is (true, var pieProgressProcessor))

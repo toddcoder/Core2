@@ -40,5 +40,7 @@ public enum Emoji
    Not,
    Vertical3,
    Vertical4,
-   Vertical6
+   Vertical6,
+   Stop,
+   BigX
 }

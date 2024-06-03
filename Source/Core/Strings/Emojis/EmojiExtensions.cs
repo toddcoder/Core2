@@ -47,6 +47,8 @@ public static class EmojiExtensions
       Emoji.Vertical3 => "⋮",
       Emoji.Vertical4 => "⁞",
       Emoji.Vertical6 => "⸽",
+      Emoji.Stop => "🛑",
+      Emoji.BigX => "╳",
       _ => ""
    };
 
@@ -97,6 +99,8 @@ public static class EmojiExtensions
                "vertical3" or "v3" => "⋮",
                "vertical4" or "v4" => "⁞",
                "vertical6" or "v6" => "⸽",
+               "stop" => "🛑",
+               "big-x" => "╳",
                _ => nil
             };
             if (_replacement is (true, var replacement))
