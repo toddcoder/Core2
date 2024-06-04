@@ -1319,8 +1319,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       }
       else
       {
-         var glyphWidth = WinForms.Controls.SubText.GLYPH_WIDTH;
-         rectangle = ClientRectangle.OffsetX(ClickGlyph ? -glyphWidth : 0).OffsetX(ChooserGlyph ? -glyphWidth : 0);
+         rectangle = ClientRectangle;
       }
 
       return isMouseDown() ? rectangle.Reposition(1, 1).Resize(-2, -2) : rectangle;
@@ -1384,7 +1383,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       var writer = new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, buttonType)
       {
-         Rectangle = clientRectangle,
+         Rectangle = glyphAdjustedClientRectangle(),
          Font = getFont(),
          Color = getForeColor(),
          CheckStyle = checkStyle,
@@ -1392,7 +1391,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          IsPath = IsPath,
          Required = Required
       };
-      var httpWriter = new Lazy<HttpWriter>(() => new HttpWriter(text, clientRectangle, getFont()));
+      var httpWriter = new Lazy<HttpWriter>(() => new HttpWriter(text, glyphAdjustedClientRectangle(), getFont()));
 
       switch (type)
       {
@@ -1707,6 +1706,29 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          subText.Transparency = transparency;
          subText.SetLocation(clientRectangle);
          subText.Draw(graphics, foreColor.Value, backColor.Value);
+         subText.AdjustLeftSubText();
+         subText.AdjustRightSubText();
+      }
+   }
+
+   public void RelocateSubTexts()
+   {
+      var clientRectangle = glyphAdjustedClientRectangle();
+
+      var _legend = legends.Peek();
+      if (_legend is (true, var legend))
+      {
+         legend.SetLocation(clientRectangle);
+      }
+
+      if (Working && _working is (true, var working))
+      {
+         working.SetLocation(clientRectangle);
+      }
+
+      foreach (var subText in subTexts.Values)
+      {
+         subText.SetLocation(clientRectangle);
          subText.AdjustLeftSubText();
          subText.AdjustRightSubText();
       }
@@ -3542,5 +3564,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    {
       fader.SetTransparentLayeredWindow();
       fader.Start(0);
+   }
+
+   protected Rectangle glyphAdjustedClientRectangle()
+   {
+      var glyphWidth = -WinForms.Controls.SubText.GLYPH_WIDTH;
+      var clickGlyph = ClickGlyph ? glyphWidth : 0;
+      var chooserGlyph = ChooserGlyph ? glyphWidth : 0;
+
+      return getClientRectangle().OffsetWidth(clickGlyph).OffsetWidth(chooserGlyph);
    }
 }

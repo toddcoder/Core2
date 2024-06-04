@@ -38,7 +38,7 @@ public partial class Form1 : Form
       {
          var form2 = new Form2();
          form2.Show();
-      }) + menu;
+      }) + Keys.F2 + menu;
       menus.Menu("Edit");
       menus.StandardEditMenu();
       _ = menus + "Enabled" + (() => uiButton6!.Enabled = !uiButton6.Enabled) + menu;

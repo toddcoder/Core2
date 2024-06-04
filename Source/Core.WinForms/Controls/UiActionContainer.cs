@@ -270,4 +270,24 @@ public class UiActionContainer : UserControl, IEnumerable<UiAction>
 
       return uiAction;
    }
+
+   protected override void OnVisibleChanged(EventArgs e)
+   {
+      base.OnVisibleChanged(e);
+
+      foreach (var uiAction in uiActions)
+      {
+         uiAction.Visible = Visible;
+      }
+   }
+
+   protected override void OnEnabledChanged(EventArgs e)
+   {
+      base.OnEnabledChanged(e);
+
+      foreach (var uiAction in uiActions)
+      {
+         uiAction.Enabled = Enabled;
+      }
+   }
 }
