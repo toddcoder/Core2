@@ -168,7 +168,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    protected bool flipOn;
    protected Maybe<SubText> _flipFlop = nil;
    protected bool clickToCancel;
-   protected Result<TaskBarProgress> _taskBarProgress = nil;
+   protected Optional<TaskBarProgress> _taskBarProgress = nil;
    protected bool cancelled = true;
    protected Rectangle[] rectangles = [];
    protected Maybe<int> _floor = nil;
@@ -1106,7 +1106,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    public int Minimum { get; set; } = 1;
 
-   protected Result<IntPtr> getHandle()
+   protected Optional<IntPtr> getHandle()
    {
       try
       {
@@ -1125,11 +1125,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       }
    }
 
-   protected Result<TaskBarProgress> getTaskBarProgress(int value) => getHandle().Map(h => new TaskBarProgress(h, value));
+   protected Optional<TaskBarProgress> getTaskBarProgress(int value) => getHandle().Map(h => new TaskBarProgress(h, value));
 
-   protected Result<TaskBarProgress> getTaskBarProgress()
+   protected Optional<TaskBarProgress> getTaskBarProgress()
    {
-      return getTaskBarProgress(0).OnSuccess(t => t.State = WinForms.Controls.TaskBarProgress.TaskBarState.Indeterminate);
+      return getTaskBarProgress(0).OnJust(t => t.State = WinForms.Controls.TaskBarProgress.TaskBarState.Indeterminate);
    }
 
    public int Maximum
