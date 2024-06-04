@@ -1129,16 +1129,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    protected Result<TaskBarProgress> getTaskBarProgress()
    {
-      var _taskBar = getTaskBarProgress(0);
-      if (_taskBar is (true, var taskBar))
-      {
-         taskBar.State = WinForms.Controls.TaskBarProgress.TaskBarState.Indeterminate;
-         return taskBar;
-      }
-      else
-      {
-         return _taskBar.Exception;
-      }
+      return getTaskBarProgress(0).OnSuccess(t => t.State = WinForms.Controls.TaskBarProgress.TaskBarState.Indeterminate);
    }
 
    public int Maximum
@@ -1148,7 +1139,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       {
          maximum = value;
          index = Minimum;
-         //_taskBarProgress = maybe<TaskBarProgress>() & TaskBarProgress & (() => getTaskBarProgress(value));
          if (TaskBarProgress && getTaskBarProgress(value) is (true, var taskBarProgress))
          {
             _taskBarProgress = taskBarProgress;
@@ -1329,7 +1319,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       }
       else
       {
-         rectangle = ClientRectangle;
+         var glyphWidth = WinForms.Controls.SubText.GLYPH_WIDTH;
+         rectangle = ClientRectangle.OffsetX(ClickGlyph ? -glyphWidth : 0).OffsetX(ChooserGlyph ? -glyphWidth : 0);
       }
 
       return isMouseDown() ? rectangle.Reposition(1, 1).Resize(-2, -2) : rectangle;
@@ -1771,9 +1762,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       activateProcessor(pevent.Graphics);
 
       var clientRectangle = getClientRectangle();
-      if (isMouseDown())
-      {
-      }
 
       switch (type)
       {
@@ -1914,30 +1902,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          pevent.Graphics.DrawLine(lightPen, new Point(width, top), new Point(width, height));
       }
 
-      int centerHorizontal(Image image)
-      {
-         var x = (clientRectangle.Width - image.Width) / 2;
-         return x < 0 ? 2 : x;
-      }
-
-      int rightHorizontal(Image image)
-      {
-         var x = clientRectangle.Width - image.Width;
-         return x < 0 ? 2 : x;
-      }
-
-      int centerVertical(Image image)
-      {
-         var y = (clientRectangle.Height - image.Height) / 2;
-         return y < 0 ? 2 : y;
-      }
-
-      int bottomVertical(Image image)
-      {
-         var y = clientRectangle.Height - image.Height;
-         return y < 0 ? 2 : y;
-      }
-
       if (_image is (true, var image))
       {
          if (StretchImage)
@@ -1968,6 +1932,32 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       }
 
       PaintingBackground?.Invoke(this, pevent);
+
+      return;
+
+      int bottomVertical(Image image)
+      {
+         var y = clientRectangle.Height - image.Height;
+         return y < 0 ? 2 : y;
+      }
+
+      int centerVertical(Image image)
+      {
+         var y = (clientRectangle.Height - image.Height) / 2;
+         return y < 0 ? 2 : y;
+      }
+
+      int rightHorizontal(Image image)
+      {
+         var x = clientRectangle.Width - image.Width;
+         return x < 0 ? 2 : x;
+      }
+
+      int centerHorizontal(Image image)
+      {
+         var x = (clientRectangle.Width - image.Width) / 2;
+         return x < 0 ? 2 : x;
+      }
    }
 
    protected static bool isMouseDown() => (MouseButtons & MouseButtons.Left) != 0;

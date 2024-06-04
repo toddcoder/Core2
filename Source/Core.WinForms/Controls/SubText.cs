@@ -11,6 +11,7 @@ public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size s
 {
    protected const string POSITIVE = "✅";
    protected const string NEGATIVE = "❎";
+   public const int GLYPH_WIDTH = 8;
 
    protected Maybe<Color> _foreColor = nil;
    protected Maybe<Color> _backColor = nil;
@@ -164,7 +165,7 @@ public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size s
 
          int nearY() => clientRectangle.Y + margin;
 
-         int farX() => clientRectangle.Right - measuredSize.Width - margin - (clickGlyph ? 8 : 0) - (chooserGlyph ? 8 : 0);
+         int farX() => clientRectangle.Right - measuredSize.Width - margin - (clickGlyph ? GLYPH_WIDTH : 0) - (chooserGlyph ? GLYPH_WIDTH : 0);
 
          int farY() => clientRectangle.Bottom - measuredSize.Height - margin;
       }
