@@ -168,7 +168,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    protected bool flipOn;
    protected Maybe<SubText> _flipFlop = nil;
    protected bool clickToCancel;
-   protected Maybe<TaskBarProgress> _taskBarProgress = nil;
+   protected Result<TaskBarProgress> _taskBarProgress = nil;
    protected bool cancelled = true;
    protected Rectangle[] rectangles = [];
    protected Maybe<int> _floor = nil;
@@ -1106,23 +1106,39 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    public int Minimum { get; set; } = 1;
 
-   protected IntPtr getHandle()
+   protected Result<IntPtr> getHandle()
    {
-      if (MainForm is (true, var mainForm))
+      try
       {
-         return mainForm.Get(() => mainForm.Handle);
+         if (MainForm is (true, var mainForm))
+         {
+            return mainForm.Get(() => mainForm.Handle);
+         }
+         else
+         {
+            return ParentForm.Get(() => ParentForm.Handle);
+         }
       }
-
-      return ParentForm.Get(() => ParentForm.Handle);
+      catch (Exception exception)
+      {
+         return exception;
+      }
    }
 
-   protected TaskBarProgress getTaskBarProgress(int value) => new(getHandle(), value);
+   protected Result<TaskBarProgress> getTaskBarProgress(int value) => getHandle().Map(h => new TaskBarProgress(h, value));
 
-   protected TaskBarProgress getTaskBarProgress()
+   protected Result<TaskBarProgress> getTaskBarProgress()
    {
-      var taskBarProgress = getTaskBarProgress(0);
-      taskBarProgress.State = WinForms.Controls.TaskBarProgress.TaskBarState.Indeterminate;
-      return taskBarProgress;
+      var _taskBar = getTaskBarProgress(0);
+      if (_taskBar is (true, var taskBar))
+      {
+         taskBar.State = WinForms.Controls.TaskBarProgress.TaskBarState.Indeterminate;
+         return taskBar;
+      }
+      else
+      {
+         return _taskBar.Exception;
+      }
    }
 
    public int Maximum
@@ -1132,7 +1148,15 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       {
          maximum = value;
          index = Minimum;
-         _taskBarProgress = maybe<TaskBarProgress>() & TaskBarProgress & (() => getTaskBarProgress(value));
+         //_taskBarProgress = maybe<TaskBarProgress>() & TaskBarProgress & (() => getTaskBarProgress(value));
+         if (TaskBarProgress && getTaskBarProgress(value) is (true, var taskBarProgress))
+         {
+            _taskBarProgress = taskBarProgress;
+         }
+         else
+         {
+            _taskBarProgress = nil;
+         }
       }
    }
 
