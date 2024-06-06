@@ -1505,19 +1505,20 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          case UiActionType.Divider:
          {
             var rectangle = getDividerRectangle();
-            using var brush = new SolidBrush(Color.DarkBlue);
-            e.Graphics.FillRectangle(brush, rectangle);
+            if (isDirty)
+            {
+               using var brush = new HatchBrush(HatchStyle.DiagonalCross, Color.DarkBlue, Color.White);
+               e.Graphics.FillRectangle(brush, rectangle);
+            }
+            else
+            {
+               using var brush = new SolidBrush(Color.DarkBlue);
+               e.Graphics.FillRectangle(brush, rectangle);
+            }
+
             var textRectangle = getDividerTextRectangle(e.Graphics, clientRectangle);
             using var backBrush = new SolidBrush(Color.CadetBlue);
             fillRectangle(e.Graphics, backBrush, textRectangle);
-            if (isDirty)
-            {
-               using var dirtyBrush = new HatchBrush(HatchStyle.DiagonalCross, ControlPaint.Light(Color.CadetBlue), Color.White);
-               using var dirtyPen = new Pen(dirtyBrush, 6);
-               var leftSide = textRectangle.Location;
-               var rightSide = textRectangle.NorthEast();
-               e.Graphics.DrawLine(dirtyPen, leftSide, rightSide);
-            }
 
             using var pen = new Pen(Color.White);
             var flags = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis |
@@ -3419,7 +3420,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    protected Rectangle getDividerRectangle()
    {
       var rectangle = getClientRectangle();
-      return rectangle with { Location = rectangle.West(), Height = 4 };
+      var dividerRectangle = rectangle with { Height = 8 };
+      return dividerRectangle with { Location = rectangle.West() };
    }
 
    protected Rectangle getDividerTextRectangle(Graphics g, Rectangle rectangleRectangle)
