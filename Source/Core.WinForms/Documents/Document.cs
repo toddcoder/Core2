@@ -134,7 +134,7 @@ public class Document
       menus.Menu("File", "Open...", (_, _) => Open(), "^O");
       menus.Menu("File", "Save", (_, _) => Save(), "^S");
       menus.Menu("File", "Save As...", (_, _) => SaveAs());
-      menus.MenuSeparator("File");
+      menus.Separator("File");
       menus.Menu("File", "Exit", (_, _) => form.Close(), "%F4");
    }
 
@@ -143,12 +143,12 @@ public class Document
       menus.Menu("&Edit");
       menus.Menu("Edit", "Undo", (_, _) => Undo(), "^Z");
       menus.Menu("Edit", "Redo", (_, _) => Redo());
-      menus.MenuSeparator("Edit");
+      menus.Separator("Edit");
       menus.Menu("Edit", "Cut", (_, _) => Cut(), "^X");
       menus.Menu("Edit", "Copy", (_, _) => Copy(), "^C");
       menus.Menu("Edit", "Paste", (_, _) => Paste(), "^V");
       menus.Menu("Edit", "Delete", (_, _) => Delete());
-      menus.MenuSeparator("Edit");
+      menus.Separator("Edit");
       menus.Menu("Edit", "Select All", (_, _) => SelectAll(), "^A");
    }
 

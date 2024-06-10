@@ -28,15 +28,6 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    public static MenuBuilder operator +(Menus menus, MenuBuilder.BuilderIsChecked _) => menus.Add().IsChecked(true);
 
-   public static ToolStripMenuItem operator +(Menus menus, MenuBuilder.MenuEnd _) => menus.Add().Menu();
-
-   public static ToolStripMenuItem operator +(Menus menus, MenuBuilder.BuilderSubMenu _) => menus.Add().SubMenu();
-
-   public static ToolStripMenuItem operator +(Menus menus, (string parentText, MenuBuilder.BuilderSubMenu) items)
-   {
-      return menus.Add(items.parentText).SubMenu();
-   }
-
    public static MenuBuilder operator +(Menus menus, ToolStripMenuItem item) => menus.Add(item);
 
    public static MenuBuilder operator +(Menus menus, (string parentText, string menuText) texts) => menus.Add(texts.parentText).Text(texts.menuText);
@@ -53,7 +44,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    public static Menus operator +(Menus menus, MenuBuilder.Separator _)
    {
-      menus.MenuSeparator();
+      menus.Separator();
       return menus;
    }
 
@@ -463,28 +454,28 @@ public class Menus : IHash<string, ToolStripMenuItem>
       return _currentMenu.Map(currentMenu => ReplaceHandler(currentMenu, text, handler));
    }
 
-   public void MenuSeparator(string parentText)
+   public void Separator(string parentText)
    {
       var parent = getParent(parentText);
       var item = new ToolStripSeparator();
       parent.DropDownItems.Add(item);
    }
 
-   public void MenuSeparator(ToolStripMenuItem parentItem)
+   public void Separator(ToolStripMenuItem parentItem)
    {
       var item = new ToolStripSeparator();
       parentItem.DropDownItems.Add(item);
    }
 
-   public void MenuSeparator()
+   public void Separator()
    {
       if (_currentMenu is (true, var currentMenu))
       {
-         MenuSeparator(currentMenu);
+         Separator(currentMenu);
       }
       else if (_currentItem is (true, var currentItem))
       {
-         MenuSeparator(currentItem);
+         Separator(currentItem);
       }
    }
 

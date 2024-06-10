@@ -120,7 +120,7 @@ public class FreeMenus : Menus
       {
          Menu("File", "Save All", saveAll, "^|S");
       }
-      MenuSeparator("File");
+      Separator("File");
       Menu("File", "Exit", (_, _) =>
       {
          if (Form is (true, var form))
@@ -147,7 +147,7 @@ public class FreeMenus : Menus
             d.Redo();
          }
       });
-      MenuSeparator("Edit");
+      Separator("Edit");
       Menu("Edit", "Cut", (_, _) =>
       {
          if (Document is (true, var d))
@@ -176,7 +176,7 @@ public class FreeMenus : Menus
             d.Delete();
          }
       });
-      MenuSeparator("Edit");
+      Separator("Edit");
       Menu("Edit", "Select All", (_, _) =>
       {
          if (Document is (true, var d))

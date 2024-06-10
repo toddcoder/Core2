@@ -6,7 +6,6 @@ using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
 using Core.WinForms.TableLayoutPanels;
-using static Core.WinForms.Documents.MenuBuilderFunctions;
 
 namespace Core.WinForms.Tests;
 
@@ -26,21 +25,22 @@ public partial class Form1 : Form
 
       var menus = new FreeMenus { Form = this };
       menus.Menu("File");
-      _ = menus + @"Show C:\Temp" + (() => uiButton6!.RunWorkerAsync()) + menu;
-      _ = menus + "ShowAndFade" + (() => uiDirty!.ShowAndFadeOut()) + menu;
-      _ = menus + "Tests" + subMenu;
-      _ = menus + "Alpha" + (() => { }) + menu;
-      _ = menus + "Bravo" + (() => { }) + menu;
+      (menus + @"Show C:\Temp" + (() => uiButton6!.RunWorkerAsync())).Menu();
+      (menus + "ShowAndFade" + (() => uiDirty!.ShowAndFadeOut())).Menu();
+      (menus + "Tests").SubMenu();
+      (menus + "Alpha" + (() => { })).Menu();
+      (menus + "Bravo" + (() => { })).Menu();
       menus.GoUpTo("File");
-      _ = menus + "Charlie" + (() => { }) + menu;
-      _ = menus + "Form2" + (() =>
+      (menus + "Charlie" + (() => { })).Menu();
+      menus.Separator();
+      (menus + "Form2" + (() =>
       {
          var form2 = new Form2();
          form2.Show();
-      }) + Keys.F2 + menu;
+      }) + Keys.F2).Menu();
       menus.Menu("Edit");
       menus.StandardEditMenu();
-      _ = menus + "Enabled" + (() => uiButton6!.Enabled = !uiButton6.Enabled) + menu;
+      (menus + "Enabled" + (() => uiButton6!.Enabled = !uiButton6.Enabled)).Menu();
       menus.RenderMainMenu();
 
       var builder = new Builder(tableLayoutPanel);
@@ -257,7 +257,7 @@ public partial class Form1 : Form
       uiDivider.Divider("part 2");
 
       textBox = new ExTextBox(this) { BorderStyle = BorderStyle.None, AutoSelectAll = true };
-      (builder+textBox).Span(2).Row();
+      (builder + textBox).Span(2).Row();
       textBox.Text = "test text";
 
       richTextBox = new ExRichTextBox();
@@ -265,13 +265,13 @@ public partial class Form1 : Form
       richTextBox.Text = "test text";
 
       var textBoxMenu = new Menus();
-      _ = textBoxMenu + textBox + "Open" + (() => { }) + contextMenu;
+      (textBoxMenu + textBox + "Open" + (() => { })).ContextMenu();
       textBoxMenu.ContextMenuSeparator();
       textBoxMenu.StandardContextEdit();
       textBoxMenu.CreateContextMenu();
 
       var richTextBoxMenu = new Menus();
-      _ = richTextBoxMenu + richTextBox + "Open" + (() => { }) + contextMenu;
+      (richTextBoxMenu + richTextBox + "Open" + (() => { })).ContextMenu();
       richTextBoxMenu.ContextMenuSeparator();
       richTextBoxMenu.StandardContextEdit();
       richTextBoxMenu.CreateContextMenu();

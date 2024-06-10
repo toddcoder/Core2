@@ -33,12 +33,6 @@ public class MenuBuilder(Menus menus)
 
    public static MenuBuilder operator +(MenuBuilder builder, BuilderIsChecked _) => builder.IsChecked(true);
 
-   public static ToolStripMenuItem operator +(MenuBuilder builder, MenuEnd _) => builder.Menu();
-
-   public static ToolStripMenuItem operator +(MenuBuilder builder, BuilderSubMenu _) => builder.SubMenu();
-
-   public static ToolStripMenuItem operator +(MenuBuilder builder, ContextMenuItem _) => builder.ContextMenu();
-
    protected MenuText menuText = MenuText.Empty;
    protected EventHandler handler = (_, _) => { };
    protected string shortcut = "";
@@ -172,27 +166,33 @@ public class MenuBuilder(Menus menus)
       _ => throw fail("Unexpected item")
    };
 
-   public ToolStripMenuItem Menu()
+   public void Menu()
    {
       if (_parentText is (true, var parentText))
       {
-         return menu(parentText);
+         menu(parentText);
       }
       else if (_parentItem is (true, var parentItem))
       {
-         return menu(parentItem);
+         menu(parentItem);
       }
       else
       {
-         return menu();
+         menu();
       }
    }
 
-   public ToolStripMenuItem SubMenu() => menuText.ToObject() switch
+   public void SubMenu()
    {
-      string text => menus.SubMenu(text, index),
-      _ => throw fail("Unexpected item")
-   };
+      switch (menuText.ToObject())
+      {
+         case string text:
+            menus.SubMenu(text, index);
+            break;
+         default:
+            throw fail("Unexpected item");
+      }
+   }
 
    public ToolStripMenuItem ContextMenu() => menuText.ToObject() switch
    {
