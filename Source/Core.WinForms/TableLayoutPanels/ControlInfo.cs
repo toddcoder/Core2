@@ -100,12 +100,20 @@ public class ControlInfo(Builder builder, Control control)
       control.SetUpInTableLayoutPanel(builder.TableLayoutPanel, column, row, columnSpan, rowSpan, fontName, fontSize, dockStyle);
    }
 
-   public void Next(int increment = 1)
+   protected void reset()
+   {
+      columnSpan = 1;
+      rowSpan = 1;
+   }
+
+   public void Next()
    {
       setUp();
 
       var column = _column | builder.CurrentColumn;
-      builder.CurrentColumn = column + increment;
+      builder.CurrentColumn = column + columnSpan;
+
+      reset();
    }
 
    public void Row(int increment = 1)
@@ -115,6 +123,8 @@ public class ControlInfo(Builder builder, Control control)
       var row = _row | builder.CurrentRow;
       builder.CurrentRow = row + increment;
       builder.CurrentColumn = 0;
+
+      reset();
    }
 
    public void Down(int increment = 1)
@@ -123,5 +133,7 @@ public class ControlInfo(Builder builder, Control control)
 
       var row = _row | builder.CurrentRow;
       builder.CurrentRow = row + increment;
+
+      reset();
    }
 }
