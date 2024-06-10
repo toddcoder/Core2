@@ -7,7 +7,6 @@ using Core.WinForms.Controls;
 using Core.WinForms.Documents;
 using Core.WinForms.TableLayoutPanels;
 using static Core.WinForms.Documents.MenuBuilderFunctions;
-using static Core.WinForms.TableLayoutPanels.BuilderFunctions;
 
 namespace Core.WinForms.Tests;
 
@@ -45,19 +44,19 @@ public partial class Form1 : Form
       menus.RenderMainMenu();
 
       var builder = new Builder(tableLayoutPanel);
-      _ = builder + 80.ColPercent() + 20.ColPercent();
-      _ = builder * 11 + 60.RowPixels();
-      _ = builder + 100.RowPercent() + setup;
+      _ = builder.Col + 80f + 20f;
+      _ = builder.Row * 11 * 60 + 100f;
+      builder.SetUp();
 
       var uiAlternates = new UiAction(this) { AutoSizeText = true };
-      _ = builder + uiAlternates + (0, 0) + control;
+      (builder + uiAlternates + (0, 0)).Next();
       uiAlternates.NoStatus("alternates action");
       uiAlternates.WorkingAlignment = CardinalAlignment.SouthEast;
       uiAlternates.Maximum = 100;
 
       var uiButton1 = new UiAction(this);
       uiButton1.DefaultButton("alternates");
-      _ = builder + uiButton1 + row;
+      (builder + uiButton1).Row();
       AcceptButton = uiButton1;
       uiButton1.Click += (_, _) =>
       {
@@ -69,24 +68,24 @@ public partial class Form1 : Form
       uiButton1.ClickText = "alternates";
 
       var uiCheckBox = new UiAction(this) { AutoSizeText = true };
-      _ = builder + uiCheckBox + control;
+      (builder + uiCheckBox).Next();
       uiCheckBox.NoStatus("checkbox action");
 
       var uiButton2 = new UiAction(this);
       uiButton2.CancelButton("checkbox");
-      _ = builder + uiButton2 + row;
+      (builder + uiButton2).Row();
       CancelButton = uiButton2;
       uiButton2.Click += (_, _) => uiCheckBox.CheckBox("Multi-choice", false);
       uiButton2.ClickText = "Cancel";
 
       var uiWorking = new UiAction(this) { AutoSizeText = true };
-      _ = builder + uiWorking + control;
+      (builder + uiWorking).Next();
       uiWorking.NoStatus("working action");
 
       var uiButton3 = new UiAction(this) { AutoSizeText = true };
       uiButton3.KeyMatch("progress", "busy");
       uiButton3.Button("Working");
-      _ = builder + uiButton3 + row;
+      (builder + uiButton3).Row();
       uiButton3.Click += (_, _) =>
       {
          if (uiWorking.Working)
@@ -102,12 +101,12 @@ public partial class Form1 : Form
       uiButton3.ClickText = "Working";
 
       panel1 = new Panel();
-      _ = builder + panel1 + control;
+      (builder + panel1).Next();
 
       var stager = new UiStager(panel1);
 
       var uiButton4 = new UiAction(this);
-      _ = builder + uiButton4 + row;
+      (builder + uiButton4).Row();
       uiButton4.Button("Test stager");
       uiButton4.Click += (_, _) =>
       {
@@ -120,17 +119,17 @@ public partial class Form1 : Form
       uiButton4.ClickText = "Test stager";
 
       var uiButton5 = new UiAction(this);
-      _ = builder + uiButton5 + (1, -1) + row;
+      (builder + uiButton5 + (1, -1)).Row();
       uiButton5.Button("Next stage");
       uiButton5.Click += (_, _) => stager.NextStage(UiActionType.Success);
       uiButton5.ClickText = "Next stage";
 
       uiDirty = new UiAction(this);
-      _ = builder + uiDirty + control;
+      (builder + uiDirty).Next();
       uiDirty.Success("Not Dirty");
 
       uiButton6 = new UiAction(this);
-      _ = builder + uiButton6 + row;
+      (builder + uiButton6).Row();
       uiButton6.Button("Dirty");
       uiButton6.Click += (_, _) =>
       {
@@ -160,7 +159,7 @@ public partial class Form1 : Form
       uiButton6.RunWorkerCompleted += (_, _) => uiButton6.Status = StatusType.Success;
 
       var uiChosen = new UiAction(this);
-      _ = builder + uiChosen + control;
+      (builder + uiChosen).Next();
       uiChosen.NoStatus("not chosen");
 
       string[] choices =
@@ -179,7 +178,7 @@ public partial class Form1 : Form
       var counts = choices.ToStringHash(c => c, _ => 0);
 
       var uiButton7 = new UiAction(this) { AutoSizeText = true, ChooserGlyph = true };
-      _ = builder + uiButton7 + row;
+      (builder + uiButton7).Row();
       uiButton7.NoStatus("choose");
       uiButton7.Click += (_, _) =>
       {
@@ -211,11 +210,11 @@ public partial class Form1 : Form
       uiButton7.ClickText = "Choose";
 
       var uiSubText = new UiAction(this);
-      _ = builder + uiSubText + control;
+      (builder + uiSubText).Next();
       uiSubText.NoStatus("subtexts");
 
       var uiButton8 = new UiAction(this);
-      _ = builder + uiButton8 + row;
+      (builder + uiButton8).Row();
       uiButton8.Button("SubTexts");
       //uiButton8.Status = UiActionType.NoStatus;
       uiButton8.Maximum = 20;
@@ -232,11 +231,11 @@ public partial class Form1 : Form
       uiButton8.ClickText = "Create subTexts";
 
       var uiChoices = new UiAction(this);
-      _ = builder + uiChoices + control;
+      (builder + uiChoices).Next();
       uiChoices.NoStatus("choices");
 
       var uiButton9 = new UiAction(this) { ChooserGlyph = true };
-      _ = builder + uiButton9 + row;
+      (builder + uiButton9).Row();
       uiButton9.Button("Update Choices");
       var chooser = uiButton9.Choose("Update").AutoClose(false).Choices(choices).Chooser();
       uiButton9.Click += (_, _) => chooser.Open();
@@ -254,15 +253,15 @@ public partial class Form1 : Form
          }
       };
 
-      _ = builder + uiDivider - (2, 0) + row;
+      (builder + uiDivider).Span(2).Row();
       uiDivider.Divider("part 2");
 
       textBox = new ExTextBox(this) { BorderStyle = BorderStyle.None, AutoSelectAll = true };
-      _ = builder + textBox - (2, 0) + row;
+      (builder+textBox).Span(2).Row();
       textBox.Text = "test text";
 
       richTextBox = new ExRichTextBox();
-      _ = builder + richTextBox - (2, 0) + control;
+      (builder + richTextBox).Span(2).Next();
       richTextBox.Text = "test text";
 
       var textBoxMenu = new Menus();

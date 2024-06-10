@@ -1,6 +1,5 @@
 ﻿using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
-using static Core.WinForms.TableLayoutPanels.BuilderFunctions;
 
 namespace Core.WinForms.Tests;
 
@@ -17,11 +16,12 @@ public partial class Form2 : Form
       InitializeComponent();
 
       var builder = new Builder(tableLayoutPanel);
-      _ = builder + 100.ColPercent();
-      _ = builder + 60.RowPixels() + 180.RowPixels() + 100.RowPercent() + setup;
+      _ = builder.Col + 100f;
+      _ = builder.Row + 60 + 180 + 100f;
+      builder.SetUp();
 
-      _ = builder + container1 + (0, 0) + row;
-      _ = builder + container2 + control;
+      (builder + container1).Row();
+      (builder + container2).Next();
 
       var uiAction = container1.Add("Lock Test");
       var uiAlfa = uiAction;
