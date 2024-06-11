@@ -276,6 +276,15 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          _busyTextProcessor.Reset();
          _progressDefiniteProcessor.Reset();
          _busyProcessor.Reset();
+
+         switch (type)
+         {
+            case UiActionType.CheckBox:
+               setUpCheckBox(text, BoxChecked);
+               break;
+         }
+
+         refresh();
       };
 
       Click += (_, _) =>
@@ -3236,6 +3245,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       RectangleCount = 1;
       var checkBoxWriter = new CheckBoxWriter(this, [message], AutoSizeText, _floor, _ceiling) { BoxChecked = initialValue };
       _alternateWriter = checkBoxWriter;
+      Text = message;
    }
 
    public int SelectedIndex

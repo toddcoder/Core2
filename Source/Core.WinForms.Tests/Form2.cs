@@ -10,6 +10,7 @@ public partial class Form2 : Form
 
    protected UiActionContainer container1 = UiActionContainer.HorizontalContainer();
    protected UiActionContainer container2 = UiActionContainer.VerticalContainer();
+   protected UiActionContainer container3 = UiActionContainer.HorizontalContainer();
 
    public Form2()
    {
@@ -17,11 +18,12 @@ public partial class Form2 : Form
 
       var builder = new Builder(tableLayoutPanel);
       _ = builder.Col + 100f;
-      _ = builder.Row + 60 + 180 + 100f;
+      _ = builder.Row + 60 + 180 + 60 + 100f;
       builder.SetUp();
 
       (builder + container1).Row();
-      (builder + container2).Next();
+      (builder + container2).Row();
+      (builder + container3).Row();
 
       var uiAction = container1.Add("Lock Test");
       var uiAlfa = uiAction;
@@ -82,5 +84,10 @@ public partial class Form2 : Form
       uiAction = container2.Add("Foxtrot");
       uiAction.Click += (_, _) => Text = "Foxtrot";
       uiAction.ClickText = "Foxtrot";
+
+      container3.Add("Edward", false);
+      container3.Add("Louise", false);
+      container3.Add("Celestine", false);
+      container3.Add("Robespierre", false);
    }
 }

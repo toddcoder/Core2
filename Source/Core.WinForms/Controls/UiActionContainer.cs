@@ -50,30 +50,40 @@ public class UiActionContainer : UserControl, IEnumerable<UiAction>
       return uiAction;
    }
 
+   public UiAction Add(string caption, bool isChecked)
+   {
+      var uiAction = new UiAction(this);
+      uiAction.CheckBox(caption, isChecked);
+
+      Add(uiAction);
+
+      return uiAction;
+   }
+
    protected void setWidth()
    {
       var count = uiActions.Count;
-      if (count == 0)
+
+      _width = direction switch
       {
-         _width = nil;
-      }
-      else
-      {
-         _width = (clientWidth() - (count + 1) * padding) / count;
-      }
+         UiActionDirection.Horizontal when count == 0 => nil,
+         UiActionDirection.Horizontal => (clientWidth() - (count + 1) * padding) / count,
+         UiActionDirection.Vertical => clientWidth() - 2 * padding,
+         _ => nil
+      };
    }
 
    protected void setHeight()
    {
       var count = uiActions.Count;
-      if (count == 0)
+
+      _height = direction switch
       {
-         _height = nil;
-      }
-      else
-      {
-         _height = (clientHeight() - (count + 1) * padding) / count;
-      }
+         UiActionDirection.Horizontal => clientHeight() - 2 * padding,
+         UiActionDirection.Vertical when count == 0 => nil,
+         UiActionDirection.Vertical => (clientHeight() - (count + 1) * padding) / count,
+         _ => nil
+      };
    }
 
    protected int clientWidth() => ClientSize.Width;
@@ -97,7 +107,7 @@ public class UiActionContainer : UserControl, IEnumerable<UiAction>
    {
       var left = padding;
       var top = padding;
-      var height = clientHeight() - 2 * padding;
+      var height = _height | (() => clientHeight() - 2 * padding);
       var size = new Size(width, height);
 
       foreach (var uiAction in uiActions)
@@ -113,7 +123,7 @@ public class UiActionContainer : UserControl, IEnumerable<UiAction>
    {
       var left = padding;
       var top = padding;
-      var width = clientWidth() - 2 * padding;
+      var width = _width | (() => clientWidth() - 2 * padding);
       var size = new Size(width, height);
 
       foreach (var uiAction in uiActions)
