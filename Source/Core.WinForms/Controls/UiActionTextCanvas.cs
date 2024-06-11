@@ -1,0 +1,105 @@
+﻿using Core.Enumerables;
+using Core.Lists;
+using Core.Matching;
+using Core.Monads;
+using Core.Numbers;
+using Core.Strings;
+using static Core.Monads.AttemptFunctions;
+
+namespace Core.WinForms.Controls;
+
+public class UiActionTextCanvas : UserControl
+{
+   protected string fontName;
+   protected float fontSize;
+   protected List<TextItem> textItems = [];
+   protected int padding = 3;
+
+   public UiActionTextCanvas(string fontName = "Consolas", float fontSize = 12f)
+   {
+      this.fontName = fontName;
+      this.fontSize = fontSize;
+
+      Resize += (_, _) => Render();
+   }
+
+   public void Write(string text)
+   {
+      foreach (var rawSegment in text.Unjoin(@"-(< '\')'|'; f"))
+      {
+         var segment = rawSegment.Replace(@"\|", "|");
+
+         Bits32<FontStyle> fontStyle = FontStyle.Regular;
+         var foreColor = Color.White;
+         var backColor = Color.Blue;
+
+         if (segment.Matches("'[' /(-[']']+)']' $; f").Map(r => r.FirstGroup) is (true, var specifierList))
+         {
+            foreach (var specifier in specifierList.Unjoin("/s* ',' /s*; f"))
+            {
+               switch (specifier)
+               {
+                  case "b":
+                     fontStyle[FontStyle.Bold] = true;
+                     break;
+                  case "i":
+                     fontStyle[FontStyle.Italic] = true;
+                     break;
+                  default:
+                  {
+                     if (specifier.Matches("^ /('f' | 'b') /(['A-Za-z']+) $; f").Map(r => (r.FirstGroup, r.SecondGroup)) is
+                         (true, var (axis, colorName)))
+                     {
+                        var _color = tryTo(() => Color.FromName(colorName));
+                        if (_color is (true, var color))
+                        {
+                           switch (axis)
+                           {
+                              case "f":
+                                 foreColor = color;
+                                 break;
+                              case "b":
+                                 backColor = color;
+                                 break;
+                           }
+                        }
+                     }
+
+                     break;
+                  }
+               }
+            }
+
+            segment = segment.Drop(-(specifierList.Length + 2));
+         }
+
+         var textItem = new TextItem(new UiAction(this), segment, fontName, fontSize, fontStyle, foreColor, backColor);
+         textItems.Add(textItem);
+      }
+   }
+
+   public void WriteLine(string text)
+   {
+      Write(text);
+      if (textItems.LastItem() is (true, var textItem))
+      {
+         textItem.Line = true;
+      }
+   }
+
+   public void Render()
+   {
+      var location = new Point(padding, padding);
+      foreach (var textItem in textItems)
+      {
+         if (textItem.Render(location, ClientSize, padding) is (true, var newLocation))
+         {
+            location = newLocation;
+         }
+         else
+         {
+            break;
+         }
+      }
+   }
+}

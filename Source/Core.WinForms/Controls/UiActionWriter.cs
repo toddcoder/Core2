@@ -162,6 +162,12 @@ public class UiActionWriter
       return TextRenderer.MeasureText(g, text.EmojiSubstitutions(), font, proposedSize, flags);
    }
 
+   public static Size TextSize(string text, Font font, TextFormatFlags flags)
+   {
+      var proposedSize = new Size(int.MaxValue, int.MaxValue);
+      return TextRenderer.MeasureText(text.EmojiSubstitutions(), font, proposedSize, flags);
+   }
+
    public Rectangle TextRectangle(string text, Graphics graphics, Maybe<Rectangle> _rectangleToUse)
    {
       Rectangle rectangle;

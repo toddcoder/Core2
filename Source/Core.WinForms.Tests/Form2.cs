@@ -11,6 +11,7 @@ public partial class Form2 : Form
    protected UiActionContainer container1 = UiActionContainer.HorizontalContainer();
    protected UiActionContainer container2 = UiActionContainer.VerticalContainer();
    protected UiActionContainer container3 = UiActionContainer.HorizontalContainer();
+   protected UiActionTextCanvas canvas = new();
 
    public Form2()
    {
@@ -18,12 +19,13 @@ public partial class Form2 : Form
 
       var builder = new Builder(tableLayoutPanel);
       _ = builder.Col + 100f;
-      _ = builder.Row + 60 + 180 + 60 + 100f;
+      _ = builder.Row + 60 + 180 + 60 + 40 + 100f;
       builder.SetUp();
 
       (builder + container1).Row();
       (builder + container2).Row();
       (builder + container3).Row();
+      (builder + canvas).Row();
 
       var uiAction = container1.Add("Lock Test");
       var uiAlfa = uiAction;
@@ -89,5 +91,8 @@ public partial class Form2 : Form
       container3.Add("Louise", false);
       container3.Add("Celestine", false);
       container3.Add("Robespierre", false);
+
+      canvas.Write("Now is the time for |all[i]| men");
+      canvas.Render();
    }
 }

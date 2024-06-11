@@ -51,4 +51,6 @@ public static class ListExtensions
          }
       }
    }
+
+   public static Maybe<T> LastItem<T>(this IList<T> list) where T : notnull => maybe<T>() & list.Count > 0 & (() => list[^1]);
 }
