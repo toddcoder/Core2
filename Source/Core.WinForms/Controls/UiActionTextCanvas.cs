@@ -21,6 +21,14 @@ public class UiActionTextCanvas : UserControl
       Resize += (_, _) => Refresh();
    }
 
+   public void Clear() => textItems.Clear();
+
+   public new int Padding
+   {
+      get => padding;
+      set => padding = value;
+   }
+
    public void Write(string text)
    {
       foreach (var rawSegment in text.Unjoin(@"-(< '\')'|'; f"))
