@@ -11,7 +11,7 @@ public class UiActionTextCanvas : UserControl
    protected string fontName;
    protected float fontSize;
    protected List<TextItem> textItems = [];
-   protected int padding = 3;
+   protected int padding = 2;
 
    public UiActionTextCanvas(string fontName = "Consolas", float fontSize = 12f)
    {
@@ -79,7 +79,7 @@ public class UiActionTextCanvas : UserControl
             segment = segment.Drop(-(specifierList.Length + 2));
          }
 
-         var textItem = new TextItem(segment, fontName, fontSize, fontStyle, foreColor, backColor);
+         var textItem = new TextItem(segment, fontName, fontSize, fontStyle, foreColor, backColor, DrawOutline);
          textItems.Add(textItem);
       }
    }
@@ -92,6 +92,8 @@ public class UiActionTextCanvas : UserControl
          textItem.Line = true;
       }
    }
+
+   public bool DrawOutline { get; set; }
 
    protected override void OnPaint(PaintEventArgs e)
    {
