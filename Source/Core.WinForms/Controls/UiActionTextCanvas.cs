@@ -1,7 +1,5 @@
-﻿using Core.Enumerables;
-using Core.Lists;
+﻿using Core.Lists;
 using Core.Matching;
-using Core.Monads;
 using Core.Numbers;
 using Core.Strings;
 using static Core.Monads.AttemptFunctions;
@@ -20,7 +18,7 @@ public class UiActionTextCanvas : UserControl
       this.fontName = fontName;
       this.fontSize = fontSize;
 
-      Resize += (_, _) => Render();
+      Resize += (_, _) => Refresh();
    }
 
    public void Write(string text)
@@ -47,7 +45,7 @@ public class UiActionTextCanvas : UserControl
                      break;
                   default:
                   {
-                     if (specifier.Matches("^ /('f' | 'b') /(['A-Za-z']+) $; f").Map(r => (r.FirstGroup, r.SecondGroup)) is
+                     if (specifier.Matches("^ /('f' | 'b') ':' /(['A-Za-z']+) $; f").Map(r => (r.FirstGroup, r.SecondGroup)) is
                          (true, var (axis, colorName)))
                      {
                         var _color = tryTo(() => Color.FromName(colorName));
@@ -73,7 +71,7 @@ public class UiActionTextCanvas : UserControl
             segment = segment.Drop(-(specifierList.Length + 2));
          }
 
-         var textItem = new TextItem(new UiAction(this), segment, fontName, fontSize, fontStyle, foreColor, backColor);
+         var textItem = new TextItem(segment, fontName, fontSize, fontStyle, foreColor, backColor);
          textItems.Add(textItem);
       }
    }
@@ -87,12 +85,14 @@ public class UiActionTextCanvas : UserControl
       }
    }
 
-   public void Render()
+   protected override void OnPaint(PaintEventArgs e)
    {
+      base.OnPaint(e);
+
       var location = new Point(padding, padding);
       foreach (var textItem in textItems)
       {
-         if (textItem.Render(location, ClientSize, padding) is (true, var newLocation))
+         if (textItem.Render(e.Graphics, location, ClientSize, padding) is (true, var newLocation))
          {
             location = newLocation;
          }

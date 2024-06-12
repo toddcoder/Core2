@@ -19,7 +19,7 @@ public partial class Form2 : Form
 
       var builder = new Builder(tableLayoutPanel);
       _ = builder.Col + 100f;
-      _ = builder.Row + 60 + 180 + 60 + 40 + 100f;
+      _ = builder.Row + 60 + 180 + 60 + 120 + 100f;
       builder.SetUp();
 
       (builder + container1).Row();
@@ -92,7 +92,9 @@ public partial class Form2 : Form
       container3.Add("Celestine", false);
       container3.Add("Robespierre", false);
 
-      canvas.Write("Now is the time for |all[i]| men");
-      canvas.Render();
+      canvas.BackColor = Color.Blue;
+      canvas.WriteLine("Now is the time for[b:red]|all[i,f:black,b:yellow]|men to come to the aid of their party.");
+      canvas.WriteLine("Air|quality[b]|alert.");
+      canvas.Refresh();
    }
 }
