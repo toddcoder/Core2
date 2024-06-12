@@ -1257,6 +1257,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       refresh();
    }
 
+   public int ProgressIndex => index;
+
    public void StartStopwatch() => stopwatch.Value.Start();
 
    public void StopStopwatch() => stopwatch.Value.Stop();
