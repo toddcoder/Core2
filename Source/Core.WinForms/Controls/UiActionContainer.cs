@@ -22,6 +22,8 @@ public class UiActionContainer : UserControl, IEnumerable<UiAction>
    protected bool showLastClicked = true;
    protected Maybe<int> _indexLastClicked = nil;
 
+   public new event EventHandler<UiActionContainerClickArgs>? Click;
+
    public void Add(UiAction uiAction)
    {
       var index = uiActions.Count;
@@ -34,6 +36,7 @@ public class UiActionContainer : UserControl, IEnumerable<UiAction>
          {
             _indexLastClicked = index;
             Invalidate();
+            Click?.Invoke(this, new UiActionContainerClickArgs(uiAction, index));
          };
       }
 
