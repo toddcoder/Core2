@@ -36,9 +36,8 @@ public class UiActionTextCanvas : UserControl
          var segment = rawSegment.Replace(@"\|", "|");
 
          Bits32<FontStyle> fontStyle = FontStyle.Regular;
-         var isWhiteSpace = segment.IsWhiteSpace();
-         var foreColor = isWhiteSpace ? Color.Black : Color.White;
-         var backColor = isWhiteSpace ? SystemColors.Control : Color.Blue;
+         var foreColor = SystemColors.ControlText;
+         var backColor = SystemColors.Control;
 
          if (segment.Matches("'[' /(-[']']+)']' $; f").Map(r => r.FirstGroup) is (true, var specifierList))
          {
