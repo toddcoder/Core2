@@ -2,6 +2,7 @@
 using Core.Computers;
 using Core.Dates.DateIncrements;
 using Core.Enumerables;
+using Core.Json;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
@@ -38,6 +39,7 @@ public partial class Form1 : Form
          var form2 = new Form2();
          form2.Show();
       }) + Keys.F2).Menu();
+      (menus + "JSON" + retrieveJson + Keys.Control + Keys.J).Menu();
       menus.Menu("Edit");
       menus.StandardEditMenu();
       (menus + "Enabled" + (() => uiButton6!.Enabled = !uiButton6.Enabled)).Menu();
@@ -275,5 +277,18 @@ public partial class Form1 : Form
       richTextBoxMenu.ContextMenuSeparator();
       richTextBoxMenu.StandardContextEdit();
       richTextBoxMenu.CreateContextMenu();
+   }
+
+   protected void retrieveJson()
+   {
+      richTextBox.Clear();
+      var _retriever = JsonRetriever.FromUrl(textBox.Text);
+      if (_retriever is (true, var retriever))
+      {
+         foreach (var (propertyName, value)  in retriever.Enumerable("Estream.ProdSupp.ReleaseStatus", "Estream.Release.Date", "System.WorkItemType"))
+         {
+            richTextBox.AppendText($"{propertyName}: {value}\n");
+         }
+      }
    }
 }
