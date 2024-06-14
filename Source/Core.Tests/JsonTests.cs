@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Core.Applications;
 using Core.Computers;
 using Core.Dates;
 using Core.Json;
@@ -124,5 +125,42 @@ public class JsonTests
       var builder = JsonBuilder.WithObject();
       _ = builder.Array("array") + ["alpha", "bravo", "charlie"];
       Console.WriteLine(builder);
+   }
+
+   [TestMethod]
+   public void JsonRetrieverTest()
+   {
+      var resources = new Resources<JsonTests>();
+      var source = resources.String("TestData.test.json");
+
+      var retriever = new JsonRetriever(source);
+      foreach (var (propertyName, value) in retriever.Enumerable("type", "number"))
+      {
+         Console.WriteLine($"{propertyName}: {value}");
+      }
+
+      Console.WriteLine("===");
+
+      retriever = new JsonRetriever(source, JsonRetrieverOptions.UsesPath);
+      foreach (var (propertyName, value) in retriever.Enumerable("address.street_address", "address.city", "address.state", "address.postal_code"))
+      {
+         Console.WriteLine($"{propertyName}: {value}");
+      }
+
+      Console.WriteLine("===");
+
+      retriever = new JsonRetriever(source, JsonRetrieverOptions.StopAfterParametersConsumed);
+      foreach (var (propertyName, value) in retriever.Enumerable("type", "number"))
+      {
+         Console.WriteLine($"{propertyName}: {value}");
+      }
+
+      Console.WriteLine("===");
+
+      retriever = new JsonRetriever(source, JsonRetrieverOptions.StopAfterFirstRetrieval);
+      foreach (var (propertyName, value) in retriever.Enumerable("type", "number"))
+      {
+         Console.WriteLine($"{propertyName}: {value}");
+      }
    }
 }
