@@ -55,11 +55,13 @@ public class JsonRetriever(string json, JsonRetrieverOptions options = JsonRetri
    }
 
    protected Bits32<JsonRetrieverOptions> retrieverOptions = options;
+   protected StringSet propertyNameSet = [];
+   protected MaybeStack<string> prefixes = [];
 
    public IEnumerable<(string propertyName, string value)> Enumerable(params string[] propertyNames)
    {
-      StringSet propertyNameSet = [.. propertyNames];
-      MaybeStack<string> prefixes = [];
+      propertyNameSet = [.. propertyNames];
+      prefixes = [];
 
       var bytes = Encoding.UTF8.GetBytes(json);
       var sequence = new ReadOnlySequence<byte>(bytes);
@@ -87,21 +89,21 @@ public class JsonRetriever(string json, JsonRetrieverOptions options = JsonRetri
             case JsonTokenType.PropertyName:
                propertyName = reader.GetString() ?? "";
                break;
-            case JsonTokenType.String or JsonTokenType.Number when keyMatches():
+            case JsonTokenType.String or JsonTokenType.Number when keyMatches(propertyName):
             {
                var value = reader.GetString()!;
                list.Add((propertyName, value));
                break;
             }
-            case JsonTokenType.False when keyMatches():
+            case JsonTokenType.False when keyMatches(propertyName):
                list.Add((propertyName, "false"));
 
                break;
-            case JsonTokenType.True when keyMatches():
+            case JsonTokenType.True when keyMatches(propertyName):
                list.Add((propertyName, "true"));
 
                break;
-            case JsonTokenType.Null when keyMatches():
+            case JsonTokenType.Null when keyMatches(propertyName):
                list.Add((propertyName, ""));
 
                break;
@@ -114,29 +116,74 @@ public class JsonRetriever(string json, JsonRetrieverOptions options = JsonRetri
       }
 
       return list;
+   }
 
-      string getPropertyName()
+   public Optional<string> Retrieve(string targetPropertyName)
+   {
+      prefixes = [];
+
+      var bytes = Encoding.UTF8.GetBytes(json);
+      var sequence = new ReadOnlySequence<byte>(bytes);
+      var options = new JsonReaderOptions();
+      var reader = new Utf8JsonReader(sequence, options);
+
+      var propertyName = "";
+      var fullPropertyName = "";
+
+      while (reader.Read())
       {
-         return retrieverOptions[JsonRetrieverOptions.UsesPath] && prefixes.Count > 0 ? $"{prefixes.ToString(".")}.{propertyName}" : propertyName;
+         switch (reader.TokenType)
+         {
+            case JsonTokenType.StartObject or JsonTokenType.StartArray when retrieverOptions[JsonRetrieverOptions.UsesPath]:
+               if (propertyName.IsNotEmpty())
+               {
+                  prefixes.Push(propertyName);
+                  propertyName = "";
+               }
+
+               break;
+            case JsonTokenType.EndObject or JsonTokenType.EndArray when retrieverOptions[JsonRetrieverOptions.UsesPath]:
+               propertyName = prefixes.Pop() | "";
+               break;
+            case JsonTokenType.PropertyName:
+               propertyName = reader.GetString() ?? "";
+               fullPropertyName = getFullPropertyName(propertyName);
+               break;
+            case JsonTokenType.String or JsonTokenType.Number when fullPropertyName == targetPropertyName:
+               return reader.GetString() ?? "";
+            case JsonTokenType.False when fullPropertyName == targetPropertyName:
+               return "false";
+            case JsonTokenType.True when fullPropertyName == targetPropertyName:
+               return "true";
+            case JsonTokenType.Null when fullPropertyName == targetPropertyName:
+               return "";
+         }
       }
 
-      bool keyMatches()
-      {
-         var propertyName = getPropertyName();
-         var matches = propertyNameSet.Contains(propertyName);
-         if (retrieverOptions[JsonRetrieverOptions.StopAfterParametersConsumed])
-         {
-            if (matches)
-            {
-               propertyNameSet.Remove(propertyName);
-            }
+      return nil;
+   }
 
-            return matches;
-         }
-         else
+   protected bool keyMatches(string propertyName)
+   {
+      var fullPropertyName = getFullPropertyName(propertyName);
+      var matches = propertyNameSet.Contains(fullPropertyName);
+      if (retrieverOptions[JsonRetrieverOptions.StopAfterParametersConsumed])
+      {
+         if (matches)
          {
-            return matches;
+            propertyNameSet.Remove(fullPropertyName);
          }
+
+         return matches;
       }
+      else
+      {
+         return matches;
+      }
+   }
+
+   protected string getFullPropertyName(string propertyName)
+   {
+      return retrieverOptions[JsonRetrieverOptions.UsesPath] && prefixes.Count > 0 ? $"{prefixes.ToString(".")}.{propertyName}" : propertyName;
    }
 }

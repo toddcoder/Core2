@@ -163,4 +163,41 @@ public class JsonTests
          Console.WriteLine($"{propertyName}: {value}");
       }
    }
+
+   [TestMethod]
+   public void JsonSingleValueRetrieverTest()
+   {
+      var resources = new Resources<JsonTests>();
+      var source = resources.String("TestData.test.json");
+
+      var retriever = new JsonRetriever(source);
+      var _value = retriever.Retrieve("type");
+      if (_value is (true, var value1))
+      {
+         Console.WriteLine(value1);
+      }
+      else if (_value.Exception is (true, var exception))
+      {
+         Console.WriteLine(exception.Message);
+      }
+      else
+      {
+         Console.WriteLine("Not found");
+      }
+
+      retriever = new JsonRetriever(source, JsonRetrieverOptions.UsesPath);
+      _value = retriever.Retrieve("address.street_address");
+      if (_value is (true, var value2))
+      {
+         Console.WriteLine(value2);
+      }
+      else if (_value.Exception is (true, var exception))
+      {
+         Console.WriteLine(exception.Message);
+      }
+      else
+      {
+         Console.WriteLine("Not found");
+      }
+   }
 }
