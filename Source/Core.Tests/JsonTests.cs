@@ -200,4 +200,18 @@ public class JsonTests
          Console.WriteLine("Not found");
       }
    }
+
+   [TestMethod]
+   public void JsonHashRetrieverTest()
+   {
+      var resources = new Resources<JsonTests>();
+      var source = resources.String("TestData.test.json");
+
+      var retriever = new JsonRetriever(source, JsonRetrieverOptions.UsesPath);
+      var hash = retriever.RetrieveHash("address.street_address", "address.city", "address.state", "address.postal_code");
+      foreach (var (propertyName, value) in hash)
+      {
+         Console.WriteLine($"{propertyName}: {value}");
+      }
+   }
 }
