@@ -3,6 +3,7 @@ using Core.Computers;
 using Core.Dates.DateIncrements;
 using Core.Enumerables;
 using Core.Json;
+using Core.Matching;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
@@ -281,11 +282,18 @@ public partial class Form1 : Form
 
    protected void retrieveJson()
    {
+      var url = textBox.Text;
+      if (url.Matches("^ /(.+) '//_workitems//edit//' /(/d+)").Map(r => (prefix: r.FirstGroup, id: r.SecondGroup)) is (true, var (prefix, id)))
+      {
+         url = $"{prefix}/_apis/wit/workitems/{id}?$expand=all";
+         textBox.Text = url;
+      }
+
       richTextBox.Clear();
-      var _retriever = JsonRetriever.FromUrl(textBox.Text);
+      var _retriever = JsonRetriever.FromUrl(url);
       if (_retriever is (true, var retriever))
       {
-         foreach (var (propertyName, value)  in retriever.Enumerable("Estream.ProdSupp.ReleaseStatus", "Estream.Release.Date", "System.WorkItemType"))
+         foreach (var (propertyName, value)  in retriever.RetrieveHash("System.Title", "System.WorkItemType", "Estream.Release.Target", "Estream.ProdSupp.MergeStatus", "Estream.ProdSupp.MergedTo"))
          {
             richTextBox.AppendText($"{propertyName}: {value}\n");
          }
