@@ -43,7 +43,7 @@ public abstract class JsonIterateCollection<T>(string json, JsonRetrieverOptions
                String();
                break;
             case JsonTokenType.Number when keyMatches():
-               setValue(reader);
+               setNumber(reader);
                Number();
                break;
             case JsonTokenType.False when keyMatches():

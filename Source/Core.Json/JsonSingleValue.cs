@@ -60,7 +60,7 @@ public class JsonSingleValue(string json, JsonRetrieverOptions options) : JsonIt
                String();
                break;
             case JsonTokenType.Number when fullPropertyName == targetPropertyName:
-               setValue(reader);
+               setNumber(reader);
                Number();
                break;
             case JsonTokenType.False when fullPropertyName == targetPropertyName:

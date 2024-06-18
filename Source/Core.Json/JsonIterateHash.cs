@@ -45,7 +45,7 @@ public abstract class JsonIterateHash<TKey, TValue>(string json, JsonRetrieverOp
                String();
                break;
             case JsonTokenType.Number when keyMatches():
-               setValue(reader);
+               setNumber(reader);
                Number();
                break;
             case JsonTokenType.False when keyMatches():

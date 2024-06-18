@@ -55,6 +55,8 @@ public abstract class JsonIterator(string json, JsonRetrieverOptions options)
 
    protected void setValue(Utf8JsonReader reader) => value = reader.GetString() ?? "";
 
+   protected void setNumber(Utf8JsonReader reader) => value = reader.GetDouble().ToString();
+
    public virtual void StartObject()
    {
       if (propertyName.IsNotEmpty())

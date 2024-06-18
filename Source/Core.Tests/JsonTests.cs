@@ -199,6 +199,21 @@ public class JsonTests
       {
          Console.WriteLine("Not found");
       }
+
+      retriever = new JsonRetriever(source, JsonRetrieverOptions.StopAfterFirstRetrieval);
+      _value = retriever.Retrieve("age");
+      if (_value is (true, var value3))
+      {
+         Console.WriteLine(value3);
+      }
+      else if (_value.Exception is (true, var exception))
+      {
+         Console.WriteLine(exception.Message);
+      }
+      else
+      {
+         Console.WriteLine("Not found");
+      }
    }
 
    [TestMethod]
@@ -209,6 +224,13 @@ public class JsonTests
 
       var retriever = new JsonRetriever(source, JsonRetrieverOptions.UsesPath);
       var hash = retriever.RetrieveHash("address.street_address", "address.city", "address.state", "address.postal_code");
+      foreach (var (propertyName, value) in hash)
+      {
+         Console.WriteLine($"{propertyName}: {value}");
+      }
+
+      retriever = new JsonRetriever(source, JsonRetrieverOptions.StopAfterParametersConsumed);
+      hash = retriever.RetrieveHash("is_alive", "age", "spouse");
       foreach (var (propertyName, value) in hash)
       {
          Console.WriteLine($"{propertyName}: {value}");
