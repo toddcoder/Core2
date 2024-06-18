@@ -310,4 +310,112 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
          return value;
       }
    }
+
+   public TValue GetValue(TKey key, TValue defaultValue)
+   {
+      if (ContainsKey(key))
+      {
+         return this[key];
+      }
+      else
+      {
+         return defaultValue;
+      }
+   }
+
+   public (TValue, TValue) ValueOf(TKey key1, TKey key2, TValue defaultValue)
+   {
+      var value1 = GetValue(key1, defaultValue);
+      var value2 = GetValue(key2, defaultValue);
+
+      return (value1, value2);
+   }
+
+   public (TValue, TValue, TValue) ValueOf(TKey key1, TKey key2, TKey key3, TValue defaultValue)
+   {
+      var value1 = GetValue(key1, defaultValue);
+      var value2 = GetValue(key2, defaultValue);
+      var value3 = GetValue(key3, defaultValue);
+
+      return (value1, value2, value3);
+   }
+
+   public (TValue, TValue, TValue, TValue) ValueOf(TKey key1, TKey key2, TKey key3, TKey key4, TValue defaultValue)
+   {
+      var value1 = GetValue(key1, defaultValue);
+      var value2 = GetValue(key2, defaultValue);
+      var value3 = GetValue(key3, defaultValue);
+      var value4 = GetValue(key4, defaultValue);
+
+      return (value1, value2, value3, value4);
+   }
+
+   public (TValue, TValue, TValue, TValue, TValue) ValueOf(TKey key1, TKey key2, TKey key3, TKey key4, TKey key5, TValue defaultValue)
+   {
+      var value1 = GetValue(key1, defaultValue);
+      var value2 = GetValue(key2, defaultValue);
+      var value3 = GetValue(key3, defaultValue);
+      var value4 = GetValue(key4, defaultValue);
+      var value5 = GetValue(key5, defaultValue);
+
+      return (value1, value2, value3, value4, value5);
+   }
+
+   public (TValue, TValue, TValue, TValue, TValue, TValue) ValueOf(TKey key1, TKey key2, TKey key3, TKey key4, TKey key5, TKey key6,
+      TValue defaultValue)
+   {
+      var value1 = GetValue(key1, defaultValue);
+      var value2 = GetValue(key2, defaultValue);
+      var value3 = GetValue(key3, defaultValue);
+      var value4 = GetValue(key4, defaultValue);
+      var value5 = GetValue(key5, defaultValue);
+      var value6 = GetValue(key6, defaultValue);
+
+      return (value1, value2, value3, value4, value5, value6);
+   }
+
+   public (TValue, TValue, TValue, TValue, TValue, TValue, TValue) ValueOf(TKey key1, TKey key2, TKey key3, TKey key4, TKey key5, TKey key6,
+      TKey key7, TValue defaultValue)
+   {
+      var value1 = GetValue(key1, defaultValue);
+      var value2 = GetValue(key2, defaultValue);
+      var value3 = GetValue(key3, defaultValue);
+      var value4 = GetValue(key4, defaultValue);
+      var value5 = GetValue(key5, defaultValue);
+      var value6 = GetValue(key6, defaultValue);
+      var value7 = GetValue(key7, defaultValue);
+
+      return (value1, value2, value3, value4, value5, value6, value7);
+   }
+
+   public (TValue, TValue, TValue, TValue, TValue, TValue, TValue, TValue) ValueOf(TKey key1, TKey key2, TKey key3, TKey key4, TKey key5, TKey key6,
+      TKey key7, TKey key8, TValue defaultValue)
+   {
+      var value1 = GetValue(key1, defaultValue);
+      var value2 = GetValue(key2, defaultValue);
+      var value3 = GetValue(key3, defaultValue);
+      var value4 = GetValue(key4, defaultValue);
+      var value5 = GetValue(key5, defaultValue);
+      var value6 = GetValue(key6, defaultValue);
+      var value7 = GetValue(key7, defaultValue);
+      var value8 = GetValue(key8, defaultValue);
+
+      return (value1, value2, value3, value4, value5, value6, value7, value8);
+   }
+
+   public (TValue, TValue, TValue, TValue, TValue, TValue, TValue, TValue, TValue) ValueOf(TKey key1, TKey key2, TKey key3, TKey key4, TKey key5,
+      TKey key6, TKey key7, TKey key8, TKey key9, TValue defaultValue)
+   {
+      var value1 = GetValue(key1, defaultValue);
+      var value2 = GetValue(key2, defaultValue);
+      var value3 = GetValue(key3, defaultValue);
+      var value4 = GetValue(key4, defaultValue);
+      var value5 = GetValue(key5, defaultValue);
+      var value6 = GetValue(key6, defaultValue);
+      var value7 = GetValue(key7, defaultValue);
+      var value8 = GetValue(key8, defaultValue);
+      var value9 = GetValue(key9, defaultValue);
+
+      return (value1, value2, value3, value4, value5, value6, value7, value8, value9);
+   }
 }
