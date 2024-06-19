@@ -282,6 +282,9 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             case UiActionType.CheckBox:
                setUpCheckBox(text, BoxChecked);
                break;
+            case UiActionType.Alternate:
+               RectangleCount = Alternates.Length;
+               break;
          }
 
          refresh();
@@ -3203,24 +3206,31 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    protected void createAlternate(string[] alternates)
    {
-      FloatingException(false);
-      Busy(false);
-      _taskBarProgress = nil;
-
       if (alternates.Length < 1)
       {
          Failure("You should have at least one alternate");
          return;
       }
 
+      FloatingException(false);
+      Busy(false);
+      _taskBarProgress = nil;
+
       type = UiActionType.Alternate;
       RectangleCount = alternates.Length;
       _alternateWriter = new AlternateWriter(this, alternates, AutoSizeText, _floor, _ceiling);
+      Invalidate();
       refresh();
    }
 
    protected void createDeletable(string[] alternates)
    {
+      if (alternates.Length < 1)
+      {
+         Failure("You should have at least one alternate");
+         return;
+      }
+
       FloatingException(false);
       Busy(false);
       _taskBarProgress = nil;
