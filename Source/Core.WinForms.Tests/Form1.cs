@@ -46,7 +46,7 @@ public partial class Form1 : Form
       (menus + "Enabled" + (() => uiButton6!.Enabled = !uiButton6.Enabled)).Menu();
       menus.RenderMainMenu();
 
-      var builder = new Builder(tableLayoutPanel);
+      var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 80f + 20f;
       _ = builder.Row * 11 * 60 + 100f;
       builder.SetUp();

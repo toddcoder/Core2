@@ -17,7 +17,7 @@ public partial class Form2 : Form
    {
       InitializeComponent();
 
-      var builder = new Builder(tableLayoutPanel);
+      var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 100f;
       _ = builder.Row + 60 + 180 + 60 + 120 + 100f;
       builder.SetUp();

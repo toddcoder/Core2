@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.TableLayoutPanels;
 
-public class ControlInfo(Builder builder, Control control)
+public class ControlInfo(TableLayoutBuilder builder, Control control)
 {
    public static ControlInfo operator +(ControlInfo controlInfo, (int column, int row) tuple)
    {
@@ -53,7 +53,7 @@ public class ControlInfo(Builder builder, Control control)
    protected float fontSize = 12f;
    protected DockStyle dockStyle = DockStyle.Fill;
 
-   public Builder Builder => builder;
+   public TableLayoutBuilder Builder => builder;
 
    public int ColumnSpan
    {
@@ -89,6 +89,22 @@ public class ControlInfo(Builder builder, Control control)
    {
       columnSpan = column;
       rowSpan = row;
+
+      return this;
+   }
+
+   public ControlInfo SpanCol(int columnSpan)
+   {
+      this.columnSpan = columnSpan;
+      rowSpan = 1;
+
+      return this;
+   }
+
+   public ControlInfo SpanRow(int rowSpan)
+   {
+      columnSpan = 1;
+      this.rowSpan = rowSpan;
 
       return this;
    }
@@ -135,5 +151,26 @@ public class ControlInfo(Builder builder, Control control)
       builder.CurrentRow = row + increment;
 
       reset();
+   }
+
+   public ControlInfo NextCol(int increment = 1)
+   {
+      var column = _column | builder.CurrentColumn;
+      builder.CurrentColumn = column + increment;
+
+      reset();
+
+      return this;
+   }
+
+   public ControlInfo NextRow(int increment = 1)
+   {
+      var row = _row | builder.CurrentRow;
+      builder.CurrentRow = row + increment;
+      builder.CurrentColumn = 0;
+
+      reset();
+
+      return this;
    }
 }

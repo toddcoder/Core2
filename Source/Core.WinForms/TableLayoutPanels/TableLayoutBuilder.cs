@@ -1,8 +1,8 @@
 ﻿namespace Core.WinForms.TableLayoutPanels;
 
-public class Builder(TableLayoutPanel tableLayoutPanel)
+public class TableLayoutBuilder(TableLayoutPanel tableLayoutPanel)
 {
-   public static ControlInfo operator +(Builder builder, Control control) => new(builder, control);
+   public static ControlInfo operator +(TableLayoutBuilder builder, Control control) => new(builder, control);
 
    protected AxisSetup columnsSetup = new();
 
