@@ -109,7 +109,8 @@ public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSi
       g.FillRectangle(brush, rectangle);
    }
 
-   protected virtual void drawSelected(Graphics g, Rectangle rectangle, Rectangle alternateRectangle, int index, Color foreColor, Color backColor, int penSize)
+   protected virtual void drawSelected(Graphics g, Rectangle rectangle, Rectangle alternateRectangle, int index, Color foreColor, Color backColor,
+      int penSize)
    {
       g.HighQuality();
       using var pen = new Pen(foreColor, penSize);

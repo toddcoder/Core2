@@ -3219,7 +3219,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       type = UiActionType.Alternate;
       RectangleCount = alternates.Length;
       _alternateWriter = new AlternateWriter(this, alternates, AutoSizeText, _floor, _ceiling);
-      Invalidate();
       refresh();
    }
 
@@ -3350,6 +3349,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    {
       SetForeColor(index, GetForeColor(type));
       SetBackColor(index, GetBackColor(type));
+      refresh();
    }
 
    public Maybe<Color> GetAlternateForeColor(int index) => _alternateWriter.Map(w => w.GetAlternateForeColor(index));
