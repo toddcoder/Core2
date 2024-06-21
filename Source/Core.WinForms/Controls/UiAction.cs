@@ -3442,7 +3442,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    protected Rectangle getDividerRectangle()
    {
       var rectangle = getClientRectangle();
-      var dividerRectangle = rectangle with { Height = 8 };
+      var dividerRectangle = rectangle with { Height = ClientSize.Height / 2 };
       return dividerRectangle with { Location = rectangle.West() };
    }
 
@@ -3453,7 +3453,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       var offset = 4;
 
-      var left = (rectangleRectangle.Width - textSize.Width) / 2 - offset;
+      var left = 4 * offset;
       var top = rectangleRectangle.Height / 2 - textSize.Height / 2 - offset;
       var width = textSize.Width + 2 * offset;
       var height = textSize.Height + 2 * offset;
