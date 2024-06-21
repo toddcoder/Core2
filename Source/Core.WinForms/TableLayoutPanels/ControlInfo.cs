@@ -85,6 +85,7 @@ public class ControlInfo(TableLayoutBuilder builder, Control control)
       set => dockStyle = value;
    }
 
+   [Obsolete("Use SpanCol or SpanRow")]
    public ControlInfo Span(int column = 1, int row = 1)
    {
       columnSpan = column;
@@ -96,16 +97,12 @@ public class ControlInfo(TableLayoutBuilder builder, Control control)
    public ControlInfo SpanCol(int columnSpan)
    {
       this.columnSpan = columnSpan;
-      rowSpan = 1;
-
       return this;
    }
 
    public ControlInfo SpanRow(int rowSpan)
    {
-      columnSpan = 1;
       this.rowSpan = rowSpan;
-
       return this;
    }
 

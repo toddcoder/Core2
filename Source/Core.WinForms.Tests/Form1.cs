@@ -256,15 +256,15 @@ public partial class Form1 : Form
          }
       };
 
-      (builder + uiDivider).Span(2).Row();
+      (builder + uiDivider).SpanCol(2).Row();
       uiDivider.Divider("part 2");
 
       textBox = new ExTextBox(this) { BorderStyle = BorderStyle.None, AutoSelectAll = true };
-      (builder + textBox).Span(2).Row();
+      (builder + textBox).SpanCol(2).Row();
       textBox.Text = "test text";
 
       richTextBox = new ExRichTextBox();
-      (builder + richTextBox).Span(2).Next();
+      (builder + richTextBox).SpanCol(2).Next();
       richTextBox.Text = "test text";
 
       var textBoxMenu = new Menus();
