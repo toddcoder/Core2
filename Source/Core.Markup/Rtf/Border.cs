@@ -4,16 +4,9 @@ namespace Core.Markup.Rtf;
 
 public class Border
 {
-   private BorderStyle style;
-   private float width;
-   private ColorDescriptor colorDescriptor;
-
-   public Border()
-   {
-      style = BorderStyle.None;
-      width = 0.5F;
-      colorDescriptor = new ColorDescriptor(0);
-   }
+   private BorderStyle style = BorderStyle.None;
+   private float width = 0.5F;
+   private ColorDescriptor colorDescriptor = new(0);
 
    public override bool Equals(object? obj) => obj is Border border && Style == border.Style && Width == border.Width;
 

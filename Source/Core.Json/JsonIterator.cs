@@ -118,6 +118,6 @@ public abstract class JsonIterator(string json, JsonRetrieverOptions options)
 
    protected string getFullPropertyName()
    {
-      return bits[JsonRetrieverOptions.UsesPath] && prefixes.Count > 0 ? $"{prefixes.ToString(".")}.{propertyName}" : propertyName;
+      return bits[JsonRetrieverOptions.UsesPath] && prefixes.Count > 0 ? $"{prefixes.ToString("/")}/{propertyName}" : propertyName;
    }
 }

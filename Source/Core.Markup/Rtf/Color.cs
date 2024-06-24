@@ -2,26 +2,21 @@ using Core.Assertions;
 
 namespace Core.Markup.Rtf;
 
-public class Color
+public class Color()
 {
    protected int color;
 
-   public Color()
-   {
-      color = 0;
-   }
-
-   public Color(byte red, byte green, byte blue)
+   public Color(byte red, byte green, byte blue) : this()
    {
       color = (red << 16) + (green << 8) + blue;
    }
 
-   public Color(int color)
+   public Color(int color) : this()
    {
       this.color = color;
    }
 
-   public Color(string hex)
+   public Color(string hex) : this()
    {
       hex.Must().HaveLengthOfExactly(6).OrThrow("String parameter hex should be of length 6.");
 
@@ -37,7 +32,7 @@ public class Color
       color = (red << 16) + (green << 8) + blue;
    }
 
-   public Color(System.Drawing.Color color)
+   public Color(System.Drawing.Color color) : this()
    {
       this.color = (color.R << 16) + (color.G << 8) + color.B;
    }

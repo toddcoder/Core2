@@ -10,31 +10,21 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf;
 
-public class Table : Block
+public class Table(float horizontalWidth, float fontSize) : Block
 {
    public class CellData
    {
-      public CellData()
-      {
-         Text = string.Empty;
-         Specifiers = [];
-         PendingFormatter = nil;
-         ImageFile = nil;
-         ImageFileType = nil;
-         BackgroundColor = nil;
-      }
+      public string Text { get; set; } = "";
 
-      public string Text { get; set; }
+      public object[] Specifiers { get; set; } = [];
 
-      public object[] Specifiers { get; set; }
+      public Maybe<PendingFormatter> PendingFormatter { get; set; } = nil;
 
-      public Maybe<PendingFormatter> PendingFormatter { get; set; }
+      public Maybe<FileName> ImageFile { get; set; } = nil;
 
-      public Maybe<FileName> ImageFile { get; set; }
+      public Maybe<ImageFileType> ImageFileType { get; set; } = nil;
 
-      public Maybe<ImageFileType> ImageFileType { get; set; }
-
-      public Maybe<ColorDescriptor> BackgroundColor { get; set; }
+      public Maybe<ColorDescriptor> BackgroundColor { get; set; } = nil;
    }
 
    public static RowBuilder operator |(Table table, string columnText)
@@ -43,7 +33,15 @@ public class Table : Block
       return rowBuilder.Row(columnText);
    }
 
+   public static RowBuilder operator +(Table table, string columnText)
+   {
+      var rowBuilder = new RowBuilder(table);
+      return rowBuilder.Row(columnText);
+   }
+
    public static RowsBuilder operator |(Table table, string[] columnTexts) => new(table, columnTexts);
+
+   public static RowsBuilder operator +(Table table, string[] columnTexts) => new(table, columnTexts);
 
    public static TableBuilderItem operator |(Table table, TableBuilderType type)
    {
@@ -65,60 +63,47 @@ public class Table : Block
       }
    }
 
-   protected Alignment alignment;
-   protected Margins margins;
+   public static TableBuilderItem operator +(Table table, TableBuilderType type)
+   {
+      if (!table.TableBuilder)
+      {
+         table.TableBuilder = new TableBuilder();
+      }
+
+      if (table.TableBuilder is (true, var tableBuilder))
+      {
+         var tableBuilderItem = new TableBuilderItem { Type = type };
+         tableBuilder.Add(tableBuilderItem);
+
+         return tableBuilderItem;
+      }
+      else
+      {
+         return new TableBuilderItem();
+      }
+   }
+
+   protected Alignment alignment = Alignment.None;
+   protected Margins margins = new();
    protected int rowCount;
    protected int columnCount;
-   protected TableCell[][] cells;
-   protected List<TableCell> representatives;
+   protected TableCell[][] cells = [];
+   protected List<TableCell> representatives = [];
    protected bool startNewPage;
-   protected float[] rowHeights;
-   protected bool[] rowKeepInSamePage;
+   protected float[] rowHeights = [];
+   protected bool[] rowKeepInSamePage = [];
    protected int titleRowCount;
-   protected readonly float fontSize;
-   protected CharFormat defaultCharFormat;
-   protected Margins[] cellPadding;
-   protected List<List<CellData>> rows;
+   protected readonly float fontSize = fontSize;
+   protected CharFormat defaultCharFormat = new();
+   protected Margins[] cellPadding = [];
+   protected List<List<CellData>> rows = [];
    protected int maxColumnCount;
-   protected float horizontalWidth;
-   protected int rowIndex;
+   protected float horizontalWidth = horizontalWidth;
+   protected int rowIndex = -1;
    protected bool arrayCreated;
-   protected MaybeQueue<(int topRow, int leftColumn, int rowSpan, int colSpan)> pendingMerges;
-   protected Maybe<Action<Paragraph, int, int>> _formatAction;
-   protected Maybe<CellData> _currentCell;
-
-   public Table(float horizontalWidth, float fontSize)
-   {
-      this.horizontalWidth = horizontalWidth;
-      this.fontSize = fontSize;
-
-      alignment = Alignment.None;
-      margins = new Margins();
-      representatives = [];
-      startNewPage = false;
-      titleRowCount = 0;
-
-      HeaderBackgroundColor = nil;
-      RowBackgroundColor = nil;
-      RowAltBackgroundColor = nil;
-      defaultCharFormat = new CharFormat();
-
-      rows = [];
-      maxColumnCount = 0;
-      rowIndex = -1;
-      arrayCreated = false;
-      pendingMerges = [];
-
-      _formatAction = nil;
-      _currentCell = nil;
-
-      TableBuilder = nil;
-
-      cells = [];
-      rowHeights = [];
-      rowKeepInSamePage = [];
-      cellPadding = [];
-   }
+   protected MaybeQueue<(int topRow, int leftColumn, int rowSpan, int colSpan)> pendingMerges = [];
+   protected Maybe<Action<Paragraph, int, int>> _formatAction = nil;
+   protected Maybe<CellData> _currentCell = nil;
 
    public Maybe<CellData> CurrentCell => _currentCell;
 
@@ -250,11 +235,11 @@ public class Table : Block
       }
    }
 
-   public Maybe<ColorDescriptor> HeaderBackgroundColor { get; set; }
+   public Maybe<ColorDescriptor> HeaderBackgroundColor { get; set; } = nil;
 
-   public Maybe<ColorDescriptor> RowBackgroundColor { get; set; }
+   public Maybe<ColorDescriptor> RowBackgroundColor { get; set; } = nil;
 
-   public Maybe<ColorDescriptor> RowAltBackgroundColor { get; set; }
+   public Maybe<ColorDescriptor> RowAltBackgroundColor { get; set; } = nil;
 
    public override Alignment Alignment
    {
@@ -845,5 +830,5 @@ public class Table : Block
       return result.ToString();
    }
 
-   public Maybe<TableBuilder> TableBuilder { get; set; }
+   public Maybe<TableBuilder> TableBuilder { get; set; } = nil;
 }

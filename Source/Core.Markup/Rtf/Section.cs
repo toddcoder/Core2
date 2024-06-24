@@ -3,22 +3,11 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf;
 
-public class Section : Block
+public class Section(SectionStartEnd startEnd, Document doc) : Block
 {
-   protected Alignment alignment;
-   protected SectionFooter sectionFooter;
-   protected readonly Margins margins;
-
-   public Section(SectionStartEnd startEnd, Document doc)
-   {
-      ParentDocument = doc;
-      alignment = Alignment.None;
-      PageOrientation = PaperOrientation.Portrait;
-      StartEnd = startEnd;
-      FooterPositionFromPageBottom = 720;
-      sectionFooter = new SectionFooter();
-      margins = new Margins();
-   }
+   protected Alignment alignment = Alignment.None;
+   protected SectionFooter sectionFooter = new();
+   protected readonly Margins margins = new();
 
    public override bool StartNewPage { get; set; }
 
@@ -28,19 +17,19 @@ public class Section : Block
       set => alignment = value;
    }
 
-   public SectionStartEnd StartEnd { get; }
+   public SectionStartEnd StartEnd => startEnd;
 
-   public PaperOrientation PageOrientation { get; set; }
+   public PaperOrientation PageOrientation { get; set; } = PaperOrientation.Portrait;
 
    public SectionFooter SectionFooter => sectionFooter;
 
-   public int FooterPositionFromPageBottom { get; }
+   public int FooterPositionFromPageBottom => 720;
 
    public int PageWidth { get; set; }
 
    public int PageHeight { get; set; }
 
-   public Document ParentDocument { get; }
+   public Document ParentDocument => doc;
 
    public override string Render()
    {

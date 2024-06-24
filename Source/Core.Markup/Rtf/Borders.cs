@@ -4,12 +4,7 @@ namespace Core.Markup.Rtf;
 
 public class Borders
 {
-   protected Border[] borders;
-
-   public Borders()
-   {
-      borders = [.. Enumerable.Range(0, 4).Select(_ => new Border())];
-   }
+   protected Border[] borders = [.. Enumerable.Range(0, 4).Select(_ => new Border())];
 
    public Border this[Direction direction]
    {

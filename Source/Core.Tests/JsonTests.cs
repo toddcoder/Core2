@@ -142,7 +142,7 @@ public class JsonTests
       Console.WriteLine("===");
 
       retriever = new JsonRetriever(source, JsonRetrieverOptions.UsesPath);
-      foreach (var (propertyName, value) in retriever.Enumerable("address.street_address", "address.city", "address.state", "address.postal_code"))
+      foreach (var (propertyName, value) in retriever.Enumerable("address/street_address", "address/city", "address/state", "address/postal_code"))
       {
          Console.WriteLine($"{propertyName}: {value}");
       }
@@ -223,7 +223,7 @@ public class JsonTests
       var source = resources.String("TestData.test.json");
 
       var retriever = new JsonRetriever(source, JsonRetrieverOptions.UsesPath);
-      var hash = retriever.RetrieveHash("address.street_address", "address.city", "address.state", "address.postal_code");
+      var hash = retriever.RetrieveHash("address/street_address", "address/city", "address/state", "address/postal_code");
       foreach (var (propertyName, value) in hash)
       {
          Console.WriteLine($"{propertyName}: {value}");

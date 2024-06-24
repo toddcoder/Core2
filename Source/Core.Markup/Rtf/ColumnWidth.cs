@@ -1,14 +1,8 @@
 ﻿namespace Core.Markup.Rtf;
 
-public class ColumnWidth
+public class ColumnWidth(int index, float width)
 {
-   public ColumnWidth(int index, float width)
-   {
-      Index = index;
-      Width = width;
-   }
+   public int Index => index;
 
-   public int Index { get; }
-
-   public float Width { get; }
+   public float Width => width;
 }

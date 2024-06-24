@@ -2,18 +2,11 @@
 
 namespace Core.Markup.Rtf;
 
-public class OuterBorder
+public class OuterBorder(BorderStyle borderStyle, float width, Maybe<ColorDescriptor> color)
 {
-   public OuterBorder(BorderStyle borderStyle, float width, Maybe<ColorDescriptor> color)
-   {
-      BorderStyle = borderStyle;
-      Width = width;
-      Color = color;
-   }
+   public BorderStyle BorderStyle => borderStyle;
 
-   public BorderStyle BorderStyle { get; }
+   public float Width => width;
 
-   public float Width { get; }
-
-   public Maybe<ColorDescriptor> Color { get; }
+   public Maybe<ColorDescriptor> Color => color;
 }

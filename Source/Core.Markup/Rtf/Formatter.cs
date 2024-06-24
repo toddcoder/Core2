@@ -17,39 +17,87 @@ public class Formatter
       _ => formatter
    };
 
+   public static Formatter operator +(Formatter formatter, Feature feature) => feature switch
+   {
+      Feature.Bold => formatter.Bold(),
+      Feature.Italic => formatter.Italic(),
+      Feature.Underline => formatter.Underline(),
+      Feature.Bullet => formatter.Bullet(),
+      Feature.NewPage => formatter.NewPage(),
+      Feature.NewPageAfter => formatter.NewPageAfter(),
+      _ => formatter
+   };
+
    public static Formatter operator |(Formatter formatter, Style style) => formatter.Style(style);
+
+   public static Formatter operator +(Formatter formatter, Style style) => formatter.Style(style);
 
    public static Formatter operator |(Formatter formatter, Alignment alignment) => formatter.Alignment(alignment);
 
+   public static Formatter operator +(Formatter formatter, Alignment alignment) => formatter.Alignment(alignment);
+
    public static Formatter operator |(Formatter formatter, ForegroundColorDescriptor foregroundColor) => formatter.ForegroundColor(foregroundColor);
+
+   public static Formatter operator +(Formatter formatter, ForegroundColorDescriptor foregroundColor) => formatter.ForegroundColor(foregroundColor);
 
    public static Formatter operator |(Formatter formatter, BackgroundColorDescriptor backgroundColor) => formatter.BackgroundColor(backgroundColor);
 
+   public static Formatter operator +(Formatter formatter, BackgroundColorDescriptor backgroundColor) => formatter.BackgroundColor(backgroundColor);
+
    public static Formatter operator |(Formatter formatter, Hyperlink hyperlink) => formatter.Hyperlink(hyperlink);
+
+   public static Formatter operator +(Formatter formatter, Hyperlink hyperlink) => formatter.Hyperlink(hyperlink);
 
    public static Formatter operator |(Formatter formatter, Bookmark bookmark) => formatter.Bookmark(bookmark.Name);
 
+   public static Formatter operator +(Formatter formatter, Bookmark bookmark) => formatter.Bookmark(bookmark.Name);
+
    public static Formatter operator |(Formatter formatter, FontDescriptor font) => formatter.Font(font);
+
+   public static Formatter operator +(Formatter formatter, FontDescriptor font) => formatter.Font(font);
 
    public static Formatter operator |(Formatter formatter, float fontSize) => formatter.FontSize(fontSize);
 
+   public static Formatter operator +(Formatter formatter, float fontSize) => formatter.FontSize(fontSize);
+
    public static Formatter operator |(Formatter formatter, FirstLineIndent firstLineIndent) => formatter.FirstLineIndent(firstLineIndent.Amount);
+
+   public static Formatter operator +(Formatter formatter, FirstLineIndent firstLineIndent) => formatter.FirstLineIndent(firstLineIndent.Amount);
 
    public static Formatter operator |(Formatter formatter, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
    {
       return formatter.Margins(margins);
    }
 
+   public static Formatter operator +(Formatter formatter, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   {
+      return formatter.Margins(margins);
+   }
+
    public static Formatter operator |(Formatter formatter, FieldType fieldType) => formatter.ControlWord(fieldType);
 
+   public static Formatter operator +(Formatter formatter, FieldType fieldType) => formatter.ControlWord(fieldType);
+
    public static Paragraph operator |(Formatter formatter, Paragraph _) => formatter.Paragraph;
+
+   public static Paragraph operator +(Formatter formatter, Paragraph _) => formatter.Paragraph;
 
    public static Formatter operator |(Formatter formatter, string text)
    {
       var paragraph = formatter.Paragraph;
       var begin = paragraph.Text.Length;
       var end = begin + text.Length - 1;
-      _ = paragraph | text;
+      _ = paragraph + text;
+
+      return new PartialFormatter(paragraph, paragraph.CharFormat(begin, end, false), begin, end);
+   }
+
+   public static Formatter operator +(Formatter formatter, string text)
+   {
+      var paragraph = formatter.Paragraph;
+      var begin = paragraph.Text.Length;
+      var end = begin + text.Length - 1;
+      _ = paragraph + text;
 
       return new PartialFormatter(paragraph, paragraph.CharFormat(begin, end, false), begin, end);
    }

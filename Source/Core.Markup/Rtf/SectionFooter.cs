@@ -2,12 +2,8 @@ using System.Text;
 
 namespace Core.Markup.Rtf;
 
-public class SectionFooter : BlockList
+public class SectionFooter() : BlockList(true, true, true, true, true)
 {
-   public SectionFooter() : base(true, true, true, true, true)
-   {
-   }
-
    public override string Render()
    {
       var result = new StringBuilder();

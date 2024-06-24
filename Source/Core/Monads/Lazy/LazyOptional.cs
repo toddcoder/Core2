@@ -78,7 +78,7 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>> where T 
    {
       if (repeating)
       {
-         Activate(func());
+         Activate(func(), repeating);
       }
       else
       {
@@ -99,7 +99,7 @@ public class LazyOptional<T> : Optional<T>, IEquatable<LazyOptional<T>> where T 
    {
       if (repeating)
       {
-         return ValueOf(func());
+         return ValueOf(func(), repeating);
       }
       else
       {

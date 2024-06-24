@@ -1,13 +1,8 @@
 ﻿namespace Core.Markup.Rtf;
 
-public class Descriptor
+public class Descriptor(int descriptor)
 {
-   protected int descriptor;
-
-   public Descriptor(int descriptor)
-   {
-      this.descriptor = descriptor;
-   }
+   protected int descriptor = descriptor;
 
    public int Value => descriptor;
 }

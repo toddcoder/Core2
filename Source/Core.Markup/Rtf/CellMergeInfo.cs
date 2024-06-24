@@ -1,21 +1,12 @@
 namespace Core.Markup.Rtf;
 
-public class CellMergeInfo
+public class CellMergeInfo(TableCell representative, int rowSpan, int columnSpan, int rowIndex, int columnIndex)
 {
-   protected int rowSpan;
-   protected int columnSpan;
-   protected int rowIndex;
-   protected int columnIndex;
-   protected TableCell representative;
-
-   public CellMergeInfo(TableCell representative, int rowSpan, int columnSpan, int rowIndex, int columnIndex)
-   {
-      this.representative = representative;
-      this.rowSpan = rowSpan;
-      this.columnSpan = columnSpan;
-      this.rowIndex = rowIndex;
-      this.columnIndex = columnIndex;
-   }
+   protected int rowSpan = rowSpan;
+   protected int columnSpan = columnSpan;
+   protected int rowIndex = rowIndex;
+   protected int columnIndex = columnIndex;
+   protected TableCell representative = representative;
 
    public int RowSpan => rowSpan;
 

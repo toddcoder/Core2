@@ -1,16 +1,7 @@
 ﻿namespace Core.Markup.Rtf;
 
-public class PartialFormatter : Formatter
+public class PartialFormatter(Paragraph paragraph, CharFormat format, int begin, int end) : Formatter(paragraph, format)
 {
-   protected int begin;
-   protected int end;
-
-   public PartialFormatter(Paragraph paragraph, CharFormat format, int begin, int end) : base(paragraph, format)
-   {
-      this.begin = begin;
-      this.end = end;
-   }
-
    public int Begin => begin;
 
    public int End => end;

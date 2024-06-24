@@ -1,14 +1,8 @@
 ﻿namespace Core.Markup.Rtf;
 
-public class RowHeight
+public class RowHeight(int index, float height)
 {
-   public RowHeight(int index, float height)
-   {
-      Index = index;
-      Height = height;
-   }
+   public int Index => index;
 
-   public int Index { get; }
-
-   public float Height { get; }
+   public float Height => height;
 }

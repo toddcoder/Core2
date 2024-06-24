@@ -6,15 +6,9 @@ namespace Core.Markup.Xml;
 
 public class Attributes : IEnumerable<Attribute>
 {
-   protected StringHash<Attribute> attributes;
+   protected StringHash<Attribute> attributes = [];
 
-   public Attributes()
-   {
-      attributes = [];
-      Quote = QuoteType.Double;
-   }
-
-   public QuoteType Quote { get; set; }
+   public QuoteType Quote { get; set; } = QuoteType.Double;
 
    public Attribute Add(string name, string text)
    {
@@ -36,7 +30,7 @@ public class Attributes : IEnumerable<Attribute>
 
    public override string ToString()
    {
-      return attributes.Count != 0 ? $" {attributes.Select(i => i.Value.ToString()).ToString(" ")}" : string.Empty;
+      return attributes.Count != 0 ? $" {attributes.Select(i => i.Value.ToString()).ToString(" ")}" : "";
    }
 
    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

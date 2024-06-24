@@ -6,12 +6,7 @@ namespace Core.Markup.Markdown;
 
 public class MarkdownWriter
 {
-   protected StringWriter writer;
-
-   public MarkdownWriter()
-   {
-      writer = new StringWriter();
-   }
+   protected StringWriter writer = new();
 
    protected static string flattenString(string text) => text.ToNonNullString().Substitute("'/r/n' | '/r' | '/n'; f", " ");
 

@@ -1,11 +1,6 @@
 ﻿namespace Core.Markup.Rtf;
 
-public class FirstLineIndent
+public class FirstLineIndent(float amount)
 {
-   public FirstLineIndent(float amount)
-   {
-      Amount = amount;
-   }
-
-   public float Amount { get; }
+   public float Amount => amount;
 }

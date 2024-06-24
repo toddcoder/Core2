@@ -5,29 +5,12 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf;
 
-public class TableCell : BlockList
+public class TableCell(float width, int rowIndex, int columnIndex, Table parentTable) : BlockList(true, false)
 {
-   private float width;
-   private Alignment horizontalAlignment;
-   private VerticalAlignment verticalAlignmentAlignment;
-   private Borders borders;
-   private LateLazy<CellMergeInfo> mergeInfo;
-   private int rowIndex;
-   private int columnIndex;
-
-   public TableCell(float width, int rowIndex, int columnIndex, Table parentTable) : base(true, false)
-   {
-      this.width = width;
-      this.rowIndex = rowIndex;
-      this.columnIndex = columnIndex;
-      ParentTable = parentTable;
-
-      horizontalAlignment = Alignment.None;
-      verticalAlignmentAlignment = VerticalAlignment.Top;
-      borders = new Borders();
-      mergeInfo = new LateLazy<CellMergeInfo>(true, "Merge info has not be set through MergeInfo property");
-      BackgroundColor = nil;
-   }
+   private Alignment horizontalAlignment = Alignment.None;
+   private VerticalAlignment verticalAlignmentAlignment = VerticalAlignment.Top;
+   private Borders borders = new();
+   private LateLazy<CellMergeInfo> mergeInfo = new(true, "Merge info has not be set through MergeInfo property");
 
    public bool IsBeginOfColumnSpan => mergeInfo.AnyValue.Map(mergeInfo => mergeInfo.ColumnIndex == 0) | false;
 
@@ -53,9 +36,9 @@ public class TableCell : BlockList
 
    public Borders Borders => borders;
 
-   public Table ParentTable { get; }
+   public Table ParentTable { get; } = parentTable;
 
-   public Maybe<ColorDescriptor> BackgroundColor { get; set; }
+   public Maybe<ColorDescriptor> BackgroundColor { get; set; } = nil;
 
    public Alignment Alignment
    {

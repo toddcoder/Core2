@@ -6,7 +6,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf;
 
-public class CharFormat
+public class CharFormat()
 {
    protected static IEnumerable<FontStyleFlag> fontStyleFlags()
    {
@@ -33,36 +33,20 @@ public class CharFormat
 
    public static LateLazy<CharFormat> Lazy() => new(errorMessage: "DefaultCharFormat referenced before being set");
 
-   protected Maybe<int> _begin;
-   protected Maybe<int> _end;
-   protected Maybe<FontDescriptor> _font;
-   protected Maybe<FontDescriptor> _ansiFont;
-   protected Maybe<float> _fontSize;
-   protected FontStyle fontStyle;
-   protected Maybe<ColorDescriptor> _backgroundColor;
-   protected Maybe<ColorDescriptor> _foregroundColor;
-   protected TwoInOneStyle twoInOneStyle;
-   protected Maybe<string> _bookmark;
-   protected Maybe<string> _hyperlink;
-   protected Maybe<string> _hyperlinkTip;
+   protected Maybe<int> _begin = nil;
+   protected Maybe<int> _end = nil;
+   protected Maybe<FontDescriptor> _font = nil;
+   protected Maybe<FontDescriptor> _ansiFont = nil;
+   protected Maybe<float> _fontSize = nil;
+   protected FontStyle fontStyle = new();
+   protected Maybe<ColorDescriptor> _backgroundColor = nil;
+   protected Maybe<ColorDescriptor> _foregroundColor = nil;
+   protected TwoInOneStyle twoInOneStyle = TwoInOneStyle.NotEnabled;
+   protected Maybe<string> _bookmark = nil;
+   protected Maybe<string> _hyperlink = nil;
+   protected Maybe<string> _hyperlinkTip = nil;
 
-   public CharFormat()
-   {
-      _begin = nil;
-      _end = nil;
-      _font = nil;
-      _ansiFont = nil;
-      _fontSize = nil;
-      fontStyle = new FontStyle();
-      _backgroundColor = nil;
-      _foregroundColor = nil;
-      twoInOneStyle = TwoInOneStyle.NotEnabled;
-      _bookmark = nil;
-      _hyperlink = nil;
-      _hyperlinkTip = nil;
-   }
-
-   public CharFormat(int begin, int end, int textLength, bool checkRange = true)
+   public CharFormat(int begin, int end, int textLength, bool checkRange = true) : this()
    {
       if (checkRange)
       {

@@ -11,7 +11,19 @@ public class TableBuilderItem
       return tableBuilderItem;
    }
 
+   public static TableBuilderItem operator +(TableBuilderItem tableBuilderItem, int index)
+   {
+      tableBuilderItem.Index = index;
+      return tableBuilderItem;
+   }
+
    public static TableBuilderItem operator |(TableBuilderItem tableBuilderItem, float size)
+   {
+      tableBuilderItem.Size = size;
+      return tableBuilderItem;
+   }
+
+   public static TableBuilderItem operator +(TableBuilderItem tableBuilderItem, float size)
    {
       tableBuilderItem.Size = size;
       return tableBuilderItem;
@@ -23,30 +35,33 @@ public class TableBuilderItem
       return tableBuilderItem;
    }
 
+   public static TableBuilderItem operator +(TableBuilderItem tableBuilderItem, BorderStyle borderStyle)
+   {
+      tableBuilderItem.BorderStyle = borderStyle;
+      return tableBuilderItem;
+   }
+
    public static TableBuilderItem operator |(TableBuilderItem tableBuilderItem, ColorDescriptor color)
    {
       tableBuilderItem.Color = color;
       return tableBuilderItem;
    }
 
-   public TableBuilderItem()
+   public static TableBuilderItem operator +(TableBuilderItem tableBuilderItem, ColorDescriptor color)
    {
-      Type = TableBuilderType.None;
-      Index = nil;
-      BorderStyle = nil;
-      Size = nil;
-      Color = nil;
+      tableBuilderItem.Color = color;
+      return tableBuilderItem;
    }
 
-   public TableBuilderType Type { get; set; }
+   public TableBuilderType Type { get; set; } = TableBuilderType.None;
 
-   public Maybe<int> Index { get; set; }
+   public Maybe<int> Index { get; set; } = nil;
 
-   public Maybe<BorderStyle> BorderStyle { get; set; }
+   public Maybe<BorderStyle> BorderStyle { get; set; } = nil;
 
-   public Maybe<float> Size { get; set; }
+   public Maybe<float> Size { get; set; } = nil;
 
-   public Maybe<ColorDescriptor> Color { get; set; }
+   public Maybe<ColorDescriptor> Color { get; set; } = nil;
 
    public void SetItem(Table table)
    {

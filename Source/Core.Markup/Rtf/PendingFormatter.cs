@@ -4,14 +4,19 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf;
 
-public class PendingFormatter
+public class PendingFormatter(Table table)
 {
    public static PendingFormatter operator |(PendingFormatter pendingFormatter, string columnText)
    {
       return pendingFormatter.Table.ColumnPendingFormatter(columnText);
    }
 
-   public static PendingFormatter operator |(PendingFormatter formatter, Feature feature) => feature switch
+   public static PendingFormatter operator +(PendingFormatter pendingFormatter, string columnText)
+   {
+      return pendingFormatter.Table.ColumnPendingFormatter(columnText);
+   }
+
+   public static PendingFormatter operator +(PendingFormatter formatter, Feature feature) => feature switch
    {
       Feature.Bold => formatter.Bold(),
       Feature.Italic => formatter.Italic(),
@@ -22,61 +27,44 @@ public class PendingFormatter
       _ => formatter
    };
 
-   public static PendingFormatter operator |(PendingFormatter formatter, Alignment alignment) => formatter.Alignment(alignment);
+   public static PendingFormatter operator +(PendingFormatter formatter, Alignment alignment) => formatter.Alignment(alignment);
 
-   public static PendingFormatter operator |(PendingFormatter formatter, ForegroundColorDescriptor foregroundColor)
+   public static PendingFormatter operator +(PendingFormatter formatter, ForegroundColorDescriptor foregroundColor)
    {
       return formatter.ForegroundColor(foregroundColor);
    }
 
-   public static PendingFormatter operator |(PendingFormatter formatter, BackgroundColorDescriptor backgroundColor)
+   public static PendingFormatter operator +(PendingFormatter formatter, BackgroundColorDescriptor backgroundColor)
    {
       return formatter.BackgroundColor(backgroundColor);
    }
 
-   public static PendingFormatter operator |(PendingFormatter formatter, Hyperlink hyperlink) => formatter.Hyperlink(hyperlink);
+   public static PendingFormatter operator +(PendingFormatter formatter, Hyperlink hyperlink) => formatter.Hyperlink(hyperlink);
 
-   public static PendingFormatter operator |(PendingFormatter formatter, FontDescriptor font) => formatter.Font(font);
+   public static PendingFormatter operator +(PendingFormatter formatter, FontDescriptor font) => formatter.Font(font);
 
-   public static PendingFormatter operator |(PendingFormatter formatter, float fontSize) => formatter.FontSize(fontSize);
+   public static PendingFormatter operator +(PendingFormatter formatter, float fontSize) => formatter.FontSize(fontSize);
 
-   public static PendingFormatter operator |(PendingFormatter formatter, FirstLineIndent firstLineIndent)
+   public static PendingFormatter operator +(PendingFormatter formatter, FirstLineIndent firstLineIndent)
    {
       return formatter.FirstLineIndent(firstLineIndent);
    }
 
-   public static PendingFormatter operator |(PendingFormatter formatter, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   public static PendingFormatter operator +(PendingFormatter formatter, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
    {
       return formatter.Margins(margins);
    }
 
-   protected Table table;
-   protected Set<Feature> features;
-   protected Maybe<Alignment> _alignment;
-   protected Maybe<ForegroundColorDescriptor> _foregroundColor;
-   protected Maybe<BackgroundColorDescriptor> _backgroundColor;
-   protected Maybe<Hyperlink> _hyperlink;
-   protected Maybe<FontDescriptor> _font;
-   protected Maybe<float> _fontSize;
-   protected Maybe<FirstLineIndent> _firstLineIndent;
-   protected (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins;
-   protected Maybe<Style> _style;
-
-   public PendingFormatter(Table table)
-   {
-      this.table = table;
-
-      features = [];
-      _alignment = nil;
-      _foregroundColor = nil;
-      _backgroundColor = nil;
-      _hyperlink = nil;
-      _font = nil;
-      _fontSize = nil;
-      _firstLineIndent = nil;
-      margins = (nil, nil, nil, nil);
-      _style = nil;
-   }
+   protected Set<Feature> features = [];
+   protected Maybe<Alignment> _alignment = nil;
+   protected Maybe<ForegroundColorDescriptor> _foregroundColor = nil;
+   protected Maybe<BackgroundColorDescriptor> _backgroundColor = nil;
+   protected Maybe<Hyperlink> _hyperlink = nil;
+   protected Maybe<FontDescriptor> _font = nil;
+   protected Maybe<float> _fontSize = nil;
+   protected Maybe<FirstLineIndent> _firstLineIndent = nil;
+   protected (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins = (nil, nil, nil, nil);
+   protected Maybe<Style> _style = nil;
 
    public Table Table => table;
 
@@ -200,7 +188,7 @@ public class PendingFormatter
 
       foreach (var feature in features)
       {
-         _ = formatter | feature;
+         _ = formatter + feature;
       }
 
       if (_alignment is (true, var alignment))

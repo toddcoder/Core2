@@ -74,7 +74,7 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>> where T : notnull
    {
       if (repeating)
       {
-         Activate(func());
+         Activate(func(), repeating);
       }
       else
       {
@@ -95,7 +95,7 @@ public class LazyMaybe<T> : Maybe<T>, IEquatable<LazyMaybe<T>> where T : notnull
    {
       if (repeating)
       {
-         return ValueOf(func());
+         return ValueOf(func(), repeating);
       }
       else
       {

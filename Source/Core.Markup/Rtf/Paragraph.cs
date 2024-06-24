@@ -10,19 +10,32 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Rtf;
 
-public class Paragraph : Block
+public class Paragraph(bool allowFootnote, bool allowControlWord) : Block
 {
    public static Paragraph Empty => new();
 
    public static Formatter operator |(Paragraph paragraph, Func<Paragraph, Formatter> func) => func(paragraph);
 
+   public static Formatter operator +(Paragraph paragraph, Func<Paragraph, Formatter> func) => func(paragraph);
+
    public static Paragraph operator |(Paragraph paragraph, Paragraph _) => paragraph;
+
+   public static Paragraph operator +(Paragraph paragraph, Paragraph _) => paragraph;
 
    public static IEnumerable<Formatter> operator |(Paragraph paragraph, Func<Paragraph, IEnumerable<Formatter>> func) => func(paragraph);
 
+   public static IEnumerable<Formatter> operator +(Paragraph paragraph, Func<Paragraph, IEnumerable<Formatter>> func) => func(paragraph);
+
    public static MaybeQueue<Formatter> operator |(Paragraph paragraph, Func<Paragraph, MaybeQueue<Formatter>> func) => func(paragraph);
 
+   public static MaybeQueue<Formatter> operator +(Paragraph paragraph, Func<Paragraph, MaybeQueue<Formatter>> func) => func(paragraph);
+
    public static Formatter operator |(Paragraph paragraph, Alignment alignment)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).Alignment(alignment);
+   }
+
+   public static Formatter operator +(Paragraph paragraph, Alignment alignment)
    {
       return new Formatter(paragraph, paragraph.DefaultCharFormat).Alignment(alignment);
    }
@@ -32,7 +45,17 @@ public class Paragraph : Block
       return new Formatter(paragraph, paragraph.DefaultCharFormat).ForegroundColor(foregroundColor);
    }
 
+   public static Formatter operator +(Paragraph paragraph, ForegroundColorDescriptor foregroundColor)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).ForegroundColor(foregroundColor);
+   }
+
    public static Formatter operator |(Paragraph paragraph, BackgroundColorDescriptor backgroundColor)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).BackgroundColor(backgroundColor);
+   }
+
+   public static Formatter operator +(Paragraph paragraph, BackgroundColorDescriptor backgroundColor)
    {
       return new Formatter(paragraph, paragraph.DefaultCharFormat).BackgroundColor(backgroundColor);
    }
@@ -42,7 +65,17 @@ public class Paragraph : Block
       return new Formatter(paragraph, paragraph.DefaultCharFormat).Font(font);
    }
 
+   public static Formatter operator +(Paragraph paragraph, FontDescriptor font)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).Font(font);
+   }
+
    public static Formatter operator |(Paragraph paragraph, float fontSize)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).FontSize(fontSize);
+   }
+
+   public static Formatter operator +(Paragraph paragraph, float fontSize)
    {
       return new Formatter(paragraph, paragraph.DefaultCharFormat).FontSize(fontSize);
    }
@@ -52,20 +85,43 @@ public class Paragraph : Block
       return new Formatter(paragraph, paragraph.DefaultCharFormat).FirstLineIndent(firstLineIndent.Amount);
    }
 
-   public static Formatter operator |(Paragraph paragraph, Feature feature) => paragraph.Format() | feature;
+   public static Formatter operator +(Paragraph paragraph, FirstLineIndent firstLineIndent)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).FirstLineIndent(firstLineIndent.Amount);
+   }
+
+   public static Formatter operator |(Paragraph paragraph, Feature feature) => paragraph.Format() + feature;
+
+   public static Formatter operator +(Paragraph paragraph, Feature feature) => paragraph.Format() + feature;
 
    public static Formatter operator |(Paragraph paragraph, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
    {
       return new Formatter(paragraph, paragraph.DefaultCharFormat).Margins(margins);
    }
 
+   public static Formatter operator +(Paragraph paragraph, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).Margins(margins);
+   }
+
    public static Formatter operator |(Paragraph paragraph, Style style) => style.Formatter(paragraph);
+
+   public static Formatter operator +(Paragraph paragraph, Style style) => style.Formatter(paragraph);
 
    public static Paragraph operator |(Paragraph paragraph, Hyperlink hyperlink) => paragraph.AddPendingHyperlink(hyperlink);
 
+   public static Paragraph operator +(Paragraph paragraph, Hyperlink hyperlink) => paragraph.AddPendingHyperlink(hyperlink);
+
    public static Formatter operator |(Paragraph paragraph, Bookmark bookmark) => paragraph.Bookmark(bookmark);
 
+   public static Formatter operator +(Paragraph paragraph, Bookmark bookmark) => paragraph.Bookmark(bookmark);
+
    public static Formatter operator |(Paragraph paragraph, FieldType fieldType)
+   {
+      return new Formatter(paragraph, paragraph.DefaultCharFormat).ControlWord(fieldType);
+   }
+
+   public static Formatter operator +(Paragraph paragraph, FieldType fieldType)
    {
       return new Formatter(paragraph, paragraph.DefaultCharFormat).ControlWord(fieldType);
    }
@@ -76,24 +132,30 @@ public class Paragraph : Block
       return paragraph;
    }
 
-   protected StringBuilder text;
-   protected Maybe<float> _lineSpacing;
-   protected Margins margins;
-   protected Alignment alignment;
-   protected List<CharFormat> charFormats;
-   protected bool allowFootnote;
-   protected bool allowControlWord;
-   protected List<Footnote> footnotes;
-   protected List<FieldControlWord> controlWords;
-   protected string blockHead;
-   protected string blockTail;
+   public static Paragraph operator +(Paragraph paragraph, string text)
+   {
+      paragraph.text.Append(text);
+      return paragraph;
+   }
+
+   protected StringBuilder text = new();
+   protected Maybe<float> _lineSpacing = nil;
+   protected Margins margins = new();
+   protected Alignment alignment = Alignment.Left;
+   protected List<CharFormat> charFormats = [];
+   protected bool allowFootnote = allowFootnote;
+   protected bool allowControlWord = allowControlWord;
+   protected List<Footnote> footnotes = [];
+   protected List<FieldControlWord> controlWords = [];
+   protected string blockHead = @"{\pard";
+   protected string blockTail = @"\par}";
    protected bool startNewPage;
    protected bool startNewPageAfter;
    protected float firstLineIndent;
    protected bool bullet;
-   protected CharFormat defaultCharFormat;
-   protected List<(int, int, FontStyleFlag)> pendingCharFormats;
-   protected StringHash<(int, int, Hyperlink)> pendingHyperlinks;
+   protected CharFormat defaultCharFormat = new();
+   protected List<(int, int, FontStyleFlag)> pendingCharFormats = [];
+   protected StringHash<(int, int, Hyperlink)> pendingHyperlinks = [];
 
    protected struct Token
    {
@@ -120,26 +182,6 @@ public class Paragraph : Block
 
    protected Paragraph() : this(false, false)
    {
-   }
-
-   public Paragraph(bool allowFootnote, bool allowControlWord)
-   {
-      text = new StringBuilder();
-      _lineSpacing = nil;
-      margins = new Margins();
-      alignment = Alignment.Left;
-      charFormats = [];
-      this.allowFootnote = allowFootnote;
-      this.allowControlWord = allowControlWord;
-      footnotes = [];
-      controlWords = [];
-      blockHead = @"{\pard";
-      blockTail = @"\par}";
-      startNewPage = false;
-      firstLineIndent = 0;
-      defaultCharFormat = new CharFormat();
-      pendingCharFormats = [];
-      pendingHyperlinks = [];
    }
 
    public Style Style

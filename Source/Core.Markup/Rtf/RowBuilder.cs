@@ -2,7 +2,7 @@
 
 namespace Core.Markup.Rtf;
 
-public class RowBuilder
+public class RowBuilder(Table table)
 {
    public static RowBuilder operator |(RowBuilder rowBuilder, Feature feature) => feature switch
    {
@@ -15,9 +15,27 @@ public class RowBuilder
       _ => rowBuilder
    };
 
+   public static RowBuilder operator +(RowBuilder rowBuilder, Feature feature) => feature switch
+   {
+      Feature.Bold => rowBuilder.Bold(),
+      Feature.Italic => rowBuilder.Italic(),
+      Feature.Underline => rowBuilder.Underline(),
+      Feature.Bullet => rowBuilder.Bullet(),
+      Feature.NewPage => rowBuilder.NewPage(),
+      Feature.NewPageAfter => rowBuilder.NewPageAfter(),
+      _ => rowBuilder
+   };
+
    public static RowBuilder operator |(RowBuilder rowBuilder, Alignment alignment) => rowBuilder.Alignment(alignment);
 
+   public static RowBuilder operator +(RowBuilder rowBuilder, Alignment alignment) => rowBuilder.Alignment(alignment);
+
    public static RowBuilder operator |(RowBuilder rowBuilder, ForegroundColorDescriptor foregroundColor)
+   {
+      return rowBuilder.ForegroundColor(foregroundColor);
+   }
+
+   public static RowBuilder operator +(RowBuilder rowBuilder, ForegroundColorDescriptor foregroundColor)
    {
       return rowBuilder.ForegroundColor(foregroundColor);
    }
@@ -27,31 +45,46 @@ public class RowBuilder
       return rowBuilder.BackgroundColor(backgroundColor);
    }
 
+   public static RowBuilder operator +(RowBuilder rowBuilder, BackgroundColorDescriptor backgroundColor)
+   {
+      return rowBuilder.BackgroundColor(backgroundColor);
+   }
+
    public static RowBuilder operator |(RowBuilder rowBuilder, Hyperlink hyperlink) => rowBuilder.Hyperlink(hyperlink);
+
+   public static RowBuilder operator +(RowBuilder rowBuilder, Hyperlink hyperlink) => rowBuilder.Hyperlink(hyperlink);
 
    public static RowBuilder operator |(RowBuilder rowBuilder, FontDescriptor font) => rowBuilder.Font(font);
 
+   public static RowBuilder operator +(RowBuilder rowBuilder, FontDescriptor font) => rowBuilder.Font(font);
+
    public static RowBuilder operator |(RowBuilder rowBuilder, float fontSize) => rowBuilder.FontSize(fontSize);
 
+   public static RowBuilder operator +(RowBuilder rowBuilder, float fontSize) => rowBuilder.FontSize(fontSize);
+
    public static RowBuilder operator |(RowBuilder rowBuilder, FirstLineIndent firstLineIndent) => rowBuilder.FirstLineIndent(firstLineIndent);
+
+   public static RowBuilder operator +(RowBuilder rowBuilder, FirstLineIndent firstLineIndent) => rowBuilder.FirstLineIndent(firstLineIndent);
 
    public static RowBuilder operator |(RowBuilder rowBuilder, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
    {
       return rowBuilder.Margins(margins);
    }
 
+   public static RowBuilder operator +(RowBuilder rowBuilder, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   {
+      return rowBuilder.Margins(margins);
+   }
+
    public static RowBuilder operator |(RowBuilder rowBuilder, Style style) => rowBuilder.Style(style);
+
+   public static RowBuilder operator +(RowBuilder rowBuilder, Style style) => rowBuilder.Style(style);
 
    public static RowBuilder operator |(RowBuilder rowBuilder, string columnText) => rowBuilder.Column(columnText);
 
-   protected Table table;
-   protected PendingFormatter formatter;
+   public static RowBuilder operator +(RowBuilder rowBuilder, string columnText) => rowBuilder.Column(columnText);
 
-   public RowBuilder(Table table)
-   {
-      this.table = table;
-      formatter = new PendingFormatter(this.table);
-   }
+   protected PendingFormatter formatter = new(table);
 
    public RowBuilder Row(string columnText)
    {

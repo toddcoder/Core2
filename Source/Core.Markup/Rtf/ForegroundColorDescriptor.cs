@@ -1,8 +1,3 @@
 ﻿namespace Core.Markup.Rtf;
 
-public class ForegroundColorDescriptor : ColorDescriptor
-{
-   public ForegroundColorDescriptor(int descriptor) : base(descriptor)
-   {
-   }
-}
+public class ForegroundColorDescriptor(int descriptor) : ColorDescriptor(descriptor);

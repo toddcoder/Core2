@@ -7,25 +7,15 @@ namespace Core.Markup.Xml;
 
 public class Elements : IRendering
 {
-   public class ElementEventArgs : EventArgs
+   public class ElementEventArgs(Element element) : EventArgs
    {
-      protected Element element;
-
-      public ElementEventArgs(Element element) => this.element = element;
-
       public Element Element => element;
    }
 
-   protected List<Element> elements;
+   protected List<Element> elements = [];
    protected bool isHtml;
 
    public event EventHandler<ElementEventArgs>? ElementAdded;
-
-   public Elements()
-   {
-      elements = [];
-      isHtml = false;
-   }
 
    public Element this[string name]
    {

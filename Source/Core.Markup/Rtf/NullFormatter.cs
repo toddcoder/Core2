@@ -1,11 +1,7 @@
 ﻿namespace Core.Markup.Rtf;
 
-public class NullFormatter : Formatter
+public class NullFormatter(Paragraph paragraph) : Formatter(paragraph, new CharFormat())
 {
-   public NullFormatter(Paragraph paragraph) : base(paragraph, new CharFormat())
-   {
-   }
-
    public override Formatter Italic(bool on = true) => this;
 
    public override Formatter Bold(bool on = true) => this;

@@ -1,15 +1,9 @@
 namespace Core.Markup.Rtf;
 
-public class FieldControlWord : Renderable
+public class FieldControlWord(int position, FieldType type) : Renderable
 {
-   protected int position;
-   protected FieldType type;
-
-   public FieldControlWord(int position, FieldType type)
-   {
-      this.position = position;
-      this.type = type;
-   }
+   protected int position = position;
+   protected FieldType type = type;
 
    public int Position => position;
 

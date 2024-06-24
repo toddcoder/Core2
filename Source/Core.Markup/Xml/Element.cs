@@ -69,19 +69,15 @@ public class Element : IRendering
       }
    }
 
-   protected string name;
-   protected MarkupTextHolder text;
-   protected Maybe<Element> _parent;
-   protected Elements siblings;
-   protected Elements children;
-   protected Attributes attributes;
+   protected string name = "no-name";
+   protected MarkupTextHolder text = "";
+   protected Maybe<Element> _parent = nil;
+   protected Elements siblings = new();
+   protected Elements children = new();
+   protected Attributes attributes = new();
 
    public Element()
    {
-      name = "no-name";
-      text = string.Empty;
-      _parent = nil;
-      siblings = new Elements();
       siblings.ElementAdded += (_, e) =>
       {
          if (_parent is (true, var parent))
@@ -89,9 +85,7 @@ public class Element : IRendering
             e.Element.Parent = parent;
          }
       };
-      children = new Elements();
       children.ElementAdded += (_, e) => e.Element.Parent = this;
-      attributes = new Attributes();
    }
 
    public Element this[string elementName] => Children[elementName];
@@ -173,7 +167,7 @@ public class Element : IRendering
       }
       else
       {
-         return string.Empty;
+         return "";
       }
    }
 

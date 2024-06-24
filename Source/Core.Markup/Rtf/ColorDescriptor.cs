@@ -1,11 +1,7 @@
 namespace Core.Markup.Rtf;
 
-public class ColorDescriptor : Descriptor
+public class ColorDescriptor(int descriptor) : Descriptor(descriptor)
 {
-   public ColorDescriptor(int descriptor) : base(descriptor)
-   {
-   }
-
    public ForegroundColorDescriptor Foreground => new(descriptor);
 
    public BackgroundColorDescriptor Background => new(descriptor);

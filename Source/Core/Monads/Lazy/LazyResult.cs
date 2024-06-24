@@ -81,7 +81,7 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>> where T : notn
    {
       if (repeating)
       {
-         Activate(func());
+         Activate(func(), repeating);
       }
       else
       {
@@ -102,7 +102,7 @@ public class LazyResult<T> : Result<T>, IEquatable<LazyResult<T>> where T : notn
    {
       if (repeating)
       {
-         return ValueOf(func());
+         return ValueOf(func(), repeating);
       }
       else
       {

@@ -90,25 +90,19 @@ public class MarkupBuilder
       return builder;
    }
 
-   protected bool tidy;
-   protected Encoding encoding;
+   protected bool tidy = true;
+   protected Encoding encoding = Encoding.UTF8;
    protected bool includeHeader;
-   protected QuoteType quote;
+   protected QuoteType quote = QuoteType.Double;
    protected Element root;
    protected bool isHtml;
-   protected DocType docType;
+   protected DocType docType = DocType.None;
 
    public MarkupBuilder(string rootName)
    {
       rootName.Must().Not.BeNullOrEmpty().OrThrow();
 
-      tidy = true;
-      encoding = Encoding.UTF8;
-      includeHeader = false;
-      quote = QuoteType.Double;
       root = new Element { Name = rootName };
-      isHtml = false;
-      docType = DocType.None;
    }
 
    public bool Tidy

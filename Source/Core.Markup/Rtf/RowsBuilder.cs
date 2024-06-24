@@ -3,7 +3,7 @@ using Core.Monads;
 
 namespace Core.Markup.Rtf;
 
-public class RowsBuilder
+public class RowsBuilder(Table table, string[] columns)
 {
    public static RowBuilder operator |(RowsBuilder rowsBuilder, Feature feature) => feature switch
    {
@@ -13,12 +13,30 @@ public class RowsBuilder
       Feature.Bullet => rowsBuilder.Bullet(),
       Feature.NewPage => rowsBuilder.NewPage(),
       Feature.NewPageAfter => rowsBuilder.NewPageAfter(),
-      _ => new RowBuilder(rowsBuilder.table)
+      _ => new RowBuilder(rowsBuilder.Table)
+   };
+
+   public static RowBuilder operator +(RowsBuilder rowsBuilder, Feature feature) => feature switch
+   {
+      Feature.Bold => rowsBuilder.Bold(),
+      Feature.Italic => rowsBuilder.Italic(),
+      Feature.Underline => rowsBuilder.Underline(),
+      Feature.Bullet => rowsBuilder.Bullet(),
+      Feature.NewPage => rowsBuilder.NewPage(),
+      Feature.NewPageAfter => rowsBuilder.NewPageAfter(),
+      _ => new RowBuilder(rowsBuilder.Table)
    };
 
    public static RowBuilder operator |(RowsBuilder rowsBuilder, Alignment alignment) => rowsBuilder.Alignment(alignment);
 
+   public static RowBuilder operator +(RowsBuilder rowsBuilder, Alignment alignment) => rowsBuilder.Alignment(alignment);
+
    public static RowBuilder operator |(RowsBuilder rowsBuilder, ForegroundColorDescriptor foregroundColor)
+   {
+      return rowsBuilder.ForegroundColor(foregroundColor);
+   }
+
+   public static RowBuilder operator +(RowsBuilder rowsBuilder, ForegroundColorDescriptor foregroundColor)
    {
       return rowsBuilder.ForegroundColor(foregroundColor);
    }
@@ -28,29 +46,42 @@ public class RowsBuilder
       return rowsBuilder.BackgroundColor(backgroundColor);
    }
 
+   public static RowBuilder operator +(RowsBuilder rowsBuilder, BackgroundColorDescriptor backgroundColor)
+   {
+      return rowsBuilder.BackgroundColor(backgroundColor);
+   }
+
    public static RowBuilder operator |(RowsBuilder rowsBuilder, Hyperlink hyperlink) => rowsBuilder.Hyperlink(hyperlink);
+
+   public static RowBuilder operator +(RowsBuilder rowsBuilder, Hyperlink hyperlink) => rowsBuilder.Hyperlink(hyperlink);
 
    public static RowBuilder operator |(RowsBuilder rowsBuilder, FontDescriptor font) => rowsBuilder.Font(font);
 
+   public static RowBuilder operator +(RowsBuilder rowsBuilder, FontDescriptor font) => rowsBuilder.Font(font);
+
    public static RowBuilder operator |(RowsBuilder rowsBuilder, float fontSize) => rowsBuilder.FontSize(fontSize);
 
+   public static RowBuilder operator +(RowsBuilder rowsBuilder, float fontSize) => rowsBuilder.FontSize(fontSize);
+
    public static RowBuilder operator |(RowsBuilder rowsBuilder, FirstLineIndent firstLineIndent) => rowsBuilder.FirstLineIndent(firstLineIndent);
+
+   public static RowBuilder operator +(RowsBuilder rowsBuilder, FirstLineIndent firstLineIndent) => rowsBuilder.FirstLineIndent(firstLineIndent);
 
    public static RowBuilder operator |(RowsBuilder rowsBuilder, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
    {
       return rowsBuilder.Margins(margins);
    }
 
+   public static RowBuilder operator +(RowsBuilder rowsBuilder, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
+   {
+      return rowsBuilder.Margins(margins);
+   }
+
    public static RowBuilder operator |(RowsBuilder rowsBuilder, Style style) => rowsBuilder.Style(style);
 
-   protected Table table;
-   protected string[] columns;
+   public static RowBuilder operator +(RowsBuilder rowsBuilder, Style style) => rowsBuilder.Style(style);
 
-   public RowsBuilder(Table table, string[] columns)
-   {
-      this.table = table;
-      this.columns = columns;
-   }
+   public Table Table => table;
 
    protected RowBuilder applyToColumns(Action<RowBuilder> action)
    {

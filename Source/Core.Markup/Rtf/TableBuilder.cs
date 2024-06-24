@@ -5,12 +5,7 @@ namespace Core.Markup.Rtf;
 
 public class TableBuilder
 {
-   protected MaybeQueue<TableBuilderItem> items;
-
-   public TableBuilder()
-   {
-      items = [];
-   }
+   protected MaybeQueue<TableBuilderItem> items = [];
 
    public void Add(TableBuilderItem item) => items.Enqueue(item);
 

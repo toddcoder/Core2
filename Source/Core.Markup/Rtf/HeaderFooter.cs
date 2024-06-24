@@ -2,14 +2,9 @@ using System.Text;
 
 namespace Core.Markup.Rtf;
 
-public class HeaderFooter : BlockList
+public class HeaderFooter(HeaderFooterType type) : BlockList(true, false, true, true, false)
 {
-   protected HeaderFooterType type;
-
-   public HeaderFooter(HeaderFooterType type) : base(true, false, true, true, false)
-   {
-      this.type = type;
-   }
+   protected HeaderFooterType type = type;
 
    public override string Render()
    {

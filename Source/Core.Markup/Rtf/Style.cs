@@ -19,49 +19,68 @@ public class Style
       _ => style
    };
 
+   public static Style operator +(Style style, Feature feature) => feature switch
+   {
+      Feature.Bold => style.Bold(),
+      Feature.Italic => style.Italic(),
+      Feature.Underline => style.Underline(),
+      Feature.Bullet => style.Bullet(),
+      Feature.NewPage => style.NewPage(),
+      Feature.NewPageAfter => style.NewPageAfter(),
+      _ => style
+   };
+
    public static Style operator |(Style style, Style otherStyle) => style.CopyFrom(otherStyle);
+
+   public static Style operator +(Style style, Style otherStyle) => style.CopyFrom(otherStyle);
 
    public static Style operator |(Style style, Alignment alignment) => style.Alignment(alignment);
 
+   public static Style operator +(Style style, Alignment alignment) => style.Alignment(alignment);
+
    public static Style operator |(Style style, ForegroundColorDescriptor foregroundColor) => style.ForegroundColor(foregroundColor);
+
+   public static Style operator +(Style style, ForegroundColorDescriptor foregroundColor) => style.ForegroundColor(foregroundColor);
 
    public static Style operator |(Style style, BackgroundColorDescriptor backgroundColor) => style.BackgroundColor(backgroundColor);
 
+   public static Style operator +(Style style, BackgroundColorDescriptor backgroundColor) => style.BackgroundColor(backgroundColor);
+
    public static Style operator |(Style style, Hyperlink hyperlink) => style.Hyperlink(hyperlink);
+
+   public static Style operator +(Style style, Hyperlink hyperlink) => style.Hyperlink(hyperlink);
 
    public static Style operator |(Style style, FontDescriptor font) => style.Font(font);
 
+   public static Style operator +(Style style, FontDescriptor font) => style.Font(font);
+
    public static Style operator |(Style style, float fontSize) => style.FontSize(fontSize);
 
+   public static Style operator +(Style style, float fontSize) => style.FontSize(fontSize);
+
    public static Style operator |(Style style, FirstLineIndent firstLineIndent) => style.FirstLineIndent(firstLineIndent);
+
+   public static Style operator +(Style style, FirstLineIndent firstLineIndent) => style.FirstLineIndent(firstLineIndent);
 
    public static Style operator |(Style style, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
    {
       return style.Margins(margins);
    }
 
-   protected Set<Feature> features;
-   protected Maybe<Alignment> _alignment;
-   protected Maybe<ForegroundColorDescriptor> _foregroundColor;
-   protected Maybe<BackgroundColorDescriptor> _backgroundColor;
-   protected Maybe<Hyperlink> _hyperlink;
-   protected Maybe<FontDescriptor> _font;
-   protected Maybe<float> _fontSize;
-   protected Maybe<FirstLineIndent> _firstLineIndent;
-   protected (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins;
-
-   public Style()
+   public static Style operator +(Style style, (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins)
    {
-      features = [];
-      _alignment = nil;
-      _foregroundColor = nil;
-      _backgroundColor = nil;
-      _hyperlink = nil;
-      _font = nil;
-      _fontSize = nil;
-      _firstLineIndent = nil;
-      margins = (nil, nil, nil, nil);
+      return style.Margins(margins);
    }
+
+   protected Set<Feature> features = [];
+   protected Maybe<Alignment> _alignment = nil;
+   protected Maybe<ForegroundColorDescriptor> _foregroundColor = nil;
+   protected Maybe<BackgroundColorDescriptor> _backgroundColor = nil;
+   protected Maybe<Hyperlink> _hyperlink = nil;
+   protected Maybe<FontDescriptor> _font = nil;
+   protected Maybe<float> _fontSize = nil;
+   protected Maybe<FirstLineIndent> _firstLineIndent = nil;
+   protected (Maybe<float>, Maybe<float>, Maybe<float>, Maybe<float>) margins = (nil, nil, nil, nil);
 
    public void SetParagraph(Paragraph paragraph)
    {
@@ -295,7 +314,7 @@ public class Style
 
       foreach (var feature in features)
       {
-         _ = formatter | feature;
+         _ = formatter + feature;
       }
 
       if (_alignment is (true, var alignment))
@@ -342,7 +361,7 @@ public class Style
    {
       foreach (var feature in features)
       {
-         _ = formatter | feature;
+         _ = formatter + feature;
       }
 
       if (_alignment is (true, var alignment))

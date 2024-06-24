@@ -9,6 +9,8 @@ public class BlockList : Renderable
 {
    public static Paragraph operator |(BlockList blockList, string text) => blockList.Paragraph(text);
 
+   public static Paragraph operator +(BlockList blockList, string text) => blockList.Paragraph(text);
+
    protected List<Block> blocks;
    protected CharFormat defaultCharFormat;
    protected bool allowParagraph;
