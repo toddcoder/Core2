@@ -103,7 +103,7 @@ public class BlockList : Renderable
       _ => throw new Exception($"Cannot determine image type from the filename extension: {imageFile}")
    };
 
-   public Image Image(MemoryStream imageStream)
+   public Image Image(Stream imageStream)
    {
       allowImage.Must().BeTrue().OrThrow("Image is not allowed.");
 

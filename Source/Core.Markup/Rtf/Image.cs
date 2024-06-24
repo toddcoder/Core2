@@ -37,7 +37,7 @@ public class Image : Block
       imageBytes = mStream.ToArray();
    }
 
-   public Image(MemoryStream imageStream)
+   public Image(Stream imageStream)
    {
       alignment = Alignment.Left;
       margins = new Margins();
@@ -47,7 +47,10 @@ public class Image : Block
       startNewPage = false;
       startNewParagraph = false;
 
-      imageBytes = imageStream.ToArray();
+      using var memoryStream = new MemoryStream();
+      imageStream.CopyTo(memoryStream);
+      imageBytes = memoryStream.ToArray();
+      imageStream.Position = 0;
 
       var image = System.Drawing.Image.FromStream(imageStream);
       width = image.Width / image.HorizontalResolution * 72;
