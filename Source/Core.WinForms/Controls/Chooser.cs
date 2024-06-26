@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Windows.Forms.VisualStyles;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Monads;
@@ -166,7 +167,7 @@ public partial class Chooser : Form
       set
       {
          multiChoice = value;
-         listViewItems.CheckBoxes = true;
+         listViewItems.CheckBoxes = multiChoice;
       }
    }
 
@@ -185,6 +186,12 @@ public partial class Chooser : Form
    public Maybe<Chosen> Choice { get; set; }
 
    public IEnumerable<Chosen> AllChosen => listViewItems.AllCheckedItems().Select(getChosen).WhereIsSome();
+
+   public bool CheckBoxes
+   {
+      get => listViewItems.CheckBoxes;
+      set => listViewItems.CheckBoxes = value;
+   }
 
    protected void addItem(string text, Color foreColor, Color backColor)
    {
@@ -541,5 +548,24 @@ public partial class Chooser : Form
    {
       choices.Clear();
       LoadChoices();
+   }
+
+   protected void listViewItems_DrawItem(object sender, DrawListViewItemEventArgs e)
+   {
+      if (multiChoice)
+      {
+         e.DrawBackground();
+         var checkBoxState = e.Item.Checked ? CheckBoxState.CheckedNormal : CheckBoxState.UncheckedPressed;
+         var glyphSize = CheckBoxRenderer.GetGlyphSize(e.Graphics, checkBoxState);
+         var glyphRectangle = glyphSize.West(e.Bounds);
+         var textRectangle = e.Bounds.RightOf(glyphSize);
+         CheckBoxRenderer.DrawCheckBox(e.Graphics, glyphRectangle.Location, checkBoxState);
+         using var font = new Font("Consolas", 12f);
+         TextRenderer.DrawText(e.Graphics, e.Item.Text, font, textRectangle, e.Item.ForeColor, e.Item.BackColor, TextFormatFlags.Left);
+      }
+      else
+      {
+         e.DrawDefault = true;
+      }
    }
 }

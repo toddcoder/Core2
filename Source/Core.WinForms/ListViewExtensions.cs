@@ -1,4 +1,6 @@
-﻿using Core.Monads;
+﻿using Core.Enumerables;
+using Core.Monads;
+using Core.Numbers;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms;
@@ -99,4 +101,46 @@ public static class ListViewExtensions
    }
 
    public static bool AnyChecked(this ListView listView) => listView.CheckedItems.Count > 0;
+
+   public static Maybe<ListViewItem> Add(this ListView listView, params string[] subItemTexts)
+   {
+      if (subItemTexts.Length > 0)
+      {
+         var item = listView.Items.Add(subItemTexts[0]);
+         string[] remainingText = [.. subItemTexts.Skip(1)];
+         var length = remainingText.Length.MinOf(item.SubItems.Count - 1);
+         foreach (var i in ..length)
+         {
+            item.SubItems.Add(remainingText[i]);
+         }
+
+         return item;
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public static Maybe<ListViewItem> AddGrouped(this ListView listView, string groupName, params string[] subItemTexts)
+   {
+      if (listView.Add(subItemTexts) is (true, var item))
+      {
+         var _group = listView.Groups[groupName].NotNull();
+         if (_group is (true, var group))
+         {
+            item.Group = group;
+         }
+         else
+         {
+            group = listView.Groups.Add(groupName, groupName);
+            item.Group = group;
+         }
+         return item;
+      }
+      else
+      {
+         return nil;
+      }
+   }
 }

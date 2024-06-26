@@ -44,11 +44,13 @@
          listViewItems.Margin = new Padding(4, 3, 4, 3);
          listViewItems.MultiSelect = false;
          listViewItems.Name = "listViewItems";
+         listViewItems.OwnerDraw = true;
          listViewItems.Scrollable = false;
          listViewItems.Size = new Size(467, 519);
          listViewItems.TabIndex = 0;
          listViewItems.UseCompatibleStateImageBehavior = false;
          listViewItems.View = View.Details;
+         listViewItems.DrawItem += listViewItems_DrawItem;
          listViewItems.ItemChecked += listViewItems_ItemChecked;
          listViewItems.SelectedIndexChanged += listViewItems_SelectedIndexChanged;
          // 

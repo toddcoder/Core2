@@ -149,6 +149,12 @@ public class ChooserSet(Chooser chooser)
       return this;
    }
 
+   public ChooserSet CheckBoxes(bool checkBoxes = true)
+   {
+      chooser.CheckBoxes = checkBoxes;
+      return this;
+   }
+
    public Maybe<Chosen> Choose()
    {
       var _chosen = chooser.Open();
