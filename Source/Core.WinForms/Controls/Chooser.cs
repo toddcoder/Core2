@@ -557,8 +557,9 @@ public partial class Chooser : Form
          e.DrawBackground();
          var checkBoxState = e.Item.Checked ? CheckBoxState.CheckedNormal : CheckBoxState.UncheckedPressed;
          var glyphSize = CheckBoxRenderer.GetGlyphSize(e.Graphics, checkBoxState);
-         var glyphRectangle = glyphSize.West(e.Bounds);
+         var glyphRectangle = glyphSize.West(e.Bounds, 2);
          var textRectangle = e.Bounds.RightOf(glyphSize);
+         CheckBoxRenderer.DrawParentBackground(e.Graphics, glyphRectangle, this);
          CheckBoxRenderer.DrawCheckBox(e.Graphics, glyphRectangle.Location, checkBoxState);
          using var font = new Font("Consolas", 12f);
          TextRenderer.DrawText(e.Graphics, e.Item.Text, font, textRectangle, e.Item.ForeColor, e.Item.BackColor, TextFormatFlags.Left);

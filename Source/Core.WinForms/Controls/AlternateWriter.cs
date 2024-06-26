@@ -1,4 +1,5 @@
-﻿using Core.Arrays;
+﻿using System.Windows.Forms.VisualStyles;
+using Core.Arrays;
 using Core.Collections;
 using Core.Enumerables;
 using Core.Monads;
@@ -113,27 +114,19 @@ public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSi
       int penSize)
    {
       g.HighQuality();
-      using var pen = new Pen(foreColor, penSize);
-      drawUnselected(g, pen, rectangle, backColor);
-      using var blackBrush = new SolidBrush(Color.Black);
-      var filledRectangle = rectangle.Reposition(2, 2).Resize(-4, -4);
-      g.FillEllipse(blackBrush, filledRectangle);
-      var alternateBackColor = GetAlternateBackColor(selectedIndex);
-      using var backBrush = new SolidBrush(alternateBackColor);
-      filledRectangle = filledRectangle.Reposition(1, 1).Resize(-2, -2);
-      g.FillEllipse(backBrush, filledRectangle);
-
-      var outlineRectangle = alternateRectangle.Reposition(2, 2).Resize(-4, -4);
-      var penColor = GetForeColor(index) | foreColor;
-      using var outlinePen = new Pen(penColor, 2);
-      g.DrawRectangle(outlinePen, outlineRectangle);
+      RadioButtonRenderer.RenderMatchingApplicationState = true;
+      var size = RadioButtonRenderer.GetGlyphSize(g, RadioButtonState.CheckedNormal);
+      var glyphRectangle = size.West(rectangle, 2);
+      RadioButtonRenderer.DrawRadioButton(g, glyphRectangle.Location, RadioButtonState.CheckedNormal);
    }
 
    protected virtual void drawUnselected(Graphics g, Pen pen, Rectangle rectangle, Color backColor)
    {
-      using var brush = new SolidBrush(backColor);
-      g.FillEllipse(brush, rectangle);
-      g.DrawEllipse(pen, rectangle);
+      g.HighQuality();
+      RadioButtonRenderer.RenderMatchingApplicationState = true;
+      var size = RadioButtonRenderer.GetGlyphSize(g, RadioButtonState.UncheckedNormal);
+      var glyphRectangle = size.West(rectangle, 2);
+      RadioButtonRenderer.DrawRadioButton(g, glyphRectangle.Location, RadioButtonState.UncheckedNormal);
    }
 
    protected void drawUnselected(Graphics g, Rectangle rectangle, Color foreColor, Color backColor, int penSize)
