@@ -41,6 +41,8 @@ public partial class Form1 : Form
          form2.Show();
       }) + Keys.F2).Menu();
       (menus + "JSON" + retrieveJson + Keys.Control + Keys.J).Menu();
+      (menus + "Start Flashing" + startFlashing + Keys.Control + Keys.F).Menu();
+      (menus + "Stop Flashing" + stopFlashing + Keys.Control + Keys.Alt + Keys.F).Menu();
       menus.Menu("Edit");
       menus.StandardEditMenu();
       (menus + "Enabled" + (() => uiButton6!.Enabled = !uiButton6.Enabled)).Menu();
@@ -299,4 +301,8 @@ public partial class Form1 : Form
          }
       }
    }
+
+   protected void startFlashing() => this.StartFlashing();
+
+   protected void stopFlashing() => this.StopFlashing();
 }
