@@ -66,6 +66,7 @@
          ClientSize = new Size(467, 519);
          Controls.Add(listViewItems);
          FormBorderStyle = FormBorderStyle.None;
+         KeyPreview = true;
          Margin = new Padding(4, 3, 4, 3);
          MaximizeBox = false;
          MinimizeBox = false;
@@ -73,7 +74,7 @@
          StartPosition = FormStartPosition.Manual;
          FormClosed += Chooser_FormClosed;
          Load += Chooser_Load;
-         MouseDown += Chooser_MouseDown;
+         KeyUp += Chooser_KeyUp;
          ResumeLayout(false);
       }
 

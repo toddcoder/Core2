@@ -24,7 +24,6 @@ public partial class Chooser : Form
       public int trackPos;
    }
 
-   protected const int WM_NCACTIVATE = 0x86;
    protected const int SB_VERTICAL = 0x1;
    protected const int SIF_RANGE = 0x1;
    protected const int SIF_PAGE = 0x2;
@@ -410,14 +409,6 @@ public partial class Chooser : Form
       uiAction.OnChooserOpened();
    }
 
-   protected void Chooser_MouseDown(object sender, MouseEventArgs e)
-   {
-      if (!ClientRectangle.Contains(Cursor.Position))
-      {
-         Close();
-      }
-   }
-
    protected bool returnSome(int index) => _nilItem.Map(_ => index > 0) | (() => index > -1);
 
    protected Maybe<Chosen> getChosen(ListViewItem item)
@@ -464,7 +455,7 @@ public partial class Chooser : Form
       }
    }
 
-   protected override void WndProc(ref Message m)
+   /*protected override void WndProc(ref Message m)
    {
       base.WndProc(ref m);
 
@@ -473,7 +464,7 @@ public partial class Chooser : Form
          modifyTitle = false;
          Close();
       }
-   }
+   }*/
 
    protected void listViewItems_ItemChecked(object sender, ItemCheckedEventArgs e)
    {
@@ -569,6 +560,15 @@ public partial class Chooser : Form
       else
       {
          e.DrawDefault = true;
+      }
+   }
+
+   protected void Chooser_KeyUp(object sender, KeyEventArgs e)
+   {
+      if (e.KeyCode is Keys.Escape)
+      {
+         e.Handled = true;
+         Close();
       }
    }
 }
