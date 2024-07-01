@@ -53,6 +53,7 @@
          Controls.Add(tableLayoutPanel);
          Name = "Form3";
          Text = "Form3";
+         WindowState = FormWindowState.Maximized;
          ResumeLayout(false);
       }
 

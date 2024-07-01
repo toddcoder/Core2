@@ -15,7 +15,7 @@ public partial class Form3 : Form
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 50f + 50f;
-      _ = builder.Row + 100f + 60;
+      _ = builder.Row + 100f + 40 + 40;
       builder.SetUp();
 
       uiChooser = new UiAction(this) { ChooserGlyph = true };

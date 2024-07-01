@@ -314,7 +314,14 @@ public partial class Chooser : Form
       {
          location = location with { X = location.X - amount };
          var y = uiAction.PointToScreen(uiAction.Location).Y;
-         Location = location with { Y = y - Height - uiAction.Height };
+         if (y > screenArea.Height)
+         {
+            Location = location with { Y = screenArea.Height - Height };
+         }
+         else
+         {
+            Location = location with { Y = y - Height - uiAction.Height };
+         }
       }
       else
       {
@@ -454,17 +461,6 @@ public partial class Chooser : Form
          }
       }
    }
-
-   /*protected override void WndProc(ref Message m)
-   {
-      base.WndProc(ref m);
-
-      if (m.Msg == WM_NCACTIVATE && Visible && !RectangleToScreen(DisplayRectangle).Contains(Cursor.Position))
-      {
-         modifyTitle = false;
-         Close();
-      }
-   }*/
 
    protected void listViewItems_ItemChecked(object sender, ItemCheckedEventArgs e)
    {
