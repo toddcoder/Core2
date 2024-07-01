@@ -155,6 +155,12 @@ public class ChooserSet(Chooser chooser)
       return this;
    }
 
+   public ChooserSet FlyUp(bool flyUp = true)
+   {
+      chooser.FlyUp = flyUp;
+      return this;
+   }
+
    public Maybe<Chosen> Choose()
    {
       var _chosen = chooser.Open();

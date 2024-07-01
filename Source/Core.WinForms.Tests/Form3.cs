@@ -15,15 +15,19 @@ public partial class Form3 : Form
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 50f + 50f;
-      _ = builder.Row + 60 + 100f;
+      _ = builder.Row + 100f + 60;
       builder.SetUp();
 
       uiChooser = new UiAction(this) { ChooserGlyph = true };
-      (builder + uiChooser).Next();
-      uiChooser.ChosenItemChecked += (_, e) => { uiResult!.Message(e.ChosenSet.ToString(", ")); };
+      (builder + uiChooser + (0, 1)).SpanCol(2).Next();
+      uiChooser.ChosenItemChecked += (_, e) => uiResult!.Message(e.ChosenSet.ToString(", "));
       uiChooser.Click += (_, _) =>
       {
-         var chooser = uiChooser.Choose("Items").Choices("alfa", "bravo", "charlie", "delta", "echo", "foxtrot").MultiChoice(true).Chooser();
+         var _chosen = uiChooser.Choose("Items").Choices("alfa", "bravo", "charlie", "delta", "echo", "foxtrot").FlyUp().Choose();
+         if (_chosen is (true, var chosen))
+         {
+            uiChooser.Success(chosen.Value);
+         }
       };
       uiChooser.ClickText = "Select items";
 

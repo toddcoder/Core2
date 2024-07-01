@@ -40,6 +40,11 @@ public partial class Form1 : Form
          var form2 = new Form2();
          form2.Show();
       }) + Keys.F2).Menu();
+      (menus + "Form3" + (() =>
+      {
+         var form3 = new Form3();
+         form3.Show();
+      }) + Keys.F3).Menu();
       (menus + "JSON" + retrieveJson + Keys.Control + Keys.J).Menu();
       (menus + "Start Flashing" + startFlashing + Keys.Control + Keys.F).Menu();
       (menus + "Stop Flashing" + stopFlashing + Keys.Control + Keys.Alt + Keys.F).Menu();
@@ -295,7 +300,8 @@ public partial class Form1 : Form
       var _retriever = JsonRetriever.FromUrl(url);
       if (_retriever is (true, var retriever))
       {
-         foreach (var (propertyName, value)  in retriever.RetrieveHash("System.Title", "System.WorkItemType", "Estream.Release.Target", "Estream.ProdSupp.MergeStatus", "Estream.ProdSupp.MergedTo"))
+         foreach (var (propertyName, value) in retriever.RetrieveHash("System.Title", "System.WorkItemType", "Estream.Release.Target",
+                     "Estream.ProdSupp.MergeStatus", "Estream.ProdSupp.MergedTo"))
          {
             richTextBox.AppendText($"{propertyName}: {value}\n");
          }

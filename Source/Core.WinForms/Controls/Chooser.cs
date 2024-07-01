@@ -64,7 +64,6 @@ public partial class Chooser : Form
    protected Set<Chosen> chosenSet = [];
    protected bool isCheckingLocked;
    protected Guid choicesGuid = Guid.NewGuid();
-   protected bool isHooked;
 
    public Chooser(string title, UiAction uiAction, Maybe<int> _width)
    {
@@ -72,8 +71,6 @@ public partial class Chooser : Form
       this.uiAction = uiAction;
 
       InitializeComponent();
-
-      Choice = nil;
 
       AutoScaleMode = AutoScaleMode.Inherit;
 
@@ -183,7 +180,7 @@ public partial class Chooser : Form
       set => choicesGuid = value;
    }
 
-   public Maybe<Chosen> Choice { get; set; }
+   public Maybe<Chosen> Choice { get; set; } = nil;
 
    public IEnumerable<Chosen> AllChosen => listViewItems.AllCheckedItems().Select(getChosen).WhereIsSome();
 
@@ -192,6 +189,8 @@ public partial class Chooser : Form
       get => listViewItems.CheckBoxes;
       set => listViewItems.CheckBoxes = value;
    }
+
+   public bool FlyUp { get; set; }
 
    protected void addItem(string text, Color foreColor, Color backColor)
    {
@@ -305,20 +304,23 @@ public partial class Chooser : Form
    {
       var screenArea = Screen.GetWorkingArea(this);
       var location = Cursor.Position;
-      var height = screenArea.Height - location.Y - 32;
+      if (!FlyUp)
+      {
+         Height = screenArea.Height - location.Y - 32;
+      }
 
       var xPlusWidth = location.X + Width;
-      if (xPlusWidth > screenArea.Width)
+      var amount = xPlusWidth > screenArea.Width ? xPlusWidth - screenArea.Width : 0;
+      if (FlyUp)
       {
-         var amount = xPlusWidth - screenArea.Width;
-         Location = location with { X = location.X - amount };
+         location = location with { X = location.X - amount };
+         var y = uiAction.PointToScreen(uiAction.Location).Y;
+         Location = location with { Y = y - Height - uiAction.Height };
       }
       else
       {
-         Location = location;
+         Location = location with { X = location.X - amount };
       }
-
-      Height = height;
    }
 
    protected void Chooser_Load(object sender, EventArgs e)
