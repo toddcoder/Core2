@@ -312,16 +312,7 @@ public partial class Chooser : Form
       var amount = xPlusWidth > screenArea.Width ? xPlusWidth - screenArea.Width : 0;
       if (FlyUp)
       {
-         location = location with { X = location.X - amount };
-         var y = uiAction.PointToScreen(uiAction.Location).Y;
-         if (y > screenArea.Height)
-         {
-            Location = location with { Y = screenArea.Height - Height };
-         }
-         else
-         {
-            Location = location with { Y = y - Height - uiAction.Height };
-         }
+         Location = location with { X = location.X - amount, Y = location.Y - Height };
       }
       else
       {
@@ -386,7 +377,7 @@ public partial class Chooser : Form
 
       var lastItem = listViewItems.Items[^1];
       var bottom = lastItem.Bounds.Bottom;
-      if (listViewItems.ClientRectangle.Height > bottom)
+      if (!FlyUp && listViewItems.ClientRectangle.Height > bottom)
       {
          Height = bottom + lastItem.Bounds.Height;
       }
