@@ -2,7 +2,11 @@
 
 public class TableLayoutBuilder(TableLayoutPanel tableLayoutPanel)
 {
-   public static ControlInfo operator +(TableLayoutBuilder builder, Control control) => new(builder, control);
+   public static ControlInfo operator +(TableLayoutBuilder builder, Control control)
+   {
+      control.TabIndex = builder.tabIndex++;
+      return new ControlInfo(builder, control);
+   }
 
    protected AxisSetup columnsSetup = new();
 
@@ -11,6 +15,8 @@ public class TableLayoutBuilder(TableLayoutPanel tableLayoutPanel)
    protected int currentColumn;
 
    protected int currentRow;
+
+   protected int tabIndex;
 
    public AxisSetup Col => columnsSetup;
 
@@ -59,5 +65,7 @@ public class TableLayoutBuilder(TableLayoutPanel tableLayoutPanel)
          };
          tableLayoutPanel.RowStyles.Add(rowStyle);
       }
+
+      tabIndex = 0;
    }
 }
