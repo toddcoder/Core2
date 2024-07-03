@@ -4,9 +4,10 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class UiStager(Control container, string fontName = "Consolas", float fontSize = 12f) : IList<UiAction>
+public class UiStager(Control container, string fontName = "Consolas", float fontSize = 12f, UiActionType defaultActionType = UiActionType.NoStatus)
+   : IList<UiAction>
 {
-   protected List<UiAction> uiActions = new();
+   protected List<UiAction> uiActions = [];
    protected int stageIndex = -1;
 
    public IEnumerator<UiAction> GetEnumerator() => uiActions.GetEnumerator();
@@ -27,6 +28,20 @@ public class UiStager(Control container, string fontName = "Consolas", float fon
       uiAction.AutoSizeText = true;
       uiAction.ShowMessage(text, type);
       Add(uiAction);
+   }
+
+   public void Add(string text, UiActionType type = UiActionType.NoStatus)
+   {
+      var uiAction = new UiAction(container);
+      Add(uiAction, text, type);
+   }
+
+   public void AddRange(params string[] texts)
+   {
+      foreach (var text in texts)
+      {
+         Add(text, defaultActionType);
+      }
    }
 
    protected void rearrange()

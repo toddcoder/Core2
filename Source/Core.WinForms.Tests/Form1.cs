@@ -118,14 +118,7 @@ public partial class Form1 : Form
       var uiButton4 = new UiAction(this);
       (builder + uiButton4).Row();
       uiButton4.Button("Test stager");
-      uiButton4.Click += (_, _) =>
-      {
-         foreach (var text in (string[]) ["alpha", "bravo", "charlie"])
-         {
-            var uiAction = new UiAction(this);
-            stager.Add(uiAction, text);
-         }
-      };
+      uiButton4.Click += (_, _) => stager.AddRange("alpha", "bravo", "charlie");
       uiButton4.ClickText = "Test stager";
 
       var uiButton5 = new UiAction(this);
