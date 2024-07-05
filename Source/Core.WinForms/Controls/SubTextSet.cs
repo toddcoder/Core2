@@ -214,22 +214,43 @@ public class SubTextSet
       return this;
    }
 
-   public SubTextSet LeftOf(SubText rightSubText, int margin = 2)
+   public SubTextSet LeftOf(SubText rightSubText, int margin = 2, bool copyFont = false)
    {
+      if (copyFont)
+      {
+         subText.FontName = rightSubText.FontName;
+         subText.FontSize = rightSubText.FontSize;
+         subText.FontStyle = rightSubText.FontStyle;
+      }
+
       subText.LeftOf(rightSubText, margin);
       return this;
    }
 
-   public SubTextSet RightOf(SubText leftSubText, int margin = 2)
+   public SubTextSet RightOf(SubText leftSubText, int margin = 2, bool copyFont = false)
    {
+      if (copyFont)
+      {
+         subText.FontName = leftSubText.FontName;
+         subText.FontSize = leftSubText.FontSize;
+         subText.FontStyle = leftSubText.FontStyle;
+      }
+
       subText.RightOf(leftSubText, margin);
       return this;
    }
 
-   public SubTextSet RightOfLegend(CardinalAlignment alignment = CardinalAlignment.NorthEast, int margin = 2)
+   public SubTextSet RightOfLegend(CardinalAlignment alignment = CardinalAlignment.NorthEast, int margin = 2, bool copyFont = false)
    {
       if (subTextHost.CurrentLegend is (true, var legend))
       {
+         if (copyFont)
+         {
+            subText.FontName = legend.FontName;
+            subText.FontSize = legend.FontSize;
+            subText.FontStyle = legend.FontStyle;
+         }
+
          return IncludeFloor(false).IncludeCeiling(false).RightOf(legend, margin);
       }
       else
