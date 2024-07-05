@@ -30,7 +30,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var result = new StringBuilder();
@@ -46,7 +46,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var result = source.Repeat(count);
@@ -57,7 +57,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       List<string> result = [];
@@ -86,7 +86,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       if (startIndex < 0)
@@ -112,7 +112,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty() || limit <= 0)
       {
-         return string.Empty;
+         return "";
       }
       else if (source.Length <= limit)
       {
@@ -132,7 +132,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty() || limit <= 0)
       {
-         return string.Empty;
+         return "";
       }
       else if (source.Length > limit)
       {
@@ -175,7 +175,7 @@ public static class StringExtensions
       char[] upToChars = [.. upTo];
       if (source.IsEmpty() || limit <= 0)
       {
-         return string.Empty;
+         return "";
       }
       else if (source.Length > limit)
       {
@@ -220,7 +220,7 @@ public static class StringExtensions
 
    public static string NormalizeWhitespace(this string source) => replaceWhitespace(source, " ");
 
-   public static string RemoveWhitespace(this string source) => replaceWhitespace(source, string.Empty);
+   public static string RemoveWhitespace(this string source) => replaceWhitespace(source, "");
 
    public static string ToTitleCase(this string source)
    {
@@ -231,7 +231,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       if (source.IsMatch("^ {A-Z} $; f"))
@@ -271,7 +271,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
       else
       {
@@ -299,7 +299,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var text = source;
@@ -311,7 +311,7 @@ public static class StringExtensions
       var _matches = text.Matches("['A-Z'] ['a-z']*; f");
       if (_matches is (true, var matches))
       {
-         var numeric = string.Empty;
+         var numeric = "";
          var _numeric = text.Matches("/d+ $; f").Map(r => r.Text);
          if (_numeric)
          {
@@ -336,7 +336,7 @@ public static class StringExtensions
 
             if (matches[0, 0].EndsWith("s"))
             {
-               builder.Append("s");
+               builder.Append('s');
             }
          }
 
@@ -414,7 +414,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       source = source.ToLower().Replace("a", "@");
@@ -437,7 +437,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       source = source.Replace("@", "a");
@@ -461,24 +461,24 @@ public static class StringExtensions
 
    public static string RemoveCComments(this string source)
    {
-      return source.Map(s => s.Substitute("'/*' .*? '*/'; f", string.Empty));
+      return source.Map(s => s.Substitute("'/*' .*? '*/'; f", ""));
    }
 
    public static string RemoveCOneLineComments(this string source)
    {
-      return source.Map(s => s.Substitute("'//' .*? /crlf; fm", string.Empty));
+      return source.Map(s => s.Substitute("'//' .*? /crlf; fm", ""));
    }
 
    public static string RemoveSQLOneLineComments(this string source)
    {
-      return source.Map(s => s.Substitute("'--' .*? /crlf; fm", string.Empty));
+      return source.Map(s => s.Substitute("'--' .*? /crlf; fm", ""));
    }
 
    public static string AllowOnly(this string source, string allowed)
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       if (!allowed.IsMatch("'[' -[']']+ ']'; f"))
@@ -500,7 +500,7 @@ public static class StringExtensions
       }
       else
       {
-         return string.Empty;
+         return "";
       }
    }
 
@@ -508,7 +508,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var characters = new StringBuilder();
@@ -558,7 +558,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       if (spaceVisible)
@@ -619,7 +619,7 @@ public static class StringExtensions
 
       if (asString.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       PadType padType;
@@ -699,7 +699,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       Pattern pattern = "'(' /(/w+) (',' /(/w+))? ')'; fi";
@@ -716,7 +716,7 @@ public static class StringExtensions
                }
                else
                {
-                  match.Text = string.Empty;
+                  match.Text = "";
                }
             }
          }
@@ -1502,7 +1502,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       switch (count)
@@ -1522,7 +1522,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var _result = source.Matches(pattern);
@@ -1543,7 +1543,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       for (var i = 0; i < source.Length; i++)
@@ -1562,7 +1562,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var index = source.LastIndexOf(searchString, comparisonType);
@@ -1573,7 +1573,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       for (var i = 0; i < source.Length; i++)
@@ -1591,7 +1591,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       for (var i = 0; i < source.Length; i++)
@@ -1610,18 +1610,18 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var index = source.IndexOf(searchString, comparisonType);
-      return index > -1 ? Drop(source, index) : string.Empty;
+      return index > -1 ? Drop(source, index) : "";
    }
 
    public static string DropUntil(this string source, params char[] chars)
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       for (var i = 0; i < source.Length; i++)
@@ -1635,11 +1635,29 @@ public static class StringExtensions
       return source;
    }
 
+   public static string Drop(this string source, CharacterType type)
+   {
+      if (source.IsEmpty())
+      {
+         return "";
+      }
+
+      for (var i = 0; i < source.Length; i++)
+      {
+         if (!isMatch(source[i], type))
+         {
+            return source.Drop(i);
+         }
+      }
+
+      return source;
+   }
+
    public static string Keep(this string source, int count)
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       switch (count)
@@ -1648,7 +1666,7 @@ public static class StringExtensions
             count = count.MinOf(source.Length);
             return source.Substring(0, count);
          case 0:
-            return string.Empty;
+            return "";
          default:
             count = (-count).MinOf(source.Length);
             return source.Substring(source.Length - count);
@@ -1659,7 +1677,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var _result = source.Matches(pattern);
@@ -1680,7 +1698,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       for (var i = 0; i < source.Length; i++)
@@ -1699,18 +1717,18 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var index = source.LastIndexOf(searchString, comparisonType);
-      return index > -1 ? Keep(source, index + searchString.Length) : string.Empty;
+      return index > -1 ? Keep(source, index + searchString.Length) : "";
    }
 
    public static string KeepWhile(this string source, params char[] chars)
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       for (var i = 0; i < source.Length; i++)
@@ -1728,7 +1746,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       for (var i = 0; i < source.Length; i++)
@@ -1747,7 +1765,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var index = source.IndexOf(searchString, comparisonType);
@@ -1758,7 +1776,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       for (var i = 0; i < source.Length; i++)
@@ -1772,16 +1790,46 @@ public static class StringExtensions
       return source;
    }
 
+   private static bool isMatch(char character, CharacterType characterType) => characterType switch
+   {
+      CharacterType.Letter when char.IsLetter(character) => true,
+      CharacterType.UpperCaseLetter when char.IsUpper(character) => true,
+      CharacterType.LowerCaseLetter when char.IsLower(character) => true,
+      CharacterType.Numeric when char.IsDigit(character) => true,
+      CharacterType.AlphaNumeric when char.IsLetterOrDigit(character) => true,
+      CharacterType.Whitespace when char.IsWhiteSpace(character) => true,
+      CharacterType.Punctuation when char.IsPunctuation(character) => true,
+      _ => false
+   };
+
+   public static string Keep(this string source, CharacterType type)
+   {
+      if (source.IsEmpty())
+      {
+         return "";
+      }
+
+      for (var i = 0; i < source.Length; i++)
+      {
+         if (!isMatch(source[i], type))
+         {
+            return source.Keep(i);
+         }
+      }
+
+      return source;
+   }
+
    public static string DropKeep(this string source, Slice slice) => source.Drop(slice.Index).Keep(slice.Length);
 
    public static string Map(this string source, Func<string, string> func)
    {
-      return source.IsNotEmpty() ? func(source) : string.Empty;
+      return source.IsNotEmpty() ? func(source) : "";
    }
 
-   public static string Map(this string source, Func<string> func) => source.IsNotEmpty() ? func() : string.Empty;
+   public static string Map(this string source, Func<string> func) => source.IsNotEmpty() ? func() : "";
 
-   public static string Map(this string source, string replacement) => source.IsNotEmpty() ? replacement : string.Empty;
+   public static string Map(this string source, string replacement) => source.IsNotEmpty() ? replacement : "";
 
    public static string If(this string source, Predicate<string> predicate)
    {
@@ -1802,7 +1850,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var builder = new StringBuilder();
@@ -1895,7 +1943,7 @@ public static class StringExtensions
       }
       else
       {
-         return string.Empty;
+         return "";
       }
    }
 
@@ -1903,7 +1951,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var result = source;
@@ -1920,7 +1968,7 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var builder = new StringBuilder(source);
@@ -1983,11 +2031,11 @@ public static class StringExtensions
    {
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
 
       var array = source.Unjoin(splitPattern);
-      var result = array.Select(e => $"{e}{" ".Repeat(padding)}").ToString(string.Empty).Trim();
+      var result = array.Select(e => $"{e}{" ".Repeat(padding)}").ToString("").Trim();
 
       return result.Center(allowedLength).Elliptical(allowedLength, ' ');
    }
@@ -2132,7 +2180,7 @@ public static class StringExtensions
 
       if (source.IsEmpty())
       {
-         return string.Empty;
+         return "";
       }
       else if (source.IsMatch("^ ['0-9']+ $; f"))
       {
@@ -2194,7 +2242,7 @@ public static class StringExtensions
             var keepCount = length - (addEllipsis ? 3 : 0);
             var keep = normalized.Keep(keepCount);
 
-            var ellipsis = addEllipsis ? "..." : string.Empty;
+            var ellipsis = addEllipsis ? "..." : "";
 
             return $"{keep}{ellipsis}";
          }

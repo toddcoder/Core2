@@ -223,4 +223,20 @@ public class StringExtensionTests
       var array = "".Unjoin("/s* ',' /s*; f");
       Console.WriteLine(array.Select(i => $"'{i}'").ToString(", "));
    }
+
+   [TestMethod]
+   public void KeepCharacterTypeTest()
+   {
+      var source = "Test 1";
+      var result = source.Keep(CharacterType.Letter);
+      Console.WriteLine($"<{result}>");
+   }
+
+   [TestMethod]
+   public void DropCharacterTypeTest()
+   {
+      var source = "Test 1!";
+      var result = source.Drop(CharacterType.Letter).Drop(CharacterType.Whitespace).Drop(CharacterType.Numeric);
+      Console.WriteLine($"<{result}>");
+   }
 }
