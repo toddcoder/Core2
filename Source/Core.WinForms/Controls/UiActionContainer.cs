@@ -63,6 +63,40 @@ public class UiActionContainer : UserControl, IEnumerable<UiAction>
       return uiAction;
    }
 
+   public UiAction Add(string caption, UiActionType type)
+   {
+      var uiAction = new UiAction(this);
+      uiAction.ShowMessage(caption, type);
+
+      Add(uiAction);
+
+      return uiAction;
+   }
+
+   public void AddRange(string[] captions)
+   {
+      foreach (var caption in captions)
+      {
+         Add(caption);
+      }
+   }
+
+   public void AddRange(params (string caption, bool isChecked)[] args)
+   {
+      foreach (var (caption, isChecked)  in args)
+      {
+         Add(caption, isChecked);
+      }
+   }
+
+   public void AddRange(params (string caption, UiActionType type)[] args)
+   {
+      foreach (var (caption, type) in args)
+      {
+         Add(caption, type);
+      }
+   }
+
    protected void setWidth()
    {
       var count = uiActions.Count;
