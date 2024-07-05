@@ -8,7 +8,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class UiActionContainer : UserControl, IEnumerable<UiAction>
+public class UiActionContainer(string fontName = "Consolas", float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular, bool autoSizeText = false) : UserControl, IEnumerable<UiAction>
 {
    public static UiActionContainer HorizontalContainer() => new();
 
@@ -21,12 +21,16 @@ public class UiActionContainer : UserControl, IEnumerable<UiAction>
    protected UiActionDirection direction = UiActionDirection.Horizontal;
    protected bool showLastClicked = true;
    protected Maybe<int> _indexLastClicked = nil;
+   protected Font font = new(fontName, fontSize, fontStyle);
 
    public new event EventHandler<UiActionContainerClickArgs>? Click;
 
    public void Add(UiAction uiAction)
    {
       var index = uiActions.Count;
+
+      uiAction.Font = font;
+      uiAction.AutoSizeText = autoSizeText;
 
       uiActions.Add(uiAction);
       Controls.Add(uiAction);
