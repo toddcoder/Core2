@@ -68,4 +68,16 @@ public class TableLayoutBuilder(TableLayoutPanel tableLayoutPanel)
 
       tabIndex = 0;
    }
+
+   public TableLayoutBuilder SkipCol(int count = 1)
+   {
+      currentColumn += count;
+      return this;
+   }
+
+   public TableLayoutBuilder SkipRow(int count = 1)
+   {
+      currentRow += count;
+      return this;
+   }
 }
