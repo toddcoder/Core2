@@ -48,4 +48,10 @@ public static class WinFormsExtensions
          return func();
       }
    }
+
+   public static void Tuck(this Form form, Control bottommostControl, int margin = 3)
+   {
+      var bottom = bottommostControl.Bottom;
+      form.ClientSize = form.ClientSize with { Height = bottom + margin };
+   }
 }

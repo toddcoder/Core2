@@ -96,5 +96,7 @@ public partial class Form2 : Form
       canvas.WriteLine("Now is the time for[b:red]|all[i,f:black,b:yellow]|men to come to the aid of their party.");
       canvas.WriteLine("Air|quality[b]|alert.");
       canvas.Refresh();
+
+      this.Tuck(canvas);
    }
 }
