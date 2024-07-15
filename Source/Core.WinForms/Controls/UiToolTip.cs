@@ -128,7 +128,7 @@ public class UiToolTip : ToolTip
          Rectangle = bounds,
          Flags = textFormatFlags
       };
-      writer.Write(g, Text);
+      writer.Write(g, Text, false);
    }
 
    public void DrawTitle(Graphics g, Font font, Color foreColor, Color backColor, Rectangle bounds)
@@ -146,7 +146,7 @@ public class UiToolTip : ToolTip
             Color = foreColor,
             Rectangle = smallBounds
          };
-         writer.Write(g, ToolTipTitle);
+         writer.Write(g, ToolTipTitle, false);
       }
    }
 

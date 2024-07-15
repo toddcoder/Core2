@@ -32,7 +32,8 @@ public class UiStager(Control container, string fontName = "Consolas", float fon
 
    public void Add(string text, UiActionType type = UiActionType.NoStatus)
    {
-      var uiAction = new UiAction(container);
+      var uiAction = new UiAction();
+      container.Controls.Add(uiAction);
       Add(uiAction, text, type);
    }
 

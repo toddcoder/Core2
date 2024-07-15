@@ -62,7 +62,7 @@ public class DeletableWriter(UiAction uiAction, string[] alternates, bool autoSi
          fillRectangle(g, rectangle, backColor);
 
          writer.Rectangle = textRectangle;
-         writer.Write(g, alternate);
+         writer.Write(g, alternate, uiAction.Type is UiActionType.NoStatus);
 
          drawDeletable(g, smallRectangle, foreColor, uiAction.Enabled);
       }
@@ -77,7 +77,7 @@ public class DeletableWriter(UiAction uiAction, string[] alternates, bool autoSi
          {
             writer.Color = foreColor;
             writer.Rectangle = textRectangle;
-            writer.Write(g, emptyTextTitle);
+            writer.Write(g, emptyTextTitle, uiAction.Type is UiActionType.NoStatus);
          }
       }
    }

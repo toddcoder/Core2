@@ -210,7 +210,7 @@ public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSi
          writer.Rectangle = textRectangle;
       }
 
-      writer.Write(g, alternate);
+      writer.Write(g, alternate, uiAction.Type is UiActionType.NoStatus);
    }
 
    public void OnPaint(Graphics g)

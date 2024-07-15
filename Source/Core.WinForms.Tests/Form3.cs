@@ -5,9 +5,9 @@ namespace Core.WinForms.Tests;
 
 public partial class Form3 : Form
 {
-   protected UiAction uiChooserTop;
-   protected UiAction uiChooserBottom;
-   protected UiAction uiResult;
+   protected UiAction uiChooserTop = new() { ChooserGlyph = true };
+   protected UiAction uiChooserBottom = new() { ChooserGlyph = true };
+   protected UiAction uiResult = new();
 
    public Form3()
    {
@@ -18,7 +18,6 @@ public partial class Form3 : Form
       _ = builder.Row + 40 + 100f + 40 + 40;
       builder.SetUp();
 
-      uiChooserTop = new UiAction(this) { ChooserGlyph = true };
       uiChooserTop.Click += (_, _) =>
       {
          var _chosen = uiChooserTop.Choose("Items").Choices(getChoices()).Choose();
@@ -28,7 +27,6 @@ public partial class Form3 : Form
          }
       };
 
-      uiChooserBottom = new UiAction(this) { ChooserGlyph = true };
       uiChooserBottom.Click += (_, _) =>
       {
          var _chosen = uiChooserBottom.Choose("Items").Choices(getChoices()).FlyUp().Choose();
@@ -38,8 +36,6 @@ public partial class Form3 : Form
          }
       };
       uiChooserBottom.ClickText = "Select items";
-
-      uiResult = new UiAction(this);
 
       (builder + uiChooserTop).Row();
       (builder + uiChooserBottom).NextRow().Row();

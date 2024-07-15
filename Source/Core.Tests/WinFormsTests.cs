@@ -37,7 +37,7 @@ public class WinFormsTests
    public void MessageProgressBusyTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
       uiAction.Busy("This message is in no way clickable!");
       form.ShowDialog();
@@ -47,7 +47,7 @@ public class WinFormsTests
    public void MessageProgressBusyIndefiniteTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
       uiAction.Busy(true);
       form.ShowDialog();
@@ -57,7 +57,7 @@ public class WinFormsTests
    public void ProgressDefiniteTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
       uiAction.Maximum = 50;
       var i = 0;
@@ -82,7 +82,7 @@ public class WinFormsTests
    public void AutomaticMessageTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
       var stopwatch = new Stopwatch();
       uiAction.AutomaticMessage += (_, e) => { e.Text = stopwatch.Elapsed.ToString(); };
@@ -95,7 +95,7 @@ public class WinFormsTests
    public void EnabledTest1()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 300, 30);
       uiAction.CheckStyle = CheckStyle.Checked;
       uiAction.Busy("working...");
@@ -116,7 +116,7 @@ public class WinFormsTests
    public void ArrowMessageTest()
    {
       var form = new Form();
-      var message = new UiAction(form) { Arrow = true };
+      var message = new UiAction() { Arrow = true };
       message.SetUp(4, 4, form.ClientSize.Width - 20, 100, AnchorStyles.Left);
       message.Message("Arrow");
       form.ShowDialog();
@@ -126,7 +126,7 @@ public class WinFormsTests
    public void StatusesTest()
    {
       var form = new Form();
-      UiAction[] uiActions = [.. Enumerable.Range(0, 4).Select(_ => new UiAction(form))];
+      UiAction[] uiActions = [.. Enumerable.Range(0, 4).Select(_ => new UiAction())];
       var width = form.ClientSize.Width - 20;
       for (var i = 0; i < 4; i++)
       {
@@ -145,7 +145,7 @@ public class WinFormsTests
    public void ImageTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form)
+      var uiAction = new UiAction()
       {
          Dock = DockStyle.Fill
       };
@@ -160,7 +160,7 @@ public class WinFormsTests
    public void StretchImageTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form)
+      var uiAction = new UiAction()
       {
          Dock = DockStyle.Fill
       };
@@ -176,7 +176,7 @@ public class WinFormsTests
    public void SubTextTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form)
+      var uiAction = new UiAction()
       {
          Dock = DockStyle.Fill
       };
@@ -194,7 +194,7 @@ public class WinFormsTests
    public void StopwatchTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form) { Stopwatch = true };
+      var uiAction = new UiAction() { Stopwatch = true };
       uiAction.SetUp(0, 0, 300, 27, AnchorStyles.Left | AnchorStyles.Right);
       uiAction.Busy("Timing");
       uiAction.StartStopwatch();
@@ -293,7 +293,7 @@ public class WinFormsTests
       var text = "a";
 
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 400, 40, AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right);
       uiAction.Message("Ready");
       uiAction.Click += (_, _) =>
@@ -334,7 +334,7 @@ public class WinFormsTests
       textBox.Location = new Point(0, 30);
       textBox.Width = form.ClientSize.Width;
 
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.AttachTo("Name", textBox);
       uiAction.Click += (_, _) =>
       {
@@ -355,12 +355,12 @@ public class WinFormsTests
       textBox.Location = new Point(0, 30);
       textBox.Width = form.ClientSize.Width;
 
-      var label = new UiAction(form);
+      var label = new UiAction();
       label.AttachTo("Name", textBox);
       label.Click += (_, _) => textBox.Text = "";
       label.ClickText = "Clear text";
 
-      var status = new UiAction(form);
+      var status = new UiAction();
       status.AttachTo("Name", textBox, left: 100, stretch: true);
       status.Success("Success!");
 
@@ -371,7 +371,7 @@ public class WinFormsTests
    public void UiActionButtonTest()
    {
       var form = new Form();
-      var uiButton = new UiAction(form);
+      var uiButton = new UiAction();
       uiButton.SetUp(0, 0, 200, 40);
       uiButton.Button("Push me");
       uiButton.Click += (_, _) => form.Text = "Clicked";
@@ -383,7 +383,7 @@ public class WinFormsTests
    public void UiActionWorkingTest()
    {
       var form = new Form();
-      var uiButton = new UiAction(form);
+      var uiButton = new UiAction();
       uiButton.SetUp(0, 0, 200, 40);
       uiButton.Message("Not Working");
       uiButton.Click += (_, _) =>
@@ -402,7 +402,7 @@ public class WinFormsTests
       var textBox = new TextBox();
       form.Controls.Add(textBox);
       textBox.SetUp(0, 60, 200, 40);
-      var uiButton = new UiAction(form) { ShowFocus = true };
+      var uiButton = new UiAction() { ShowFocus = true };
       uiButton.SetUp(0, 0, 200, 40);
       uiButton.Message("Unfocused");
       uiButton.GotFocus += (_, _) => uiButton.Message("Focused");
@@ -416,7 +416,7 @@ public class WinFormsTests
    public void DelayedButtonTest()
    {
       var form = new Form();
-      var uiButton = new UiAction(form);
+      var uiButton = new UiAction();
       uiButton.SetUp(0, 0, 200, 40);
       uiButton.Message("Not Working");
       uiButton.Click += (_, _) =>
@@ -436,7 +436,7 @@ public class WinFormsTests
       var checkBox = new CheckBox { Text = "Toggle" };
       form.Controls.Add(checkBox);
       checkBox.SetUp(0, 0, 100, 40);
-      var uiButton = new UiAction(form);
+      var uiButton = new UiAction();
       uiButton.SetUp(0, 50, 200, 40);
       uiButton.ValidateText += (_, e) => e.Type = checkBox.Checked ? UiActionType.Success : UiActionType.Failure;
       uiButton.Uninitialized("toggled");
@@ -453,12 +453,12 @@ public class WinFormsTests
       panel.Location = new Point(0, 0);
       panel.Size = new Size(200, 200);
 
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUpInPanel(panel, dockStyle: DockStyle.Bottom);
       uiAction.Height = 40;
       uiAction.Message("Testing");
 
-      var label = new UiAction(form);
+      var label = new UiAction();
       panel.Controls.Add(label);
       label.AttachTo("label", uiAction);
 
@@ -469,7 +469,7 @@ public class WinFormsTests
    public void EmptyTextTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 200, 40);
       uiAction.Failure("");
       form.ShowDialog();
@@ -480,7 +480,7 @@ public class WinFormsTests
    public void DirtyUiActionTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 200, 40);
       uiAction.Message("This is dirty");
       uiAction.IsDirty = true;
@@ -492,7 +492,7 @@ public class WinFormsTests
    public void ChooserTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 200, 40);
       uiAction.Click += (_, _) => _ = uiAction.Choose("A,B,C").SizeToText(true).Choices("Alpha", "Bravo", "Charlie").Choose();
       uiAction.ClickText = "Select item";
@@ -504,7 +504,7 @@ public class WinFormsTests
    public void Chooser2Test()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 200, 40);
       uiAction.Click += (_, _) =>
       {
@@ -523,7 +523,7 @@ public class WinFormsTests
    public void Chooser3Test()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 200, 40);
       uiAction.Click += (_, _) => _ = uiAction.Choose("A,B,C").Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
       uiAction.ClickText = "Select item";
@@ -535,7 +535,7 @@ public class WinFormsTests
    public void Chooser4Test()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 200, 40);
       uiAction.Click += (_, _) => _ = uiAction.Choose("A,B,C", 800).Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
       uiAction.ClickText = "Select item";
@@ -547,7 +547,7 @@ public class WinFormsTests
    public void ChooserEventTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 200, 40);
       uiAction.AppearanceOverride += (_, e) =>
       {
@@ -566,7 +566,7 @@ public class WinFormsTests
    public void HttpTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 200, 60);
       uiAction.TextChanged += (_, _) => form.Text = uiAction.Text;
       uiAction.Http("http://google.com");
@@ -577,7 +577,7 @@ public class WinFormsTests
    public void UiActionCornersTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 400, 80);
       uiAction.Message("Test");
       uiAction.SubText("UL").Set.GoToUpperLeft(8).Outline();
@@ -595,7 +595,7 @@ public class WinFormsTests
       var pause = 500.Milliseconds();
 
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 600, 500);
       uiAction.Click += (_, _) => uiAction.RunWorkerAsync();
       uiAction.ClickText = "Start test";
@@ -614,7 +614,7 @@ public class WinFormsTests
    public void UiActionConsole2Test()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 600, 500);
 
       form.Show();
@@ -629,7 +629,7 @@ public class WinFormsTests
    public void DisabledUiActionTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 400, 40);
       uiAction.Button("Test");
       uiAction.Enabled = false;
@@ -654,7 +654,7 @@ public class WinFormsTests
    public void EventHandlerStoreTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 400, 40);
       uiAction.Button("Test");
       uiAction.ClickText = "Test";
@@ -668,7 +668,7 @@ public class WinFormsTests
    public void LegendChangingTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 400, 40);
       uiAction.Uninitialized("uninitialized");
       uiAction.Legend("pushable");
@@ -683,7 +683,7 @@ public class WinFormsTests
    public void FloatingFailureTest()
    {
       var form = new Form();
-      var uiAction = new UiAction(form);
+      var uiAction = new UiAction();
       uiAction.SetUp(0, 0, 400, 40);
 
       uiAction.Button("Show Floating Failure");

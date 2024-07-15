@@ -24,5 +24,5 @@ public class DisabledWriter : UiActionWriter
 
    public static void OnPaintBackground(Graphics g, Rectangle clientRectangle) => g.FillRectangle(SystemBrushes.ControlDark, clientRectangle);
 
-   public override Result<Unit> Write(Graphics g, string text) => base.Write(g, text.ToLower());
+   public override Result<Unit> Write(Graphics g, string text, bool lower) => base.Write(g, text, true);
 }

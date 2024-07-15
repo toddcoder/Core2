@@ -218,7 +218,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    public event EventHandler<EventArgs>? ChooserClosed;
    public event EventHandler<EventArgs>? StatusFaded;
 
-   public UiAction(Control control)
+   public UiAction()
    {
       italicFont = new Font(base.Font, FontStyle.Italic);
       boldFont = new Font(base.Font, FontStyle.Bold);
@@ -416,9 +416,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          return worker;
       });
 
-      control.Controls.Add(this);
-      control.Resize += (_, _) => Refresh();
-
       workingTimer.Tick += (_, _) =>
       {
          (_, _working) = _working.Create(getWorking);
@@ -453,6 +450,13 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       fader = new Fader(this);
       fader.FadeComplete += (_, _) => fader.ClearTransparentLayeredWindow();
+   }
+
+   [Obsolete("Use ctor()")]
+   public UiAction(Control control) : this()
+   {
+      control.Controls.Add(this);
+      control.Resize += (_, _) => Refresh();
    }
 
    public bool AutoSizeText { get; set; }
@@ -1351,7 +1355,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       {
          var disabledWriter = DisabledWriter.FromUiAction(this);
 
-         disabledWriter.Write(e.Graphics, text);
+         disabledWriter.Write(e.Graphics, text, true);
 
          if (ProgressStripe && value < maximum)
          {
@@ -1371,7 +1375,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          var size = UiActionWriter.TextSize(e.Graphics, "/big-x", font, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
          var rectangle = size.West(getClientRectangle());
          var lockedWriter = new UiActionWriter(rectangle, font, Color.White);
-         lockedWriter.Write(e.Graphics, "/big-x");
+         lockedWriter.Write(e.Graphics, "/big-x", type is UiActionType.NoStatus);
       }
 
       if (status is StatusType.Progress or StatusType.ProgressStep && _pieProgressProcessor is (true, var pieProgressProcessor))
@@ -1410,7 +1414,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       switch (type)
       {
          case UiActionType.ProgressIndefinite:
-            writer.Write(e.Graphics, text);
+            writer.Write(e.Graphics, text, false);
             break;
          case UiActionType.Busy when FlipFlop:
          {
@@ -1441,12 +1445,12 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             writer.Rectangle = progressDefiniteProcessor.PercentRectangle;
             writer.Center(true);
             writer.Color = Color.Black;
-            writer.Write(e.Graphics, percentText);
+            writer.Write(e.Graphics, percentText, false);
 
             writer.Rectangle = progressDefiniteProcessor.TextRectangle;
             writer.Center(true);
             writer.Color = getForeColor();
-            writer.Write(e.Graphics, text);
+            writer.Write(e.Graphics, text, false);
 
             if (_progressSubText is (true, var progressSubText))
             {
@@ -1462,7 +1466,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          case UiActionType.MuteProgress:
          {
             var percentText = $"{getPercentage()}%";
-            writer.Write(e.Graphics, percentText);
+            writer.Write(e.Graphics, percentText, false);
 
             if (_progressSubText is (true, var progressSubText))
             {
@@ -1486,11 +1490,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
             writer.Rectangle = allRectangle;
             writer.Center(true);
-            writer.Write(e.Graphics, text);
+            writer.Write(e.Graphics, text, false);
             break;
          }
          case UiActionType.ControlLabel:
-            writer.Write(e.Graphics, text);
+            writer.Write(e.Graphics, text, false);
             break;
          case UiActionType.Http:
          {
@@ -1502,13 +1506,13 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
             break;
          case UiActionType.Display:
             writer.Color = ForeColor;
-            writer.Write(e.Graphics, text);
+            writer.Write(e.Graphics, text, false);
             break;
          case UiActionType.Symbol when _symbolWriter is (true, var symbolWriter):
             symbolWriter.OnPaint(e.Graphics, clientRectangle, Enabled);
             break;
          case UiActionType.Button:
-            writer.Write(e.Graphics, text);
+            writer.Write(e.Graphics, text, false);
             break;
          case UiActionType.Alternate when _alternateWriter is (true, var alternateWriter):
             alternateWriter.OnPaint(e.Graphics);
@@ -1544,7 +1548,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          {
             if (type is not UiActionType.Tape)
             {
-               writer.Write(e.Graphics, text);
+               writer.Write(e.Graphics, text, type is UiActionType.NoStatus);
             }
 
             break;

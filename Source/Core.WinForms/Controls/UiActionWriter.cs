@@ -236,7 +236,7 @@ public class UiActionWriter
       }
    }
 
-   public virtual Result<Unit> Write(Graphics g, string text)
+   public virtual Result<Unit> Write(Graphics g, string text, bool lower)
    {
       var not = false;
       if (text.StartsWith("!"))
@@ -247,6 +247,10 @@ public class UiActionWriter
 
       text = text.Replace("/!", "!");
       text = text.EmojiSubstitutions();
+      if (lower)
+      {
+         text = text.ToLower();
+      }
 
       var _existingRectangle = new LazyResult<Rectangle>(() => _rectangle);
       var _existingFont = _existingRectangle.Then(_font);

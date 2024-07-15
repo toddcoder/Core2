@@ -1,20 +1,22 @@
 ﻿using System.Collections;
 using System.Drawing.Drawing2D;
-using Core.Enumerables;
-using Core.Lists;
+using Core.Collections;
 using Core.Monads;
 using Core.Numbers;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class UiActionContainer(string fontName = "Consolas", float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular, bool autoSizeText = false) : UserControl, IEnumerable<UiAction>
+public class UiActionContainer(string fontName = "Consolas", float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular, bool autoSizeText = false)
+   : UserControl, IEnumerable<UiAction>
 {
-   public static UiActionContainer HorizontalContainer() => new();
+   public static UiActionContainer HorizontalContainer() => [];
 
    public static UiActionContainer VerticalContainer() => new() { Direction = UiActionDirection.Vertical };
 
-   protected List<UiAction> uiActions = [];
+   protected StringHash<UiAction> uiActions = [];
+   protected Hash<int, string> indexes = [];
+   protected StringHash<int> keys = [];
    protected Maybe<int> _width = nil;
    protected Maybe<int> _height = nil;
    protected int padding = 3;
@@ -25,6 +27,19 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
 
    public new event EventHandler<UiActionContainerClickArgs>? Click;
 
+   protected void setUiAction(UiAction uiAction)
+   {
+      var key = uiAction.Text.ToUpper();
+      if (!uiActions.ContainsKey(key))
+      {
+         uiActions[key] = uiAction;
+         var index = indexes.Count;
+         indexes[index] = key;
+         keys[key] = index;
+         Controls.Add(uiAction);
+      }
+   }
+
    public void Add(UiAction uiAction)
    {
       var index = uiActions.Count;
@@ -32,8 +47,8 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
       uiAction.Font = font;
       uiAction.AutoSizeText = autoSizeText;
 
-      uiActions.Add(uiAction);
-      Controls.Add(uiAction);
+      setUiAction(uiAction);
+
       if (showLastClicked)
       {
          uiAction.Click += (_, _) =>
@@ -49,7 +64,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
 
    public UiAction Add(string caption)
    {
-      var uiAction = new UiAction(this);
+      var uiAction = new UiAction();
       uiAction.Button(caption);
 
       Add(uiAction);
@@ -59,7 +74,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
 
    public UiAction Add(string caption, bool isChecked)
    {
-      var uiAction = new UiAction(this);
+      var uiAction = new UiAction();
       uiAction.CheckBox(caption, isChecked);
 
       Add(uiAction);
@@ -69,7 +84,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
 
    public UiAction Add(string caption, UiActionType type)
    {
-      var uiAction = new UiAction(this);
+      var uiAction = new UiAction();
       uiAction.ShowMessage(caption, type);
 
       Add(uiAction);
@@ -77,7 +92,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
       return uiAction;
    }
 
-   public void AddRange(string[] captions)
+   public void AddRange(params string[] captions)
    {
       foreach (var caption in captions)
       {
@@ -87,7 +102,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
 
    public void AddRange(params (string caption, bool isChecked)[] args)
    {
-      foreach (var (caption, isChecked)  in args)
+      foreach (var (caption, isChecked) in args)
       {
          Add(caption, isChecked);
       }
@@ -144,6 +159,50 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
       }
    }
 
+   protected Maybe<UiAction> getUiAction(int index)
+   {
+      return
+         from key in indexes.Maybe[index]
+         from uiAction in uiActions.Maybe[key]
+         select uiAction;
+   }
+
+   protected Maybe<Unit> setUiAction(int index, Maybe<UiAction> _uiAction)
+   {
+      if (_uiAction is (true, var uiAction))
+      {
+         var uiActionKey = uiAction.Text.ToUpper();
+         var _key = indexes.Maybe[index];
+         if (_key is (true, var key))
+         {
+            uiActions.Maybe[key] = nil;
+            uiActions[uiActionKey] = uiAction;
+            indexes[index] = uiActionKey;
+
+            return unit;
+         }
+         else
+         {
+            return nil;
+         }
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   protected IEnumerable<UiAction> uiActionEnumerable()
+   {
+      for (var i = 0; i < indexes.Count; i++)
+      {
+         if (getUiAction(i) is (true, var uiAction))
+         {
+            yield return uiAction;
+         }
+      }
+   }
+
    protected void arrangeHorizontal(int width)
    {
       var left = padding;
@@ -151,7 +210,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
       var height = _height | (() => clientHeight() - 2 * padding);
       var size = new Size(width, height);
 
-      foreach (var uiAction in uiActions)
+      foreach (var uiAction in uiActionEnumerable())
       {
          uiAction.Location = new Point(left, top);
          uiAction.Size = size;
@@ -167,7 +226,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
       var width = _width | (() => clientWidth() - 2 * padding);
       var size = new Size(width, height);
 
-      foreach (var uiAction in uiActions)
+      foreach (var uiAction in uiActionEnumerable())
       {
          uiAction.Location = new Point(left, top);
          uiAction.Size = size;
@@ -185,18 +244,17 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
 
    public Maybe<UiAction> this[int index]
    {
-      get => uiActions.Get(index);
+      get => getUiAction(index);
       set
       {
-         uiActions.Set(index, value);
-         if (!value)
+         if (!setUiAction(index, value))
          {
             resize();
          }
       }
    }
 
-   public Maybe<UiAction> this[string caption] => uiActions.FirstOrNone(a => a.Text == caption);
+   public Maybe<UiAction> this[string caption] => uiActions.Maybe[caption.ToUpper()];
 
    public new int Padding
    {
@@ -249,9 +307,8 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
    {
       base.OnPaint(e);
 
-      if (showLastClicked && _indexLastClicked is (true, var index))
+      if (showLastClicked && _indexLastClicked is (true, var index) && getUiAction(index) is (true, var uiAction))
       {
-         var uiAction = uiActions[index];
          var location = uiAction.Location.Reposition(-1, -1);
          var size = uiAction.Size.Resize(2, 2);
          var rectangle = new Rectangle(location, size);
@@ -261,64 +318,117 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
       }
    }
 
-   public IEnumerator<UiAction> GetEnumerator() => uiActions.GetEnumerator();
+   public IEnumerator<UiAction> GetEnumerator()
+   {
+      foreach (var uiAction in uiActionEnumerable())
+      {
+         yield return uiAction;
+      }
+   }
 
    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
    public int Count => uiActions.Count;
 
-   public Maybe<UiAction> Remove(string caption)
+   protected Maybe<UiAction> remove(int index, string key)
    {
-      for (var i = 0; i < uiActions.Count; i++)
-      {
-         if (uiActions[i].Text == caption)
-         {
-            var uiAction = uiActions[i];
-            uiActions.RemoveAt(i);
-            resize();
+      StringHash<UiAction> newUiActions = [];
+      Hash<int, string> newIndexes = [];
+      StringHash<int> newKeys = [];
 
-            return uiAction;
-         }
+      for (var i = 0; i < index; i++)
+      {
+         setHashes(i);
       }
 
-      return nil;
+      for (var i = index + 1; i < indexes.Count; i++)
+      {
+         setHashes(i);
+      }
+
+      var _uiAction = uiActions.Maybe[key];
+      if (_uiAction is (true, var uiAction))
+      {
+         Controls.Remove(uiAction);
+      }
+
+      uiActions = newUiActions;
+      indexes = newIndexes;
+      keys = newKeys;
+
+      resize();
+
+      return _uiAction;
+
+      void setHashes(int currentIndex)
+      {
+         var key = indexes[currentIndex];
+         var uiAction = uiActions[key];
+
+         newUiActions[key] = uiAction;
+         newIndexes[currentIndex] = key;
+         newKeys[key] = currentIndex;
+      }
+   }
+
+   public Maybe<UiAction> Remove(string caption)
+   {
+      var captionKey = caption.ToUpper();
+      var _index = keys.Maybe[captionKey];
+
+      return _index.Map(i => remove(i, captionKey));
    }
 
    public Maybe<UiAction> RemoveAt(int index)
    {
-      var _uiAction = uiActions.Get(index);
-      if (_uiAction)
-      {
-         uiActions.RemoveAt(index);
-         resize();
-      }
-
-      return _uiAction;
+      var _key = indexes.Maybe[index];
+      return _key.Map(k => remove(index, k));
    }
 
    public void Insert(int index, UiAction uiAction)
    {
-      uiActions.Insert(index, uiAction);
-      Controls.Add(uiAction);
-      if (showLastClicked)
+      var captionKey = uiAction.Text.ToUpper();
+      if (!uiActions.ContainsKey(captionKey) && index <= indexes.Count)
       {
          uiAction.Click += (_, _) =>
          {
             _indexLastClicked = index;
             Invalidate();
          };
-      }
 
-      resize();
+         Hash<int, string> newIndexes = [];
+         StringHash<int> newKeys = [];
+
+         for (var i = 0; i < index; i++)
+         {
+            newIndexes[i] = indexes[i];
+            newKeys[indexes[i]] = i;
+         }
+
+         newIndexes[index] = captionKey;
+         newKeys[captionKey] = index;
+         uiActions[captionKey] = uiAction;
+
+         for (var i = index + 1; i < indexes.Count + 1; i++)
+         {
+            newIndexes[i] = indexes[index - 1];
+            newKeys[indexes[i - 1]] = i;
+         }
+
+         indexes = newIndexes;
+         keys = newKeys;
+
+         resize();
+      }
    }
 
    public UiAction Insert(int index, string caption)
    {
-      var uiAction = new UiAction(this);
+      var uiAction = new UiAction();
+      Controls.Add(uiAction);
       uiAction.Button(caption);
 
       Insert(index, uiAction);
-
       return uiAction;
    }
 
@@ -326,7 +436,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
    {
       base.OnVisibleChanged(e);
 
-      foreach (var uiAction in uiActions)
+      foreach (var uiAction in uiActionEnumerable())
       {
          uiAction.Visible = Visible;
       }
@@ -336,7 +446,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
    {
       base.OnEnabledChanged(e);
 
-      foreach (var uiAction in uiActions)
+      foreach (var uiAction in uiActionEnumerable())
       {
          uiAction.Enabled = Enabled;
       }
