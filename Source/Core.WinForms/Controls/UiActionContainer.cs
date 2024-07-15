@@ -451,4 +451,11 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
          uiAction.Enabled = Enabled;
       }
    }
+
+   public void Clear()
+   {
+      uiActions.Clear();
+      indexes.Clear();
+      keys.Clear();
+   }
 }
