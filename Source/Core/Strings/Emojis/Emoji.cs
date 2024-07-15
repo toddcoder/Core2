@@ -42,5 +42,6 @@ public enum Emoji
    Vertical4,
    Vertical6,
    Stop,
-   BigX
+   BigX,
+   Mail
 }
