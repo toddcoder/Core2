@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Core.Collections;
 using Core.Computers;
 using Core.Matching;
@@ -99,4 +100,45 @@ public class ConfigurationMaybe
    public Maybe<string[]> Keys(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.key)]);
 
    public Maybe<StringHash> StringHash(string key) => Setting(key).Map(s => s.Items().ToStringHash(i => i.key, i => i.text));
+
+   public Maybe<T> Deserialize<T>(string key, Func<PropertyInfo, bool> predicate) where T : class, new()
+   {
+      return Setting(key).Map(s => s.Deserialize<T>(predicate).Maybe());
+   }
+
+   public Maybe<T> Deserialize<T>(string key) where T : class, new() => Setting(key).Map(s => s.Deserialize<T>().Maybe());
+
+   public Maybe<object> Deserialize(string key, Type type, Func<PropertyInfo, bool> predicate)
+   {
+      return Setting(key).Map(s => s.Deserialize(type, predicate).Maybe());
+   }
+
+   public Maybe<object> Deserialize(string key, Type type) => Setting(key).Map(s => s.Deserialize(type).Maybe());
+
+   public Maybe<Setting> Tuple(string key, params string[] names)
+   {
+      var _innerSetting = Setting(key);
+      if (_innerSetting is (true, var innerSetting))
+      {
+         var tupleSetting = new Setting(key);
+         foreach (var name in names)
+         {
+            var _value = innerSetting.Maybe.String(name);
+            if (_value is (true, var value))
+            {
+               tupleSetting[name] = value;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+
+         return tupleSetting;
+      }
+      else
+      {
+         return nil;
+      }
+   }
 }

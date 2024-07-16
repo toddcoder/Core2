@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Core.Collections;
 using Core.Computers;
 using Core.Matching;
@@ -113,4 +114,45 @@ public class ConfigurationResult
    public Result<string[]> Keys(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.key)]);
 
    public Result<StringHash> StringHash(string key) => Setting(key).Map(s => s.Items().ToStringHash(i => i.key, i => i.text));
+
+   public Result<T> Deserialize<T>(string key, Func<PropertyInfo, bool> predicate) where T : class, new()
+   {
+      return Setting(key).Map(s => s.Deserialize<T>(predicate));
+   }
+
+   public Result<T> Deserialize<T>(string key) where T : class, new() => Setting(key).Map(s => s.Deserialize<T>());
+
+   public Result<object> Deserialize(string key, Type type, Func<PropertyInfo, bool> predicate)
+   {
+      return Setting(key).Map(s => s.Deserialize(type, predicate));
+   }
+
+   public Result<object> Deserialize(string key, Type type) => Setting(key).Map(s => s.Deserialize(type));
+
+   public Result<Setting> Tuple(string key, params string[] names)
+   {
+      var _innerSetting = Setting(key);
+      if (_innerSetting is (true, var innerSetting))
+      {
+         var tupleSetting = new Setting(key);
+         foreach (var name in names)
+         {
+            var _value = innerSetting.Result.String(name);
+            if (_value is (true, var value))
+            {
+               tupleSetting[name] = value;
+            }
+            else
+            {
+               return _value.Exception;
+            }
+         }
+
+         return tupleSetting;
+      }
+      else
+      {
+         return _innerSetting.Exception;
+      }
+   }
 }

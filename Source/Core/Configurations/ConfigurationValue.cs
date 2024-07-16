@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 using Core.Collections;
 using Core.Computers;
 using Core.Matching;
@@ -53,4 +54,31 @@ public class ConfigurationValue
    public string[] Keys(string key) => [.. Setting(key).Items().Select(i => i.key)];
 
    public StringHash StringHash(string key) => Setting(key).Items().ToStringHash(i => i.key, i => i.text);
+
+   public T Deserialize<T>(string key, Func<PropertyInfo, bool> predicate) where T : class, new()
+   {
+      return Setting(key).Deserialize<T>(predicate);
+   }
+
+   public T Deserialize<T>(string key) where T : class, new() => Setting(key).Deserialize<T>().ForceValue();
+
+   public object Deserialize(string key, Type type, Func<PropertyInfo, bool> predicate)
+   {
+      return Setting(key).Deserialize(type, predicate).ForceValue();
+   }
+
+   public object Deserialize(string key, Type type) => Setting(key).Deserialize(type).ForceValue();
+
+   public Setting Tuple(string key, params string[] names)
+   {
+      var innerSetting = Setting(key);
+      var tupleSetting = new Setting(key);
+
+      foreach (var name in names)
+      {
+         tupleSetting[name] = innerSetting.Value.String(name);
+      }
+
+      return tupleSetting;
+   }
 }

@@ -20,22 +20,17 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Configurations;
 
-public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<ConfigurationItem>, IConfigurationItemGetter
+public class Setting(string rootKey = "_$root") : ConfigurationItem, IHash<string, string>, IEnumerable<ConfigurationItem>, IConfigurationItemGetter
 {
    public const string ROOT_NAME = "_$root";
 
    public static Configuration operator +(Setting setting, FileName file) => new(file, setting.items, setting.Key);
 
-   protected static Set<Type> baseTypes;
-
-   static Setting()
-   {
-      baseTypes =
-      [
-         typeof(string), typeof(int), typeof(long), typeof(float), typeof(double), typeof(bool), typeof(DateTime), typeof(Guid), typeof(FileName),
-         typeof(FolderName), typeof(byte[])
-      ];
-   }
+   protected static Set<Type> baseTypes =
+   [
+      typeof(string), typeof(int), typeof(long), typeof(float), typeof(double), typeof(bool), typeof(DateTime), typeof(Guid), typeof(FileName),
+      typeof(FolderName), typeof(byte[])
+   ];
 
    public static implicit operator Setting(string source) => FromString(source).ForceValue();
 
@@ -45,16 +40,21 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       return parser.Parse();
    }
 
-   protected bool isGeneratedKey;
-   internal StringHash<ConfigurationItem> items;
-
-   public Setting(string key = ROOT_NAME)
+   public static Func<PropertyInfo, bool> ParamsToPredicate(string[] propertyNames)
    {
-      Key = key;
-      isGeneratedKey = key.StartsWith("__$key");
-
-      items = [];
+      if (propertyNames.Length == 0)
+      {
+         return _ => true;
+      }
+      else
+      {
+         StringSet propertyNamesSet = [.. propertyNames];
+         return p => propertyNamesSet.Contains(p.Name);
+      }
    }
+
+   protected bool isGeneratedKey = rootKey.StartsWith("__$key");
+   internal StringHash<ConfigurationItem> items = [];
 
    public Setting(IEnumerable<(string key, string value)> items, string key = ROOT_NAME) : this(key)
    {
@@ -64,7 +64,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       }
    }
 
-   public override string Key { get; }
+   public override string Key => rootKey;
 
    public override string Text => items.Values.Select(i => i.Text).ToString(" ");
 
@@ -146,8 +146,6 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
    public string ToString(int indent, bool ignoreSelf = false)
    {
-      string indentation() => " ".Repeat(indent * 3);
-
       using var writer = new StringWriter();
 
       if (!ignoreSelf)
@@ -185,6 +183,8 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       }
 
       return writer.ToString();
+
+      string indentation() => " ".Repeat(indent * 3);
    }
 
    public string ToString(bool ignoreSelf) => ToString(0, ignoreSelf);
@@ -383,17 +383,25 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       }
    }
 
-   protected static PropertyInfo[] getPropertyInfo(Type type)
+   protected static PropertyInfo[] getPropertyInfo(Type type, Func<PropertyInfo, bool> predicate)
    {
-      return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty | BindingFlags.GetProperty);
+      var propertyInfos = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.SetProperty | BindingFlags.GetProperty)
+         .Where(predicate);
+      return [.. propertyInfos];
+   }
+
+   public static Result<Setting> Serialize<T>(T obj, bool encloseStrings, Func<PropertyInfo, bool> predicate, string name = ROOT_NAME)
+      where T : class, new()
+   {
+      return tryTo(() => Serialize(typeof(T), obj, encloseStrings, predicate, name));
    }
 
    public static Result<Setting> Serialize<T>(T obj, bool encloseStrings, string name = ROOT_NAME) where T : class, new()
    {
-      return tryTo(() => Serialize(typeof(T), obj, encloseStrings, name));
+      return tryTo(() => Serialize(typeof(T), obj, encloseStrings, _ => true, name));
    }
 
-   public static Result<Setting> Serialize(Type type, object? obj, bool encloseStrings, string name = ROOT_NAME)
+   public static Result<Setting> Serialize(Type type, object? obj, bool encloseStrings, Func<PropertyInfo, bool> predicate, string name = ROOT_NAME)
    {
       if (obj is null)
       {
@@ -412,7 +420,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
 
             var setting = new Setting(name);
 
-            var allPropertyInfo = getPropertyInfo(obj.GetType());
+            var allPropertyInfo = getPropertyInfo(obj.GetType(), predicate);
             foreach (var propertyInfo in allPropertyInfo)
             {
                var propertyType = propertyInfo.PropertyType;
@@ -449,7 +457,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
                            for (var i = 0; i < array.Length; i++)
                            {
                               var generatedKey = Parser.GenerateKey();
-                              var _elementSetting = Serialize(elementType, array.GetValue(i), false, generatedKey);
+                              var _elementSetting = Serialize(elementType, array.GetValue(i), false, predicate, generatedKey);
                               if (_elementSetting is (true, var elementSetting))
                               {
                                  arraySetting.SetItem(generatedKey, elementSetting);
@@ -466,7 +474,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
                   }
                   else
                   {
-                     var _propertySetting = Serialize(propertyType, value, encloseStrings, key);
+                     var _propertySetting = Serialize(propertyType, value, encloseStrings, predicate, key);
                      if (_propertySetting is (true, var propertySetting))
                      {
                         setting.SetItem(key, propertySetting);
@@ -488,6 +496,9 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       }
    }
 
+   public static Result<Setting> Serialize(Type type, object? obj, bool encloseStrings, string name = ROOT_NAME) =>
+      Serialize(type, obj, encloseStrings, _ => true, name);
+
    protected object? getObject(Type type)
    {
       if (!type.IsArray)
@@ -501,7 +512,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       return makeArray(elementType, array).Required($"Couldn't make array of element type {elementType?.FullName ?? ""}");
    }
 
-   public Result<object> Deserialize(Type type)
+   public Result<object> Deserialize(Type type, Func<PropertyInfo, bool> predicate)
    {
       try
       {
@@ -512,7 +523,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
          }
          else
          {
-            return fill(ref obj, type).Map(_ => obj);
+            return fill(ref obj, type, predicate).Map(_ => obj);
          }
       }
       catch (Exception exception)
@@ -521,19 +532,23 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       }
    }
 
-   public Result<T> Deserialize<T>() where T : class, new()
+   public Result<object> Deserialize(Type type) => Deserialize(type, _ => true);
+
+   public Result<T> Deserialize<T>(Func<PropertyInfo, bool> predicate) where T : class, new()
    {
       return
-         from obj in tryTo(() => Deserialize(typeof(T)))
+         from obj in tryTo(() => Deserialize(typeof(T), predicate))
          from cast in obj.Result().Cast<T>()
          select cast;
    }
 
-   protected Result<Unit> fill(ref object obj, Type type)
+   public Result<T> Deserialize<T>() where T : class, new() => Deserialize<T>(_ => true);
+
+   protected Result<Unit> fill(ref object obj, Type type, Func<PropertyInfo, bool> predicate)
    {
       try
       {
-         var allPropertyInfo = getPropertyInfo(type);
+         var allPropertyInfo = getPropertyInfo(type, predicate);
          foreach (var (key, value) in Items())
          {
             var name = key.ToPascal();
@@ -572,7 +587,7 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       }
    }
 
-   public Result<Unit> Fill(ref object? obj)
+   public Result<Unit> Fill(ref object? obj, Func<PropertyInfo, bool> predicate)
    {
       if (obj is null)
       {
@@ -581,9 +596,11 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
       else
       {
          var type = obj.GetType();
-         return fill(ref obj, type);
+         return fill(ref obj, type, predicate);
       }
    }
+
+   public Result<Unit> Fill(ref object? obj) => Fill(ref obj, _ => true);
 
    public void Clear() => items.Clear();
 
@@ -685,10 +702,8 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
          return getPart();
       }
 
-
       Func<ConfigurationItem, bool> getPredicate(string text)
       {
-
          if (getPattern(text) is (true, var (pattern, target)))
          {
             return target switch
@@ -702,8 +717,8 @@ public class Setting : ConfigurationItem, IHash<string, string>, IEnumerable<Con
          {
             return i => i.Key.Same(text);
          }
-
       }
+
       IEnumerable<ConfigurationItem> getPart()
       {
          var predicate = getPredicate(pathPart);

@@ -7,6 +7,7 @@ using Core.Matching;
 using Core.Objects;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using System.Reflection;
 
 namespace Core.Configurations;
 
@@ -94,9 +95,58 @@ public class ConfigurationOptional
    [Obsolete("Use Array")]
    public Optional<string[]> Strings(string key) => String(key).Map(s => s.Unjoin("/s* ',' /s*"));
 
-   public Optional<string[]> Array(string key) => Setting(key).Map(s => (string[])[.. s.Items().Select(i => i.text)]);
+   public Optional<string[]> Array(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.text)]);
 
-   public Optional<string[]> Keys(string key) => Setting(key).Map(s => (string[])[.. s.Items().Select(i => i.key)]);
+   public Optional<string[]> Keys(string key) => Setting(key).Map(s => (string[]) [.. s.Items().Select(i => i.key)]);
 
    public Optional<StringHash> StringHash(string key) => Setting(key).Map(s => s.Items().ToStringHash(i => i.key, i => i.text));
+
+   public Optional<T> Deserialize<T>(string key, Func<PropertyInfo, bool> predicate) where T : class, new()
+   {
+      return Setting(key).Map(s => s.Deserialize<T>(predicate).Optional());
+   }
+
+   public Optional<T> Deserialize<T>(string key) where T : class, new() => Setting(key).Map(s => s.Deserialize<T>().Optional());
+
+   public Optional<object> Deserialize(string key, Type type, Func<PropertyInfo, bool> predicate)
+   {
+      return Setting(key).Map(s => s.Deserialize(type, predicate).Optional());
+   }
+
+   public Optional<object> Deserialize(string key, Type type) => Setting(key).Map(s => s.Deserialize(type).Optional());
+
+   public Optional<Setting> Tuple(string key, params string[] names)
+   {
+      var _innerSetting = Setting(key);
+      if (_innerSetting is (true, var innerSetting))
+      {
+         var tupleSetting = new Setting(key);
+         foreach (var name in names)
+         {
+            var _value = innerSetting.Optional.String(name);
+            if (_value is (true, var value))
+            {
+               tupleSetting[name] = value;
+            }
+            else if (_value.Exception is (true, var exception))
+            {
+               return exception;
+            }
+            else
+            {
+               return nil;
+            }
+         }
+
+         return tupleSetting;
+      }
+      else if (_innerSetting.Exception is (true, var exception))
+      {
+         return exception;
+      }
+      else
+      {
+         return nil;
+      }
+   }
 }

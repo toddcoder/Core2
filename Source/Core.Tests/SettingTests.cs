@@ -921,4 +921,28 @@ public class SettingTests
          }
       }
    }
+
+   [TestMethod]
+   public void SerializeTest()
+   {
+      var setting = new Setting();
+      setting.Set("point").Tuple(("x", 10), ("y", 20));
+      var _json = Serializer.Serialize(setting);
+      if (_json is (true, var json))
+      {
+         Console.WriteLine(json);
+         var _setting2 = Deserializer.Deserialize(json);
+         if (_setting2 is (true, var setting2))
+         {
+            var pointSetting = setting2.Value.Setting("point");
+            var x = pointSetting.Value.Int32("x");
+            var y = pointSetting.Value.Int32("y");
+            Console.WriteLine($"x: {x}, y: {y}");
+         }
+      }
+      else
+      {
+         Console.WriteLine(_json.Exception.Message);
+      }
+   }
 }
