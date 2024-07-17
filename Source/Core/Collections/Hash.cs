@@ -9,6 +9,12 @@ namespace Core.Collections;
 
 public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> where TKey : notnull where TValue : notnull
 {
+   public static Hash<TKey, TValue> operator +(Hash<TKey, TValue> hash, (TKey key, TValue value) tuple)
+   {
+      hash[tuple.key] = tuple.value;
+      return hash;
+   }
+
    protected ReaderWriterLockSlim locker;
 
    public event EventHandler<HashArgs<TKey, TValue>>? Updated;

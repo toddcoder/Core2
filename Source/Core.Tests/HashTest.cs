@@ -2,7 +2,6 @@
 using Core.Collections;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Enumerables.EnumerableFunctions;
 
 namespace Core.Tests;
 
@@ -43,7 +42,7 @@ public class HashTest
    [TestMethod]
    public void StringHashTest()
    {
-      StringHash<int> hash = [.. kv(("alpha", 0), ("bravo", 1), ("charlie", 2))];
+      var hash = new StringHash<int>() + ("alpha", 0) + ("bravo", 1) + ("charlie", 2);
       hash.Must().HaveKeyOf("Bravo").OrThrow();
    }
 
@@ -65,7 +64,7 @@ public class HashTest
    [TestMethod]
    public void CollectionBuilderTest()
    {
-      Hash<char, int> hash = [.. kv(('a', 0), ('b', 1))];
+      var hash = new Hash<char, int>() + ('a', 0) + ('b', 1);
       Console.Write(hash['a']);
    }
 
@@ -100,12 +99,7 @@ public class HashTest
    [TestMethod]
    public void BackHashTest()
    {
-      StringHash stringHash = new()
-      {
-         ["a"] = "alfa",
-         ["b"] = "bravo",
-         ["c"] = "charlie"
-      };
+      var stringHash = new StringHash() + ("a", "alfa") + ("b", "bravo") + ("c", "charlie");
       var backHash = stringHash.ToBackHash();
 
       if (backHash.Maybe["a"] is (true, var value1))

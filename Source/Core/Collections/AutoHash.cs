@@ -8,6 +8,12 @@ namespace Core.Collections;
 
 public class AutoHash<TKey, TValue> : Hash<TKey, TValue> where TKey : notnull where TValue : notnull
 {
+   public static AutoHash<TKey, TValue> operator +(AutoHash<TKey, TValue> hash, (TKey key, TValue value) tuple)
+   {
+      hash[tuple.key] = tuple.value;
+      return hash;
+   }
+
    protected Maybe<Func<TKey, TValue>> _defaultLambda;
    protected Maybe<TValue> _defaultValue;
 

@@ -19,6 +19,12 @@ public class AutoStringHash<TValue> : AutoHash<string, TValue> where TValue : no
       return stringHash;
    }
 
+   public static AutoStringHash<TValue> operator +(AutoStringHash<TValue> hash, (string key, TValue value) tuple)
+   {
+      hash[tuple.key] = tuple.value;
+      return hash;
+   }
+
    protected AutoStringHash(bool ignoreCase) : base(stringComparer(ignoreCase))
    {
       IgnoreCase = ignoreCase;
@@ -101,6 +107,12 @@ public class AutoStringHash : AutoStringHash<string>
       }
 
       return stringHash;
+   }
+
+   public static AutoStringHash operator +(AutoStringHash hash, (string key, string value) tuple)
+   {
+      hash[tuple.key] = tuple.value;
+      return hash;
    }
 
    protected AutoStringHash(bool ignoreCase) : base(ignoreCase)

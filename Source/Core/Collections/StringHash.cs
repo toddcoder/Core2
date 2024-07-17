@@ -5,6 +5,12 @@ namespace Core.Collections;
 
 public class StringHash<TValue> : Hash<string, TValue> where TValue : notnull
 {
+   public static StringHash<TValue> operator +(StringHash<TValue> hash, (string key, TValue value) tuple)
+   {
+      hash[tuple.key] = tuple.value;
+      return hash;
+   }
+
    protected bool ignoreCase;
 
    protected StringHash(bool ignoreCase) : base(stringComparer(ignoreCase))
@@ -52,6 +58,12 @@ public class StringHash<TValue> : Hash<string, TValue> where TValue : notnull
 
 public class StringHash : StringHash<string>
 {
+   public static StringHash operator +(StringHash hash, (string key, string value) tuple)
+   {
+      hash[tuple.key] = tuple.value;
+      return hash;
+   }
+
    protected StringHash(bool ignoreCase) : base(ignoreCase)
    {
    }
