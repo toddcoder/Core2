@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Drawing;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Core.Applications;
 using Core.Assertions;
 using Core.Collections;
@@ -13,6 +14,7 @@ using Core.Monads;
 using Core.Monads.Lazy;
 using Core.Strings;
 using Core.Strings.Text;
+using Core.WinForms;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
 
@@ -923,10 +925,16 @@ public class SettingTests
    }
 
    [TestMethod]
-   public void SerializeTest()
+   public void SettingExtensionsTest()
    {
       var setting = new Setting();
-      setting.Set("point").Tuple(("x", 10), ("y", 20));
+
+      var point = new Point(10, 20);
+      setting.Set("location").Point(point);
+
+      var rectangle = new Rectangle(111, 123, 153, 200);
+      setting.Set("bounds").Rectangle(rectangle);
+
       var _json = Serializer.Serialize(setting);
       if (_json is (true, var json))
       {
@@ -934,10 +942,10 @@ public class SettingTests
          var _setting2 = Deserializer.Deserialize(json);
          if (_setting2 is (true, var setting2))
          {
-            var pointSetting = setting2.Value.Setting("point");
-            var x = pointSetting.Value.Int32("x");
-            var y = pointSetting.Value.Int32("y");
-            Console.WriteLine($"x: {x}, y: {y}");
+            var location = setting2.Value.Point("location");
+            Console.WriteLine($"location: {location}");
+            var bounds = setting2.Value.Rectangle("bounds");
+            Console.WriteLine($"bounds: {bounds}");
          }
       }
       else

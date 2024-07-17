@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Core.Arrays;
 using Core.Collections;
 using Core.Computers;
@@ -15,6 +14,10 @@ public class SettingSetter(Setting setting, string key)
    {
       set => setting.SetItem(key, value);
    }
+
+   public Setting CurrentSetting => setting;
+
+   public string Key => key;
 
    protected void setItem(string value) => setting.SetItem(key, new Item(key, value));
 
