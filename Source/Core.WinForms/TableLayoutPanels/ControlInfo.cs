@@ -45,6 +45,12 @@ public class ControlInfo(TableLayoutBuilder builder, Control control)
       return new ControlInfo(controlInfo.Builder, control);
    }
 
+   public static ControlInfo operator +(ControlInfo controlInfo, bool tabStop)
+   {
+      controlInfo.Control.TabStop = tabStop;
+      return controlInfo;
+   }
+
    protected Maybe<int> _column = nil;
    protected Maybe<int> _row = nil;
    protected int columnSpan = 1;
@@ -54,6 +60,8 @@ public class ControlInfo(TableLayoutBuilder builder, Control control)
    protected DockStyle dockStyle = DockStyle.Fill;
 
    public TableLayoutBuilder Builder => builder;
+
+   public Control Control => control;
 
    public int ColumnSpan
    {
