@@ -4,20 +4,12 @@ using System.Text.Json;
 using Core.Computers;
 using Core.Configurations;
 using Core.Monads;
-using Core.Objects;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Json;
 
-public class Deserializer
+public class Deserializer(string source)
 {
-   protected string source;
-
-   public Deserializer(string source)
-   {
-      this.source = source;
-   }
-
    public Result<Setting> Deserialize()
    {
       var rootSetting = new Setting("/");
@@ -124,14 +116,7 @@ public class Deserializer
                case JsonTokenType.String:
                {
                   var value = reader.GetString()!;
-                  if (value.Maybe().DateTime() is (true, var dateTime))
-                  {
-                     setItem(dateTime.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff'Z'"));
-                  }
-                  else
-                  {
-                     setItem(value);
-                  }
+                  setItem(value);
 
                   break;
                }

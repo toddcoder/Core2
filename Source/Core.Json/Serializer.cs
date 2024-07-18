@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using Core.Computers;
 using Core.Configurations;
-using Core.Dates;
 using Core.Matching;
 using Core.Monads;
 using Core.Monads.Lazy;
@@ -10,15 +9,8 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Json;
 
-public class Serializer
+public class Serializer(Setting setting)
 {
-   protected Setting setting;
-
-   public Serializer(Setting setting)
-   {
-      this.setting = setting;
-   }
-
    public Result<string> Serialize()
    {
       try
@@ -68,7 +60,6 @@ public class Serializer
       LazyMaybe<int> _int = nil;
       LazyMaybe<double> _float = nil;
       LazyMaybe<bool> _bool = nil;
-      LazyMaybe<DateTime> _dateTime = nil;
 
       writer.WritePropertyNameIf(_name);
 
@@ -83,11 +74,6 @@ public class Serializer
       else if (_bool.ValueOf(text.Maybe().Boolean()) is (true, var @bool))
       {
          writer.Write(@bool);
-      }
-      else if (_dateTime.ValueOf(text.Maybe().DateTime()) is (true, var dateTime))
-      {
-         var zulu = dateTime.Zulu();
-         writer.Write(zulu);
       }
       else
       {
