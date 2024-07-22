@@ -55,7 +55,7 @@ public class DeletableWriter(UiAction uiAction, string[] alternates, bool autoSi
 
       if (deletableRectangles.Length > 0)
       {
-         writer.Font = uiAction.Font;
+         writer.Font = uiAction.NonNullFont;
          var foreColor = GetAlternateForeColor(index);
          writer.Color = foreColor;
          var backColor = GetAlternateBackColor(index);

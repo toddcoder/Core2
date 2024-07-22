@@ -4,7 +4,15 @@ public static class ControlExtensions
 {
    private static void setUpFont(Control control, string fontName, float fontSize)
    {
-      control.Font = new Font(fontName, fontSize);
+      var font = new Font(fontName, fontSize);
+      if (control is UiAction uiAction)
+      {
+         uiAction.Font = font;
+      }
+      else
+      {
+         control.Font = font;
+      }
    }
 
    private static void setUpDimensions(Control control, int x, int y, int width, int height, string fontName, float fontSize)

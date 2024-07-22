@@ -16,7 +16,7 @@ public class UiToolTip : ToolTip
    public UiToolTip(UiAction uiAction)
    {
       this.uiAction = uiAction;
-      font = this.uiAction.Font;
+      font = this.uiAction.NonNullFont;
       Text = string.Empty;
 
       _action = nil;
@@ -106,7 +106,7 @@ public class UiToolTip : ToolTip
       }
       else
       {
-         Text = uiAction.Text;
+         Text = uiAction.NonNullText;
          e.ToolTipSize = getTextSize();
       }
    }

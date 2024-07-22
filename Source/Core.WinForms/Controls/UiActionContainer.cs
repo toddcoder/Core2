@@ -29,7 +29,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
 
    protected void setUiAction(UiAction uiAction)
    {
-      var key = uiAction.Text.ToUpper();
+      var key = uiAction.NonNullText.ToUpper();
       if (!uiActions.ContainsKey(key))
       {
          uiActions[key] = uiAction;
@@ -171,7 +171,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
    {
       if (_uiAction is (true, var uiAction))
       {
-         var uiActionKey = uiAction.Text.ToUpper();
+         var uiActionKey = uiAction.NonNullText.ToUpper();
          var _key = indexes.Maybe[index];
          if (_key is (true, var key))
          {
@@ -387,7 +387,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
 
    public void Insert(int index, UiAction uiAction)
    {
-      var captionKey = uiAction.Text.ToUpper();
+      var captionKey = uiAction.NonNullText.ToUpper();
       if (!uiActions.ContainsKey(captionKey) && index <= indexes.Count)
       {
          uiAction.Click += (_, _) =>

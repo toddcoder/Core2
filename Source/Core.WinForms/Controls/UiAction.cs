@@ -498,7 +498,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          {
             var clientRectangle = getClientRectangle();
             var _uiAction = maybe<UiAction>() & showToGo & this;
-            _progressDefiniteProcessor.Activate(() => new ProgressDefiniteProcessor(Font, graphics, clientRectangle, _uiAction));
+            _progressDefiniteProcessor.Activate(() => new ProgressDefiniteProcessor(font, graphics, clientRectangle, _uiAction));
             break;
          }
          case UiActionType.ProgressMini:
@@ -581,7 +581,25 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    public void SetStyle(MessageStyle style) => _style = style;
 
-   public new Font Font
+   public override Font? Font
+   {
+#pragma warning disable CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
+      get => font;
+#pragma warning restore CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
+      set
+      {
+         if (value is not null)
+         {
+            font = value;
+            italicFont = new Font(font, FontStyle.Italic);
+            boldFont = new Font(font, FontStyle.Bold);
+            italicBoldFont = new Font(font, FontStyle.Italic | FontStyle.Bold);
+            toolTip.Font = font;
+         }
+      }
+   }
+
+   public Font NonNullFont
    {
       get => font;
       set
@@ -590,7 +608,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          italicFont = new Font(font, FontStyle.Italic);
          boldFont = new Font(font, FontStyle.Bold);
          italicBoldFont = new Font(font, FontStyle.Italic | FontStyle.Bold);
-         toolTip.Font = value;
+         toolTip.Font = font;
       }
    }
 
@@ -787,7 +805,23 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       refresh();
    }
 
-   public new string Text
+   public override string? Text
+   {
+#pragma warning disable CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
+      get
+#pragma warning restore CS8764 // Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
+      {
+         return text;
+      }
+      set
+      {
+         text = value ?? "";
+         this.Do(setToolTip);
+         TextChanged?.Invoke(this, EventArgs.Empty);
+      }
+   }
+
+   public string NonNullText
    {
       get => text;
       set
@@ -798,7 +832,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       }
    }
 
-   public bool Is3D { get; set; } = false;
+   public bool Is3D { get; set; }
 
    public AutoHash<UiActionType, Color> ForeColors => foreColors;
 
@@ -827,11 +861,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    protected Font getFont() => getStyle() switch
    {
-      MessageStyle.None => Font,
+      MessageStyle.None => font,
       MessageStyle.Italic => italicFont,
       MessageStyle.Bold => boldFont,
       MessageStyle.ItalicBold => italicBoldFont,
-      _ => Font
+      _ => font
    };
 
    protected void refresh()
@@ -1645,7 +1679,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       if (_title is (true, var title))
       {
          var rectangle = AutoSizingWriter.NarrowRectangle(clientRectangle, _floor, _ceiling);
-         var titleFont = new Font(Font.FontFamily, 8, Font.Style);
+         var titleFont = new Font(font.FontFamily, 8, font.Style);
          var textFormatFlags = TextFormatFlags.EndEllipsis | TextFormatFlags.HidePrefix | TextFormatFlags.HorizontalCenter |
             TextFormatFlags.VerticalCenter;
          var size = UiActionWriter.TextSize(g, title, titleFont, textFormatFlags);
@@ -2943,7 +2977,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    public void SizeToText()
    {
-      var size = TextRenderer.MeasureText(text, Font);
+      var size = TextRenderer.MeasureText(text, font);
       Width = size.Width + 40;
    }
 
@@ -2952,7 +2986,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       Type = UiActionType.Console;
       scroller.Value.WriteLine(obj);
 
-      MessageShown?.Invoke(this, new MessageShownArgs(Text, type));
+      MessageShown?.Invoke(this, new MessageShownArgs(text, type));
 
       refresh();
    }
@@ -3455,7 +3489,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    protected Rectangle getDividerTextRectangle(Graphics g, Rectangle rectangleRectangle)
    {
       var flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis;
-      var textSize = UiActionWriter.TextSize(g, text, Font, flags);
+      var textSize = UiActionWriter.TextSize(g, text, font, flags);
 
       var offset = 4;
 

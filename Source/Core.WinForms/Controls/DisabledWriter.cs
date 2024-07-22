@@ -10,7 +10,7 @@ public class DisabledWriter : UiActionWriter
       return new DisabledWriter(uiAction.MessageAlignment, uiAction.AutoSizeText)
       {
          Rectangle = uiAction.ClientRectangle,
-         Font = new Font(uiAction.Font, FontStyle.Italic | FontStyle.Bold),
+         Font = new Font(uiAction.NonNullFont, FontStyle.Italic | FontStyle.Bold),
          Color = Color.White,
          EmptyTextTitle = uiAction.EmptyTextTitle,
          IsPath = uiAction.IsPath,

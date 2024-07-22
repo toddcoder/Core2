@@ -45,7 +45,7 @@ public partial class Form4 : Form
       uiInsert.Button("Insert");
       uiInsert.Click += (_, _) =>
       {
-         if (textCaption.TextLength > 0 && uiIndexes.Text.Maybe().Int32() is (true, var index))
+         if (textCaption.TextLength > 0 && uiIndexes.NonNullText.Maybe().Int32() is (true, var index))
          {
             container.Insert(index, textCaption.Text);
          }

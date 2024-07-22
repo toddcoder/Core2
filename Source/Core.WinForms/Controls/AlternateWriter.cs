@@ -10,7 +10,7 @@ public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSi
 {
    protected int selectedIndex;
    protected int disabledIndex = -1;
-   protected Lazy<Font> disabledFont = new(() => new Font(uiAction.Font, FontStyle.Italic));
+   protected Lazy<Font> disabledFont = new(() => new Font(uiAction.NonNullFont, FontStyle.Italic));
    protected Hash<int, Color> foreColors = [];
    protected Hash<int, Color> backColors = [];
 
@@ -193,7 +193,7 @@ public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSi
       }
       else
       {
-         writer.Font = uiAction.Font;
+         writer.Font = uiAction.NonNullFont;
          writer.Color = GetAlternateForeColor(index);
          var backColor = GetAlternateBackColor(index);
          fillRectangle(g, rectangle, backColor);

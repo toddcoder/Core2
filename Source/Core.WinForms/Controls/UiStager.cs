@@ -102,14 +102,14 @@ public class UiStager(Control container, string fontName = "Consolas", float fon
       if (stageIndex > -1 && stageIndex < uiActions.Count)
       {
          var uiAction = uiActions[stageIndex];
-         var text = uiAction.Text;
+         var text = uiAction.NonNullText;
          uiAction.ShowMessage(text, type);
       }
 
       if (++stageIndex < uiActions.Count)
       {
          var uiAction = uiActions[stageIndex];
-         var text = uiAction.Text;
+         var text = uiAction.NonNullText;
          uiAction.Busy(text);
       }
    }
@@ -121,7 +121,7 @@ public class UiStager(Control container, string fontName = "Consolas", float fon
       rearrange();
       foreach (var uiAction in uiActions)
       {
-         var text = uiAction.Text;
+         var text = uiAction.NonNullText;
          uiAction.Busy(text);
       }
 
