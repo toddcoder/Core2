@@ -583,10 +583,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    public new Font Font
    {
-      get => base.Font;
+      get => font;
       set
       {
-         base.Font = value;
+         font = value;
          italicFont = new Font(base.Font, FontStyle.Italic);
          boldFont = new Font(base.Font, FontStyle.Bold);
          italicBoldFont = new Font(base.Font, FontStyle.Italic | FontStyle.Bold);
