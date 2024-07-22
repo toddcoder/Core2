@@ -18,13 +18,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Services", "Source\Cor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.WinForms", "Source\Core.WinForms\Core.WinForms.csproj", "{F7A9268A-3F14-46A7-9F05-65265D9EC26A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Zip", "Source\Core.Zip\Core.Zip.csproj", "{7A5C44B8-0BC3-4206-BE3F-1FDAE9BBFC68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Zip", "Source\Core.Zip\Core.Zip.csproj", "{7A5C44B8-0BC3-4206-BE3F-1FDAE9BBFC68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Json", "Source\Core.Json\Core.Json.csproj", "{39E0DC6C-47E0-429F-9858-94FDC5AC38FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Json", "Source\Core.Json\Core.Json.csproj", "{39E0DC6C-47E0-429F-9858-94FDC5AC38FF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Tests", "Source\Core.Tests\Core.Tests.csproj", "{917916E4-D81C-4128-AFFB-DE11E39DD3D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.WinForms.Tests", "Source\Core.WinForms.Tests\Core.WinForms.Tests.csproj", "{D38F95F0-62CE-4495-8FB6-E6B883ECB965}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.WinForms.Tests", "Source\Core.WinForms.Tests\Core.WinForms.Tests.csproj", "{D38F95F0-62CE-4495-8FB6-E6B883ECB965}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

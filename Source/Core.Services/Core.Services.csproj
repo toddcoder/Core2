@@ -1,20 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="System.Diagnostics.EventLog" Version="8.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Core.Internet\Core.Internet.csproj" />
     <ProjectReference Include="..\Core.Markup\Core.Markup.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
-
 </Project>

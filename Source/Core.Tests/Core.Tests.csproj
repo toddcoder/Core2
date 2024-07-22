@@ -1,26 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="TestData\test.json" />
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="TestData\test.json" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.2.0" />
     <PackageReference Include="MSTest.TestFramework" Version="3.2.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Core.Data\Core.Data.csproj" />
     <ProjectReference Include="..\Core.Internet\Core.Internet.csproj" />
@@ -31,5 +26,4 @@
     <ProjectReference Include="..\Core.Zip\Core.Zip.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
-
 </Project>
