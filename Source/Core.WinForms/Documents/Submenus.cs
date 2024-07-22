@@ -11,7 +11,7 @@ public class Submenus : IHash<string, ToolStripMenuItem>, IEnumerable<ToolStripM
    internal Submenus(ToolStripMenuItem parent)
    {
       this.parent = parent;
-      parentText = parent.Text;
+      parentText = parent.Text ?? "";
    }
 
    public bool ContainsKey(string key) => parent.DropDownItems.ContainsKey(Menus.SubmenuName(parentText, key));
@@ -25,7 +25,9 @@ public class Submenus : IHash<string, ToolStripMenuItem>, IEnumerable<ToolStripM
       get
       {
          var submenuName = Menus.SubmenuName(parentText, text);
-         return (ToolStripMenuItem)parent.DropDownItems[submenuName];
+         var item = parent.DropDownItems[submenuName];
+
+         return item is not null ? (ToolStripMenuItem)item : new ToolStripMenuItem();
       }
    }
 

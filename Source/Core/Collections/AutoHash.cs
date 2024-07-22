@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
@@ -14,65 +13,43 @@ public class AutoHash<TKey, TValue> : Hash<TKey, TValue> where TKey : notnull wh
       return hash;
    }
 
-   protected Maybe<Func<TKey, TValue>> _defaultLambda;
-   protected Maybe<TValue> _defaultValue;
+   protected Maybe<Func<TKey, TValue>> _defaultLambda = nil;
+   protected Maybe<TValue> _defaultValue = nil;
 
    public AutoHash()
    {
-      _defaultLambda = nil;
-      _defaultValue = nil;
    }
 
    public AutoHash(int capacity) : base(capacity)
    {
-      _defaultLambda = nil;
-      _defaultValue = nil;
    }
 
    public AutoHash(IEqualityComparer<TKey> comparer) : base(comparer)
    {
-      _defaultLambda = nil;
-      _defaultValue = nil;
    }
 
    public AutoHash(int capacity, IEqualityComparer<TKey> comparer) : base(capacity, comparer)
    {
-      _defaultLambda = nil;
-      _defaultValue = nil;
    }
 
    public AutoHash(IDictionary<TKey, TValue> dictionary) : base(dictionary)
    {
-      _defaultLambda = nil;
-      _defaultValue = nil;
    }
 
    public AutoHash(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) : base(dictionary, comparer)
    {
-      _defaultLambda = nil;
-      _defaultValue = nil;
-   }
-
-   protected AutoHash(SerializationInfo info, StreamingContext context) : base(info, context)
-   {
-      _defaultLambda = nil;
-      _defaultValue = nil;
    }
 
    public AutoHash(Func<TKey, TValue> defaultLambda, bool autoAddDefault = false)
    {
       _defaultLambda = defaultLambda;
       AutoAddDefault = autoAddDefault;
-
-      _defaultValue = nil;
    }
 
    public AutoHash(Func<TKey, TValue> defaultLambda, IEqualityComparer<TKey> comparer, bool autoAddDefault = false) : this(comparer)
    {
       _defaultLambda = defaultLambda;
       AutoAddDefault = autoAddDefault;
-
-      _defaultValue = nil;
    }
 
    public AutoHash(Func<TKey, TValue> defaultLambda, bool autoAddDefault, IEqualityComparer<TKey> comparer) : this(comparer)

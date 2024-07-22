@@ -68,12 +68,15 @@ public partial class NotifierHost : Form
 
    protected void timerStyler_Tick(object sender, EventArgs e)
    {
-      x += 20;
-      var workingArea = Screen.PrimaryScreen.WorkingArea;
-      Location = new Point(workingArea.Right - x, workingArea.Bottom - Size.Height - 30);
-      if (Location.X == workingArea.Right - Size.Width || Location.X < workingArea.Right - Size.Width)
+      if (Screen.PrimaryScreen is not null)
       {
-         timerStyler.Stop();
+         x += 20;
+         var workingArea = Screen.PrimaryScreen.WorkingArea;
+         Location = new Point(workingArea.Right - x, workingArea.Bottom - Size.Height - 30);
+         if (Location.X == workingArea.Right - Size.Width || Location.X < workingArea.Right - Size.Width)
+         {
+            timerStyler.Stop();
+         }
       }
    }
 }

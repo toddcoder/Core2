@@ -234,7 +234,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
    {
       setParent(parentItem);
 
-      var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentItem.Text, text), Checked = isChecked, Enabled = enabled };
+      var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentItem.Text ?? "", text), Checked = isChecked, Enabled = enabled };
       item.Click += handler;
       setShortcut(item, shortcut, keys);
       if (index == -1)
@@ -253,7 +253,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
    {
       setParent(parentItem);
 
-      var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentItem.Text, text) };
+      var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentItem.Text ?? "", text) };
       if (index == -1)
       {
          parentItem.DropDownItems.Add(item);
@@ -330,7 +330,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       setParent(parentItem);
 
       var text = textFunc();
-      var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentItem.Text, text), Checked = isChecked, Enabled = enabled };
+      var item = new ToolStripMenuItem(text) { Name = SubmenuName(parentItem.Text ?? "", text), Checked = isChecked, Enabled = enabled };
       item.Click += handler;
       setShortcut(item, shortcut, keys);
       if (index == -1)
@@ -495,27 +495,33 @@ public class Menus : IHash<string, ToolStripMenuItem>
       var name = SubmenuName(parentText, text);
 
       var item = parent.DropDownItems[name];
-      if (item is not null && dynamicTextItems.ContainsKey(item))
+      if (item is not null)
       {
-         dynamicTextItems.Remove(item);
-      }
+         if (dynamicTextItems.ContainsKey(item))
+         {
+            dynamicTextItems.Remove(item);
+         }
 
-      parent.DropDownItems.Remove(item);
+         parent.DropDownItems.Remove(item);
+      }
    }
 
    public void RemoveMenu(ToolStripMenuItem parentItem, string text)
    {
       setParent(parentItem);
 
-      var name = SubmenuName(parentItem.Text, text);
+      var name = SubmenuName(parentItem.Text ?? "", text);
 
       var item = parentItem.DropDownItems[name];
-      if (item is not null && dynamicTextItems.ContainsKey(item))
+      if (item is not null)
       {
-         dynamicTextItems.Remove(item);
-      }
+         if (dynamicTextItems.ContainsKey(item))
+         {
+            dynamicTextItems.Remove(item);
+         }
 
-      parentItem.DropDownItems.Remove(item);
+         parentItem.DropDownItems.Remove(item);
+      }
    }
 
    public void RemoveMenu(string text)
@@ -535,7 +541,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
       var parent = getParent(parentText);
 
       var item = parent.DropDownItems[index];
-      if (item is not null && dynamicTextItems.ContainsKey(item))
+      if (dynamicTextItems.ContainsKey(item))
       {
          dynamicTextItems.Remove(item);
       }
@@ -546,7 +552,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
    public void RemoveMenu(ToolStripMenuItem parentItem, int index)
    {
       var item = parentItem.DropDownItems[index];
-      if (item is not null && dynamicTextItems.ContainsKey(item))
+      if (dynamicTextItems.ContainsKey(item))
       {
          dynamicTextItems.Remove(item);
       }
@@ -610,7 +616,7 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
    protected ToolStripItem[] getMenuItems() =>
    [
-      .. menuItems.Values.Select(i => new { MenuItem = i, Index = tabIndexes[i.Name] }).OrderBy(a => a.Index).Select(a => a.MenuItem)
+      .. menuItems.Values.Select(i => new { MenuItem = i, Index = tabIndexes[i.Name ?? ""] }).OrderBy(a => a.Index).Select(a => a.MenuItem)
    ];
 
    public void SetContextMenuControl(Control control)
@@ -711,7 +717,8 @@ public class Menus : IHash<string, ToolStripMenuItem>
 
       ContextMenu("Paste", (_, _) =>
       {
-         if (Clipboard.GetDataObject().GetDataPresent(DataFormats.Text) && _contextMenuControl is (true, TextBoxBase textBox))
+         var dataObject = Clipboard.GetDataObject();
+         if (dataObject is not null && dataObject.GetDataPresent(DataFormats.Text) && _contextMenuControl is (true, TextBoxBase textBox))
          {
             textBox.Paste();
          }

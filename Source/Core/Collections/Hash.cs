@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Threading;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
@@ -15,44 +14,33 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
       return hash;
    }
 
-   protected ReaderWriterLockSlim locker;
+   protected ReaderWriterLockSlim locker = new(LockRecursionPolicy.SupportsRecursion);
 
    public event EventHandler<HashArgs<TKey, TValue>>? Updated;
    public event EventHandler<HashArgs<TKey, TValue>>? Removed;
 
    public Hash()
    {
-      locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
    }
 
    public Hash(int capacity) : base(capacity)
    {
-      locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
    }
 
    public Hash(IEqualityComparer<TKey> comparer) : base(comparer)
    {
-      locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
    }
 
    public Hash(int capacity, IEqualityComparer<TKey> comparer) : base(capacity, comparer)
    {
-      locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
    }
 
    public Hash(IDictionary<TKey, TValue> dictionary) : base(dictionary)
    {
-      locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
    }
 
    public Hash(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) : base(dictionary, comparer)
    {
-      locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
-   }
-
-   protected Hash(SerializationInfo info, StreamingContext context) : base(info, context)
-   {
-      locker = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
    }
 
    public Hash(IEnumerable<(TKey key, TValue value)> tuples)
@@ -61,8 +49,6 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
       {
          this[key] = value;
       }
-
-      locker = new ReaderWriterLockSlim();
    }
 
    public new void Add(TKey key, TValue value)

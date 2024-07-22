@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Core.Collections;
 
 public class BackHash<TKey, TValue> : Hash<TKey, TValue> where TKey : notnull where TValue : notnull
 {
-   protected Hash<TValue, TKey> backHash;
+   protected Hash<TValue, TKey> backHash = [];
 
    public BackHash()
    {
-      backHash = [];
    }
 
    public BackHash(BackHash<TValue, TKey> backHash) : this()
@@ -22,32 +20,22 @@ public class BackHash<TKey, TValue> : Hash<TKey, TValue> where TKey : notnull wh
 
    public BackHash(int capacity) : base(capacity)
    {
-      backHash = [];
    }
 
    public BackHash(IEqualityComparer<TKey> comparer) : base(comparer)
    {
-      backHash = [];
    }
 
    public BackHash(int capacity, IEqualityComparer<TKey> comparer) : base(capacity, comparer)
    {
-      backHash = [];
    }
 
    public BackHash(IDictionary<TKey, TValue> dictionary) : base(dictionary)
    {
-      backHash = [];
    }
 
    public BackHash(IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey> comparer) : base(dictionary, comparer)
    {
-      backHash = [];
-   }
-
-   protected BackHash(SerializationInfo info, StreamingContext context) : base(info, context)
-   {
-      backHash = [];
    }
 
    public new TValue this[TKey key]

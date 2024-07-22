@@ -1,33 +1,33 @@
 ﻿using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace Core.Collections;
 
 public class TwoKeyHash<TKey1, TKey2, TValue> : Hash<TKey1, TValue> where TKey1 : notnull where TKey2 : notnull where TValue : notnull
 {
-   protected BackHash<TKey1, TKey2> backHash;
+   protected BackHash<TKey1, TKey2> backHash = new();
 
-   public TwoKeyHash() => backHash = new BackHash<TKey1, TKey2>();
+   public TwoKeyHash()
+   {
+   }
 
-   public TwoKeyHash(int capacity) : base(capacity) => backHash = new BackHash<TKey1, TKey2>();
+   public TwoKeyHash(int capacity) : base(capacity)
+   {
+   }
 
-   public TwoKeyHash(IEqualityComparer<TKey1> comparer) : base(comparer) => backHash = new BackHash<TKey1, TKey2>();
+   public TwoKeyHash(IEqualityComparer<TKey1> comparer) : base(comparer)
+   {
+   }
 
    public TwoKeyHash(int capacity, IEqualityComparer<TKey1> comparer) : base(capacity, comparer)
    {
-      backHash = new BackHash<TKey1, TKey2>();
    }
 
-   public TwoKeyHash(IDictionary<TKey1, TValue> dictionary) : base(dictionary) => backHash = new BackHash<TKey1, TKey2>();
+   public TwoKeyHash(IDictionary<TKey1, TValue> dictionary) : base(dictionary)
+   {
+   }
 
    public TwoKeyHash(IDictionary<TKey1, TValue> dictionary, IEqualityComparer<TKey1> comparer) : base(dictionary, comparer)
    {
-      backHash = new BackHash<TKey1, TKey2>();
-   }
-
-   protected TwoKeyHash(SerializationInfo info, StreamingContext context) : base(info, context)
-   {
-      backHash = new BackHash<TKey1, TKey2>();
    }
 
    public TValue this[TKey1 key1, TKey2 key2]

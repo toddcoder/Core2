@@ -6,6 +6,7 @@
     <LangVersion>preview</LangVersion>
     <UseWindowsForms>true</UseWindowsForms>
     <OutputType>WinExe</OutputType>
+    <GenerateResourceWarnOnBinaryFormatterUse>false</GenerateResourceWarnOnBinaryFormatterUse>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.Json\Core.Json.csproj" />

@@ -1405,8 +1405,6 @@ public static class EnumerableExtensions
       return enumerable.ThenBy(i => paired[mapper(i)]);
    }
 
-   public static IOrderedEnumerable<T> Order<T>(this IEnumerable<T> enumerable) where T : notnull => enumerable.OrderBy(i => i);
-
    public static IOrderedEnumerable<T> OrderByDescending<T>(this IEnumerable<T> enumerable, IEnumerable<T> orderItems) where T : notnull
    {
       var paired = getPaired(orderItems, int.MinValue);
@@ -1432,8 +1430,6 @@ public static class EnumerableExtensions
       var paired = getPaired(orderItems, int.MinValue);
       return enumerable.ThenByDescending(i => paired[mapper(i)]);
    }
-
-   public static IOrderedEnumerable<T> OrderDescending<T>(this IEnumerable<T> enumerable) => enumerable.OrderByDescending(i => i);
 
    public static IEnumerable<TValue> Distinct<TValue, TKey>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> keySelector)
    {

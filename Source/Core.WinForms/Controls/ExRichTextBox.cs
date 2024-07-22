@@ -262,7 +262,7 @@ public class ExRichTextBox : RichTextBox
       var (start, length) = Selection;
       if (Focused)
       {
-         Parent.Focus();
+         Parent?.Focus();
       }
 
       User32.SendMessage(Handle, User32.Messages.HideSelection, true, 0);

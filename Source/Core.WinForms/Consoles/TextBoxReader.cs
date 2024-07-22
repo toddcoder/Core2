@@ -39,7 +39,7 @@ public class TextBoxReader : Stream
    public override int Read(byte[] buffer, int offset, int count)
    {
       console.ReadOnly = false;
-      _previouslyFocused = form.ActiveControl;
+      _previouslyFocused = form.ActiveControl.NotNull();
       console.Focus();
       console.IOStatus = IOStatusType.Reading;
 

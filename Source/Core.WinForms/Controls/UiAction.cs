@@ -100,9 +100,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       set => busyStyle = value;
    }
 
-   protected Font italicFont;
-   protected Font boldFont;
-   protected Font italicBoldFont;
+   protected Font font = new("Consolas", 12);
+   protected Font italicFont = new("Consolas", 12, FontStyle.Italic);
+   protected Font boldFont = new("Consolas", 12, FontStyle.Bold);
+   protected Font italicBoldFont = new("Consolas", 12, FontStyle.Italic | FontStyle.Bold);
    protected AutoHash<UiActionType, Color> foreColors = new(mlt => globalForeColors[mlt]);
    protected AutoHash<UiActionType, Color> backColors = new(mlt => globalBackColors[mlt]);
    protected AutoHash<UiActionType, MessageStyle> styles = new(mlt => globalStyles[mlt]);
@@ -220,10 +221,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    public UiAction()
    {
-      italicFont = new Font(base.Font, FontStyle.Italic);
-      boldFont = new Font(base.Font, FontStyle.Bold);
-      italicBoldFont = new Font(base.Font, FontStyle.Italic | FontStyle.Bold);
-
       SetStyle(ControlStyles.UserPaint, true);
       SetStyle(ControlStyles.DoubleBuffer, true);
       SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -270,6 +267,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       toolTip = new UiToolTip(this);
       toolTip.SetToolTip(this, "");
+      toolTip.Font = font;
 
       Resize += (_, _) =>
       {
@@ -583,7 +581,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
    public void SetStyle(MessageStyle style) => _style = style;
 
-   public override Font Font
+   public new Font Font
    {
       get => base.Font;
       set
@@ -789,7 +787,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       refresh();
    }
 
-   public override string Text
+   public new string Text
    {
       get => text;
       set
@@ -1066,8 +1064,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          Refresh();
       };
 
-      using var font = new Font(fontName, fontSize);
-      var size = TextRenderer.MeasureText(this.text, font);
+      using var attachedFont = new Font(fontName, fontSize);
+      var size = TextRenderer.MeasureText(this.text, attachedFont);
 
       if (left == -1)
       {
@@ -1129,6 +1127,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          if (MainForm is (true, var mainForm))
          {
             return mainForm.Get(() => mainForm.Handle);
+         }
+         else if (ParentForm is null)
+         {
+            return nil;
          }
          else
          {
@@ -1371,10 +1373,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       if (locked)
       {
-         using var font = new Font("Consolas", 20f, FontStyle.Regular);
-         var size = UiActionWriter.TextSize(e.Graphics, "/big-x", font, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+         using var measureFont = new Font("Consolas", 20f, FontStyle.Regular);
+         var size = UiActionWriter.TextSize(e.Graphics, "/big-x", measureFont, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
          var rectangle = size.West(getClientRectangle());
-         var lockedWriter = new UiActionWriter(rectangle, font, Color.White);
+         var lockedWriter = new UiActionWriter(rectangle, measureFont, Color.White);
          lockedWriter.Write(e.Graphics, "/big-x", type is UiActionType.NoStatus);
       }
 
@@ -1613,8 +1615,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          if (Stopwatch)
          {
             var elapsed = stopwatch.Value.Elapsed.ToString(@"mm\:ss");
-            using var font = new Font("Consolas", 8);
-            var size = TextRenderer.MeasureText(e.Graphics, elapsed, font);
+            using var stopwatchFont = new Font("Consolas", 8);
+            var size = TextRenderer.MeasureText(e.Graphics, elapsed, stopwatchFont);
             var location = new Point(clientRectangle.Width - size.Width - 8, 4);
             var rectangle = new Rectangle(location, size);
             if (StopwatchInverted)
@@ -1623,14 +1625,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
                var backColor = getForeColor();
                using var brush = new SolidBrush(backColor);
                e.Graphics.FillRectangle(brush, rectangle);
-               TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, foreColor);
+               TextRenderer.DrawText(e.Graphics, elapsed, stopwatchFont, rectangle, foreColor);
                using var pen = new Pen(foreColor);
                e.Graphics.DrawRectangle(pen, rectangle);
             }
             else
             {
                var foreColor = getForeColor();
-               TextRenderer.DrawText(e.Graphics, elapsed, font, rectangle, foreColor);
+               TextRenderer.DrawText(e.Graphics, elapsed, stopwatchFont, rectangle, foreColor);
                using var pen = new Pen(foreColor);
                e.Graphics.DrawRectangle(pen, rectangle);
             }
@@ -1643,10 +1645,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       if (_title is (true, var title))
       {
          var rectangle = AutoSizingWriter.NarrowRectangle(clientRectangle, _floor, _ceiling);
-         var font = new Font(Font.FontFamily, 8, Font.Style);
+         var titleFont = new Font(Font.FontFamily, 8, Font.Style);
          var textFormatFlags = TextFormatFlags.EndEllipsis | TextFormatFlags.HidePrefix | TextFormatFlags.HorizontalCenter |
             TextFormatFlags.VerticalCenter;
-         var size = UiActionWriter.TextSize(g, title, font, textFormatFlags);
+         var size = UiActionWriter.TextSize(g, title, titleFont, textFormatFlags);
          var margin = (rectangle.Width - size.Width) / 2;
          if (margin > 0)
          {
@@ -1687,7 +1689,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
                Alignment = StringAlignment.Center,
                LineAlignment = StringAlignment.Center
             };
-            g.DrawString(title, font, textBrush, titleRectangle.ToRectangleF(), stringFormat);
+            g.DrawString(title, titleFont, textBrush, titleRectangle.ToRectangleF(), stringFormat);
          }
       }
    }
@@ -2291,8 +2293,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       if (Stopwatch)
       {
          var elapsed = stopwatch.Value.Elapsed.ToString(@"mm\:ss");
-         using var font = new Font("Consolas", 10);
-         var size = TextRenderer.MeasureText(elapsed, font, Size.Empty);
+         using var stopwatchFont = new Font("Consolas", 10);
+         var size = TextRenderer.MeasureText(elapsed, stopwatchFont, Size.Empty);
          var location = new Point(ClientRectangle.Width - size.Width - 8, 4);
          var rectangle = new Rectangle(location, size);
          setFloorAndCeiling(rectangle, true, true);
