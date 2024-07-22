@@ -587,9 +587,9 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       set
       {
          font = value;
-         italicFont = new Font(base.Font, FontStyle.Italic);
-         boldFont = new Font(base.Font, FontStyle.Bold);
-         italicBoldFont = new Font(base.Font, FontStyle.Italic | FontStyle.Bold);
+         italicFont = new Font(font, FontStyle.Italic);
+         boldFont = new Font(font, FontStyle.Bold);
+         italicBoldFont = new Font(font, FontStyle.Italic | FontStyle.Bold);
          toolTip.Font = value;
       }
    }
