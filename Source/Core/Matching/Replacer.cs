@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Core.Collections;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
@@ -78,6 +79,49 @@ public class Replacer(Pattern pattern)
          {
             return nil;
          }
+      }
+      else if (_result.Exception is (true, var exception))
+      {
+         return exception;
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public Optional<string> ReplaceAllGroups(string source, Action<StringHash> replacement, params string[] keys)
+   {
+      var _result = pattern.MatchedBy(source);
+      if (_result is (true, var result))
+      {
+         var groups = result.Groups(0);
+         if (groups.Length != keys.Length + 1)
+         {
+            return fail("Length of keys must be one less than number of groups");
+         }
+
+         StringHash stringHash = [];
+         StringHash<int> indexes = [];
+
+         stringHash["$text"] = groups[0];
+
+         var index = 1;
+         foreach (var (key, value) in keys.Zip(groups.Skip(1)))
+         {
+            stringHash[key] = value;
+            indexes[key] = index++;
+         }
+
+         replacement(stringHash);
+
+         foreach (var (key, groupIndex) in indexes)
+         {
+            result[0, groupIndex] = stringHash.Maybe[key] | "";
+         }
+
+         return result.ToString();
+
       }
       else if (_result.Exception is (true, var exception))
       {

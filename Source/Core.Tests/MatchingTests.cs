@@ -225,15 +225,13 @@ public class MatchingTests
    public void ReplacerGroupsTest()
    {
       var replacer = new Replacer("/(/d+) '.' /(/d+) '.' /(/d+); f");
-      var _replaced = replacer.ReplaceAllGroups("65.66.67", g =>
-      {
-         for (var i = 0; i < g.Length; i++)
-         {
-            g[i] = g[i].Maybe().Int32().Map(i => (char)i).Map(c => c.ToString()) | "?";
-         }
 
-         return g;
-      });
+      var _replaced = replacer.ReplaceAllGroups("65.66.67", h =>
+      {
+         h["one"] = h["one"].Maybe().Int32().Map(i => (char)i).Map(c => c.ToString()) | "?";
+         h["two"] = h["two"].Succ();
+         h["three"] = h["three"].PadLeft(10, '0');
+      }, "one", "two", "three");
 
       if (_replaced is (true, var replaced))
       {
