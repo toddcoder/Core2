@@ -2,6 +2,7 @@
 using Core.Collections;
 using Core.Enumerables;
 using Core.Matching;
+using Core.Objects;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Matching.MultiMatching.MultiMatchingFunctions;
@@ -216,7 +217,35 @@ public class MatchingTests
       }
       else
       {
-         Console.WriteLine("No matched");
+         Console.WriteLine("Not matched");
+      }
+   }
+
+   [TestMethod]
+   public void ReplacerGroupsTest()
+   {
+      var replacer = new Replacer("/(/d+) '.' /(/d+) '.' /(/d+); f");
+      var _replaced = replacer.ReplaceAllGroups("65.66.67", g =>
+      {
+         for (var i = 0; i < g.Length; i++)
+         {
+            g[i] = g[i].Maybe().Int32().Map(i => (char)i).Map(c => c.ToString()) | "?";
+         }
+
+         return g;
+      });
+
+      if (_replaced is (true, var replaced))
+      {
+         Console.WriteLine(replaced);
+      }
+      else if (_replaced.Exception is (true, var exception))
+      {
+         Console.WriteLine(exception.Message);
+      }
+      else
+      {
+         Console.WriteLine("Not matched");
       }
    }
 }

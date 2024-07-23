@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
@@ -29,6 +30,7 @@ public class Replacer(Pattern pattern)
                      any = true;
                   }
                }
+
                matchIndex++;
             }
 
@@ -53,6 +55,37 @@ public class Replacer(Pattern pattern)
       catch (Exception exception)
       {
          return exception;
+      }
+   }
+
+   public Optional<string> ReplaceAllGroups(string source, Func<string[], Maybe<string[]>> replacement)
+   {
+      var _result = pattern.MatchedBy(source);
+      if (_result is (true, var result))
+      {
+         string[] groups = [.. result.Groups(0).Skip(1)];
+         var _replaced = replacement(groups);
+         if (_replaced is (true, var replaced))
+         {
+            for (var i = 0; i < replaced.Length; i++)
+            {
+               result[0, i + 1] = replaced[i];
+            }
+
+            return result.ToString();
+         }
+         else
+         {
+            return nil;
+         }
+      }
+      else if (_result.Exception is (true, var exception))
+      {
+         return exception;
+      }
+      else
+      {
+         return nil;
       }
    }
 }
