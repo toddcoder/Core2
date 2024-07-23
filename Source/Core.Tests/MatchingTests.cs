@@ -5,6 +5,7 @@ using Core.Matching;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static Core.Matching.MultiMatching.MultiMatchingFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests;
 
@@ -184,6 +185,38 @@ public class MatchingTests
                   break;
             }
          }
+      }
+   }
+
+   [TestMethod]
+   public void ReplacerTest()
+   {
+      var source = "1.2.3 4.5.6";
+      var replacer = new Replacer("/(/d+) '.' /(/d+) '.' /(/d+) /s*; f");
+      var _replaced = replacer.Replace(source, (m, g, s) =>
+      {
+         Console.WriteLine($"{m}, {g}");
+         if (m != 1 || g != 2)
+         {
+            return s.RightJustify(10, '0');
+         }
+         else
+         {
+            return nil;
+         }
+      });
+
+      if (_replaced is (true, var replaced))
+      {
+         Console.WriteLine(replaced);
+      }
+      else if (_replaced.Exception is (true, var exception))
+      {
+         Console.WriteLine(exception.Message);
+      }
+      else
+      {
+         Console.WriteLine("No matched");
       }
    }
 }
