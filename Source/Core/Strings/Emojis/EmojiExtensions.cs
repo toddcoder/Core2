@@ -50,6 +50,7 @@ public static class EmojiExtensions
       Emoji.Stop => "🛑",
       Emoji.BigX => "╳",
       Emoji.Mail => "✉",
+      Emoji.Menu => "☰",
       _ => ""
    };
 
@@ -103,6 +104,7 @@ public static class EmojiExtensions
                "stop" => "🛑",
                "big-x" => "╳",
                "mail" => "✉",
+               "menu" => "☰",
                _ => nil
             };
             if (_replacement is (true, var replacement))
