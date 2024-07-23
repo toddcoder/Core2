@@ -115,13 +115,19 @@ public class Replacer(Pattern pattern)
 
          replacement(stringHash);
 
-         foreach (var (key, groupIndex) in indexes)
+         if (stringHash["$text"] != groups[0])
          {
-            result[0, groupIndex] = stringHash.Maybe[key] | "";
+            return stringHash["$text"];
          }
+         else
+         {
+            foreach (var (key, groupIndex) in indexes)
+            {
+               result[0, groupIndex] = stringHash.Maybe[key] | "";
+            }
 
-         return result.ToString();
-
+            return result.ToString();
+         }
       }
       else if (_result.Exception is (true, var exception))
       {
