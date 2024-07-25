@@ -5,9 +5,9 @@ namespace Core.WinForms.Controls;
 
 public class DisabledWriter : UiActionWriter
 {
-   public static DisabledWriter FromUiAction(UiAction uiAction)
+   public static DisabledWriter FromUiAction(UiAction uiAction, bool useEmojis)
    {
-      return new DisabledWriter(uiAction.MessageAlignment, uiAction.AutoSizeText)
+      return new DisabledWriter(uiAction.MessageAlignment, uiAction.AutoSizeText, useEmojis)
       {
          Rectangle = uiAction.ClientRectangle,
          Font = new Font(uiAction.NonNullFont, FontStyle.Italic | FontStyle.Bold),
@@ -17,8 +17,8 @@ public class DisabledWriter : UiActionWriter
          Required = uiAction.Required
       };
    }
-   public DisabledWriter(CardinalAlignment messageAlignment, bool autoSizeText)
-      : base(messageAlignment, autoSizeText, nil, nil, UiActionButtonType.Normal)
+   public DisabledWriter(CardinalAlignment messageAlignment, bool autoSizeText, bool useEmojis)
+      : base(messageAlignment, autoSizeText, nil, nil, UiActionButtonType.Normal, useEmojis)
    {
    }
 

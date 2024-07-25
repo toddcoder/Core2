@@ -265,7 +265,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          }
       };
 
-      toolTip = new UiToolTip(this);
+      toolTip = new UiToolTip(this, UseEmojis);
       toolTip.SetToolTip(this, "");
       toolTip.Font = font;
 
@@ -498,7 +498,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          {
             var clientRectangle = getClientRectangle();
             var _uiAction = maybe<UiAction>() & showToGo & this;
-            _progressDefiniteProcessor.Activate(() => new ProgressDefiniteProcessor(font, graphics, clientRectangle, _uiAction));
+            _progressDefiniteProcessor.Activate(() => new ProgressDefiniteProcessor(font, graphics, clientRectangle, _uiAction, UseEmojis));
             break;
          }
          case UiActionType.ProgressMini:
@@ -612,10 +612,12 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       }
    }
 
+   protected string withEmojis(string text) => UseEmojis ? text.EmojiSubstitutions() : text;
+
    public Maybe<string> Title
    {
       get => _title;
-      set => _title = value.Map(t => t.EmojiSubstitutions());
+      set => _title = value.Map(withEmojis);
    }
 
    protected void setToolTip()
@@ -1389,7 +1391,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       if (!Enabled && !_symbolWriter && !locked)
       {
-         var disabledWriter = DisabledWriter.FromUiAction(this);
+         var disabledWriter = DisabledWriter.FromUiAction(this, UseEmojis);
 
          disabledWriter.Write(e.Graphics, text, true);
 
@@ -1408,7 +1410,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       if (locked)
       {
          using var measureFont = new Font("Consolas", 20f, FontStyle.Regular);
-         var size = UiActionWriter.TextSize(e.Graphics, "/big-x", measureFont, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+         var size = UiActionWriter.TextSize(e.Graphics, "/big-x", measureFont, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter, UseEmojis);
          var rectangle = size.West(getClientRectangle());
          var lockedWriter = new UiActionWriter(rectangle, measureFont, Color.White);
          lockedWriter.Write(e.Graphics, "/big-x", type is UiActionType.NoStatus);
@@ -1435,7 +1437,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       determineFloorAndCeiling();
 
-      var writer = new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, buttonType)
+      var writer = new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, buttonType, UseEmojis)
       {
          Rectangle = glyphAdjustedClientRectangle(),
          Font = getFont(),
@@ -1682,7 +1684,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          var titleFont = new Font(font.FontFamily, 8, font.Style);
          var textFormatFlags = TextFormatFlags.EndEllipsis | TextFormatFlags.HidePrefix | TextFormatFlags.HorizontalCenter |
             TextFormatFlags.VerticalCenter;
-         var size = UiActionWriter.TextSize(g, title, titleFont, textFormatFlags);
+         var size = UiActionWriter.TextSize(g, title, titleFont, textFormatFlags, UseEmojis);
          var margin = (rectangle.Width - size.Width) / 2;
          if (margin > 0)
          {
@@ -3258,7 +3260,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       type = UiActionType.Alternate;
       RectangleCount = alternates.Length;
-      _alternateWriter = new AlternateWriter(this, alternates, AutoSizeText, _floor, _ceiling);
+      _alternateWriter = new AlternateWriter(this, alternates, AutoSizeText, _floor, _ceiling, UseEmojis);
       refresh();
    }
 
@@ -3276,7 +3278,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       type = UiActionType.Alternate;
       RectangleCount = alternates.Length;
-      _alternateWriter = new DeletableWriter(this, alternates, AutoSizeText, _floor, _ceiling);
+      _alternateWriter = new DeletableWriter(this, alternates, AutoSizeText, _floor, _ceiling, UseEmojis);
       refresh();
    }
 
@@ -3489,7 +3491,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    protected Rectangle getDividerTextRectangle(Graphics g, Rectangle rectangleRectangle)
    {
       var flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis;
-      var textSize = UiActionWriter.TextSize(g, text, font, flags);
+      var textSize = UiActionWriter.TextSize(g, text, font, flags, UseEmojis);
 
       var offset = 4;
 
@@ -3638,4 +3640,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
 
       return getClientRectangle().OffsetWidth(clickGlyph).OffsetWidth(chooserGlyph);
    }
+
+   public bool UseEmojis { get; set; } = true;
 }

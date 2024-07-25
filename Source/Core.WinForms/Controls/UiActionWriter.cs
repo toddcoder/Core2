@@ -86,18 +86,21 @@ public class UiActionWriter
    protected Result<Font> _font = fail("Font not set");
    protected Result<Color> _color = fail("Color not set");
    protected UiActionButtonType buttonType;
+   protected bool useEmojis;
 
-   public UiActionWriter(CardinalAlignment messageAlignment, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling, UiActionButtonType buttonType)
+   public UiActionWriter(CardinalAlignment messageAlignment, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling, UiActionButtonType buttonType,
+      bool useEmojis)
    {
       Align(messageAlignment);
       this.autoSizeText = autoSizeText;
       this._floor = _floor;
       this._ceiling = _ceiling;
       this.buttonType = buttonType;
+      this.useEmojis = useEmojis;
    }
 
    public UiActionWriter(Rectangle rectangle, Font font, Color color, CardinalAlignment messageAlignment = CardinalAlignment.Center,
-      bool autoSizeText = true) : this(messageAlignment, autoSizeText, nil, nil, UiActionButtonType.Normal)
+      bool autoSizeText = true) : this(messageAlignment, autoSizeText, nil, nil, UiActionButtonType.Normal, true)
    {
       _rectangle = rectangle;
       _font = font;
@@ -150,22 +153,32 @@ public class UiActionWriter
 
    public bool Required { get; set; }
 
+   public bool UseEmojis
+   {
+      get => useEmojis;
+      set => useEmojis = value;
+   }
+
    public Size TextSize(Graphics g, string text)
    {
       var font = _font | (() => new Font("Consolas", 12f));
-      return TextSize(g, text, font, Flags);
+      return TextSize(g, text, font, Flags, useEmojis);
    }
 
-   public static Size TextSize(Graphics g, string text, Font font, TextFormatFlags flags)
+   protected static string withEmojis(bool useEmojis, string text) => useEmojis ? text.EmojiSubstitutions() : text;
+
+   protected string withEmojis(string text) => useEmojis ? text.EmojiSubstitutions() : text;
+
+   public static Size TextSize(Graphics g, string text, Font font, TextFormatFlags flags, bool useEmojis)
    {
       var proposedSize = new Size(int.MaxValue, int.MaxValue);
-      return TextRenderer.MeasureText(g, text.EmojiSubstitutions(), font, proposedSize, flags);
+      return TextRenderer.MeasureText(g, withEmojis(useEmojis, text), font, proposedSize, flags);
    }
 
-   public static Size TextSize(string text, Font font, TextFormatFlags flags)
+   public static Size TextSize(string text, Font font, TextFormatFlags flags, bool useEmojis)
    {
       var proposedSize = new Size(int.MaxValue, int.MaxValue);
-      return TextRenderer.MeasureText(text.EmojiSubstitutions(), font, proposedSize, flags);
+      return TextRenderer.MeasureText(withEmojis(useEmojis, text), font, proposedSize, flags);
    }
 
    public Rectangle TextRectangle(string text, Graphics graphics, Maybe<Rectangle> _rectangleToUse)
@@ -246,7 +259,7 @@ public class UiActionWriter
       }
 
       text = text.Replace("/!", "!");
-      text = text.EmojiSubstitutions();
+      text = withEmojis(text);
       if (lower)
       {
          text = text.ToLower();

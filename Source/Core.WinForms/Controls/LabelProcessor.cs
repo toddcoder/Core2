@@ -10,14 +10,17 @@ public class LabelProcessor
    protected Maybe<int> _labelWidth;
    protected Font font;
    protected Maybe<string> _emptyTextTitle;
+   protected bool useEmojis;
    protected Rectangle labelRectangle;
 
-   public LabelProcessor(string label, Maybe<int> _labelWidth, Font font, Maybe<string> _emptyTextTitle, Graphics graphics, Rectangle clientRectangle)
+   public LabelProcessor(string label, Maybe<int> _labelWidth, Font font, Maybe<string> _emptyTextTitle, Graphics graphics, Rectangle clientRectangle,
+      bool useEmojis)
    {
       this.label = label;
       this._labelWidth = _labelWidth;
       this.font = font;
       this._emptyTextTitle = _emptyTextTitle;
+      this.useEmojis = useEmojis;
 
       labelRectangle = getLabelRectangle(graphics, clientRectangle);
    }
@@ -52,7 +55,7 @@ public class LabelProcessor
    public void OnPaint(Graphics graphics)
    {
       using var labelFont = new Font(font, FontStyle.Bold);
-      var writer = new UiActionWriter(CardinalAlignment.West, false, nil, nil, UiActionButtonType.Normal)
+      var writer = new UiActionWriter(CardinalAlignment.West, false, nil, nil, UiActionButtonType.Normal, useEmojis)
       {
          Rectangle = labelRectangle,
          Font = labelFont,

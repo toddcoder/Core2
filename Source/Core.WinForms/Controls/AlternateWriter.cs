@@ -6,7 +6,7 @@ using Core.Monads;
 
 namespace Core.WinForms.Controls;
 
-public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling)
+public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling, bool useEmojis)
 {
    protected int selectedIndex;
    protected int disabledIndex = -1;
@@ -215,7 +215,7 @@ public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSi
 
    public void OnPaint(Graphics g)
    {
-      var writer = new UiActionWriter(CardinalAlignment.Center, autoSizeText, _floor, _ceiling, UiActionButtonType.Normal);
+      var writer = new UiActionWriter(CardinalAlignment.Center, autoSizeText, _floor, _ceiling, UiActionButtonType.Normal, useEmojis);
       foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
       {
          onPaint(g, index, rectangle, writer, alternates[index]);

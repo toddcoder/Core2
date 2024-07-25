@@ -4,8 +4,8 @@ using Core.Enumerables;
 
 namespace Core.WinForms.Controls;
 
-public class DeletableWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling)
-   : AlternateWriter(uiAction, alternates, autoSizeText, _floor, _ceiling)
+public class DeletableWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling, bool useEmojis)
+   : AlternateWriter(uiAction, alternates, autoSizeText, _floor, _ceiling, useEmojis)
 {
    protected const int DELETABLE_SIZE = 8;
    protected const int DELETABLE_MARGIN = 3;

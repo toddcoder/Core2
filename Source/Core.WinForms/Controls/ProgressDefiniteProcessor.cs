@@ -13,11 +13,13 @@ public class ProgressDefiniteProcessor
    protected Rectangle textRectangle;
    protected Maybe<Stopwatch> _stopwatch;
    protected bool showToGo;
+   protected bool useEmojis;
    protected bool pendingRectangleChange;
 
-   public ProgressDefiniteProcessor(Font font, Graphics graphics, Rectangle clientRectangle, bool showToGo)
+   public ProgressDefiniteProcessor(Font font, Graphics graphics, Rectangle clientRectangle, bool showToGo, bool useEmojis)
    {
       this.font = font;
+      this.useEmojis = useEmojis;
 
       percentRectangle = getPercentRectangle(graphics, clientRectangle, showToGo);
       textRectangle = getTextRectangle(clientRectangle);
@@ -75,7 +77,7 @@ public class ProgressDefiniteProcessor
          var timeToGo = TimeToGo(percent);
          if (timeToGo.IsNotEmpty())
          {
-            var size = UiActionWriter.TextSize(g, timeToGo, font, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+            var size = UiActionWriter.TextSize(g, timeToGo, font, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter, useEmojis);
             var rectangle = percentRectangle with { Y = percentRectangle.Y + percentRectangle.Height - size.Height, Height = size.Height };
             var stringFormat = new StringFormat
             {

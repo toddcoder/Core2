@@ -9,16 +9,18 @@ public class UiToolTip : ToolTip
 {
    protected UiAction uiAction;
    protected Font font;
+   protected bool useEmojis;
    protected Maybe<Action<object, DrawToolTipEventArgs>> _action;
    protected TextFormatFlags textFormatFlags;
    protected Timer timer;
 
-   public UiToolTip(UiAction uiAction)
+   public UiToolTip(UiAction uiAction, bool useEmojis)
    {
       this.uiAction = uiAction;
       font = this.uiAction.NonNullFont;
-      Text = string.Empty;
+      this.useEmojis = useEmojis;
 
+      Text = "";
       _action = nil;
       textFormatFlags = TextFormatFlags.VerticalCenter | TextFormatFlags.LeftAndRightPadding | TextFormatFlags.HorizontalCenter |
          TextFormatFlags.NoClipping;
@@ -121,7 +123,7 @@ public class UiToolTip : ToolTip
          bounds = bounds with { Y = bounds.Y + 20, Height = bounds.Height - 20 };
       }
 
-      var writer = new UiActionWriter(CardinalAlignment.Center, false, nil, nil, UiActionButtonType.Normal)
+      var writer = new UiActionWriter(CardinalAlignment.Center, false, nil, nil, UiActionButtonType.Normal, useEmojis)
       {
          Font = font,
          Color = foreColor,
@@ -140,7 +142,7 @@ public class UiToolTip : ToolTip
          using var brush = new SolidBrush(backColor);
          g.FillRectangle(brush, smallBounds);
 
-         var writer = new UiActionWriter(CardinalAlignment.Center, false, nil, nil, UiActionButtonType.Normal)
+         var writer = new UiActionWriter(CardinalAlignment.Center, false, nil, nil, UiActionButtonType.Normal, useEmojis)
          {
             Font = smallFont,
             Color = foreColor,
