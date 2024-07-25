@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Forms.VisualStyles;
 using Core.Collections;
-using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
 using Core.Strings.Emojis;
@@ -46,6 +45,7 @@ public partial class Chooser : Form
 
    protected string title;
    protected UiAction uiAction;
+   protected bool useEmojis;
    protected StringHash choices = [];
    protected Maybe<Color> _foreColor = nil;
    protected Maybe<Color> _backColor = nil;
@@ -68,6 +68,7 @@ public partial class Chooser : Form
    {
       this.title = title;
       this.uiAction = uiAction;
+      useEmojis = this.uiAction.UseEmojis;
 
       InitializeComponent();
 
@@ -191,11 +192,13 @@ public partial class Chooser : Form
 
    public bool FlyUp { get; set; }
 
+   protected string withEmojis(string text) => useEmojis ? text.EmojiSubstitutions() : text;
+
    protected void addItem(string text, Color foreColor, Color backColor)
    {
       Maybe<Font> _font = nil;
 
-      text = text.EmojiSubstitutions();
+      text = withEmojis(text);
 
       if (overrideAppearance(text, foreColor, backColor) is (true, var tuple))
       {
@@ -214,7 +217,7 @@ public partial class Chooser : Form
    {
       Maybe<Font> _font = nil;
 
-      text = text.EmojiSubstitutions();
+      text = withEmojis(text);
 
       if (overrideAppearance(text, foreColor, backColor) is (true, var tuple))
       {
