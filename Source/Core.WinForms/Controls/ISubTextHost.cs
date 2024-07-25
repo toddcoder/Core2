@@ -6,5 +6,7 @@ public interface ISubTextHost
 {
    Maybe<SubText> CurrentLegend { get; }
 
+   bool UseEmojis { get; }
+
    void Refresh();
 }

@@ -20,6 +20,7 @@ public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size s
    protected LocationLockStatus locationLockStatus = LocationLockStatus.Floating;
    protected Maybe<(SubText subText, int margin)> _rightSubText = nil;
    protected Maybe<(SubText subText, int margin)> _leftSubText = nil;
+   protected bool useEmojis = subTextHost.UseEmojis;
 
    public event EventHandler<PaintEventArgs>? Painting;
    public event EventHandler<PaintEventArgs>? PaintingBackground;
@@ -116,9 +117,11 @@ public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size s
 
    public int Alpha { get; set; } = 255;
 
+   protected string withEmojis(string originalText) => useEmojis ? originalText.EmojiSubstitutions() : originalText;
+
    public (Size measuredSize, string text, TextFormatFlags flags, Font font) TextSize(Maybe<Graphics> _graphics)
    {
-      var newText = text.EmojiSubstitutions();
+      var newText = withEmojis(text);
       var font = new Font(FontName, FontSize, FontStyle);
       var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
       var proposedSize = new Size(int.MaxValue, int.MaxValue);

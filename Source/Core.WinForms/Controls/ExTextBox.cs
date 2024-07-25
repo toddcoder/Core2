@@ -774,4 +774,6 @@ public class ExTextBox : TextBox, ISubTextHost
    }
 
    public Maybe<SubText> CurrentLegend => legends.Peek();
+
+   public bool UseEmojis => false;
 }
