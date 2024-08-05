@@ -1042,6 +1042,18 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       }
    }
 
+   public void Result(Result<string> _result, UiActionType type)
+   {
+      if (_result is (true, var message))
+      {
+         ShowMessage(message, type);
+      }
+      else
+      {
+         Exception(_result.Exception);
+      }
+   }
+
    public void Optional(Optional<string> _message, string nilMessage)
    {
       if (_message is (true, var message))
@@ -1055,6 +1067,70 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
       else
       {
          Failure(nilMessage);
+      }
+   }
+
+   public void Optional(Optional<(string message, UiActionType type)> _message, string nilMessage)
+   {
+      if (_message is (true, var (message, uiActionType)))
+      {
+         ShowMessage(message, uiActionType);
+      }
+      else if (_message.Exception is (true, var exception))
+      {
+         Exception(exception);
+      }
+      else
+      {
+         Failure(nilMessage);
+      }
+   }
+
+   public void Optional(Optional<(string message, UiActionType type)> _message, Func<string> nilMessage)
+   {
+      if (_message is (true, var (message, uiActionType)))
+      {
+         ShowMessage(message, uiActionType);
+      }
+      else if (_message.Exception is (true, var exception))
+      {
+         Exception(exception);
+      }
+      else
+      {
+         Failure(nilMessage());
+      }
+   }
+
+   public void Optional(Optional<string> _message, UiActionType type, string nilMessage)
+   {
+      if (_message is (true, var message))
+      {
+         ShowMessage(message, type);
+      }
+      else if (_message.Exception is (true, var exception))
+      {
+         Exception(exception);
+      }
+      else
+      {
+         Failure(nilMessage);
+      }
+   }
+
+   public void Optional(Optional<string> _message, UiActionType type, Func<string> nilMessage)
+   {
+      if (_message is (true, var message))
+      {
+         ShowMessage(message, type);
+      }
+      else if (_message.Exception is (true, var exception))
+      {
+         Exception(exception);
+      }
+      else
+      {
+         Failure(nilMessage());
       }
    }
 
