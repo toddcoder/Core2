@@ -9,6 +9,10 @@ namespace Core.WinForms.Controls;
 
 public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> where TControl : Control
 {
+   public static ControlContainer<TControl> HorizontalContainer() => [];
+
+   public static ControlContainer<TControl> VerticalContainer() => new() { Direction = ControlDirection.Vertical };
+
    protected StringHash<TControl> controls = [];
    protected Hash<int, string> indexes = [];
    protected StringHash<int> keys = [];
