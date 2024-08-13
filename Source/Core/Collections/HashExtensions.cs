@@ -123,7 +123,55 @@ public static class HashExtensions
       return result;
    }
 
+   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this Span<TValue> span, Func<TValue, TKey> keySelector) where TKey : notnull
+      where TValue : notnull
+   {
+      Hash<TKey, TValue> result = [];
+      foreach (var item in span)
+      {
+         result[keySelector(item)] = item;
+      }
+
+      return result;
+   }
+
+   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this ReadOnlySpan<TValue> span, Func<TValue, TKey> keySelector) where TKey : notnull
+      where TValue : notnull
+   {
+      Hash<TKey, TValue> result = [];
+      foreach (var item in span)
+      {
+         result[keySelector(item)] = item;
+      }
+
+      return result;
+   }
+
    public static StringHash<TValue> ToStringHash<TValue>(this IEnumerable<TValue> enumerable, Func<TValue, string> keySelector)
+      where TValue : notnull
+   {
+      StringHash<TValue> result = [];
+      foreach (var item in enumerable)
+      {
+         result[keySelector(item)] = item;
+      }
+
+      return result;
+   }
+
+   public static StringHash<TValue> ToStringHash<TValue>(this Span<TValue> enumerable, Func<TValue, string> keySelector)
+      where TValue : notnull
+   {
+      StringHash<TValue> result = [];
+      foreach (var item in enumerable)
+      {
+         result[keySelector(item)] = item;
+      }
+
+      return result;
+   }
+
+   public static StringHash<TValue> ToStringHash<TValue>(this ReadOnlySpan<TValue> enumerable, Func<TValue, string> keySelector)
       where TValue : notnull
    {
       StringHash<TValue> result = [];
@@ -147,11 +195,59 @@ public static class HashExtensions
       return result;
    }
 
+   public static StringHash ToStringHash<TValue>(this Span<TValue> span, Func<TValue, string> keySelector,
+      Func<TValue, string> valueSelector)
+   {
+      StringHash result = [];
+      foreach (var item in span)
+      {
+         result[keySelector(item)] = valueSelector(item);
+      }
+
+      return result;
+   }
+
+   public static StringHash ToStringHash<TValue>(this ReadOnlySpan<TValue> span, Func<TValue, string> keySelector,
+      Func<TValue, string> valueSelector)
+   {
+      StringHash result = [];
+      foreach (var item in span)
+      {
+         result[keySelector(item)] = valueSelector(item);
+      }
+
+      return result;
+   }
+
    public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> keySelector,
       IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
    {
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
+      {
+         result[keySelector(item)] = item;
+      }
+
+      return result;
+   }
+
+   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this Span<TValue> span, Func<TValue, TKey> keySelector,
+      IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
+   {
+      var result = new Hash<TKey, TValue>(comparer);
+      foreach (var item in span)
+      {
+         result[keySelector(item)] = item;
+      }
+
+      return result;
+   }
+
+   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this ReadOnlySpan<TValue> span, Func<TValue, TKey> keySelector,
+      IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
+   {
+      var result = new Hash<TKey, TValue>(comparer);
+      foreach (var item in span)
       {
          result[keySelector(item)] = item;
       }
@@ -171,11 +267,59 @@ public static class HashExtensions
       return result;
    }
 
+   public static Hash<TKey, TValue> ToHash<TKey, TValue, T>(this Span<T> span, Func<T, TKey> keySelector,
+      Func<T, TValue> valueSelector) where TKey : notnull where TValue : notnull
+   {
+      Hash<TKey, TValue> result = [];
+      foreach (var item in span)
+      {
+         result[keySelector(item)] = valueSelector(item);
+      }
+
+      return result;
+   }
+
+   public static Hash<TKey, TValue> ToHash<TKey, TValue, T>(this ReadOnlySpan<T> span, Func<T, TKey> keySelector,
+      Func<T, TValue> valueSelector) where TKey : notnull where TValue : notnull
+   {
+      Hash<TKey, TValue> result = [];
+      foreach (var item in span)
+      {
+         result[keySelector(item)] = valueSelector(item);
+      }
+
+      return result;
+   }
+
    public static StringHash<TValue> ToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
       Func<T, TValue> valueSelector) where TValue : notnull
    {
       StringHash<TValue> result = [];
       foreach (var item in enumerable)
+      {
+         result[keySelector(item)] = valueSelector(item);
+      }
+
+      return result;
+   }
+
+   public static StringHash<TValue> ToStringHash<TValue, T>(this Span<T> span, Func<T, string> keySelector,
+      Func<T, TValue> valueSelector) where TValue : notnull
+   {
+      StringHash<TValue> result = [];
+      foreach (var item in span)
+      {
+         result[keySelector(item)] = valueSelector(item);
+      }
+
+      return result;
+   }
+
+   public static StringHash<TValue> ToStringHash<TValue, T>(this ReadOnlySpan<T> span, Func<T, string> keySelector,
+      Func<T, TValue> valueSelector) where TValue : notnull
+   {
+      StringHash<TValue> result = [];
+      foreach (var item in span)
       {
          result[keySelector(item)] = valueSelector(item);
       }
@@ -195,10 +339,56 @@ public static class HashExtensions
       return result;
    }
 
+   public static Hash<TKey, TValue> ToHash<TKey, TValue, T>(this Span<T> span, Func<T, TKey> keySelector,
+      Func<T, TValue> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
+   {
+      var result = new Hash<TKey, TValue>(comparer);
+      foreach (var item in span)
+      {
+         result[keySelector(item)] = valueSelector(item);
+      }
+
+      return result;
+   }
+
+   public static Hash<TKey, TValue> ToHash<TKey, TValue, T>(this ReadOnlySpan<T> span, Func<T, TKey> keySelector,
+      Func<T, TValue> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
+   {
+      var result = new Hash<TKey, TValue>(comparer);
+      foreach (var item in span)
+      {
+         result[keySelector(item)] = valueSelector(item);
+      }
+
+      return result;
+   }
+
    public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<(TKey, TValue)> enumerable) where TKey : notnull where TValue : notnull
    {
       Hash<TKey, TValue> result = [];
       foreach (var (key, value) in enumerable)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
+   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this Span<(TKey, TValue)> span) where TKey : notnull where TValue : notnull
+   {
+      Hash<TKey, TValue> result = [];
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
+   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this ReadOnlySpan<(TKey, TValue)> span) where TKey : notnull where TValue : notnull
+   {
+      Hash<TKey, TValue> result = [];
+      foreach (var (key, value) in span)
       {
          result[key] = value;
       }
@@ -218,6 +408,30 @@ public static class HashExtensions
       return result;
    }
 
+   public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Span<(TKey, TValue)> span, Func<TKey, TValue> defaultLambda,
+      bool autoAddDefault = false) where TKey : notnull where TValue : notnull
+   {
+      var result = new AutoHash<TKey, TValue>(defaultLambda, autoAddDefault);
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
+   public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this ReadOnlySpan<(TKey, TValue)> span, Func<TKey, TValue> defaultLambda,
+      bool autoAddDefault = false) where TKey : notnull where TValue : notnull
+   {
+      var result = new AutoHash<TKey, TValue>(defaultLambda, autoAddDefault);
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
    public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this IEnumerable<(TKey, TValue)> enumerable, TValue defaultValue,
       bool autoAddDefault = false) where TKey : notnull where TValue : notnull
    {
@@ -230,10 +444,56 @@ public static class HashExtensions
       return result;
    }
 
+   public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Span<(TKey, TValue)> span, TValue defaultValue,
+      bool autoAddDefault = false) where TKey : notnull where TValue : notnull
+   {
+      var result = new AutoHash<TKey, TValue>(defaultValue, autoAddDefault);
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
+   public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this ReadOnlySpan<(TKey, TValue)> span, TValue defaultValue,
+      bool autoAddDefault = false) where TKey : notnull where TValue : notnull
+   {
+      var result = new AutoHash<TKey, TValue>(defaultValue, autoAddDefault);
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
    public static StringHash ToStringHash(this IEnumerable<(string, string)> enumerable)
    {
       StringHash result = [];
       foreach (var (key, value) in enumerable)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
+   public static StringHash ToStringHash(this Span<(string, string)> span)
+   {
+      StringHash result = [];
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
+   public static StringHash ToStringHash(this ReadOnlySpan<(string, string)> span)
+   {
+      StringHash result = [];
+      foreach (var (key, value) in span)
       {
          result[key] = value;
       }
@@ -253,6 +513,30 @@ public static class HashExtensions
       return result;
    }
 
+   public static StringHash ToAutoStringHash(this Span<(string, string)> span, Func<string, string> defaultLambda,
+      bool autoAddDefault = false)
+   {
+      var result = new AutoStringHash(defaultLambda, autoAddDefault);
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
+   public static StringHash ToAutoStringHash(this ReadOnlySpan<(string, string)> span, Func<string, string> defaultLambda,
+      bool autoAddDefault = false)
+   {
+      var result = new AutoStringHash(defaultLambda, autoAddDefault);
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
    public static StringHash ToAutoStringHash(this IEnumerable<(string, string)> enumerable, string defaultValue, bool autoAddDefault = false)
    {
       var result = new AutoStringHash(defaultValue, autoAddDefault);
@@ -264,10 +548,54 @@ public static class HashExtensions
       return result;
    }
 
+   public static StringHash ToAutoStringHash(this Span<(string, string)> span, string defaultValue, bool autoAddDefault = false)
+   {
+      var result = new AutoStringHash(defaultValue, autoAddDefault);
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
+   public static StringHash ToAutoStringHash(this ReadOnlySpan<(string, string)> span, string defaultValue, bool autoAddDefault = false)
+   {
+      var result = new AutoStringHash(defaultValue, autoAddDefault);
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
    public static StringHash<TValue> ToStringHash<TValue>(this IEnumerable<(string, TValue)> enumerable) where TValue : notnull
    {
       StringHash<TValue> result = [];
       foreach (var (key, value) in enumerable)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
+   public static StringHash<TValue> ToStringHash<TValue>(this Span<(string, TValue)> span) where TValue : notnull
+   {
+      StringHash<TValue> result = [];
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
+   public static StringHash<TValue> ToStringHash<TValue>(this ReadOnlySpan<(string, TValue)> span) where TValue : notnull
+   {
+      StringHash<TValue> result = [];
+      foreach (var (key, value) in span)
       {
          result[key] = value;
       }
@@ -287,11 +615,59 @@ public static class HashExtensions
       return result;
    }
 
+   public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this Span<(string, TValue)> span, Func<string, TValue> defaultLambda,
+      bool autoAddDefault = false) where TValue : notnull
+   {
+      var result = new AutoStringHash<TValue>(defaultLambda, autoAddDefault);
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
+   public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this ReadOnlySpan<(string, TValue)> span, Func<string, TValue> defaultLambda,
+      bool autoAddDefault = false) where TValue : notnull
+   {
+      var result = new AutoStringHash<TValue>(defaultLambda, autoAddDefault);
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
    public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this IEnumerable<(string, TValue)> enumerable, TValue defaultValue,
       bool autoAddDefault = false) where TValue : notnull
    {
       var result = new AutoStringHash<TValue>(defaultValue, autoAddDefault);
       foreach (var (key, value) in enumerable)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
+   public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this Span<(string, TValue)> span, TValue defaultValue,
+      bool autoAddDefault = false) where TValue : notnull
+   {
+      var result = new AutoStringHash<TValue>(defaultValue, autoAddDefault);
+      foreach (var (key, value) in span)
+      {
+         result[key] = value;
+      }
+
+      return result;
+   }
+
+   public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this ReadOnlySpan<(string, TValue)> span, TValue defaultValue,
+      bool autoAddDefault = false) where TValue : notnull
+   {
+      var result = new AutoStringHash<TValue>(defaultValue, autoAddDefault);
+      foreach (var (key, value) in span)
       {
          result[key] = value;
       }
@@ -352,11 +728,91 @@ public static class HashExtensions
       return result;
    }
 
+   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this Span<T> span, Func<T, TKey> keySelector,
+      Func<T, Result<TValue>> valueSelector) where TKey : notnull where TValue : notnull
+   {
+      Hash<TKey, TValue> result = [];
+      foreach (var item in span)
+      {
+         var _selector = valueSelector(item);
+         if (_selector is (true, var selector))
+         {
+            result[keySelector(item)] = selector;
+         }
+         else
+         {
+            return _selector.Exception;
+         }
+      }
+
+      return result;
+   }
+
+   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this ReadOnlySpan<T> span, Func<T, TKey> keySelector,
+      Func<T, Result<TValue>> valueSelector) where TKey : notnull where TValue : notnull
+   {
+      Hash<TKey, TValue> result = [];
+      foreach (var item in span)
+      {
+         var _selector = valueSelector(item);
+         if (_selector is (true, var selector))
+         {
+            result[keySelector(item)] = selector;
+         }
+         else
+         {
+            return _selector.Exception;
+         }
+      }
+
+      return result;
+   }
+
    public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
       Func<T, Result<TValue>> valueSelector) where TValue : notnull
    {
       StringHash<TValue> result = [];
       foreach (var item in enumerable)
+      {
+         var _selector = valueSelector(item);
+         if (_selector is (true, var selector))
+         {
+            result[keySelector(item)] = selector;
+         }
+         else
+         {
+            return _selector.Exception;
+         }
+      }
+
+      return result;
+   }
+
+   public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this Span<T> span, Func<T, string> keySelector,
+      Func<T, Result<TValue>> valueSelector) where TValue : notnull
+   {
+      StringHash<TValue> result = [];
+      foreach (var item in span)
+      {
+         var _selector = valueSelector(item);
+         if (_selector is (true, var selector))
+         {
+            result[keySelector(item)] = selector;
+         }
+         else
+         {
+            return _selector.Exception;
+         }
+      }
+
+      return result;
+   }
+
+   public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this ReadOnlySpan<T> span, Func<T, string> keySelector,
+      Func<T, Result<TValue>> valueSelector) where TValue : notnull
+   {
+      StringHash<TValue> result = [];
+      foreach (var item in span)
       {
          var _selector = valueSelector(item);
          if (_selector is (true, var selector))
@@ -392,11 +848,93 @@ public static class HashExtensions
       return result;
    }
 
+   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this Span<T> span, Func<T, TKey> keySelector,
+      Func<T, Result<TValue>> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
+   {
+      var result = new Hash<TKey, TValue>(comparer);
+      foreach (var item in span)
+      {
+         var _selector = valueSelector(item);
+         if (_selector is (true, var selector))
+         {
+            result[keySelector(item)] = selector;
+         }
+         else
+         {
+            return _selector.Exception;
+         }
+      }
+
+      return result;
+   }
+
+   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this ReadOnlySpan<T> span, Func<T, TKey> keySelector,
+      Func<T, Result<TValue>> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
+   {
+      var result = new Hash<TKey, TValue>(comparer);
+      foreach (var item in span)
+      {
+         var _selector = valueSelector(item);
+         if (_selector is (true, var selector))
+         {
+            result[keySelector(item)] = selector;
+         }
+         else
+         {
+            return _selector.Exception;
+         }
+      }
+
+      return result;
+   }
+
    public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<TKey>> keySelector,
       Func<T, Result<TValue>> valueSelector) where TKey : notnull where TValue : notnull
    {
       Hash<TKey, TValue> result = [];
       foreach (var item in enumerable)
+      {
+         var _value = new LazyResult<TValue>(() => valueSelector(item));
+         var _key = _value.Then(_ => keySelector(item));
+         if (_key)
+         {
+            result[_key] = _value;
+         }
+         else
+         {
+            return _key.Exception;
+         }
+      }
+
+      return result;
+   }
+
+   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this Span<T> span, Func<T, Result<TKey>> keySelector,
+      Func<T, Result<TValue>> valueSelector) where TKey : notnull where TValue : notnull
+   {
+      Hash<TKey, TValue> result = [];
+      foreach (var item in span)
+      {
+         var _value = new LazyResult<TValue>(() => valueSelector(item));
+         var _key = _value.Then(_ => keySelector(item));
+         if (_key)
+         {
+            result[_key] = _value;
+         }
+         else
+         {
+            return _key.Exception;
+         }
+      }
+
+      return result;
+   }
+
+   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this ReadOnlySpan<T> span, Func<T, Result<TKey>> keySelector,
+      Func<T, Result<TValue>> valueSelector) where TKey : notnull where TValue : notnull
+   {
+      Hash<TKey, TValue> result = [];
+      foreach (var item in span)
       {
          var _value = new LazyResult<TValue>(() => valueSelector(item));
          var _key = _value.Then(_ => keySelector(item));
@@ -434,11 +972,95 @@ public static class HashExtensions
       return result;
    }
 
+   public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this Span<T> span, Func<T, Result<string>> keySelector,
+      Func<T, Result<TValue>> valueSelector) where TValue : notnull
+   {
+      StringHash<TValue> result = [];
+      foreach (var item in span)
+      {
+         var _value = new LazyResult<TValue>(() => valueSelector(item));
+         var _key = _value.Then(_ => keySelector(item));
+         if (_key)
+         {
+            result[_key] = _value;
+         }
+         else
+         {
+            return _key.Exception;
+         }
+      }
+
+      return result;
+   }
+
+   public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this ReadOnlySpan<T> span, Func<T, Result<string>> keySelector,
+      Func<T, Result<TValue>> valueSelector) where TValue : notnull
+   {
+      StringHash<TValue> result = [];
+      foreach (var item in span)
+      {
+         var _value = new LazyResult<TValue>(() => valueSelector(item));
+         var _key = _value.Then(_ => keySelector(item));
+         if (_key)
+         {
+            result[_key] = _value;
+         }
+         else
+         {
+            return _key.Exception;
+         }
+      }
+
+      return result;
+   }
+
    public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, Result<TKey>> keySelector,
       Func<T, Result<TValue>> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
    {
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
+      {
+         var _value = new LazyResult<TValue>(() => valueSelector(item));
+         var _key = _value.Then(_ => keySelector(item));
+         if (_key)
+         {
+            result[_key] = _value;
+         }
+         else
+         {
+            return _key.Exception;
+         }
+      }
+
+      return result;
+   }
+
+   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this Span<T> span, Func<T, Result<TKey>> keySelector,
+      Func<T, Result<TValue>> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
+   {
+      var result = new Hash<TKey, TValue>(comparer);
+      foreach (var item in span)
+      {
+         var _value = new LazyResult<TValue>(() => valueSelector(item));
+         var _key = _value.Then(_ => keySelector(item));
+         if (_key)
+         {
+            result[_key] = _value;
+         }
+         else
+         {
+            return _key.Exception;
+         }
+      }
+
+      return result;
+   }
+
+   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this ReadOnlySpan<T> span, Func<T, Result<TKey>> keySelector,
+      Func<T, Result<TValue>> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
+   {
+      var result = new Hash<TKey, TValue>(comparer);
+      foreach (var item in span)
       {
          var _value = new LazyResult<TValue>(() => valueSelector(item));
          var _key = _value.Then(_ => keySelector(item));
@@ -475,6 +1097,46 @@ public static class HashExtensions
       return result;
    }
 
+   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this Span<T> span, Func<T, TKey> keySelector,
+      Func<T, TValue> valueSelector) where TKey : notnull where TValue : notnull
+   {
+      Hash<TKey, TValue> result = [];
+      foreach (var item in span)
+      {
+         var _selector = tryTo(() => valueSelector(item));
+         if (_selector is (true, var selector))
+         {
+            result[keySelector(item)] = selector;
+         }
+         else
+         {
+            return _selector.Exception;
+         }
+      }
+
+      return result;
+   }
+
+   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this ReadOnlySpan<T> span, Func<T, TKey> keySelector,
+      Func<T, TValue> valueSelector) where TKey : notnull where TValue : notnull
+   {
+      Hash<TKey, TValue> result = [];
+      foreach (var item in span)
+      {
+         var _selector = tryTo(() => valueSelector(item));
+         if (_selector is (true, var selector))
+         {
+            result[keySelector(item)] = selector;
+         }
+         else
+         {
+            return _selector.Exception;
+         }
+      }
+
+      return result;
+   }
+
    public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this IEnumerable<T> enumerable, Func<T, string> keySelector,
       Func<T, TValue> valueSelector) where TValue : notnull
    {
@@ -495,11 +1157,91 @@ public static class HashExtensions
       return result;
    }
 
+   public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this Span<T> span, Func<T, string> keySelector,
+      Func<T, TValue> valueSelector) where TValue : notnull
+   {
+      StringHash<TValue> result = [];
+      foreach (var item in span)
+      {
+         var _selector = tryTo(() => valueSelector(item));
+         if (_selector is (true, var selector))
+         {
+            result[keySelector(item)] = selector;
+         }
+         else
+         {
+            return _selector.Exception;
+         }
+      }
+
+      return result;
+   }
+
+   public static Result<StringHash<TValue>> TryToStringHash<TValue, T>(this ReadOnlySpan<T> span, Func<T, string> keySelector,
+      Func<T, TValue> valueSelector) where TValue : notnull
+   {
+      StringHash<TValue> result = [];
+      foreach (var item in span)
+      {
+         var _selector = tryTo(() => valueSelector(item));
+         if (_selector is (true, var selector))
+         {
+            result[keySelector(item)] = selector;
+         }
+         else
+         {
+            return _selector.Exception;
+         }
+      }
+
+      return result;
+   }
+
    public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this IEnumerable<T> enumerable, Func<T, TKey> keySelector,
       Func<T, TValue> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
    {
       var result = new Hash<TKey, TValue>(comparer);
       foreach (var item in enumerable)
+      {
+         var _selector = tryTo(() => valueSelector(item));
+         if (_selector is (true, var selector))
+         {
+            result[keySelector(item)] = selector;
+         }
+         else
+         {
+            return _selector.Exception;
+         }
+      }
+
+      return result;
+   }
+
+   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this Span<T> span, Func<T, TKey> keySelector,
+      Func<T, TValue> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
+   {
+      var result = new Hash<TKey, TValue>(comparer);
+      foreach (var item in span)
+      {
+         var _selector = tryTo(() => valueSelector(item));
+         if (_selector is (true, var selector))
+         {
+            result[keySelector(item)] = selector;
+         }
+         else
+         {
+            return _selector.Exception;
+         }
+      }
+
+      return result;
+   }
+
+   public static Result<Hash<TKey, TValue>> TryToHash<TKey, TValue, T>(this ReadOnlySpan<T> span, Func<T, TKey> keySelector,
+      Func<T, TValue> valueSelector, IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
+   {
+      var result = new Hash<TKey, TValue>(comparer);
+      foreach (var item in span)
       {
          var _selector = tryTo(() => valueSelector(item));
          if (_selector is (true, var selector))
@@ -583,12 +1325,116 @@ public static class HashExtensions
       }
    }
 
+   public static Result<Hash<TKey, TValue[]>> GroupToHash<T, TKey, TValue>(this Span<T> span, Func<T, TKey> keyFunc,
+      Func<T, TValue> valueFunc) where TKey : notnull
+   {
+      try
+      {
+         var hash = new AutoHash<TKey, List<TValue>>(_ => [], true);
+         foreach (var item in span)
+         {
+            var key = keyFunc(item);
+            var value = valueFunc(item);
+            hash[key].Add(value);
+         }
+
+         Hash<TKey, TValue[]> result = [];
+         foreach (var (key, value) in hash)
+         {
+            result[key] = [.. value];
+         }
+
+         return result;
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
+   public static Result<Hash<TKey, TValue[]>> GroupToHash<T, TKey, TValue>(this ReadOnlySpan<T> span, Func<T, TKey> keyFunc,
+      Func<T, TValue> valueFunc) where TKey : notnull
+   {
+      try
+      {
+         var hash = new AutoHash<TKey, List<TValue>>(_ => [], true);
+         foreach (var item in span)
+         {
+            var key = keyFunc(item);
+            var value = valueFunc(item);
+            hash[key].Add(value);
+         }
+
+         Hash<TKey, TValue[]> result = [];
+         foreach (var (key, value) in hash)
+         {
+            result[key] = [.. value];
+         }
+
+         return result;
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
    public static Result<Hash<TKey, T[]>> GroupToHash<T, TKey>(this IEnumerable<T> enumerable, Func<T, TKey> keyFunc) where TKey : notnull
    {
       try
       {
          var hash = new AutoHash<TKey, List<T>>(_ => [], true);
          foreach (var item in enumerable)
+         {
+            var key = keyFunc(item);
+            hash[key].Add(item);
+         }
+
+         Hash<TKey, T[]> result = [];
+         foreach (var (key, value) in hash)
+         {
+            result[key] = [.. value];
+         }
+
+         return result;
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
+   public static Result<Hash<TKey, T[]>> GroupToHash<T, TKey>(this Span<T> span, Func<T, TKey> keyFunc) where TKey : notnull
+   {
+      try
+      {
+         var hash = new AutoHash<TKey, List<T>>(_ => [], true);
+         foreach (var item in span)
+         {
+            var key = keyFunc(item);
+            hash[key].Add(item);
+         }
+
+         Hash<TKey, T[]> result = [];
+         foreach (var (key, value) in hash)
+         {
+            result[key] = [.. value];
+         }
+
+         return result;
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
+   public static Result<Hash<TKey, T[]>> GroupToHash<T, TKey>(this ReadOnlySpan<T> span, Func<T, TKey> keyFunc) where TKey : notnull
+   {
+      try
+      {
+         var hash = new AutoHash<TKey, List<T>>(_ => [], true);
+         foreach (var item in span)
          {
             var key = keyFunc(item);
             hash[key].Add(item);
@@ -615,6 +1461,50 @@ public static class HashExtensions
       {
          Hash<TKey, TValue> hash = [];
          foreach (var item in enumerable)
+         {
+            var key = keyFunc(item);
+            var _value = hash.Maybe[key];
+            var value = valueFunc(_value, item);
+            hash[key] = value;
+         }
+
+         return hash;
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
+   public static Result<Hash<TKey, TValue>> GroupToHash<T, TKey, TValue>(this Span<T> span, Func<T, TKey> keyFunc,
+      Func<Maybe<TValue>, T, TValue> valueFunc) where TKey : notnull where TValue : notnull
+   {
+      try
+      {
+         Hash<TKey, TValue> hash = [];
+         foreach (var item in span)
+         {
+            var key = keyFunc(item);
+            var _value = hash.Maybe[key];
+            var value = valueFunc(_value, item);
+            hash[key] = value;
+         }
+
+         return hash;
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
+   public static Result<Hash<TKey, TValue>> GroupToHash<T, TKey, TValue>(this ReadOnlySpan<T> span, Func<T, TKey> keyFunc,
+      Func<Maybe<TValue>, T, TValue> valueFunc) where TKey : notnull where TValue : notnull
+   {
+      try
+      {
+         Hash<TKey, TValue> hash = [];
+         foreach (var item in span)
          {
             var key = keyFunc(item);
             var _value = hash.Maybe[key];
