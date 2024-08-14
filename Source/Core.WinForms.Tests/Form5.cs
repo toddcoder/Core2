@@ -11,6 +11,7 @@ public partial class Form5 : Form
    protected UiAction uiAction2 = new();
    protected UiAction uiAction3 = new();
    protected UiAction uiAction4 = new();
+   protected ControlContainer<TextBox> textBoxContainer = ControlContainer<TextBox>.HorizontalContainer();
 
    public Form5()
    {
@@ -46,11 +47,17 @@ public partial class Form5 : Form
          }
       };
 
+      foreach (var i in Enumerable.Range(0, 3))
+      {
+         var control = new TextBox { Text = i.ToString() };
+         textBoxContainer.Add(control);
+      }
+
       InitializeComponent();
 
       var builder = new TableLayoutBuilder(tableLayoutPanel1);
       _ = builder.Col + 50f + 50f;
-      _ = builder.Row + 40 + 60 + 60 + 100f;
+      _ = builder.Row + 40 + 60 + 60 + 60 + 100f;
       builder.SetUp();
 
       (builder + textBox).Row();
@@ -60,5 +67,7 @@ public partial class Form5 : Form
 
       (builder + uiAction3).Next();
       (builder + uiAction4).Row();
+
+      (builder + textBoxContainer).SpanCol(2).Row();
    }
 }
