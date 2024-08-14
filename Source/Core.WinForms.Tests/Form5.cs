@@ -49,7 +49,7 @@ public partial class Form5 : Form
 
       foreach (var i in Enumerable.Range(0, 3))
       {
-         var control = new TextBox { Text = i.ToString() };
+         var control = new TextBox { Text = "" };
          textBoxContainer.Add(control);
       }
 
