@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Drawing.Drawing2D;
+using System.Runtime.Serialization;
 using Core.Collections;
 using Core.Monads;
 using Core.Numbers;
+using Core.Objects;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -13,9 +15,10 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    public static ControlContainer<TControl> VerticalContainer() => new() { Direction = ControlDirection.Vertical };
 
-   protected StringHash<TControl> controls = [];
-   protected Hash<int, string> indexes = [];
-   protected StringHash<int> keys = [];
+   protected ObjectHash objectHash = [];
+   protected Hash<long, TControl> controls = [];
+   protected Hash<int, long> indexes = [];
+   protected Hash<long, int> keys = [];
    protected Maybe<int> _width = nil;
    protected Maybe<int> _height = nil;
    protected int padding = 3;
