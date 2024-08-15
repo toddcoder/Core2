@@ -3718,4 +3718,60 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
    }
 
    public bool UseEmojis { get; set; } = true;
+
+   public void ShowStatus<T>(Maybe<T> _maybe, Either<string, Func<string>> failureMessage) where T : class
+   {
+      if (_maybe)
+      {
+         Status = StatusType.Success;
+      }
+      else
+      {
+         switch (failureMessage)
+         {
+            case (true, var message, _):
+               FailureStatus(message);
+               break;
+            case (false, _, var func):
+               FailureStatus(func());
+               break;
+         }
+      }
+   }
+
+   public void ShowStatus<T>(Result<T> _result) where T : class
+   {
+      if (_result)
+      {
+         Status = StatusType.Success;
+      }
+      else
+      {
+         ExceptionStatus(_result.Exception);
+      }
+   }
+
+   public void ShowStatus<T>(Optional<T> _optional, Either<string, Func<string>> failureMessage) where T : class
+   {
+      if (_optional)
+      {
+         Status = StatusType.Success;
+      }
+      else if (_optional.Exception is (true, var exception))
+      {
+         ExceptionStatus(exception);
+      }
+      else
+      {
+         switch (failureMessage)
+         {
+            case (true, var message, _):
+               FailureStatus(message);
+               break;
+            case (false, _, var func):
+               FailureStatus(func());
+               break;
+         }
+      }
+   }
 }
