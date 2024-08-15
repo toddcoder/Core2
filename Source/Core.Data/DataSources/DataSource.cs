@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
+using Core.Data.Fields;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
@@ -164,6 +165,39 @@ public abstract class DataSource
          }
 
          return recordsAffected;
+      }
+      finally
+      {
+         reader?.Dispose();
+         deallocateObjects();
+      }
+   }
+
+   internal int ExecuteNonQuery(object entity, string command, Parameters.Parameters parameters)
+   {
+      _activeObject = entity.IfCast<IActive>();
+
+      allocateConnection();
+      allocateCommand();
+
+      AddParameters(entity, parameters);
+
+      setCommand(entity, command);
+      IDataReader? reader = null;
+      HasRows = false;
+
+      try
+      {
+         if (Command is (true, var dbCommand) && _connection is (true, var connection))
+         {
+            dbCommand.Connection = connection;
+         }
+         else
+         {
+            throw fail("Command and connection not properly initialized");
+         }
+
+         return dbCommand.ExecuteNonQuery();
       }
       finally
       {

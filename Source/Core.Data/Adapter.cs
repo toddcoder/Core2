@@ -154,6 +154,18 @@ public class Adapter<T> : IEnumerable<T> where T : class
 
    public IDataReader ExecuteReader() => DataSource.ExecuteReader(entity, Command, Parameters);
 
+   public Optional<int> ExecuteNonQuery()
+   {
+      try
+      {
+         return DataSource.ExecuteNonQuery(entity, Command, Parameters);
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
    public IBulkCopyTarget BulkCopy<TSource>(Adapter<TSource> sourceAdapter) where TSource : class
    {
       if (DataSource is IBulkCopyTarget bulkCopy)
