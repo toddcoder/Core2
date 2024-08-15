@@ -233,7 +233,11 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
-   public void Clear() => objectHash.Clear();
+   public void Clear()
+   {
+      objectHash.Clear();
+      Controls.Clear();
+   }
 
    public IEnumerator<TControl> GetEnumerator()
    {
