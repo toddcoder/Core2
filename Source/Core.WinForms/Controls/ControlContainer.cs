@@ -20,6 +20,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    protected ControlDirection direction = ControlDirection.Horizontal;
    protected bool showLastFocus = true;
    protected Maybe<long> _lastIdFocus = nil;
+   protected bool isUpdating = true;
 
    public new event EventHandler<ControlFocusArgs<TControl>>? GotFocus;
 
@@ -47,9 +48,12 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    protected void resize()
    {
-      setWidth();
-      setHeight();
-      arrangeControls();
+      if (isUpdating)
+      {
+         setWidth();
+         setHeight();
+         arrangeControls();
+      }
    }
 
    protected int clientWidth() => ClientSize.Width;
@@ -190,7 +194,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    {
       base.OnPaint(e);
 
-      if (showLastFocus && getLastControlWithFocus() is (true, var control))
+      if (isUpdating && showLastFocus && getLastControlWithFocus() is (true, var control))
       {
          var location = control.Location.Reposition(-1, -1);
          var size = control.Size.Resize(2, 2);
@@ -238,4 +242,13 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    }
 
    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+   public void BeginUpdating() => isUpdating = false;
+
+   public void EndUpdating()
+   {
+      isUpdating = true;
+      resize();
+      Invalidate();
+   }
 }
