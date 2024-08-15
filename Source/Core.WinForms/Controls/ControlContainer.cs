@@ -25,7 +25,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    protected (long id, bool firstTime) setControl(TControl control) => objectHash.GetIdWithFirstTime(control);
 
-   public void Add(TControl control)
+   public long Add(TControl control)
    {
       var (id, firstTime) = setControl(control);
 
@@ -41,6 +41,8 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
 
       resize();
+
+      return id;
    }
 
    protected void resize()
@@ -81,18 +83,6 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    }
 
    protected Maybe<TControl> getControl(long id) => objectHash.IdToObjectMaybe[id];
-
-   /*protected Maybe<Unit> setControl(long id, Maybe<TControl> _control)
-   {
-      if (_control is (true, var control))
-      {
-         objectHash[id] = control;
-      }
-      else
-      {
-         return nil;
-      }
-   }*/
 
    protected void arrangeHorizontal(int width)
    {
@@ -139,7 +129,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
-   public Maybe<TControl> this[int index] => objectHash.IdToObjectMaybe[index];
+   public Maybe<TControl> this[long id] => objectHash.IdToObjectMaybe[id];
 
    public new int Padding
    {
