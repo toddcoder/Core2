@@ -21,7 +21,7 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace Core.WinForms.Controls;
 
-public class UiAction : UserControl, ISubTextHost, IButtonControl
+public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 {
    protected const float START_AMOUNT = .9f;
 
@@ -3774,4 +3774,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl
          }
       }
    }
+
+   public long ObjectId { get; set; }
 }

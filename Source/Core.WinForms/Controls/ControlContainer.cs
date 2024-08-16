@@ -43,6 +43,11 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
       resize();
 
+      if (control is IHasObjectId hasObjectId)
+      {
+         hasObjectId.ObjectId = id;
+      }
+
       return id;
    }
 

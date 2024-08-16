@@ -10,7 +10,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class ExRichTextBox : RichTextBox
+public class ExRichTextBox : RichTextBox, IHasObjectId
 {
    public class WindowExtender : NativeWindow
    {
@@ -857,4 +857,6 @@ public class ExRichTextBox : RichTextBox
       using var brush = new SolidBrush(foreColor);
       drawLineNumber(graphics, lineNumber, point, lineSize, brush, backColor);
    }
+
+   public long ObjectId { get; set; }
 }

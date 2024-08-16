@@ -10,7 +10,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class ExTextBox : TextBox, ISubTextHost
+public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
 {
    public class WindowExtender : NativeWindow
    {
@@ -776,4 +776,6 @@ public class ExTextBox : TextBox, ISubTextHost
    public Maybe<SubText> CurrentLegend => legends.Peek();
 
    public bool UseEmojis => false;
+
+   public long ObjectId { get; set; }
 }
