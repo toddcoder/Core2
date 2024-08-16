@@ -3719,7 +3719,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
    public bool UseEmojis { get; set; } = true;
 
-   public void ShowStatus<T>(Maybe<T> _maybe, Either<string, Func<string>> failureMessage) where T : class
+   public void ShowStatus<T>(Maybe<T> _maybe, Either<string, Func<string>> failureMessage) where T : notnull
    {
       if (_maybe)
       {
@@ -3739,7 +3739,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       }
    }
 
-   public void ShowStatus<T>(Result<T> _result) where T : class
+   public void ShowStatus<T>(Result<T> _result) where T : notnull
    {
       if (_result)
       {
@@ -3751,7 +3751,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       }
    }
 
-   public void ShowStatus<T>(Optional<T> _optional, Either<string, Func<string>> failureMessage) where T : class
+   public void ShowStatus<T>(Optional<T> _optional, Either<string, Func<string>> failureMessage) where T : notnull
    {
       if (_optional)
       {
