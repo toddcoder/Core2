@@ -223,7 +223,7 @@ public abstract class DataSource
       _activeObject = entity.IfCast<IActive>();
       fields = inFields;
 
-      IDataReader reader = null!;
+      IDataReader? reader = null;
 
       try
       {
@@ -260,7 +260,7 @@ public abstract class DataSource
       }
       catch
       {
-         reader.Dispose();
+         reader?.Dispose();
          deallocateObjects();
          throw;
       }
