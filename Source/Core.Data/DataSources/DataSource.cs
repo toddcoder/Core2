@@ -3,7 +3,6 @@ using System.Data.SqlClient;
 using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
-using Core.Data.Fields;
 using Core.Matching;
 using Core.Monads;
 using Core.Objects;
@@ -44,7 +43,7 @@ public abstract class DataSource
       Command = nil;
       _connection = nil;
       Reader = nil;
-      fields = new Fields.Fields();
+      fields = [];
       _activeObject = nil;
    }
 
@@ -58,34 +57,43 @@ public abstract class DataSource
 
    public bool HasRows { get; set; }
 
+   public bool ModifyCommand { get; set; } = true;
+
    public abstract IDbConnection GetConnection();
 
    public abstract IDbCommand GetCommand();
 
    public abstract void AddParameters(object entity, Parameters.Parameters parameters);
 
-   protected static string modifyCommand(object entity, string commandText)
+   protected static string modifyCommand(object entity, string commandText, bool mayModifyCommand)
    {
-      var evaluator = PropertyInterface.GetEvaluator(entity);
-      var text = commandText;
-      foreach (var signature in evaluator.Signatures)
+      if (mayModifyCommand)
       {
-         var name = signature.Name;
-         var pattern = $"'{{{name}}}'; f";
-         var value = evaluator[signature]!.ToNonNullString().Replace("'", "''");
-         var _result = text.Matches(pattern);
-         if (_result is (true, var result))
+         var evaluator = PropertyInterface.GetEvaluator(entity);
+         var text = commandText;
+         foreach (var signature in evaluator.Signatures)
          {
-            foreach (var match in result)
+            var name = signature.Name;
+            var pattern = $"'{{{name}}}'; f";
+            var value = evaluator[signature]!.ToNonNullString().Replace("'", "''");
+            var _result = text.Matches(pattern);
+            if (_result is (true, var result))
             {
-               match.Text = value;
+               foreach (var match in result)
+               {
+                  match.Text = value;
+               }
+
+               text = result.Text;
             }
-
-            text = result.Text;
          }
-      }
 
-      return text;
+         return text;
+      }
+      else
+      {
+         return commandText;
+      }
    }
 
    internal int Execute(object entity, string command, Parameters.Parameters parameters, Fields.Fields inFields)
@@ -260,7 +268,7 @@ public abstract class DataSource
 
    protected void setCommand(object entity, string command)
    {
-      var commandText = modifyCommand(entity, command);
+      var commandText = modifyCommand(entity, command, ModifyCommand);
       if (Command is (true, var dbCommand))
       {
          dbCommand.CommandText = commandText;
