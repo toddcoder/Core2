@@ -422,7 +422,7 @@ public class ExRichTextBox : RichTextBox, IHasObjectId
 
    public Rectangle RectangleFromCurrentLine(Graphics graphics) => RectangleFrom(graphics, CurrentLineNumber);
 
-   public void DrawCurrentLineBar(Graphics graphics, Color foreColor, Color backColor, DashStyle dashStyle = DashStyle.Dot, int alpha = 30)
+   public Maybe<Rectangle> DrawCurrentLineBar(Graphics graphics, Color foreColor, Color backColor, DashStyle dashStyle = DashStyle.Dot, int alpha = 30)
    {
       if (TextLength > 0)
       {
@@ -436,6 +436,12 @@ public class ExRichTextBox : RichTextBox, IHasObjectId
          using var pen = new Pen(foreColor);
          pen.DashStyle = dashStyle;
          graphics.DrawRectangle(pen, rectangle);
+
+         return rectangle;
+      }
+      else
+      {
+         return nil;
       }
    }
 
@@ -519,7 +525,7 @@ public class ExRichTextBox : RichTextBox, IHasObjectId
       return RectangleFrom(graphics, SelectionStart, SelectionLength, expand);
    }
 
-   protected void annotateAt(Graphics graphics, Point point, string annotation, Color foreColor, Color backColor, Color? outlineColor, Size size)
+   protected Rectangle annotateAt(Graphics graphics, Point point, string annotation, Color foreColor, Color backColor, Color? outlineColor, Size size)
    {
       graphics.TextRenderingHint = TextRenderingHint.AntiAlias;
       var rectangle = new Rectangle(point, size);
@@ -532,40 +538,42 @@ public class ExRichTextBox : RichTextBox, IHasObjectId
          using var pen = new Pen(Color.FromArgb(ANNOTATION_ALPHA, outlineColor.Value));
          graphics.DrawRectangle(pen, rectangle);
       }
+
+      return rectangle;
    }
 
-   public void AnnotateAt(Graphics graphics, Point point, string annotation, Color foreColor, Color backColor,
+   public Rectangle AnnotateAt(Graphics graphics, Point point, string annotation, Color foreColor, Color backColor,
       Color? outlineColor = null)
    {
       var size = MeasureString(graphics, annotation, AnnotationFont);
-      annotateAt(graphics, point, annotation, foreColor, backColor, outlineColor, size);
+      return annotateAt(graphics, point, annotation, foreColor, backColor, outlineColor, size);
    }
 
-   public void AnnotateAt(Graphics graphics, int lineNumber, string annotation, Color foreColor, Color backColor,
+   public Rectangle AnnotateAt(Graphics graphics, int lineNumber, string annotation, Color foreColor, Color backColor,
       Color? outlineColor = null, bool rightMost = true)
    {
       var top = RectangleFrom(graphics, lineNumber).Top;
       var size = MeasureString(graphics, annotation, AnnotationFont);
       var left = rightMost ? VisibleRectangle.Width - size.Width : 0;
 
-      annotateAt(graphics, new Point(left, top), annotation, foreColor, backColor, outlineColor, size);
+      return annotateAt(graphics, new Point(left, top), annotation, foreColor, backColor, outlineColor, size);
    }
 
-   public void AnnotateAtCurrentLine(Graphics graphics, string annotation, Color foreColor, Color backColor,
+   public Rectangle AnnotateAtCurrentLine(Graphics graphics, string annotation, Color foreColor, Color backColor,
       Color? outlineColor = null, bool rightMost = true)
    {
-      AnnotateAt(graphics, CurrentLineNumber, annotation, foreColor, backColor, outlineColor, rightMost);
+      return AnnotateAt(graphics, CurrentLineNumber, annotation, foreColor, backColor, outlineColor, rightMost);
    }
 
-   public void AnnotateAtSelection(Graphics graphics, string annotation, Color foreColor, Color backColor,
+   public Rectangle AnnotateAtSelection(Graphics graphics, string annotation, Color foreColor, Color backColor,
       Color? outlineColor = null)
    {
       var position = GetPositionFromCharIndex(SelectionStart);
 
-      AnnotateAt(graphics, position, annotation, foreColor, backColor, outlineColor);
+      return AnnotateAt(graphics, position, annotation, foreColor, backColor, outlineColor);
    }
 
-   public void AnnotateBySelection(Graphics graphics, int selectionStart, int selectionLength, string annotation, Color foreColor,
+   public Rectangle AnnotateBySelection(Graphics graphics, int selectionStart, int selectionLength, string annotation, Color foreColor,
       Color backColor, Color? outlineColor = null, int margin = 0)
    {
       var selectionPosition = GetPositionFromCharIndex(selectionStart);
@@ -587,16 +595,16 @@ public class ExRichTextBox : RichTextBox, IHasObjectId
          location = !selectionRectangle.IntersectsWith(annotationRectangle) ? annotationRectangle.Location : new Point(0, selectionRectangle.Top);
       }
 
-      AnnotateAt(graphics, location, annotation, foreColor, backColor, outlineColor);
+      return AnnotateAt(graphics, location, annotation, foreColor, backColor, outlineColor);
    }
 
-   public void AnnotateBySelection(Graphics graphics, string annotation, Color foreColor, Color backColor,
+   public Rectangle AnnotateBySelection(Graphics graphics, string annotation, Color foreColor, Color backColor,
       Color? outlineColor = null, int margin = 0)
    {
-      AnnotateBySelection(graphics, SelectionStart, SelectionLength, annotation, foreColor, backColor, outlineColor, margin);
+      return AnnotateBySelection(graphics, SelectionStart, SelectionLength, annotation, foreColor, backColor, outlineColor, margin);
    }
 
-   public void AnnotateByLineAndPosition(Graphics graphics, int lineNumber, int position, string annotation, Color foreColor,
+   public Rectangle AnnotateByLineAndPosition(Graphics graphics, int lineNumber, int position, string annotation, Color foreColor,
       Color backColor, Color? outlineColor = null)
    {
       if (!lineNumber.Between(0).Until(Lines.Length))
@@ -622,7 +630,7 @@ public class ExRichTextBox : RichTextBox, IHasObjectId
       var location = new Point(rectangle.X + width + margin, rectangle.Y);
       var size = MeasureString(graphics, annotation, AnnotationFont);
 
-      annotateAt(graphics, location, annotation, foreColor, backColor, outlineColor, size);
+      return annotateAt(graphics, location, annotation, foreColor, backColor, outlineColor, size);
    }
 
    public IEnumerable<(int offset, string line)> OffsetLines
