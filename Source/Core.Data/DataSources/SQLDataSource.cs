@@ -114,7 +114,7 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
       _ => SqlDbType.Variant
    };
 
-   protected StringHash<string> attributes;
+   protected StringHash<string> attributes = [];
    protected long recordCount;
 
    public event SqlInfoMessageEventHandler? Message;
@@ -122,10 +122,6 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
    public SqlDataSource(string connectionString, TimeSpan timeout) : base(connectionString, timeout)
    {
       CommandTimeout = timeout;
-      attributes = [];
-      recordCount = 0;
-
-      TableName = "";
    }
 
    public SqlDataSource(string connectionString) : this(connectionString, 30.Seconds())
@@ -216,7 +212,7 @@ public class SqlDataSource : DataSource, IBulkCopyTarget, IHash<string, string>
       AddParametersToCommand(Command.Required("Command not initialized"), entity, parameters);
    }
 
-   public string TableName { get; set; }
+   public string TableName { get; set; } = "";
 
    public void Copy<T>(Adapter<T> sourceAdapter) where T : class
    {

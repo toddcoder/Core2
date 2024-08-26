@@ -11,7 +11,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.DataSources;
 
-public abstract class DataSource
+public abstract class DataSource(string connectionString, TimeSpan commandTimeout)
 {
    protected static DbType typeToDBType(Type parameterType) => Type.GetTypeCode(parameterType) switch
    {
@@ -28,32 +28,20 @@ public abstract class DataSource
       _ => DbType.Object
    };
 
-   protected Maybe<IDbConnection> _connection;
-   protected TimeSpan commandTimeout;
-   protected Fields.Fields fields;
-   protected Maybe<IActive> _activeObject;
+   protected Maybe<IDbConnection> _connection = nil;
+   protected TimeSpan commandTimeout = commandTimeout;
+   protected Fields.Fields fields = [];
+   protected Maybe<IActive> _activeObject = nil;
 
    public event EventHandler<CancelEventArgs>? NextRow;
-
-   public DataSource(string connectionString, TimeSpan commandTimeout)
-   {
-      ConnectionString = connectionString;
-      this.commandTimeout = commandTimeout;
-      ResultIndex = 0;
-      Command = nil;
-      _connection = nil;
-      Reader = nil;
-      fields = [];
-      _activeObject = nil;
-   }
 
    public bool Deallocated { get; set; }
 
    public int ResultIndex { get; set; }
 
-   public Maybe<IDbCommand> Command { get; set; }
+   public Maybe<IDbCommand> Command { get; set; } = nil;
 
-   public string ConnectionString { get; set; }
+   public string ConnectionString { get; set; } = connectionString;
 
    public bool HasRows { get; set; }
 
@@ -214,7 +202,7 @@ public abstract class DataSource
       }
    }
 
-   public Maybe<IDataReader> Reader { get; set; }
+   public Maybe<IDataReader> Reader { get; set; } = nil;
 
    internal void BeginReading(object entity, string command, Parameters.Parameters parameters, Fields.Fields inFields)
    {
