@@ -220,9 +220,19 @@ public static class GraphicsExtensions
       return rectangle.LeftOf(size, offset) with { X = size.Width + offset };
    }
 
+   public static Rectangle RightOf(this Rectangle rectangle, Rectangle referenceRectangle, int offset = 0)
+   {
+      return rectangle with { X = referenceRectangle.X + referenceRectangle.Width + offset };
+   }
+
    public static Rectangle LeftOf(this Rectangle rectangle, Size size, int offset = 0)
    {
       return rectangle with { Width = rectangle.Width - size.Width - offset };
+   }
+
+   public static Rectangle LeftOf(this Rectangle rectangle, Rectangle referenceRectangle, int offset = 0)
+   {
+      return rectangle with { X = referenceRectangle.X - rectangle.Width - offset };
    }
 
    public static Rectangle BottomOf(this Rectangle rectangle, Size size, int offset = 0)
@@ -230,8 +240,38 @@ public static class GraphicsExtensions
       return rectangle.TopOf(size) with { Y = size.Height + offset };
    }
 
+   public static Rectangle BottomOf(this Rectangle rectangle, Rectangle referenceRectangle, int offset = 0)
+   {
+      return rectangle with { Y = referenceRectangle.Top + referenceRectangle.Height + offset };
+   }
+
    public static Rectangle TopOf(this Rectangle rectangle, Size size, int offset = 0)
    {
       return rectangle with { Height = rectangle.Height - size.Height - offset };
+   }
+
+   public static Rectangle TopOf(this Rectangle rectangle, Rectangle referenceRectangle, int offset = 0)
+   {
+      return rectangle with { Y = referenceRectangle.Top - rectangle.Width - offset };
+   }
+
+   public static Rectangle AlignToTop(this Rectangle rectangle, Rectangle referenceRectangle)
+   {
+      return rectangle with { Y = referenceRectangle.Top };
+   }
+
+   public static Rectangle AlignToBottom(this Rectangle rectangle, Rectangle referenceRectangle)
+   {
+      return rectangle with { Y = referenceRectangle.Bottom };
+   }
+
+   public static Rectangle AlignToLeft(this Rectangle rectangle, Rectangle referenceRectangle)
+   {
+      return rectangle with { X = referenceRectangle.Left };
+   }
+
+   public static Rectangle AlignToRight(this Rectangle rectangle, Rectangle referenceRectangle)
+   {
+      return rectangle with { X = referenceRectangle.Right };
    }
 }
