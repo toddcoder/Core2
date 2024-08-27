@@ -122,8 +122,8 @@ public class RectangleWriter(string text, Rectangle rectangle)
       for (var size = fontSize; size >= minimumFontSize; size--)
       {
          var testFont = new Font(fontName, size, fontStyle);
-         var textWidth = TextRenderer.MeasureText(g, expandedText, testFont, Size.Empty, FLAGS).Width;
-         if (rectangle.Width > textWidth)
+         var textSize = TextRenderer.MeasureText(g, expandedText, testFont, Size.Empty, FLAGS);
+         if (rectangle.Width > textSize.Width && rectangle.Height > textSize.Height)
          {
             return testFont;
          }
