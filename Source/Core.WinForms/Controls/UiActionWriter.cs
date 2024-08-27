@@ -252,7 +252,7 @@ public class UiActionWriter
    public virtual Result<Unit> Write(Graphics g, string text, bool lower)
    {
       var not = false;
-      if (text.StartsWith("!"))
+      if (text.StartsWith('!'))
       {
          not = true;
          text = text[1..];
@@ -293,16 +293,15 @@ public class UiActionWriter
                drawButtonType(g, textRectangle, color);
                var writer = new AutoSizingWriter(text, rectangle, color, font, isPath);
                writer.Write(g);
-               negate(not, g, rectangle, color);
-               require(Required, g, color, textRectangle);
             }
             else
             {
                drawButtonType(g, textRectangle, color);
                TextRenderer.DrawText(g, text, font, rectangle, color, Flags);
-               negate(not, g, rectangle, color);
-               require(Required, g, color, textRectangle);
             }
+
+            negate(not, g, rectangle, color);
+            require(Required, g, color, textRectangle);
 
             if (checkStyle is not CheckStyle.None)
             {

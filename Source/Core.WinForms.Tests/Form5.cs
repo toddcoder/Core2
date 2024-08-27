@@ -47,7 +47,7 @@ public partial class Form5 : Form
          }
       };
 
-      foreach (var i in Enumerable.Range(0, 3))
+      foreach (var _ in Enumerable.Range(0, 3))
       {
          var control = new TextBox { Text = "" };
          textBoxContainer.Add(control);
@@ -69,5 +69,22 @@ public partial class Form5 : Form
       (builder + uiAction4).Row();
 
       (builder + textBoxContainer).SpanCol(2).Row();
+
+      (builder + pictureBox1).SpanCol(2).Row();
+   }
+
+   protected void pictureBox1_Paint(object sender, PaintEventArgs e)
+   {
+      var rectangle = new Rectangle(0, 0, 100, 40);
+      var writer = new RectangleWriter("Location 1", rectangle) { BackColor = Color.White };
+      writer.Write(e.Graphics);
+
+      rectangle = rectangle.RightOf(rectangle, 10);
+      writer = new RectangleWriter("Location 2", rectangle) { BackColor = Color.Green, ForeColor = Color.White };
+      writer.Write(e.Graphics);
+
+      rectangle = rectangle.BottomOf(rectangle, 10).Resize(100, 0);
+      writer = new RectangleWriter("Underneath the second one", rectangle) { ForeColor = Color.White, BackColor = Color.Red, Outline = true };
+      writer.Write(e.Graphics);
    }
 }
