@@ -56,7 +56,8 @@ public partial class Chooser : Form
    protected Maybe<int> _maximumWidth = nil;
    protected bool working;
    protected ChooserSorting sorting = ChooserSorting.None;
-   protected Maybe<Func<string, string>> _customSorter = nil;
+   protected Maybe<Func<string, string>> _customKeySorter = nil;
+   protected Maybe<Func<string, string>> _customValueSorter = nil;
    protected bool autoSizeText;
    protected bool multiChoice;
    protected bool autoClose = true;
@@ -146,10 +147,24 @@ public partial class Chooser : Form
       set => sorting = value;
    }
 
-   public Maybe<Func<string, string>> CustomSorter
+   public Maybe<Func<string, string>> CustomKeySorter
    {
-      get => _customSorter;
-      set => _customSorter = value;
+      get => _customKeySorter;
+      set
+      {
+         _customKeySorter = value;
+         sorting = ChooserSorting.CustomKey;
+      }
+   }
+
+   public Maybe<Func<string, string>> CustomValueSorter
+   {
+      get => _customValueSorter;
+      set
+      {
+         _customValueSorter = value;
+         sorting = ChooserSorting.CustomValue;
+      }
    }
 
    public bool AutoSizeText
@@ -364,13 +379,23 @@ public partial class Chooser : Form
             }
 
             break;
-         case ChooserSorting.Custom when _customSorter is (true, var customSorter):
-            foreach (var choice in choices.Keys.OrderBy(customSorter))
+         case ChooserSorting.CustomKey when _customKeySorter is (true, var customKeySorter):
+         {
+            foreach (var choice in choices.Keys.OrderBy(customKeySorter))
             {
                addItem(choice, foreColor, backColor);
             }
 
             break;
+         }
+         case ChooserSorting.CustomValue when _customValueSorter is (true, var customValueSorter):
+         {
+            foreach (var choice in choices.Values.OrderBy(customValueSorter))
+            {
+               addItem(choice, foreColor, backColor);
+            }
+            break;
+         }
          default:
             goto case ChooserSorting.None;
       }

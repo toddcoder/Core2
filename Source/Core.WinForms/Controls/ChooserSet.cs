@@ -40,6 +40,18 @@ public class ChooserSet(Chooser chooser)
       return this;
    }
 
+   public ChooserSet CustomKeySorter(Func<string, string> customKeySorter)
+   {
+      chooser.CustomKeySorter = customKeySorter;
+      return this;
+   }
+
+   public ChooserSet CustomValueSorter(Func<string, string> customValueSorter)
+   {
+      chooser.CustomValueSorter = customValueSorter;
+      return this;
+   }
+
    public ChooserSet Choices(StringHash choices)
    {
       try
