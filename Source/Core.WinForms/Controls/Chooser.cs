@@ -381,19 +381,20 @@ public partial class Chooser : Form
             break;
          case ChooserSorting.CustomKey when _customKeySorter is (true, var customKeySorter):
          {
-            foreach (var choice in choices.Keys.OrderBy(customKeySorter))
+            foreach (var choice in choices.OrderBy(t => customKeySorter(t.Key)))
             {
-               addItem(choice, foreColor, backColor);
+               addItem(choice.Key, foreColor, backColor);
             }
 
             break;
          }
          case ChooserSorting.CustomValue when _customValueSorter is (true, var customValueSorter):
          {
-            foreach (var choice in choices.Values.OrderBy(customValueSorter))
+            foreach (var choice in choices.OrderBy(t => customValueSorter(t.Value)))
             {
-               addItem(choice, foreColor, backColor);
+               addItem(choice.Key, foreColor, backColor);
             }
+
             break;
          }
          default:
