@@ -373,18 +373,18 @@ public partial class Chooser : Form
             break;
          case ChooserSorting.CustomKey when _customKeySorter is (true, var customKeySorter):
          {
-            foreach (var choice in choices.OrderBy(t => customKeySorter(t.Key)))
+            foreach (var choice in choices.Keys.OrderBy(customKeySorter))
             {
-               addItem(choice.Key, foreColor, backColor);
+               addItem(choice, foreColor, backColor);
             }
 
             break;
          }
          case ChooserSorting.CustomKeyDescending when _customKeySorter is (true, var customKeySorter):
          {
-            foreach (var choice in choices.OrderByDescending(t => customKeySorter(t.Key)))
+            foreach (var choice in choices.Keys.OrderByDescending(customKeySorter))
             {
-               addItem(choice.Key, foreColor, backColor);
+               addItem(choice, foreColor, backColor);
             }
 
             break;
