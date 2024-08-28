@@ -150,21 +150,13 @@ public partial class Chooser : Form
    public Maybe<Func<string, string>> CustomKeySorter
    {
       get => _customKeySorter;
-      set
-      {
-         _customKeySorter = value;
-         sorting = ChooserSorting.CustomKey;
-      }
+      set => _customKeySorter = value;
    }
 
    public Maybe<Func<string, string>> CustomValueSorter
    {
       get => _customValueSorter;
-      set
-      {
-         _customValueSorter = value;
-         sorting = ChooserSorting.CustomValue;
-      }
+      set => _customValueSorter = value;
    }
 
    public bool AutoSizeText
@@ -388,9 +380,27 @@ public partial class Chooser : Form
 
             break;
          }
+         case ChooserSorting.CustomKeyDescending when _customKeySorter is (true, var customKeySorter):
+         {
+            foreach (var choice in choices.OrderByDescending(t => customKeySorter(t.Key)))
+            {
+               addItem(choice.Key, foreColor, backColor);
+            }
+
+            break;
+         }
          case ChooserSorting.CustomValue when _customValueSorter is (true, var customValueSorter):
          {
             foreach (var choice in choices.OrderBy(t => customValueSorter(t.Value)))
+            {
+               addItem(choice.Key, foreColor, backColor);
+            }
+
+            break;
+         }
+         case ChooserSorting.CustomValueDescending when _customValueSorter is (true, var customValueSorter):
+         {
+            foreach (var choice in choices.OrderByDescending(t => customValueSorter(t.Value)))
             {
                addItem(choice.Key, foreColor, backColor);
             }

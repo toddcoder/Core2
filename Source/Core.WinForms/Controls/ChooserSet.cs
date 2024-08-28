@@ -43,12 +43,32 @@ public class ChooserSet(Chooser chooser)
    public ChooserSet CustomKeySorter(Func<string, string> customKeySorter)
    {
       chooser.CustomKeySorter = customKeySorter;
+      chooser.Sorting = ChooserSorting.CustomKey;
+
+      return this;
+   }
+
+   public ChooserSet CustomKeySorterDescending(Func<string, string> customKeySorter)
+   {
+      chooser.CustomKeySorter = customKeySorter;
+      chooser.Sorting = ChooserSorting.CustomKeyDescending;
+
       return this;
    }
 
    public ChooserSet CustomValueSorter(Func<string, string> customValueSorter)
    {
       chooser.CustomValueSorter = customValueSorter;
+      chooser.Sorting = ChooserSorting.CustomValue;
+
+      return this;
+   }
+
+   public ChooserSet CustomValueSorterDescending(Func<string, string> customValueSorter)
+   {
+      chooser.CustomValueSorter = customValueSorter;
+      chooser.Sorting = ChooserSorting.CustomValueDescending;
+
       return this;
    }
 

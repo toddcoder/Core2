@@ -6,5 +6,7 @@ public enum ChooserSorting
    Ascending,
    Descending,
    CustomKey,
-   CustomValue
+   CustomKeyDescending,
+   CustomValue,
+   CustomValueDescending
 }
