@@ -117,12 +117,14 @@ public class RectangleWriter(string text, Rectangle rectangle)
       }
    }
 
+   public static Size TextSize(Graphics g, string text, Font font) => TextRenderer.MeasureText(g, text, font, Size.Empty, FLAGS);
+
    protected Maybe<Font> getAdjustedFont(Graphics g, string expandedText)
    {
       for (var size = fontSize; size >= minimumFontSize; size--)
       {
          var testFont = new Font(fontName, size, fontStyle);
-         var textSize = TextRenderer.MeasureText(g, expandedText, testFont, Size.Empty, FLAGS);
+         var textSize = TextSize(g, expandedText, testFont);
          if (rectangle.Width > textSize.Width && rectangle.Height > textSize.Height)
          {
             return testFont;
