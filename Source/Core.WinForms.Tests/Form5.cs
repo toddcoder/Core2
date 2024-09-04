@@ -1,4 +1,5 @@
-﻿using Core.Matching;
+﻿using Core.Enums;
+using Core.Matching;
 using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
 
@@ -86,5 +87,12 @@ public partial class Form5 : Form
       rectangle = rectangle.BottomOf(rectangle, 10).Resize(100, 0);
       writer = new RectangleWriter("Underneath the second one", rectangle) { ForeColor = Color.White, BackColor = Color.Red, Outline = true };
       writer.Write(e.Graphics);
+
+      rectangle = e.ClipRectangle;
+      foreach (var alignment in EnumFunctions.enumEnumerable<CardinalAlignment>())
+      {
+         writer = new RectangleWriter(alignment.ToString(), rectangle, alignment) { ForeColor = Color.Black };
+         writer.Write(e.Graphics);
+      }
    }
 }

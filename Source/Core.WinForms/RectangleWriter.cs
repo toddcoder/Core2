@@ -2,13 +2,36 @@
 using System.Drawing.Text;
 using Core.Monads;
 using Core.Strings.Emojis;
+using Core.WinForms.Controls;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms;
 
-public class RectangleWriter(string text, Rectangle rectangle)
+public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment alignment = CardinalAlignment.Center)
 {
-   protected const TextFormatFlags FLAGS = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix;
+   protected static TextFormatFlags getFlags(CardinalAlignment alignment)
+   {
+      var alignmentFlags = alignment switch
+      {
+         CardinalAlignment.NorthWest => TextFormatFlags.Left | TextFormatFlags.Top,
+         CardinalAlignment.North => TextFormatFlags.HorizontalCenter | TextFormatFlags.Top,
+         CardinalAlignment.NorthEast => TextFormatFlags.Right | TextFormatFlags.Top,
+         CardinalAlignment.East => TextFormatFlags.Right | TextFormatFlags.VerticalCenter,
+         CardinalAlignment.SouthEast => TextFormatFlags.Right | TextFormatFlags.Bottom,
+         CardinalAlignment.South => TextFormatFlags.HorizontalCenter | TextFormatFlags.Bottom,
+         CardinalAlignment.SouthWest => TextFormatFlags.Left | TextFormatFlags.Bottom,
+         CardinalAlignment.West => TextFormatFlags.Left | TextFormatFlags.VerticalCenter,
+         CardinalAlignment.Center => TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+         _ => TextFormatFlags.Default
+      };
+
+      var flags = alignmentFlags | TextFormatFlags.NoPrefix | TextFormatFlags.EndEllipsis | TextFormatFlags.ExpandTabs | TextFormatFlags.WordEllipsis;
+      /*if (alignment is not CardinalAlignment.Center)
+      {
+         flags |= TextFormatFlags.TextBoxControl;
+      }*/
+      return flags;
+   }
 
    protected bool autoSizeText = true;
    protected string fontName = "Consolas";
@@ -22,6 +45,7 @@ public class RectangleWriter(string text, Rectangle rectangle)
    protected float penSize = 1f;
    protected DashStyle dashStyle = DashStyle.Solid;
    protected bool useEmojis = true;
+   protected TextFormatFlags flags = getFlags(alignment);
 
    public string Text => text;
 
@@ -117,7 +141,8 @@ public class RectangleWriter(string text, Rectangle rectangle)
       }
    }
 
-   public static Size TextSize(Graphics g, string text, Font font) => TextRenderer.MeasureText(g, text, font, Size.Empty, FLAGS);
+   public static Size TextSize(Graphics g, string text, Font font, CardinalAlignment alignment = CardinalAlignment.Center) =>
+      TextRenderer.MeasureText(g, text, font, Size.Empty, getFlags(alignment));
 
    protected Maybe<Font> getAdjustedFont(Graphics g, string expandedText)
    {
@@ -170,7 +195,7 @@ public class RectangleWriter(string text, Rectangle rectangle)
          g.FillRectangle(brush, rectangle);
       }
 
-      TextRenderer.DrawText(g, expandedText, font, rectangle, foreColor, FLAGS);
+      TextRenderer.DrawText(g, expandedText, font, rectangle, foreColor, flags);
 
       if (outline)
       {
