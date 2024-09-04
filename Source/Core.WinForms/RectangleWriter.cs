@@ -25,12 +25,7 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
          _ => TextFormatFlags.Default
       };
 
-      var flags = alignmentFlags | TextFormatFlags.NoPrefix | TextFormatFlags.EndEllipsis | TextFormatFlags.ExpandTabs | TextFormatFlags.WordEllipsis;
-      /*if (alignment is not CardinalAlignment.Center)
-      {
-         flags |= TextFormatFlags.TextBoxControl;
-      }*/
-      return flags;
+      return alignmentFlags | TextFormatFlags.NoPrefix;
    }
 
    protected bool autoSizeText = true;
@@ -181,28 +176,70 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
 
    protected string getExpandedText() => useEmojis ? text.EmojiSubstitutions() : text;
 
+   public BackgroundRestriction BackgroundRestriction { get; set; } = new BackgroundRestriction.Fill();
+
+   protected Rectangle getRestrictedRectangle(Graphics g, string expandedText, Font font, CardinalAlignment restrictionAlignment, int xMargin,
+      int yMargin)
+   {
+      var size = TextSize(g, expandedText, font);
+      return size.Rectangle(rectangle, restrictionAlignment, xMargin, yMargin);
+   }
+
    public void Write(Graphics g)
    {
       g.HighQuality();
       g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
       var expandedText = getExpandedText();
-      var font = getFont(g, expandedText);
+      using var font = getFont(g, expandedText);
+
+      var writingRectangle = rectangle;
+      var writingFlags = flags;
 
       if (_backColor is (true, var backColor))
       {
-         using var brush = new SolidBrush(backColor);
-         g.FillRectangle(brush, rectangle);
+         switch (BackgroundRestriction)
+         {
+            case BackgroundRestriction.Fill:
+            {
+               fillRectangle(writingRectangle, backColor);
+               break;
+            }
+            case BackgroundRestriction.Restricted restricted:
+            {
+               var restrictedRectangle = getRestrictedRectangle(g, expandedText, font, restricted.Alignment, restricted.XMargin, restricted.YMargin);
+               fillRectangle(restrictedRectangle, backColor);
+               writingRectangle = restrictedRectangle;
+               writingFlags = getFlags(restricted.Alignment);
+               break;
+            }
+            case BackgroundRestriction.UseWriterAlignment useWriterAlignment:
+            {
+               var restrictedRectangle = getRestrictedRectangle(g, expandedText, font, alignment, useWriterAlignment.XMargin,
+                  useWriterAlignment.YMargin);
+               fillRectangle(restrictedRectangle, backColor);
+               writingRectangle = restrictedRectangle;
+               break;
+            }
+         }
       }
 
-      TextRenderer.DrawText(g, expandedText, font, rectangle, foreColor, flags);
+      TextRenderer.DrawText(g, expandedText, font, writingRectangle, foreColor, writingFlags);
 
       if (outline)
       {
          using var pen = new Pen(foreColor, penSize);
          pen.DashStyle = dashStyle;
-         var outlineRectangle = rectangle.Resize(-2, -2).Reposition(1, 1);
+         var outlineRectangle = writingRectangle.Resize(-2, -2).Reposition(1, 1);
          g.DrawRectangle(pen, outlineRectangle);
+      }
+
+      return;
+
+      void fillRectangle(Rectangle rectangleToFill, Color backColor)
+      {
+         using var brush = new SolidBrush(backColor);
+         g.FillRectangle(brush, rectangleToFill);
       }
    }
 }

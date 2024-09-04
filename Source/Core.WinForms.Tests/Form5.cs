@@ -76,7 +76,7 @@ public partial class Form5 : Form
 
    protected void pictureBox1_Paint(object sender, PaintEventArgs e)
    {
-      var rectangle = new Rectangle(0, 0, 100, 40);
+      /*var rectangle = new Rectangle(0, 0, 100, 40);
       var writer = new RectangleWriter("Location 1", rectangle) { BackColor = Color.White };
       writer.Write(e.Graphics);
 
@@ -86,12 +86,15 @@ public partial class Form5 : Form
 
       rectangle = rectangle.BottomOf(rectangle, 10).Resize(100, 0);
       writer = new RectangleWriter("Underneath the second one", rectangle) { ForeColor = Color.White, BackColor = Color.Red, Outline = true };
-      writer.Write(e.Graphics);
+      writer.Write(e.Graphics);*/
 
-      rectangle = e.ClipRectangle;
+      var rectangle = e.ClipRectangle;
       foreach (var alignment in EnumFunctions.enumEnumerable<CardinalAlignment>())
       {
-         writer = new RectangleWriter(alignment.ToString(), rectangle, alignment) { ForeColor = Color.Black };
+         var writer = new RectangleWriter(alignment.ToString(), rectangle, alignment)
+         {
+            ForeColor = Color.Black, BackColor = Color.Bisque, BackgroundRestriction = new BackgroundRestriction.Restricted(alignment)
+         };
          writer.Write(e.Graphics);
       }
    }

@@ -190,6 +190,36 @@ public static class GraphicsExtensions
       return new Rectangle(Point.Empty, size).Align(outerRectangle, CardinalAlignment.NorthWest, xMargin, yMargin);
    }
 
+   public static Rectangle Rectangle(this Size size, Rectangle outerRectangle, CardinalAlignment alignment, int xMargin = 0, int yMargin = 0)
+   {
+      var location = alignment switch
+      {
+         CardinalAlignment.NorthWest => new Point(west(), north()),
+         CardinalAlignment.North => new Point(centerX(), north()),
+         CardinalAlignment.NorthEast => new Point(east(), north()),
+         CardinalAlignment.East => new Point(east(), centerY()),
+         CardinalAlignment.SouthEast => new Point(east(), south()),
+         CardinalAlignment.South => new Point(centerX(), south()),
+         CardinalAlignment.SouthWest => new Point(west(), south()),
+         CardinalAlignment.West => new Point(west(), centerY()),
+         CardinalAlignment.Center => new Point(centerX(), centerY()),
+         _ => outerRectangle.Location
+      };
+      return new Rectangle(location, size);
+
+      int north() => outerRectangle.Y + yMargin;
+
+      int south() => outerRectangle.Bottom - size.Height - yMargin;
+
+      int west() => outerRectangle.X + xMargin;
+
+      int east() => outerRectangle.Right - size.Width - xMargin;
+
+      int centerX() => outerRectangle.X + (outerRectangle.Width - size.Width) / 2;
+
+      int centerY() => outerRectangle.Y + (outerRectangle.Height - size.Height) / 2;
+   }
+
    public static Rectangle Shrink(this Rectangle rectangle, int offset = 0)
    {
       return rectangle.Reposition(offset, offset).Resize(-2 * offset, -2 * offset);
