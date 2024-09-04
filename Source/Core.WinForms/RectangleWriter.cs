@@ -7,9 +7,9 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms;
 
-public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment alignment = CardinalAlignment.Center)
+public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment alignment = CardinalAlignment.Center, bool wordWrap = false)
 {
-   protected static TextFormatFlags getFlags(CardinalAlignment alignment)
+   protected static TextFormatFlags getFlags(CardinalAlignment alignment, bool wordWrap)
    {
       var alignmentFlags = alignment switch
       {
@@ -25,7 +25,13 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
          _ => TextFormatFlags.Default
       };
 
-      return alignmentFlags | TextFormatFlags.NoPrefix;
+      var textFormatFlags = alignmentFlags | TextFormatFlags.NoPrefix;
+      if (wordWrap)
+      {
+         textFormatFlags |= TextFormatFlags.WordBreak;
+      }
+
+      return textFormatFlags;
    }
 
    protected bool autoSizeText = true;
@@ -40,7 +46,7 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
    protected float penSize = 1f;
    protected DashStyle dashStyle = DashStyle.Solid;
    protected bool useEmojis = true;
-   protected TextFormatFlags flags = getFlags(alignment);
+   protected TextFormatFlags flags = getFlags(alignment, wordWrap);
 
    public string Text => text;
 
@@ -142,8 +148,8 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
 
    public float UsedFontSize { get; set; }
 
-   public static Size TextSize(Graphics g, string text, Font font, CardinalAlignment alignment = CardinalAlignment.Center) =>
-      TextRenderer.MeasureText(g, text, font, Size.Empty, getFlags(alignment));
+   public static Size TextSize(Graphics g, string text, Font font, CardinalAlignment alignment = CardinalAlignment.Center, bool wordWrap = false) =>
+      TextRenderer.MeasureText(g, text, font, Size.Empty, getFlags(alignment, wordWrap));
 
    protected Maybe<Font> getAdjustedFont(Graphics g, string expandedText)
    {
@@ -216,7 +222,7 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
                var restrictedRectangle = getRestrictedRectangle(g, expandedText, font, restricted.Alignment, restricted.XMargin, restricted.YMargin);
                fillRectangle(restrictedRectangle, backColor);
                writingRectangle = restrictedRectangle;
-               writingFlags = getFlags(restricted.Alignment);
+               writingFlags = getFlags(restricted.Alignment, wordWrap);
                break;
             }
             case BackgroundRestriction.UseWriterAlignment useWriterAlignment:
