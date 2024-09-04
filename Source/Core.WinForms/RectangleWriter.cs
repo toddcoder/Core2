@@ -136,6 +136,12 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
       }
    }
 
+   public Rectangle UsedRectangle { get; set; } = Rectangle.Empty;
+
+   public TextFormatFlags UsedFlags { get; set; } = TextFormatFlags.Default;
+
+   public float UsedFontSize { get; set; }
+
    public static Size TextSize(Graphics g, string text, Font font, CardinalAlignment alignment = CardinalAlignment.Center) =>
       TextRenderer.MeasureText(g, text, font, Size.Empty, getFlags(alignment));
 
@@ -225,6 +231,10 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
       }
 
       TextRenderer.DrawText(g, expandedText, font, writingRectangle, foreColor, writingFlags);
+
+      UsedRectangle = writingRectangle;
+      UsedFlags = flags;
+      UsedFontSize = font.Size;
 
       if (outline)
       {
