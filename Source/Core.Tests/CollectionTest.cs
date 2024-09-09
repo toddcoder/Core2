@@ -104,11 +104,15 @@ public class CollectionTest
    public void RingTest()
    {
       var ring = new Ring<string>("alpha", "bravo", "charlie");
+      var index = 0;
 
-      for (var i = 0; i < 10; i++)
+      foreach (var item in ring)
       {
-         var item = ring.Next();
-         Console.WriteLine($"{i}: {item}");
+         Console.WriteLine($"{index}: {item}");
+         if (index++ >= 10)
+         {
+            break;
+         }
       }
    }
 }
