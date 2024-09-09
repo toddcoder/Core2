@@ -257,7 +257,7 @@ public static class GraphicsExtensions
 
    public static Rectangle LeftOf(this Rectangle rectangle, Size size, int offset = 0)
    {
-      return rectangle with { Width = rectangle.Width - size.Width - offset };
+      return rectangle with { X = rectangle.Width - size.Width - offset };
    }
 
    public static Rectangle LeftOf(this Rectangle rectangle, Rectangle referenceRectangle, int offset = 0)
