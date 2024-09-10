@@ -146,9 +146,17 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
          if (value is (true, var control))
          {
             objectHash.IdToObject[id] = control;
+            control.GotFocus += (_, _) =>
+            {
+               _lastIdFocus = id;
+               Invalidate();
+               GotFocus?.Invoke(this, new ControlFocusArgs<TControl>(control, id));
+            };
+            Controls.Add(control);
          }
-         else
+         else if (objectHash.IdToObjectMaybe[id] is (true, var oldControl))
          {
+            Controls.Remove(oldControl);
             objectHash.Remove(id);
          }
       }
