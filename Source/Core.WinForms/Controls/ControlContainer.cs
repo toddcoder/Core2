@@ -138,7 +138,21 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
-   public Maybe<TControl> this[long id] => objectHash.IdToObjectMaybe[id];
+   public Maybe<TControl> this[long id]
+   {
+      get => objectHash.IdToObjectMaybe[id];
+      set
+      {
+         if (value is (true, var control))
+         {
+            objectHash.IdToObject[id] = control;
+         }
+         else
+         {
+            objectHash.Remove(id);
+         }
+      }
+   }
 
    public new int Padding
    {
