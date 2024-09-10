@@ -36,7 +36,8 @@ public class Ring<T> : IEnumerable<T>
 
    public int Count => list.Count;
 
-   [Obsolete("Use enumerable interface")]
+   public bool Cancel { get; set; }
+
    public T Next()
    {
       var result = list[index];
@@ -51,7 +52,7 @@ public class Ring<T> : IEnumerable<T>
    public IEnumerator<T> GetEnumerator()
    {
       index = 0;
-      while (true)
+      while (!Cancel)
       {
          var result = list[index];
          if (++index >= list.Count)
