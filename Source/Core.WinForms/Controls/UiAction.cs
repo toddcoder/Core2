@@ -25,6 +25,46 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 {
    protected const float START_AMOUNT = .9f;
 
+   public static UiAction operator &(UiAction uiAction, (bool condition, string message) tuple)
+   {
+      if (uiAction.type is UiActionType.Divider)
+      {
+         uiAction.DividerValidation &= DividerValidation.IsValid(tuple.condition, tuple.message);
+      }
+
+      return uiAction;
+   }
+
+   public static UiAction operator &(UiAction uiAction, (bool condition, Func<string> message) tuple)
+   {
+      if (uiAction.type is UiActionType.Divider)
+      {
+         uiAction.DividerValidation &= DividerValidation.IsValid(tuple.condition, tuple.message);
+      }
+
+      return uiAction;
+   }
+
+   public static UiAction operator |(UiAction uiAction, (bool condition, string message) tuple)
+   {
+      if (uiAction.type is UiActionType.Divider)
+      {
+         uiAction.DividerValidation |= DividerValidation.IsValid(tuple.condition, tuple.message);
+      }
+
+      return uiAction;
+   }
+
+   public static UiAction operator |(UiAction uiAction, (bool condition, Func<string> message) tuple)
+   {
+      if (uiAction.type is UiActionType.Divider)
+      {
+         uiAction.dividerValidation |= DividerValidation.IsValid(tuple.condition, tuple.message);
+      }
+
+      return uiAction;
+   }
+
    protected static Hash<UiActionType, Color> globalForeColors = new()
    {
       [UiActionType.Uninitialized] = Color.White,

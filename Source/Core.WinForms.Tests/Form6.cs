@@ -18,8 +18,8 @@ public partial class Form6 : Form
       textBox.TextChanged += (_, _) =>
       {
          var text = textBox.Text;
-         uiTextDivider.DividerValidation = DividerValidation.IsValid(text.IsNotEmpty(), "text is empty") &
-            DividerValidation.IsValid(text is "alfa" or "bravo", "Expected alfa or bravo");
+         uiTextDivider.DividerValidation = new DividerValidation.None();
+         _ = uiTextDivider & (text.IsNotEmpty(), "text is empty") & (text is "alfa" or "bravo", "Expected alfa or bravo");
       };
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);

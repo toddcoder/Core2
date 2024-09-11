@@ -12,9 +12,37 @@ public abstract record DividerValidation
 
    public sealed record Error(Exception Exception) : DividerValidation;
 
-   public static DividerValidation operator &(DividerValidation left, DividerValidation right) => left is Valid ? right : left;
+   public static DividerValidation operator &(DividerValidation left, DividerValidation right)
+   {
+      if (left is None)
+      {
+         return right;
+      }
+      else if (right is None)
+      {
+         return left;
+      }
+      else
+      {
+         return left is Valid ? right : left;
+      }
+   }
 
-   public static DividerValidation operator |(DividerValidation left, DividerValidation right) => left is Valid ? left : right;
+   public static DividerValidation operator |(DividerValidation left, DividerValidation right)
+   {
+      if (left is None)
+      {
+         return right;
+      }
+      else if (right is None)
+      {
+         return left;
+      }
+      else
+      {
+         return left is Valid ? left : right;
+      }
+   }
 
    public static DividerValidation IsValid(bool value, string message) => value ? new Valid() : new Invalid(message);
 
