@@ -191,6 +191,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    protected Fader fader;
    protected Maybe<PieProgressProcessor> _pieProgressProcessor = nil;
    protected bool locked;
+   protected DividerValidation dividerValidation = new DividerValidation.None();
 
    public event EventHandler<AutomaticMessageArgs>? AutomaticMessage;
    public event EventHandler<PaintEventArgs>? Painting;
@@ -1637,14 +1638,16 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          case UiActionType.Divider:
          {
             var rectangle = getDividerRectangle();
+            var dividerForeColor = getDividerForeColor();
+            var dividerBackColor = getDividerBackColor();
             if (isDirty)
             {
-               using var brush = new HatchBrush(HatchStyle.DiagonalCross, Color.DarkBlue, Color.White);
+               using var brush = new HatchBrush(HatchStyle.DiagonalCross, dividerBackColor, dividerForeColor);
                e.Graphics.FillRectangle(brush, rectangle);
             }
             else
             {
-               using var brush = new SolidBrush(Color.DarkBlue);
+               using var brush = new SolidBrush(dividerBackColor);
                e.Graphics.FillRectangle(brush, rectangle);
             }
 
@@ -1652,7 +1655,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             using var backBrush = new SolidBrush(Color.CadetBlue);
             fillRectangle(e.Graphics, backBrush, textRectangle);
 
-            using var pen = new Pen(Color.White);
+            using var pen = new Pen(dividerForeColor);
             var flags = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis |
                TextFormatFlags.LeftAndRightPadding;
             TextRenderer.DrawText(e.Graphics, text, Font, textRectangle, Color.White, flags);
@@ -1750,6 +1753,18 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             }
          }
       }
+
+      Color getDividerForeColor() => dividerValidation is DividerValidation.Failure ? Color.Black : Color.White;
+
+      Color getDividerBackColor() => dividerValidation switch
+      {
+         DividerValidation.Error => Color.Red,
+         DividerValidation.Failure => Color.Yellow,
+         DividerValidation.Invalid => Color.Maroon,
+         DividerValidation.None => Color.DarkBlue,
+         DividerValidation.Valid => Color.Green,
+         _ => throw new ArgumentOutOfRangeException(nameof(dividerValidation))
+      };
    }
 
    protected void drawTitle(Graphics g, Rectangle clientRectangle)
@@ -3776,4 +3791,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    }
 
    public long ObjectId { get; set; }
+
+   public DividerValidation DividerValidation
+   {
+      get => dividerValidation;
+      set
+      {
+         dividerValidation = value;
+         Invalidate();
+      }
+   }
 }

@@ -27,8 +27,8 @@ public partial class Form1 : Form
 
       var menus = new FreeMenus { Form = this };
       menus.Menu("File");
-      (menus + @"Show C:\Temp" + (() => uiButton6!.RunWorkerAsync())).Menu();
-      (menus + "ShowAndFade" + (() => uiDirty!.ShowAndFadeOut())).Menu();
+      (menus + @"Show C:\Temp" + (() => uiButton6.RunWorkerAsync())).Menu();
+      (menus + "ShowAndFade" + (() => uiDirty.ShowAndFadeOut())).Menu();
       (menus + "Tests").SubMenu();
       (menus + "Alpha" + (() => { })).Menu();
       (menus + "Bravo" + (() => { })).Menu();
@@ -55,12 +55,17 @@ public partial class Form1 : Form
          var form5 = new Form5();
          form5.Show();
       }) + Keys.F5).Menu();
+      (menus + "Form6" + (() =>
+      {
+         var form6 = new Form6();
+         form6.Show();
+      }) + Keys.F6).Menu();
       (menus + "JSON" + retrieveJson + Keys.Control + Keys.J).Menu();
       (menus + "Start Flashing" + startFlashing + Keys.Control + Keys.F).Menu();
       (menus + "Stop Flashing" + stopFlashing + Keys.Control + Keys.Alt + Keys.F).Menu();
       menus.Menu("Edit");
       menus.StandardEditMenu();
-      (menus + "Enabled" + (() => uiButton6!.Enabled = !uiButton6.Enabled)).Menu();
+      (menus + "Enabled" + (() => uiButton6.Enabled = !uiButton6.Enabled)).Menu();
       menus.RenderMainMenu();
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
