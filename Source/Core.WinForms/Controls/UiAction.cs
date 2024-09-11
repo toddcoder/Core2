@@ -1811,7 +1811,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          DividerValidation.Failure => Color.Yellow,
          DividerValidation.Invalid => Color.Maroon,
          DividerValidation.None => Color.DarkBlue,
-         DividerValidation.Valid => Color.Green,
+         DividerValidation.Valid => Color.LightGreen,
          _ => throw new ArgumentOutOfRangeException(nameof(dividerValidation))
       };
 
