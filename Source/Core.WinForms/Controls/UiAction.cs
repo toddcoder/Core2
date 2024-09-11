@@ -1655,7 +1655,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
             if (_dividerText is (true, var dividerText))
             {
-               var dividerWriter = new RectangleWriter(dividerText, rectangle) { FontSize = 8f, ForeColor = dividerForeColor, UseEmojis = UseEmojis };
+               var dividerWriter = new RectangleWriter(dividerText, rectangle, CardinalAlignment.East)
+                  { FontSize = 8f, ForeColor = dividerForeColor, UseEmojis = UseEmojis };
                dividerWriter.Write(e.Graphics);
             }
 
