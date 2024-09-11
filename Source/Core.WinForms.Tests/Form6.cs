@@ -1,4 +1,5 @@
-﻿using Core.WinForms.Controls;
+﻿using Core.Strings;
+using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
 
 namespace Core.WinForms.Tests;
@@ -17,7 +18,8 @@ public partial class Form6 : Form
       textBox.TextChanged += (_, _) =>
       {
          var text = textBox.Text;
-         uiTextDivider.DividerValidation = text is "Todd" or "Bennett" ? new DividerValidation.Valid() : new DividerValidation.Invalid("Expected Todd or Bennett");
+         uiTextDivider.DividerValidation = DividerValidation.IsValid(text.IsNotEmpty(), "text is empty") &
+            DividerValidation.IsValid(text is "alfa" or "bravo", "Expected alfa or bravo");
       };
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
