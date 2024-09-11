@@ -17,7 +17,7 @@ public partial class Form6 : Form
       textBox.TextChanged += (_, _) =>
       {
          var text = textBox.Text;
-         uiTextDivider.DividerValidation = text is "Todd" or "Bennett" ? new DividerValidation.Valid() : new DividerValidation.Invalid();
+         uiTextDivider.DividerValidation = text is "Todd" or "Bennett" ? new DividerValidation.Valid() : new DividerValidation.Invalid("Expected Todd or Bennett");
       };
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);

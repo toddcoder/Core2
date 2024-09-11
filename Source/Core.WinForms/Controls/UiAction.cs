@@ -1640,6 +1640,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             var rectangle = getDividerRectangle();
             var dividerForeColor = getDividerForeColor();
             var dividerBackColor = getDividerBackColor();
+            var _dividerText = getDividerValidationText();
             if (isDirty)
             {
                using var brush = new HatchBrush(HatchStyle.DiagonalCross, dividerBackColor, dividerForeColor);
@@ -1649,6 +1650,12 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             {
                using var brush = new SolidBrush(dividerBackColor);
                e.Graphics.FillRectangle(brush, rectangle);
+            }
+
+            if (_dividerText is (true, var dividerText))
+            {
+               var dividerWriter = new RectangleWriter(dividerText, rectangle) { FontSize = 8f, ForeColor = dividerForeColor };
+               dividerWriter.Write(e.Graphics);
             }
 
             var textRectangle = getDividerTextRectangle(e.Graphics, clientRectangle);
@@ -1764,6 +1771,16 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          DividerValidation.None => Color.DarkBlue,
          DividerValidation.Valid => Color.Green,
          _ => throw new ArgumentOutOfRangeException(nameof(dividerValidation))
+      };
+
+      Maybe<string> getDividerValidationText() => dividerValidation switch
+      {
+         DividerValidation.Error error => error.Exception.Message,
+         DividerValidation.Failure failure => failure.Message,
+         DividerValidation.Invalid invalid => invalid.Message,
+         DividerValidation.None => nil,
+         DividerValidation.Valid => nil,
+         _ => nil
       };
    }
 

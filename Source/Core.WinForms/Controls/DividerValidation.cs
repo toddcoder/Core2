@@ -6,7 +6,7 @@ public abstract record DividerValidation
 
    public sealed record Valid : DividerValidation;
 
-   public sealed record Invalid : DividerValidation;
+   public sealed record Invalid(string Message) : DividerValidation;
 
    public sealed record Failure(string Message) : DividerValidation;
 
