@@ -1487,7 +1487,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       if (locked)
       {
          using var measureFont = new Font("Consolas", 20f, FontStyle.Regular);
-         var size = UiActionWriter.TextSize(e.Graphics, "/big-x", measureFont, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter, UseEmojis);
+         var size = UiActionWriter.TextSize(e.Graphics, "/big-x", measureFont, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter,
+            UseEmojis);
          var rectangle = size.West(getClientRectangle());
          var lockedWriter = new UiActionWriter(rectangle, measureFont, Color.White);
          lockedWriter.Write(e.Graphics, "/big-x", type is UiActionType.NoStatus);
@@ -1654,7 +1655,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
             if (_dividerText is (true, var dividerText))
             {
-               var dividerWriter = new RectangleWriter(dividerText, rectangle) { FontSize = 8f, ForeColor = dividerForeColor };
+               var dividerWriter = new RectangleWriter(dividerText, rectangle) { FontSize = 8f, ForeColor = dividerForeColor, UseEmojis = UseEmojis };
                dividerWriter.Write(e.Graphics);
             }
 
