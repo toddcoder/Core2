@@ -3819,4 +3819,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          Invalidate();
       }
    }
+
+   public bool DividerIsValid => dividerValidation is DividerValidation.Valid;
 }
