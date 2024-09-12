@@ -56,7 +56,7 @@ internal class ColumnData : ISetupObject
 }
 
 [TestClass]
-public class DataTests
+public class ArrangedRectangleTests
 {
    protected const string TRUE_CONNECTION_STRING = "Data Source=.;Initial Catalog=local_tebennett;Integrated Security=SSPI;" +
       "Application Name=TSqlCop;";
@@ -65,7 +65,7 @@ public class DataTests
    public void FromConfigurationTest()
    {
       var entity = new ColumnData { ObjectId = 95 };
-      var resources = new Resources<DataTests>();
+      var resources = new Resources<ArrangedRectangleTests>();
       var source = resources.String("TestData.data.configuration");
       var _adapter =
          from @group in Setting.FromString(source)
@@ -89,7 +89,7 @@ public class DataTests
    [TestMethod]
    public void FromConnectionStringTest()
    {
-      var resources = new Resources<DataTests>();
+      var resources = new Resources<ArrangedRectangleTests>();
       var source = resources.String("TestData.data.configuration");
       var _adapter =
          from configuration in Setting.FromString(source)
