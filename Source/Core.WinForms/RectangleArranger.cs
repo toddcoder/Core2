@@ -34,14 +34,17 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
    public void Add(string key, string text, Rectangle rectangle) =>
       arrangedRectangles[key] = new ArrangedRectangle(text, fontName, fontSize, fontStyle, rectangle);
 
-   public void Add(string key, string text, Point location)
+   public Rectangle Add(string key, string text, Point location)
    {
       using var font = getFont();
       var size = RectangleWriter.TextSize(g, text);
-      Add(key, text, new Rectangle(location, size));
+      var rectangle = new Rectangle(location, size);
+      Add(key, text, rectangle);
+
+      return rectangle;
    }
 
-   public void Add(string key, string text, int x, int y) => Add(key, text, new Point(x, y));
+   public Rectangle Add(string key, string text, int x, int y) => Add(key, text, new Point(x, y));
 
    public void RightOf(string key, string referenceKey, string text, Rectangle rectangle, int offset = 0)
    {
@@ -53,7 +56,7 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       Add(key, text, rectangle);
    }
 
-   public void RightOf(string key, string referenceKey, string text, int offset = 0)
+   public Rectangle RightOf(string key, string referenceKey, string text, int offset = 0)
    {
       using var font = getFont();
       var size = RectangleWriter.TextSize(g, text);
@@ -61,6 +64,12 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       {
          var rectangle = data.Rectangle.RightOf(size, offset);
          Add(key, text, rectangle);
+
+         return rectangle;
+      }
+      else
+      {
+         return Rectangle.Empty;
       }
    }
 
@@ -74,7 +83,7 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       Add(key, text, rectangle);
    }
 
-   public void LeftOf(string key, string referenceKey, string text, int offset = 0)
+   public Rectangle LeftOf(string key, string referenceKey, string text, int offset = 0)
    {
       using var font = getFont();
       var size = RectangleWriter.TextSize(g, text);
@@ -82,6 +91,12 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       {
          var rectangle = data.Rectangle.LeftOf(size, offset);
          Add(key, text, rectangle);
+
+         return rectangle;
+      }
+      else
+      {
+         return Rectangle.Empty;
       }
    }
 
@@ -95,7 +110,7 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       Add(key, text, rectangle);
    }
 
-   public void TopOf(string key, string referenceKey, string text, int offset = 0)
+   public Rectangle TopOf(string key, string referenceKey, string text, int offset = 0)
    {
       using var font = getFont();
       var size = RectangleWriter.TextSize(g, text);
@@ -103,6 +118,12 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       {
          var rectangle = data.Rectangle.TopOf(size, offset);
          Add(key, text, rectangle);
+
+         return rectangle;
+      }
+      else
+      {
+         return Rectangle.Empty;
       }
    }
 
@@ -116,7 +137,7 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       Add(key, text, rectangle);
    }
 
-   public void BottomOf(string key, string referenceKey, string text, int offset = 0)
+   public Rectangle BottomOf(string key, string referenceKey, string text, int offset = 0)
    {
       using var font = getFont();
       var size = RectangleWriter.TextSize(g, text);
@@ -124,6 +145,12 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       {
          var rectangle = data.Rectangle.BottomOf(size, offset);
          Add(key, text, rectangle);
+
+         return rectangle;
+      }
+      else
+      {
+         return Rectangle.Empty;
       }
    }
 
