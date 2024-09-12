@@ -278,4 +278,10 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       resize();
       Invalidate();
    }
+
+   public void SetScroller(int maximum, uint page)
+   {
+      var scroller = new Scroller(Handle, maximum, page);
+      scroller.Set();
+   }
 }
