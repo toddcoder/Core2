@@ -1,5 +1,6 @@
 ﻿using System.Drawing.Drawing2D;
 using System.Drawing.Text;
+using Core.Collections;
 using Core.Monads;
 using Core.Strings.Emojis;
 using Core.WinForms.Controls;
@@ -12,6 +13,12 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
    protected const string DEFAULT_FONT_NAME = "Consolas";
    protected const float DEFAULT_FONT_SIZE = 12f;
    protected const FontStyle DEFAULT_FONT_STYLE = FontStyle.Regular;
+
+   protected static StringHash<RectangleWriter> stashedWriters = [];
+
+   public static Maybe<RectangleWriter> Retrieve(string key) => stashedWriters.Maybe[key];
+
+   public static RectangleWriter RetrieveHard(string key) => stashedWriters[key];
 
    protected static TextFormatFlags getFlags(CardinalAlignment alignment, bool wordWrap)
    {
@@ -40,6 +47,8 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
 
    public static Font DefaultFont() => new(DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE);
 
+   protected string text = text;
+   protected Rectangle rectangle = rectangle;
    protected bool autoSizeText = true;
    protected string fontName = DEFAULT_FONT_NAME;
    protected float fontSize = DEFAULT_FONT_SIZE;
@@ -54,9 +63,19 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
    protected bool useEmojis = true;
    protected TextFormatFlags flags = getFlags(alignment, wordWrap);
 
-   public string Text => text;
+   public string Text
+   {
+      get => text;
+      set => text = value;
+   }
 
-   public Rectangle Rectangle => rectangle;
+   public Rectangle Rectangle
+   {
+      get => rectangle;
+      set => rectangle = value;
+   }
+
+   public Maybe<string> Stash { get; set; } = nil;
 
    public bool AutoSizeText
    {
@@ -257,6 +276,11 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
          pen.DashStyle = dashStyle;
          var outlineRectangle = writingRectangle.Resize(-2, -2).Reposition(1, 1);
          g.DrawRectangle(pen, outlineRectangle);
+      }
+
+      if (Stash is (true, var stash))
+      {
+         stashedWriters[stash] = this;
       }
 
       return;
