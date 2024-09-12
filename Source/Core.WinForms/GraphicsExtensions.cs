@@ -247,7 +247,7 @@ public static class GraphicsExtensions
 
    public static Rectangle RightOf(this Rectangle rectangle, Size size, int offset = 0)
    {
-      return rectangle.LeftOf(size, offset) with { X = size.Width + offset };
+      return rectangle with { X = rectangle.X + rectangle.Width + offset, Size = size };
    }
 
    public static Rectangle RightOf(this Rectangle rectangle, Rectangle referenceRectangle, int offset = 0)
@@ -267,7 +267,7 @@ public static class GraphicsExtensions
 
    public static Rectangle BottomOf(this Rectangle rectangle, Size size, int offset = 0)
    {
-      return rectangle.TopOf(size) with { Y = size.Height + offset };
+      return rectangle with { Y = rectangle.Y + rectangle.Height + offset, Size = size };
    }
 
    public static Rectangle BottomOf(this Rectangle rectangle, Rectangle referenceRectangle, int offset = 0)
