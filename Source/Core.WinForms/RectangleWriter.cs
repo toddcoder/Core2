@@ -9,6 +9,10 @@ namespace Core.WinForms;
 
 public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment alignment = CardinalAlignment.Center, bool wordWrap = false)
 {
+   protected const string DEFAULT_FONT_NAME = "Consolas";
+   protected const float DEFAULT_FONT_SIZE = 12f;
+   protected const FontStyle DEFAULT_FONT_STYLE = FontStyle.Regular;
+
    protected static TextFormatFlags getFlags(CardinalAlignment alignment, bool wordWrap)
    {
       var alignmentFlags = alignment switch
@@ -34,11 +38,13 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
       return textFormatFlags;
    }
 
+   public static Font DefaultFont() => new(DEFAULT_FONT_NAME, DEFAULT_FONT_SIZE, DEFAULT_FONT_STYLE);
+
    protected bool autoSizeText = true;
-   protected string fontName = "Consolas";
-   protected float fontSize = 12f;
+   protected string fontName = DEFAULT_FONT_NAME;
+   protected float fontSize = DEFAULT_FONT_SIZE;
    protected float minimumFontSize = 6f;
-   protected FontStyle fontStyle = FontStyle.Regular;
+   protected FontStyle fontStyle = DEFAULT_FONT_STYLE;
    protected Maybe<Font> _font = nil;
    protected Color foreColor = Color.Black;
    protected Maybe<Color> _backColor = nil;
@@ -150,6 +156,9 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
 
    public static Size TextSize(Graphics g, string text, Font font, CardinalAlignment alignment = CardinalAlignment.Center, bool wordWrap = false) =>
       TextRenderer.MeasureText(g, text, font, Size.Empty, getFlags(alignment, wordWrap));
+
+   public static Size TextSize(Graphics g, string text, CardinalAlignment alignment = CardinalAlignment.Center, bool wordWrap = false) =>
+      TextSize(g, text, DefaultFont(), alignment, wordWrap);
 
    protected Maybe<Font> getAdjustedFont(Graphics g, string expandedText)
    {
