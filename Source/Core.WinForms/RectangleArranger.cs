@@ -160,9 +160,8 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
       {
          using var font = getFont();
-         var location = data.Rectangle.NorthWest(xOffset, yOffset);
          var size = RectangleWriter.TextSize(g, text);
-         var rectangle = new Rectangle(location, size);
+         var rectangle = size.NorthWest(data.Rectangle, xOffset, yOffset);
          Add(key, text, rectangle);
 
          return rectangle;
@@ -178,9 +177,8 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
       {
          using var font = getFont();
-         var location = data.Rectangle.North(xOffset, yOffset);
          var size = RectangleWriter.TextSize(g, text);
-         var rectangle = new Rectangle(location, size);
+         var rectangle = size.North(data.Rectangle, xOffset, yOffset);
          Add(key, text, rectangle);
 
          return rectangle;
@@ -196,9 +194,8 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
       {
          using var font = getFont();
-         var location = data.Rectangle.NorthEast(xOffset, yOffset);
          var size = RectangleWriter.TextSize(g, text);
-         var rectangle = new Rectangle(location, size);
+         var rectangle = size.NorthEast(data.Rectangle, xOffset, yOffset);
          Add(key, text, rectangle);
 
          return rectangle;
@@ -214,9 +211,8 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
       {
          using var font = getFont();
-         var location = data.Rectangle.East(xOffset, yOffset);
          var size = RectangleWriter.TextSize(g, text);
-         var rectangle = new Rectangle(location, size);
+         var rectangle = size.East(data.Rectangle, xOffset, yOffset);
          Add(key, text, rectangle);
 
          return rectangle;
@@ -232,9 +228,8 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
       {
          using var font = getFont();
-         var location = data.Rectangle.SouthEast(xOffset, yOffset);
          var size = RectangleWriter.TextSize(g, text);
-         var rectangle = new Rectangle(location, size);
+         var rectangle = size.SouthEast(data.Rectangle, xOffset, yOffset);
          Add(key, text, rectangle);
 
          return rectangle;
@@ -250,9 +245,8 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
       {
          using var font = getFont();
-         var location = data.Rectangle.South(xOffset, yOffset);
          var size = RectangleWriter.TextSize(g, text);
-         var rectangle = new Rectangle(location, size);
+         var rectangle = size.South(data.Rectangle, xOffset, yOffset);
          Add(key, text, rectangle);
 
          return rectangle;
@@ -268,9 +262,8 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
       {
          using var font = getFont();
-         var location = data.Rectangle.SouthWest(xOffset, yOffset);
          var size = RectangleWriter.TextSize(g, text);
-         var rectangle = new Rectangle(location, size);
+         var rectangle = size.SouthWest(data.Rectangle, xOffset, yOffset);
          Add(key, text, rectangle);
 
          return rectangle;
@@ -286,9 +279,8 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
       {
          using var font = getFont();
-         var location = data.Rectangle.West(xOffset, yOffset);
          var size = RectangleWriter.TextSize(g, text);
-         var rectangle = new Rectangle(location, size);
+         var rectangle = size.West(data.Rectangle, xOffset, yOffset);
          Add(key, text, rectangle);
 
          return rectangle;
