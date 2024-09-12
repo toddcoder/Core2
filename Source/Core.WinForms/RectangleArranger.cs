@@ -4,7 +4,8 @@ using Core.Monads;
 
 namespace Core.WinForms;
 
-public class RectangleArranger(Graphics g, string fontName = "Consolas", float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular) : IEnumerable<ArrangedRectangle>
+public class RectangleArranger(Graphics g, string fontName = "Consolas", float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular)
+   : IEnumerable<ArrangedRectangle>
 {
    protected string fontName = fontName;
    protected float fontSize = fontSize;
@@ -144,6 +145,150 @@ public class RectangleArranger(Graphics g, string fontName = "Consolas", float f
       if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
       {
          var rectangle = data.Rectangle.BottomOf(size, offset);
+         Add(key, text, rectangle);
+
+         return rectangle;
+      }
+      else
+      {
+         return Rectangle.Empty;
+      }
+   }
+
+   public Rectangle NorthWest(string key, string referenceKey, string text, int xOffset = 0, int yOffset = 0)
+   {
+      if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
+      {
+         using var font = getFont();
+         var location = data.Rectangle.NorthWest(xOffset, yOffset);
+         var size = RectangleWriter.TextSize(g, text);
+         var rectangle = new Rectangle(location, size);
+         Add(key, text, rectangle);
+
+         return rectangle;
+      }
+      else
+      {
+         return Rectangle.Empty;
+      }
+   }
+
+   public Rectangle North(string key, string referenceKey, string text, int xOffset = 0, int yOffset = 0)
+   {
+      if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
+      {
+         using var font = getFont();
+         var location = data.Rectangle.North(xOffset, yOffset);
+         var size = RectangleWriter.TextSize(g, text);
+         var rectangle = new Rectangle(location, size);
+         Add(key, text, rectangle);
+
+         return rectangle;
+      }
+      else
+      {
+         return Rectangle.Empty;
+      }
+   }
+
+   public Rectangle NorthEast(string key, string referenceKey, string text, int xOffset = 0, int yOffset = 0)
+   {
+      if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
+      {
+         using var font = getFont();
+         var location = data.Rectangle.NorthEast(xOffset, yOffset);
+         var size = RectangleWriter.TextSize(g, text);
+         var rectangle = new Rectangle(location, size);
+         Add(key, text, rectangle);
+
+         return rectangle;
+      }
+      else
+      {
+         return Rectangle.Empty;
+      }
+   }
+
+   public Rectangle East(string key, string referenceKey, string text, int xOffset = 0, int yOffset = 0)
+   {
+      if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
+      {
+         using var font = getFont();
+         var location = data.Rectangle.East(xOffset, yOffset);
+         var size = RectangleWriter.TextSize(g, text);
+         var rectangle = new Rectangle(location, size);
+         Add(key, text, rectangle);
+
+         return rectangle;
+      }
+      else
+      {
+         return Rectangle.Empty;
+      }
+   }
+
+   public Rectangle SouthEast(string key, string referenceKey, string text, int xOffset = 0, int yOffset = 0)
+   {
+      if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
+      {
+         using var font = getFont();
+         var location = data.Rectangle.SouthEast(xOffset, yOffset);
+         var size = RectangleWriter.TextSize(g, text);
+         var rectangle = new Rectangle(location, size);
+         Add(key, text, rectangle);
+
+         return rectangle;
+      }
+      else
+      {
+         return Rectangle.Empty;
+      }
+   }
+
+   public Rectangle South(string key, string referenceKey, string text, int xOffset = 0, int yOffset = 0)
+   {
+      if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
+      {
+         using var font = getFont();
+         var location = data.Rectangle.South(xOffset, yOffset);
+         var size = RectangleWriter.TextSize(g, text);
+         var rectangle = new Rectangle(location, size);
+         Add(key, text, rectangle);
+
+         return rectangle;
+      }
+      else
+      {
+         return Rectangle.Empty;
+      }
+   }
+
+   public Rectangle SouthWest(string key, string referenceKey, string text, int xOffset = 0, int yOffset = 0)
+   {
+      if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
+      {
+         using var font = getFont();
+         var location = data.Rectangle.SouthWest(xOffset, yOffset);
+         var size = RectangleWriter.TextSize(g, text);
+         var rectangle = new Rectangle(location, size);
+         Add(key, text, rectangle);
+
+         return rectangle;
+      }
+      else
+      {
+         return Rectangle.Empty;
+      }
+   }
+
+   public Rectangle West(string key, string referenceKey, string text, int xOffset = 0, int yOffset = 0)
+   {
+      if (arrangedRectangles.Maybe[referenceKey] is (true, var data))
+      {
+         using var font = getFont();
+         var location = data.Rectangle.West(xOffset, yOffset);
+         var size = RectangleWriter.TextSize(g, text);
+         var rectangle = new Rectangle(location, size);
          Add(key, text, rectangle);
 
          return rectangle;
