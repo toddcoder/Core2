@@ -396,4 +396,7 @@ public static class User32
    }
 
    public static void SetOpacity(IntPtr handle, byte alpha) => SetLayeredWindowAttributes(handle, 0, alpha, LWA_ALPHA);
+
+   [DllImport("user32")]
+   public static extern IntPtr GetWindowDC(IntPtr hWnd);
 }
