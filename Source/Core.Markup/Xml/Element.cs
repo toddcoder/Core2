@@ -74,7 +74,7 @@ public class Element : IRendering
    protected Maybe<Element> _parent = nil;
    protected Elements siblings = new();
    protected Elements children = new();
-   protected Attributes attributes = new();
+   protected Attributes attributes = [];
 
    public Element()
    {
