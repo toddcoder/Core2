@@ -2507,6 +2507,17 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       return subText;
    }
 
+   public SubText SubText(SubText subText, int index)
+   {
+      if (index.Between(0).Until(rectangles.Length))
+      {
+         var rectangleX = rectangles[index].X;
+         subText.X += rectangleX;
+      }
+
+      return SubText(subText);
+   }
+
    public SubText SubText(string text, int x, int y, bool clickable = false)
    {
       var subText = clickable ? new ClickableSubText(this, text, x, y, ClientSize, ClickGlyph, ChooserGlyph)
@@ -2514,7 +2525,27 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       return SubText(subText);
    }
 
+   public SubText SubText(string text, int x, int y, int index, bool clickable = false)
+   {
+      if (index.Between(0).Until(rectangles.Length))
+      {
+         var rectangle = rectangles[index];
+         var rectangleX = rectangle.X;
+         var rectangleY = rectangle.Y;
+         x += rectangleX;
+         y += rectangleY;
+      }
+
+      return SubText(text, x, y, clickable);
+   }
+
    public SubText SubText(string text, bool clickable = false) => SubText(text, 0, 0, clickable);
+
+   public SubText SubText(string text, int index, bool clickable = false)
+   {
+      var location = index.Between(0).Until(rectangles.Length) ? rectangles[index].Location : new Point(0, 0);
+      return SubText(text, location.X, location.Y, clickable);
+   }
 
    public ClickableSubText ClickableSubText(string text, int x, int y)
    {
@@ -3325,11 +3356,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
             var paddingWidth = 2;
             var width = (clientWidth - (value + 1) * paddingWidth) / value;
-            var top = paddingWidth;
             var height = clientHeight - 2 * paddingWidth;
             var fullWidth = paddingWidth + width;
 
-            rectangles = [.. Enumerable.Range(0, value).Select(i => new Rectangle(i * fullWidth, top, width, height))];
+            rectangles = [.. Enumerable.Range(0, value).Select(i => new Rectangle(i * fullWidth, paddingWidth, width, height))];
          }
          else
          {
