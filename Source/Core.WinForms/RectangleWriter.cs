@@ -49,6 +49,7 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
 
    protected string text = text;
    protected Rectangle rectangle = rectangle;
+   protected CardinalAlignment alignment = alignment;
    protected bool autoSizeText = true;
    protected string fontName = DEFAULT_FONT_NAME;
    protected float fontSize = DEFAULT_FONT_SIZE;
@@ -73,6 +74,12 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
    {
       get => rectangle;
       set => rectangle = value;
+   }
+
+   public CardinalAlignment Alignment
+   {
+      get => alignment;
+      set => alignment = value;
    }
 
    public Maybe<string> Stash { get; set; } = nil;
