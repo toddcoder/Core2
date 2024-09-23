@@ -1,7 +1,7 @@
 ﻿using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
-namespace Core.WinForms.Controls;
+namespace Core.WinForms.Components;
 
 public class InitializeArgs : EventArgs
 {

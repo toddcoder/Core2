@@ -12,6 +12,7 @@ using Core.Monads.Lazy;
 using Core.Numbers;
 using Core.Strings;
 using Core.Strings.Emojis;
+using Core.WinForms.Components;
 using Core.WinForms.ControlWrappers;
 using Core.WinForms.Drawing;
 using static Core.Lambdas.LambdaFunctions;
@@ -182,7 +183,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    protected Maybe<Image> _image = nil;
    protected Hash<Guid, SubText> subTexts = [];
    protected Lazy<Stopwatch> stopwatch = new(() => new Stopwatch());
-   protected Lazy<BackgroundWorker> backgroundWorker;
+   protected Lazy<CoreBackgroundWorker> backgroundWorker;
    protected bool oneTimeTimer;
    protected Maybe<string> _workingText = nil;
    protected Maybe<SubText> _working = nil;
@@ -445,9 +446,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
       Resize += (_, _) => determineFloorAndCeiling();
 
-      backgroundWorker = new Lazy<BackgroundWorker>(() =>
+      backgroundWorker = new Lazy<CoreBackgroundWorker>(() =>
       {
-         var worker = new BackgroundWorker { WorkerSupportsCancellation = true };
+         var worker = new CoreBackgroundWorker();
+         worker.Initialize += (_, e) => Initialize?.Invoke(this, e);
          worker.DoWork += (_, e) => DoWork?.Invoke(this, e);
          worker.ProgressChanged += (_, e) => ProgressChanged?.Invoke(this, e);
          worker.RunWorkerCompleted += (_, e) => RunWorkerCompleted?.Invoke(this, e);
@@ -2593,41 +2595,9 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       }
    }
 
-   public void RunWorkerAsync()
-   {
-      var args = new InitializeArgs();
-      this.Do(() => Initialize?.Invoke(this, args));
-      if (!args.Cancel && !backgroundWorker.Value.IsBusy)
-      {
-         var _argument = args.Argument;
-         if (_argument is (true, var argument))
-         {
-            backgroundWorker.Value.RunWorkerAsync(argument);
-         }
-         else
-         {
-            backgroundWorker.Value.RunWorkerAsync();
-         }
-      }
-   }
+   public void RunWorkerAsync() => backgroundWorker.Value.RunWorkerAsync();
 
-   public void RunWorkerAsync(object argument)
-   {
-      var args = new InitializeArgs { Argument = argument };
-      this.Do(() => Initialize?.Invoke(this, args));
-      if (!args.Cancel && !backgroundWorker.Value.IsBusy)
-      {
-         var _argument = args.Argument;
-         if (_argument is (true, var argumentValue))
-         {
-            backgroundWorker.Value.RunWorkerAsync(argumentValue);
-         }
-         else
-         {
-            backgroundWorker.Value.RunWorkerAsync();
-         }
-      }
-   }
+   public void RunWorkerAsync(object argument) => backgroundWorker.Value.RunWorkerAsync(argument);
 
    public bool IsBusy => backgroundWorker.Value.IsBusy;
 
