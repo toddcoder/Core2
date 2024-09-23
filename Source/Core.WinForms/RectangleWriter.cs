@@ -82,8 +82,6 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
       set => alignment = value;
    }
 
-   public Maybe<string> Stash { get; set; } = nil;
-
    public bool AutoSizeText
    {
       get => autoSizeText;
@@ -232,6 +230,8 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
       return size.Rectangle(rectangle, restrictionAlignment, xMargin, yMargin);
    }
 
+   public void Stash(string stashName) => stashedWriters[stashName] = this;
+
    public void Write(Graphics g)
    {
       g.HighQuality();
@@ -283,11 +283,6 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
          pen.DashStyle = dashStyle;
          var outlineRectangle = writingRectangle.Resize(-2, -2).Reposition(1, 1);
          g.DrawRectangle(pen, outlineRectangle);
-      }
-
-      if (Stash is (true, var stash))
-      {
-         stashedWriters[stash] = this;
       }
 
       return;
