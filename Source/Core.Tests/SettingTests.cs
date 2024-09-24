@@ -631,7 +631,7 @@ public class SettingTests
       setting.Set("index").Int32 = 153;
       setting.Set("name").String = "foobar";
       setting.Set("now").DateTime = DateTime.Now;
-      setting.Set("data").StringHash = new StringHash() { ["alpha"] = "a", ["bravo"] = "b", ["charlie"] = "c" };
+      setting.Set("data").StringHash = new StringHash { ["alpha"] = "a", ["bravo"] = "b", ["charlie"] = "c" };
 
       Console.Write(setting.ToString());
 
@@ -772,9 +772,9 @@ public class SettingTests
    {
       TestClass[] testClasses =
       [
-         new TestClass { Name = "alfa", Letter = "a", Number = 0 },
-         new TestClass { Name = "bravo", Letter = "b", Number = 1 },
-         new TestClass { Name = "charlie", Letter = "c", Number = 2 }
+         new() { Name = "alfa", Letter = "a", Number = 0 },
+         new() { Name = "bravo", Letter = "b", Number = 1 },
+         new() { Name = "charlie", Letter = "c", Number = 2 }
       ];
       var _json =
          from setting in testClasses.ToSetting(tc => tc.Name, "foobar")
@@ -802,12 +802,12 @@ public class SettingTests
    {
       TestClass[] testClasses =
       [
-         new TestClass { Name = "alfa", Letter = "a", Number = 0 },
-         new TestClass { Name = "bravo", Letter = "b", Number = 1 },
-         new TestClass { Name = "charlie", Letter = "c", Number = 2 },
-         new TestClass { Name = "delta", Letter = "d", Number = 3 },
-         new TestClass { Name = "echo", Letter = "e", Number = 4 },
-         new TestClass { Name = "foxtrot", Letter = "f", Number = 5 }
+         new() { Name = "alfa", Letter = "a", Number = 0 },
+         new() { Name = "bravo", Letter = "b", Number = 1 },
+         new() { Name = "charlie", Letter = "c", Number = 2 },
+         new() { Name = "delta", Letter = "d", Number = 3 },
+         new() { Name = "echo", Letter = "e", Number = 4 },
+         new() { Name = "foxtrot", Letter = "f", Number = 5 }
       ];
 
       var setting = new Setting();
@@ -951,6 +951,27 @@ public class SettingTests
       else
       {
          Console.WriteLine(_json.Exception.Message);
+      }
+   }
+
+   [TestMethod]
+   public void JsonArrayTest()
+   {
+      var setting = new Setting();
+      var setting1 = new Setting("alfa");
+      setting1.Set("array").Array = ["a", "b", "c"];
+      setting.Set("array").Setting = setting1;
+
+      var _json = Serializer.Serialize(setting);
+      if (_json is (true, var json))
+      {
+         var _jsonSetting = Deserializer.Deserialize(json);
+         if (_jsonSetting is (true, var jsonSetting))
+         {
+            var alfaSetting = jsonSetting.Value.Setting("alfa");
+            var array = alfaSetting.Value.Array("array");
+            Console.WriteLine(array.ToString(", "));
+         }
       }
    }
 }
