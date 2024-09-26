@@ -165,6 +165,9 @@ public class Paragraph(bool allowFootnote, bool allowControlWord) : Block
 
    protected class DisjointRange(int head, int tail, CharFormat format)
    {
+      protected int head = head;
+      protected int tail = tail;
+
       public int Head
       {
          get => head;
