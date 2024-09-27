@@ -231,6 +231,14 @@ public class MarkdownWriter
       WriteList(isImage ? ImageLink(text, link) : Link(text, link), indent);
    }
 
+   public void WriteOrderedList(string text, string prefix, int indent = 0) =>
+      writer.WriteLine($"{"    ".Repeat(indent)}{prefix} {FixString(text)}");
+
+   public void WriteOrderedList(string text, string link, string prefix, int indent = 0, bool isImage = false)
+   {
+      WriteOrderedList(isImage?ImageLink(text, link):Link(text, link), prefix, indent);
+   }
+
    public void WritePageBreak()
    {
       writer.WriteLine("<div style='page-break-after: always'></div>");
