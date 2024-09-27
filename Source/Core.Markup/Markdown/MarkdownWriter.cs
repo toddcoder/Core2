@@ -61,7 +61,7 @@ public class MarkdownWriter
       {
          return text;
       }
-      else if (text.Matches("'.'? /(/([/w '-']+)(/['!?'] /([/w '-']+))? '>') /(.*) '.' /2; f") is (true, var result))
+      else if (text.Matches("'.'? /(/([/w '-']+)(/['!?'] /([/w '-']+))? '>') /(.*?) ('.' /2 | $); f") is (true, var result))
       {
          var tagName = result.SecondGroup;
          var style = result.FourthGroup;

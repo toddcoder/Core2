@@ -17,5 +17,8 @@ public class MarkdownTests
 
       tagged = MarkdownWriter.Tagify("span!blue>This is blue!.span");
       Console.WriteLine(tagged);
+
+      tagged = MarkdownWriter.Tagify("span!blue>This is blue!");
+      Console.WriteLine(tagged);
    }
 }
