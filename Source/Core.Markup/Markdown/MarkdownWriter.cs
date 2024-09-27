@@ -1,4 +1,5 @@
-﻿using Core.Collections;
+﻿using System.Text;
+using Core.Collections;
 using Core.Enumerables;
 using Core.Matching;
 using Core.Strings;
@@ -41,8 +42,9 @@ public class MarkdownWriter
       var flatText = flattenString(text);
       var linkText = flatText.Substitute("-(< ['[(']) /b /('https'? ':////' -/s+); f", "[$1]($1)");
       var escapedPipes = linkText.Substitute(@"-(< '\') '\|'; f", @"\|");
+      var taggified = Tagify(escapedPipes);
 
-      return escapedPipes;
+      return taggified;
    }
 
    public static string FixNumberUrl(string url)
@@ -51,6 +53,50 @@ public class MarkdownWriter
       var _description = flatText.Matches("/(/d+) -/d* $; f").Map(r => r.FirstGroup);
 
       return $"[{_description | url}]({url})";
+   }
+
+   public static string Tagify(string text)
+   {
+      if (text.IsEmpty())
+      {
+         return text;
+      }
+      else if (text.Matches("'.'? /(/([/w '-']+)(/['!?'] /([/w '-']+))? '>') /(.*) '.' /2; f") is (true, var result))
+      {
+         var tagName = result.SecondGroup;
+         var style = result.FourthGroup;
+         var styleType = result.ThirdGroup;
+         var innerText = result.FifthGroup;
+         var remainder = text.Drop(result.Length);
+
+         var builder = new StringBuilder($"<{tagName}");
+         if (style.IsNotEmpty())
+         {
+            switch (styleType)
+            {
+               case "!":
+                  builder.Append($" class=\"{style}\">");
+                  break;
+               case "?":
+                  builder.Append($" style=\"{style}\">");
+                  break;
+            }
+         }
+         else
+         {
+            builder.Append('>');
+         }
+
+         builder.Append(Tagify(innerText));
+         builder.Append($"</{tagName}>");
+         builder.Append(Tagify(remainder));
+
+         return builder.ToString();
+      }
+      else
+      {
+         return text;
+      }
    }
 
    protected void writeLine(string text)
@@ -147,6 +193,7 @@ public class MarkdownWriter
       {
          loadBaseStyles();
       }
+
       style(className, key, value);
    }
 
