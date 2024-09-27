@@ -1,4 +1,5 @@
-﻿using Core.Enumerables;
+﻿using Core.Collections;
+using Core.Enumerables;
 using Core.Matching;
 using Core.Strings;
 
@@ -7,6 +8,31 @@ namespace Core.Markup.Markdown;
 public class MarkdownWriter
 {
    protected StringWriter writer = new();
+   // ReSharper disable once CollectionNeverUpdated.Global
+   protected AutoStringHash<List<string>> styles = new(_ => [], true);
+   protected bool userStyles;
+
+   protected void loadBaseStyles()
+   {
+      userStyles = true;
+      style("h1", "font-family", "arial");
+      style("h1", "font-size", "28pt");
+      style("h2", "font-family", "arial");
+      style("h2", "font-size", "16pt");
+      style("h3", "font-family", "arial");
+      style("h3", "font-size", "12pt");
+      style("table", "font-family", "Times New Roman");
+      style("table", "font-size", "12pt");
+      style("td", "padding", "4px");
+      style("td", "margin", "0");
+      style("td", "border", "0");
+      style("td", "border-bottom", "1px solid black");
+      style("td", "border-collapse", "collapse");
+      style("th", "border", "0");
+      style("tbody tr:nth-child(even)", "background", "#f0f0f2");
+      style("p", "font-family", "Times New Roman");
+      style("p", "font-size", "12pt");
+   }
 
    protected static string flattenString(string text) => text.ToNonNullString().Substitute("'/r/n' | '/r' | '/n'; f", " ");
 
@@ -113,7 +139,18 @@ public class MarkdownWriter
       writeLine("---");
    }
 
-   public static string HtmlWrapper(string rawHtml)
+   protected void style(string className, string key, string value) => styles[className].Add($"{key}: {value}");
+
+   public void Style(string className, string key, string value)
+   {
+      if (!userStyles)
+      {
+         loadBaseStyles();
+      }
+      style(className, key, value);
+   }
+
+   public string HtmlWrapper(string rawHtml)
    {
       using var stringWriter = new StringWriter();
 
@@ -121,14 +158,15 @@ public class MarkdownWriter
       stringWriter.WriteLine("<head>");
       stringWriter.WriteLine("<meta http-equiv='X-UA-Compatible' content='IE=edge' />");
       stringWriter.WriteLine("<style>");
-      stringWriter.WriteLine("h1 {font-family: arial; font-size: 28pt}");
-      stringWriter.WriteLine("h2 {font-family: arial; font-size: 16pt}");
-      stringWriter.WriteLine("h3 {font-family: arial; font-size: 12pt}");
-      stringWriter.WriteLine("table {font-family: Times New Roman; font-size: 12pt}");
-      stringWriter.WriteLine("td {padding: 4px; margin: 0; border: 0; border-bottom: 1px solid black; border-collapse: collapse}");
-      stringWriter.WriteLine("th {border: 0}");
-      stringWriter.WriteLine("tbody tr:nth-child(even) { background: #f0f0f2}");
-      stringWriter.WriteLine("p {font-family: Times New Roman; font-size: 12pt");
+
+      loadBaseStyles();
+
+      foreach (var (className, list) in styles)
+      {
+         var selectors = "{" + list.ToString("; ") + "}";
+         stringWriter.Write($"{className} {selectors}");
+      }
+
       stringWriter.WriteLine("</style>");
       stringWriter.WriteLine("</head>");
       stringWriter.WriteLine("<body>");
