@@ -181,6 +181,8 @@ public class MarkdownWriter
 
    public void Write(string text) => writer.Write(FixString(text));
 
+   public void Write(string text, string link, bool isImage = false) => Write(isImage ? ImageLink(text, link) : Link(text, link));
+
    protected void style(string className, string key, string value) => styles[className].Add($"{key}: {value}");
 
    public void Style(string className, string key, string value)
