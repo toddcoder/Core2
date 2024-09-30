@@ -179,6 +179,8 @@ public class MarkdownWriter
       writeMarkdownLine("---");
    }
 
+   public void Write(string text) => writer.Write(FixString(text));
+
    protected void style(string className, string key, string value) => styles[className].Add($"{key}: {value}");
 
    public void Style(string className, string key, string value)
