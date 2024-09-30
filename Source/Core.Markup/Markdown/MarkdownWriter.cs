@@ -99,13 +99,13 @@ public class MarkdownWriter
       }
    }
 
-   protected void writeLine(string text)
+   protected void writeMarkdownLine(string text)
    {
       writer.WriteLine(FixString(text));
       writer.WriteLine();
    }
 
-   public void WriteHeader(string text, int level) => writeLine($"{"#".Repeat(level)} {text}");
+   public void WriteHeader(string text, int level) => writeMarkdownLine($"{"#".Repeat(level)} {text}");
 
    public void WriteTableBegin(params string[] text)
    {
@@ -161,17 +161,13 @@ public class MarkdownWriter
 
    public void WriteTableEnd() => writer.WriteLine();
 
-   public void WriteLine(string line) => writeLine(line);
+   public void WriteLine(string line) => writeMarkdownLine(line);
 
-   public void WriteLine(string text, string link, bool isImage = false)
-   {
-      writer.WriteLine(isImage ? ImageLink(text, link) : Link(text, link));
-      writer.WriteLine();
-   }
+   public void WriteLine(string text, string link, bool isImage = false) => writeMarkdownLine(isImage ? ImageLink(text, link) : Link(text, link));
 
-   public void WriteLineAs(string text, string @class) => writeLine($"<p class='{@class}'>{text}</p>");
+   public void WriteLineAs(string text, string @class) => writeMarkdownLine($"<p class='{@class}'>{text}</p>");
 
-   public void WriteLine() => writeLine("");
+   public void WriteLine() => writeMarkdownLine("");
 
    public void WriteHtml(string html) => writer.WriteLine(html);
 
@@ -182,7 +178,7 @@ public class MarkdownWriter
    public void WriteRuler()
    {
       writer.WriteLine();
-      writeLine("---");
+      writeMarkdownLine("---");
    }
 
    protected void style(string className, string key, string value) => styles[className].Add($"{key}: {value}");
@@ -236,7 +232,7 @@ public class MarkdownWriter
 
    public void WriteOrderedList(string text, string link, string prefix, int indent = 0, bool isImage = false)
    {
-      WriteOrderedList(isImage?ImageLink(text, link):Link(text, link), prefix, indent);
+      WriteOrderedList(isImage ? ImageLink(text, link) : Link(text, link), prefix, indent);
    }
 
    public void WritePageBreak()
