@@ -99,11 +99,9 @@ public class MarkdownWriter
       }
    }
 
-   protected void writeMarkdownLine(string text)
-   {
-      writer.WriteLine(FixString(text));
-      writer.WriteLine();
-   }
+   public void WriteLineBreak() => writer.Write("<br/>");
+
+   protected void writeMarkdownLine(string text) => writer.WriteLine(FixString(text) + "<br/>");
 
    public void WriteHeader(string text, int level) => writeMarkdownLine($"{"#".Repeat(level)} {text}");
 
