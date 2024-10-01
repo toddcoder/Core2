@@ -11,29 +11,6 @@ public class MarkdownWriter
    protected StringWriter writer = new();
    // ReSharper disable once CollectionNeverUpdated.Global
    protected AutoStringHash<StringHash> styles = new(_ => [], true);
-   protected bool userStyles;
-
-   protected void loadBaseStyles()
-   {
-      userStyles = true;
-      style("h1", "font-family", "arial");
-      style("h1", "font-size", "28pt");
-      style("h2", "font-family", "arial");
-      style("h2", "font-size", "16pt");
-      style("h3", "font-family", "arial");
-      style("h3", "font-size", "12pt");
-      style("table", "font-family", "Times New Roman");
-      style("table", "font-size", "12pt");
-      style("td", "padding", "4px");
-      style("td", "margin", "0");
-      style("td", "border", "0");
-      style("td", "border-bottom", "1px solid black");
-      style("td", "border-collapse", "collapse");
-      style("th", "border", "0");
-      style("tbody tr:nth-child(even)", "background", "#f0f0f2");
-      style("p", "font-family", "Times New Roman");
-      style("p", "font-size", "12pt");
-   }
 
    protected static string flattenString(string text) => text.ToNonNullString().Substitute("'/r/n' | '/r' | '/n'; f", " ");
 
@@ -187,15 +164,7 @@ public class MarkdownWriter
 
    protected void style(string className, string key, string value) => styles[className][key] = value;
 
-   public void Style(string className, string key, string value)
-   {
-      if (!userStyles)
-      {
-         loadBaseStyles();
-      }
-
-      style(className, key, value);
-   }
+   public void Style(string className, string key, string value) => style(className, key, value);
 
    public string HtmlWrapper(string rawHtml)
    {
@@ -205,8 +174,6 @@ public class MarkdownWriter
       stringWriter.WriteLine("<head>");
       stringWriter.WriteLine("<meta http-equiv='X-UA-Compatible' content='IE=edge' />");
       stringWriter.WriteLine("<style>");
-
-      loadBaseStyles();
 
       foreach (var (className, list) in styles)
       {
