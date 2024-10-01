@@ -10,7 +10,7 @@ public class MarkdownWriter
 {
    protected StringWriter writer = new();
    // ReSharper disable once CollectionNeverUpdated.Global
-   protected AutoStringHash<List<string>> styles = new(_ => [], true);
+   protected AutoStringHash<StringHash> styles = new(_ => [], true);
    protected bool userStyles;
 
    protected void loadBaseStyles()
@@ -185,7 +185,7 @@ public class MarkdownWriter
 
    public void Write(string text, string link, bool isImage = false) => Write(isImage ? ImageLink(text, link) : Link(text, link));
 
-   protected void style(string className, string key, string value) => styles[className].Add($"{key}: {value}");
+   protected void style(string className, string key, string value) => styles[className][key] = value;
 
    public void Style(string className, string key, string value)
    {
@@ -210,7 +210,7 @@ public class MarkdownWriter
 
       foreach (var (className, list) in styles)
       {
-         var selectors = "{" + list.ToString("; ") + "}";
+         var selectors = "{" + list.Tuples().Select(t => $"{t.key}: {t.value}").ToString("; ") + "}";
          stringWriter.Write($"{className} {selectors}");
       }
 
