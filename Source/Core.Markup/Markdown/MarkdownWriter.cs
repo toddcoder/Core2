@@ -78,11 +78,16 @@ public class MarkdownWriter
 
    public void WriteLineBreak() => writer.Write("<br/>");
 
-   protected void writeMarkdownLine(string text) => writer.WriteLine(FixString(text));
+   protected static string getClassRef(string classRef) => classRef.IsNotEmpty() ? $"{{{classRef}}}" : "";
 
-   public void WriteTextLine(string text) => writeMarkdownLine($"{text}<br/>");
+   protected void writeMarkdownLine(string text, string classRef)
+   {
+      writer.WriteLine(FixString(text) + getClassRef(classRef));
+   }
 
-   public void WriteHeader(string text, int level) => writeMarkdownLine($"{"#".Repeat(level)} {text}");
+   public void WriteTextLine(string text, string classRef = "") => writeMarkdownLine($"{text}<br/>", getClassRef(classRef));
+
+   public void WriteHeader(string text, int level, string classRef = "") => writeMarkdownLine($"{"#".Repeat(level)} {text}", classRef);
 
    public void WriteTableBegin(params string[] text)
    {
@@ -100,16 +105,16 @@ public class MarkdownWriter
       }
    }
 
-   public void WriteColumn(string text, bool end = false)
+   public void WriteColumn(string text, bool end = false, string classRef = "")
    {
-      writer.Write($"| {FixString(text)}");
+      writer.Write($"| {FixString(text)}" + getClassRef(classRef));
       if (end)
       {
          writer.WriteLine();
       }
    }
 
-   public void WriteColumn(string text, string link, bool end = false, bool isImage = false)
+   public void WriteColumn(string text, string link, bool end = false, bool isImage = false, string classRef = "")
    {
       WriteColumn(isImage ? ImageLink(text, link) : Link(text, link), end);
    }
@@ -138,13 +143,14 @@ public class MarkdownWriter
 
    public void WriteTableEnd() => writer.WriteLine();
 
-   public void WriteLine(string line) => writeMarkdownLine(line);
+   public void WriteLine(string line, string classRef = "") => writeMarkdownLine(line, classRef);
 
-   public void WriteLine(string text, string link, bool isImage = false) => writeMarkdownLine(isImage ? ImageLink(text, link) : Link(text, link));
+   public void WriteLine(string text, string link, bool isImage = false, string classRef = "") =>
+      writeMarkdownLine(isImage ? ImageLink(text, link) : Link(text, link), classRef);
 
-   public void WriteLineAs(string text, string @class) => writeMarkdownLine($"<p class='{@class}'>{text}</p>");
+   public void WriteLineAs(string text, string @class) => writeMarkdownLine($"<p class='{@class}'>{text}</p>", "");
 
-   public void WriteLine() => writeMarkdownLine("");
+   public void WriteLine() => writeMarkdownLine("", "");
 
    public void WriteHtml(string html) => writer.WriteLine(html);
 
@@ -155,7 +161,7 @@ public class MarkdownWriter
    public void WriteRuler()
    {
       writer.WriteLine();
-      writeMarkdownLine("---");
+      writeMarkdownLine("---", "");
    }
 
    public void Write(string text) => writer.Write(FixString(text));
