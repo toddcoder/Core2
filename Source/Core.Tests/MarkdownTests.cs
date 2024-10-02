@@ -24,4 +24,12 @@ public class MarkdownTests
       tagged = MarkdownWriter.Tagify("span!text-align: right>This is blue!");
       Console.WriteLine(tagged);
    }
+
+   [TestMethod]
+   public void ClassRefTest()
+   {
+      var writer = new MarkdownWriter();
+      writer.WriteTextLine("Word", ".fp");
+      Console.WriteLine(writer);
+   }
 }
