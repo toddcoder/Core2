@@ -78,7 +78,7 @@ public class MarkdownWriter
 
    public void WriteLineBreak() => writer.Write("<br/>");
 
-   protected static string getClassRef(string classRef) => classRef.IsNotEmpty() ? $"{{{classRef}}}" : "";
+   protected static string getClassRef(string classRef) => classRef.IsNotEmpty() ? "{" + classRef + "}" : "";
 
    protected void writeMarkdownLine(string text, string classRef)
    {
