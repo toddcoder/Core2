@@ -3,7 +3,9 @@ using System.Xml;
 using Core.Assertions;
 using Core.Matching;
 using Core.Monads;
+using Core.Strings;
 using static Core.Monads.AttemptFunctions;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Xml;
 
@@ -49,7 +51,46 @@ public static class MarkupExtensions
       }
    }
 
+   public static Optional<string> TidyXml(this string markup, Encoding encoding, bool includeHeader = true, char quoteChar = '"')
+   {
+      try
+      {
+         if (markup.IsEmpty())
+         {
+            return nil;
+         }
+
+         var document = new XmlDocument();
+         document.LoadXml(markup);
+         document.LoadXml(document.OuterXml.Substitute(PATTERN_EMPTY_ELEMENT, TEXT_EMPTY_ELEMENT));
+
+         using var stream = new MemoryStream();
+         using var writer = new XmlTextWriter(stream, encoding);
+         writer.Formatting = Formatting.Indented;
+         writer.Indentation = 3;
+         writer.QuoteChar = quoteChar;
+
+         document.Save(writer);
+
+         var _text = fromStream(stream, encoding);
+         if (_text is (true, var text))
+         {
+            return includeHeader ? text : text.Substitute(PATTERN_HEADER, string.Empty).Trim();
+         }
+         else
+         {
+            return _text.Exception;
+         }
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
    public static string Tidy(this string markup, bool includeHeader) => Tidy(markup, Encoding.UTF8, includeHeader);
+
+   public static Optional<string> TidyXml(this string markup, bool includeHeader) => markup.TidyXml(Encoding.UTF8, includeHeader);
 
    public static string ToMarkup(this string text)
    {

@@ -1,4 +1,5 @@
 ﻿using Core.Markup.Html;
+using Core.Markup.Html.Parser;
 using Core.Markup.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -143,5 +144,24 @@ public class MarkupTests
       var body = builder.Body;
       _ = body + "link|https://www.w3schools.com/html/html_links.asp|HTML Links";
       Console.WriteLine(builder);
+   }
+
+   [TestMethod]
+   public void HtmlParserTest()
+   {
+      using var writer = new StringWriter();
+      writer.WriteLine("style>p>font-size>11pt>font-family>Consolas>>>");
+      writer.WriteLine("p>@id>remedy>@class>fb-p>strong>>Build for Release>>em>>1.4.0 [PSA]>>>");
+      writer.WriteLine("p>>This is text only");
+      var parser = new HtmlParser(writer.ToString(), false);
+      var _html = parser.Parse();
+      if (_html is (true, var html))
+      {
+         Console.WriteLine(html);
+      }
+      else if (_html.Exception is (true, var exception))
+      {
+         Console.WriteLine(exception.Message);
+      }
    }
 }
