@@ -85,7 +85,7 @@ public class MarkdownWriter
       writer.WriteLine(FixString(text) + getClassRef(classRef));
    }
 
-   public void WriteTextLine(string text, string classRef = "") => writeMarkdownLine($"{text}<br/>", classRef);
+   public void WriteTextLine(string text, string classRef = "") => writeMarkdownLine($"{text}{getClassRef(classRef)}<br/>", "");
 
    public void WriteHeader(string text, int level, string classRef = "") => writeMarkdownLine($"{"#".Repeat(level)} {text}", classRef);
 
