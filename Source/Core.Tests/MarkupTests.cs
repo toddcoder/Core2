@@ -210,11 +210,12 @@ public class MarkupTests
    public void HtmlParserTest2()
    {
       using var writer = new StringWriter();
-      writer.Write("style>");
-      writer.Write(".header>color>white>background-color>blue>>");
-      writer.Write(".title>font-weight>bold>font-size>16px>>");
-      writer.Write(".bold>font-weight>bold>font-size>14px>>");
-      writer.Write("body>font-family>Verdana>font-size>11px>>>");
+      writer.Write("style{");
+      writer.Write(".header{color>white>background-color>blue>}");
+      writer.Write(".title{font-weight>bold>font-size>16px>}");
+      writer.Write(".bold{font-weight>bold>font-size>14px>}");
+      writer.Write("body{font-family>Verdana>font-size>11px>}");
+      writer.Write("}");
 
       writer.Write("p>@class>title>`Merged Branches`>");
       writer.Write("table>@border>1px black solid>");
@@ -222,7 +223,7 @@ public class MarkupTests
       writer.Write("tr>td>`Alpha`>>");
       writer.Write("tr>td>`Bravo`>>");
       writer.Write("tr>td>`Charlie`>>>");
-      writer.Write("hr>>");
+      writer.Write("hr.>");
       writer.Write("p>@class>title>`Conflicted Branches`>");
       writer.Write("table>@border>1px black solid>");
       writer.Write("th>@class>header>b>`branch1`>>");
