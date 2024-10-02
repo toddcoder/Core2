@@ -124,6 +124,9 @@ public class HtmlParser(string source, bool tidy)
                case '/':
                   escaped = true;
                   break;
+               case ' ' when stage is ParsingStage.AttributeValue or ParsingStage.StyleKey:
+                  gathering.Append(character);
+                  break;
                case ' ' or '\t' or '\r' or '\n' when stage is not ParsingStage.Text:
                {
                   break;
@@ -138,6 +141,11 @@ public class HtmlParser(string source, bool tidy)
             }
 
             index++;
+         }
+
+         if (stage is ParsingStage.Text && gathering.Length > 0)
+         {
+            body.Append(MarkupTextHolder.Markupify(gathering.ToString()));
          }
 
          while (tagStack.Pop() is (true, var tag))
@@ -168,7 +176,7 @@ public class HtmlParser(string source, bool tidy)
             writer.WriteLine($"  {styleName} {{");
             foreach (var (key, value) in styleKeyValues)
             {
-               writer.WriteLine($"   {key}: {value}");
+               writer.WriteLine($"   {key}: {value};");
             }
 
             writer.WriteLine("  }");

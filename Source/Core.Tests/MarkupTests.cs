@@ -150,10 +150,51 @@ public class MarkupTests
    public void HtmlParserTest()
    {
       using var writer = new StringWriter();
-      writer.WriteLine("style>p>font-size>11pt>font-family>Consolas>>>");
-      writer.WriteLine("p>@id>remedy>@class>fb-p>strong>>Build for Release>>em>>1.4.0 [PSA]>>>");
-      writer.WriteLine("p>>This is text only");
-      var parser = new HtmlParser(writer.ToString(), false);
+      writer.WriteLine("style>p>font-size>11pt>font-family>Consolas>>");
+      writer.WriteLine(".fb-p>font-family>Times New Roman>>>");
+      writer.WriteLine("p>@id>remedy>@class>fb-p>strong>>Build for Release >>em>>1.4.0 [PSA]>>>");
+      writer.WriteLine("p>>This is text only>");
+      var parser = new HtmlParser(writer.ToString(), true);
+      var _html = parser.Parse();
+      if (_html is (true, var html))
+      {
+         Console.WriteLine(html);
+      }
+      else if (_html.Exception is (true, var exception))
+      {
+         Console.WriteLine(exception.Message);
+      }
+   }
+
+   [TestMethod]
+   public void HtmlParserTest1()
+   {
+      using var writer = new StringWriter();
+      writer.WriteLine("style>");
+      writer.WriteLine("table, th, td>");
+      writer.WriteLine("border>1px solid black>");
+      writer.WriteLine("border-collapse>collapse>");
+      writer.WriteLine("padding>5px>");
+      writer.WriteLine("font-family>Verdana>>");
+      writer.WriteLine("tr:nth-child(even)>");
+      writer.WriteLine("color>white>");
+      writer.WriteLine("background-color>salmon>>>");
+
+      writer.WriteLine("table>");
+      writer.WriteLine("tr>");
+      writer.WriteLine("th>>Alfa>>");
+      writer.WriteLine("th>>Bravo>>");
+      writer.WriteLine("th>>Charlie>>>");
+      writer.WriteLine("tr>");
+      writer.WriteLine("td>>alpha>>");
+      writer.WriteLine("td>>beta>>");
+      writer.WriteLine("td>>kappa>>>");
+      writer.WriteLine("tr>");
+      writer.WriteLine("td>>ah>>");
+      writer.WriteLine("td>>bo>>");
+      writer.WriteLine("td>>tso>>>");
+
+      var parser = new HtmlParser(writer.ToString(), true);
       var _html = parser.Parse();
       if (_html is (true, var html))
       {
