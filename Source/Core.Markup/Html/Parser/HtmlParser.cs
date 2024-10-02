@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Core.Collections;
 using Core.DataStructures;
+using Core.Enumerables;
 using Core.Markup.Xml;
 using Core.Monads;
 using Core.Strings;
@@ -30,11 +31,11 @@ public class HtmlParser(string source, bool tidy)
          {
             switch (character)
             {
-               case '>' when escaped:
+               case '>' or '`' when escaped:
                   gathering.Append(character);
                   escaped = false;
                   break;
-               case '>':
+               case '>' or '`':
                {
                   var gathered = gathering.ToString();
                   gathering.Clear();
@@ -46,7 +47,6 @@ public class HtmlParser(string source, bool tidy)
                         stage = ParsingStage.Style;
                         break;
                      case ParsingStage.Starting:
-                        stage = ParsingStage.Tag;
                         goto case ParsingStage.Tag;
                      case ParsingStage.Style when gatheredIsEmpty:
                         stage = ParsingStage.Tag;
@@ -171,7 +171,7 @@ public class HtmlParser(string source, bool tidy)
          writer.WriteLine("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />");
          writer.WriteLine("<style>");
 
-         foreach (var (styleName, styleKeyValues) in styles)
+         foreach (var (styleName, styleKeyValues) in styles.Where(t => t.Key != "body"))
          {
             writer.WriteLine($"  {styleName} {{");
             foreach (var (key, value) in styleKeyValues)
@@ -184,7 +184,17 @@ public class HtmlParser(string source, bool tidy)
 
          writer.WriteLine(" </style>");
          writer.WriteLine("</head>");
-         writer.WriteLine(" <body>");
+         writer.Write(" <body");
+         if (styles.Maybe["body"] is (true, var bodyStyleKeyValues))
+         {
+            writer.Write(" style=");
+            writer.Write('"');
+            writer.Write(bodyStyleKeyValues.Select(kv => $"{kv.Key}: {kv.Value}").ToString("; "));
+            writer.Write('"');
+         }
+
+         writer.WriteLine('>');
+
          writer.WriteLine(body);
          writer.WriteLine(" </body>");
          writer.WriteLine("</html>");

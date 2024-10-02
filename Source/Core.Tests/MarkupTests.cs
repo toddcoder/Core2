@@ -152,8 +152,8 @@ public class MarkupTests
       using var writer = new StringWriter();
       writer.WriteLine("style>p>font-size>11pt>font-family>Consolas>>");
       writer.WriteLine(".fb-p>font-family>Times New Roman>>>");
-      writer.WriteLine("p>@id>remedy>@class>fb-p>strong>>Build for Release >>em>>1.4.0 [PSA]>>>");
-      writer.WriteLine("p>>This is text only>");
+      writer.WriteLine("p>@id>remedy>@class>fb-p>strong>`Build for Release `>em>`1.4.0 [PSA]`>>");
+      writer.WriteLine("p>`This is text only`");
       var parser = new HtmlParser(writer.ToString(), true);
       var _html = parser.Parse();
       if (_html is (true, var html))
@@ -182,17 +182,67 @@ public class MarkupTests
 
       writer.WriteLine("table>");
       writer.WriteLine("tr>");
-      writer.WriteLine("th>>Alfa>>");
-      writer.WriteLine("th>>Bravo>>");
-      writer.WriteLine("th>>Charlie>>>");
+      writer.WriteLine("th>`Alfa`>");
+      writer.WriteLine("th>`Bravo`>");
+      writer.WriteLine("th>`Charlie`>>");
       writer.WriteLine("tr>");
-      writer.WriteLine("td>>alpha>>");
-      writer.WriteLine("td>>beta>>");
-      writer.WriteLine("td>>kappa>>>");
+      writer.WriteLine("td>`alpha`>");
+      writer.WriteLine("td>`beta`>");
+      writer.WriteLine("td>`kappa`>>");
       writer.WriteLine("tr>");
-      writer.WriteLine("td>>ah>>");
-      writer.WriteLine("td>>bo>>");
-      writer.WriteLine("td>>tso>>>");
+      writer.WriteLine("td>`ah`>");
+      writer.WriteLine("td>`bo`>");
+      writer.WriteLine("td>`tso`>>");
+
+      var parser = new HtmlParser(writer.ToString(), true);
+      var _html = parser.Parse();
+      if (_html is (true, var html))
+      {
+         Console.WriteLine(html);
+      }
+      else if (_html.Exception is (true, var exception))
+      {
+         Console.WriteLine(exception.Message);
+      }
+   }
+
+   [TestMethod]
+   public void HtmlParserTest2()
+   {
+      using var writer = new StringWriter();
+      writer.Write("style>");
+      writer.Write(".header>color>white>background-color>blue>>");
+      writer.Write(".title>font-weight>bold>font-size>16px>>");
+      writer.Write(".bold>font-weight>bold>font-size>14px>>");
+      writer.Write("body>font-family>Verdana>font-size>11px>>>");
+
+      writer.Write("p>@class>title>`Merged Branches`>");
+      writer.Write("table>@border>1px black solid>");
+      writer.Write("th>@class>header>b>`Branch`>>");
+      writer.Write("tr>td>`Alpha`>>");
+      writer.Write("tr>td>`Bravo`>>");
+      writer.Write("tr>td>`Charlie`>>>");
+      writer.Write("hr>>");
+      writer.Write("p>@class>title>`Conflicted Branches`>");
+      writer.Write("table>@border>1px black solid>");
+      writer.Write("th>@class>header>b>`branch1`>>");
+      writer.Write("th>@class>header>b>`file`>>");
+      writer.Write("tr>td>`file1`>>");
+      writer.Write("tr>td>`file2`>>");
+      writer.Write("tr>td>`file3`>>>");
+      /*writer.WriteLine("table>");
+      writer.WriteLine("tr>");
+      writer.WriteLine("th>`Alfa`>");
+      writer.WriteLine("th>`Bravo`>");
+      writer.WriteLine("th>`Charlie`>>");
+      writer.WriteLine("tr>");
+      writer.WriteLine("td>`alpha`>");
+      writer.WriteLine("td>`beta`>");
+      writer.WriteLine("td>`kappa`>>");
+      writer.WriteLine("tr>");
+      writer.WriteLine("td>`ah`>");
+      writer.WriteLine("td>`bo`>");
+      writer.WriteLine("td>`tso`>>");*/
 
       var parser = new HtmlParser(writer.ToString(), true);
       var _html = parser.Parse();
