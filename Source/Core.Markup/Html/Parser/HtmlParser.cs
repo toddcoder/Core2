@@ -118,7 +118,7 @@ public class HtmlParser(string source, bool tidy)
                      }
                      case ParsingStage.Text:
                         stage = ParsingStage.Tag;
-                        body.Append(MarkupTextHolder.Markupify(gathered, QuoteType.Double));
+                        body.Append(getText(gathered));
                         break;
                   }
 
@@ -152,7 +152,7 @@ public class HtmlParser(string source, bool tidy)
 
          if (stage is ParsingStage.Text && gathering.Length > 0)
          {
-            body.Append(MarkupTextHolder.Markupify(gathering.ToString()));
+            body.Append(getText(gathering.ToString()));
          }
 
          while (tagStack.Pop() is (true, var tag))
@@ -165,6 +165,12 @@ public class HtmlParser(string source, bool tidy)
       catch (Exception exception)
       {
          return exception;
+      }
+
+      string getText(string originalText)
+      {
+         var text = MarkupTextHolder.Markupify(originalText, QuoteType.Double);
+         return text.Replace("/", "//").Replace("[", "/[").Replace("]", "/]").Replace(">", "/>").Replace("%", "/%");
       }
    }
 
