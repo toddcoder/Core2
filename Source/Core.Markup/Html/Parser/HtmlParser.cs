@@ -170,7 +170,7 @@ public class HtmlParser(string source, bool tidy)
       string getText(string originalText)
       {
          var text = MarkupTextHolder.Markupify(originalText, QuoteType.Double);
-         return text.Replace("/", "//").Replace("[", "/[").Replace("]", "/]").Replace(">", "/>").Replace("%", "/%");
+         return text.Slash();
       }
    }
 
