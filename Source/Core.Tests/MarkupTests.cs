@@ -1,6 +1,7 @@
 ﻿using Core.Markup.Html;
 using Core.Markup.Html.Parser;
 using Core.Markup.Xml;
+using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests;
@@ -215,32 +216,32 @@ public class MarkupTests
    [TestMethod]
    public void HtmlParserTest2()
    {
-      using var writer = new StringWriter();
-      writer.Write("style[");
-      writer.Write(".header[color>white>background-color>blue>]");
-      writer.Write(".title[font-weight>bold>font-size>16px>]");
-      writer.Write(".bold[font-weight>bold>font-size>14px>]");
-      writer.Write("body[font-family>Verdana>font-size>11px>]");
-      writer.Write("]");
+      var accumulator = new LineAccumulator();
+      accumulator += "style[";
+      accumulator += ".header[color>white>background-color>blue>]";
+      accumulator += ".title[font-weight>bold>font-size>16px>]";
+      accumulator += ".bold[font-weight>bold>font-size>14px>]";
+      accumulator += "body[font-family>Verdana>font-size>11px>]";
+      accumulator += "]";
 
-      writer.Write("p[@class>title>`Merged Branches`]");
-      writer.Write("table[@border>1px black solid>");
-      writer.Write("th[@class>header>b>`Branch`>]");
-      writer.Write("tr[td[`Alpha`]]");
-      writer.Write("tr[td[`Bravo`]]");
-      writer.Write("tr[td[`Charlie`]]");
-      writer.Write("]");
-      writer.Write("hr.>");
-      writer.Write("p[@class>title>`Conflicted Branches`]");
-      writer.Write("table[@border>1px black solid>");
-      writer.Write("th[@class>header>b[`branch1`]]");
-      writer.Write("th[@class>header>b[`file`]]");
-      writer.Write("tr[td[`file1`]]");
-      writer.Write("tr[td[`file2`]]");
-      writer.Write("tr[td[`file3`]]");
-      writer.Write("]");
+      accumulator += "p[@class>title>`Merged Branches`]";
+      accumulator += "table[@border>1px black solid>";
+      accumulator += "th[@class>header>b>`Branch`>]";
+      accumulator += "tr[td[`Alpha`]]";
+      accumulator += "tr[td[`Bravo`]]";
+      accumulator += "tr[td[`Charlie`]]";
+      accumulator += "]";
+      accumulator += "hr%";
+      accumulator += "p[@class>title>`Conflicted Branches`]";
+      accumulator += "table[@border>1px black solid>";
+      accumulator += "th[@class>header>b[`branch1`]]";
+      accumulator += "th[@class>header>b[`file`]]";
+      accumulator += "tr[td[`file1`]]";
+      accumulator += "tr[td[`file2`]]";
+      accumulator += "tr[td[`file3`]]";
+      _ = accumulator + "]";
 
-      var parser = new HtmlParser(writer.ToString(), true);
+      var parser = new HtmlParser(accumulator.ToString(), true);
       var _html = parser.Parse();
       if (_html is (true, var html))
       {

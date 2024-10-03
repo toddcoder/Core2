@@ -27,7 +27,7 @@ public class SourceLines
       index = 0;
       length = this.source.Length;
       _peekLength = nil;
-      bookmarks = new MaybeStack<int>();
+      bookmarks = [];
    }
 
    public string Current => source.Drop(index);

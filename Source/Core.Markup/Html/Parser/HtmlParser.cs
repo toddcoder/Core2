@@ -32,11 +32,11 @@ public class HtmlParser(string source, bool tidy)
          {
             switch (character)
             {
-               case '>' or '`' or '[' or ']' when escaped:
+               case '>' or '`' or '[' or ']' or '%' when escaped:
                   gathering.Append(character);
                   escaped = false;
                   break;
-               case '>' or '`' or '[' or ']':
+               case '>' or '`' or '[' or ']' or '%':
                {
                   var gathered = gathering.ToString();
                   gathering.Clear();
@@ -77,8 +77,8 @@ public class HtmlParser(string source, bool tidy)
                         break;
                      }
 
-                     case ParsingStage.Tag when gathered.EndsWith('.'):
-                        body.Append($"<{gathered.Drop(-1)} />");
+                     case ParsingStage.Tag when character == '%':
+                        body.Append($"<{gathered} />");
                         break;
                      case ParsingStage.Tag:
                         body.Append($"<{gathered}");
