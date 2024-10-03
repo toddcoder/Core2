@@ -239,6 +239,9 @@ public class MarkupTests
       accumulator += "tr[td[`file1`]]";
       accumulator += "tr[td[`file2`]]";
       accumulator += "tr[td[`file3`]]";
+      accumulator += "]";
+      accumulator += "style[";
+      accumulator += "p[margin>0>]";
       _ = accumulator + "]";
 
       var parser = new HtmlParser(accumulator.ToString(), true);

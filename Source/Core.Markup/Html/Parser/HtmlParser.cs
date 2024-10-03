@@ -80,8 +80,9 @@ public class HtmlParser(string source, bool tidy)
                      case ParsingStage.Tag when character == '%':
                         body.Append($"<{gathered} />");
                         break;
-                        case ParsingStage.Tag when gathered == "style":
-                        goto case ParsingStage.Style;
+                     case ParsingStage.Tag when gathered == "style":
+                        stage = ParsingStage.Style;
+                        break;
                      case ParsingStage.Tag:
                         body.Append($"<{gathered}");
                         tagStack.Push($"</{gathered}>");
