@@ -167,11 +167,7 @@ public class HtmlParser(string source, bool tidy)
          return exception;
       }
 
-      string getText(string originalText)
-      {
-         var text = MarkupTextHolder.Markupify(originalText, QuoteType.Double);
-         return text.Slash();
-      }
+      string getText(string originalText) => MarkupTextHolder.Markupify(originalText, QuoteType.Double);
    }
 
    protected Optional<string> Render(AutoStringHash<Set<StyleKeyValue>> styles, StringBuilder body)
