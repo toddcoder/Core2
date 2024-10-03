@@ -11,6 +11,7 @@ namespace Core.Markup.Html.Parser;
 
 public class HtmlParser(string source, bool tidy)
 {
+   public static implicit operator HtmlParser(string source) => new(source, true);
    protected int index;
 
    public Optional<string> Parse()
@@ -31,11 +32,11 @@ public class HtmlParser(string source, bool tidy)
          {
             switch (character)
             {
-               case '>' or '`' or '{' or '}' when escaped:
+               case '>' or '`' or '[' or ']' when escaped:
                   gathering.Append(character);
                   escaped = false;
                   break;
-               case '>' or '`' or '{' or '}':
+               case '>' or '`' or '[' or ']':
                {
                   var gathered = gathering.ToString();
                   gathering.Clear();
