@@ -1,11 +1,8 @@
 ﻿using System.Text;
 using Core.Collections;
-using Core.DataStructures;
 using Core.Enumerables;
 using Core.Markup.Xml;
 using Core.Monads;
-using Core.Strings;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Html.Parser;
 
@@ -18,156 +15,184 @@ public class HtmlParser(string source, bool tidy)
    {
       try
       {
-         var styles = new AutoStringHash<Set<StyleKeyValue>>(_ => [], true);
-         var body = new StringBuilder();
-         var gathering = new StringBuilder();
-         var stage = ParsingStage.Starting;
-         var tagStack = new MaybeStack<string>();
-         var escaped = false;
-         var styleName = "";
-         var styleKey = "";
-         var attribute = "";
+         var gatherer = new HtmlGatherer();
 
          foreach (var character in source)
          {
-            switch (character)
+            gatherer.Gather();
+
+            switch (gatherer.Stage)
             {
-               case '>' or '`' or '[' or ']' or '%' when escaped:
-                  gathering.Append(character);
-                  escaped = false;
-                  break;
-               case '>' or '`' or '[' or ']' or '%':
+               case ParsingStage.Name:
                {
-                  var gathered = gathering.ToString();
-                  gathering.Clear();
-                  var gatheredIsEmpty = gathered.IsEmpty() || gathered.IsWhiteSpace();
-
-                  switch (stage)
+                  switch (character)
                   {
-                     case ParsingStage.Starting when gathered == "style":
-                        stage = ParsingStage.Style;
+                     case '/' or '[' when gatherer.Escaped:
+                        gatherer.GatherCharacter(character);
                         break;
-                     case ParsingStage.Starting:
-                        goto case ParsingStage.Tag;
-                     case ParsingStage.Style when gatheredIsEmpty:
-                        stage = ParsingStage.Tag;
+                     case '/':
+                        gatherer.Escaped = true;
                         break;
-                     case ParsingStage.Style:
-                        stage = ParsingStage.StyleName;
-                        styleName = gathered;
+                     case '[' when gatherer.Gathered == "style":
+                        gatherer.BeginStyle();
                         break;
-                     case ParsingStage.StyleName when gatheredIsEmpty:
-                        stage = ParsingStage.Style;
+                     case '[':
+                        gatherer.BeginTag();
                         break;
-                     case ParsingStage.StyleName:
-                        stage = ParsingStage.StyleKey;
-                        styleKey = gathered;
-                        break;
-                     case ParsingStage.StyleKey:
-                        stage = ParsingStage.StyleName;
-                        styles[styleName].Add(new StyleKeyValue(styleKey, gathered));
-                        break;
-                     case ParsingStage.Tag when gatheredIsEmpty:
-                     {
-                        if (tagStack.Pop() is (true, var tag))
-                        {
-                           body.Append(tag);
-                        }
-
-                        break;
-                     }
-
-                     case ParsingStage.Tag when character == '%':
-                        body.Append($"<{gathered} />");
-                        break;
-                     case ParsingStage.Tag when gathered == "style":
-                        stage = ParsingStage.Style;
-                        break;
-                     case ParsingStage.Tag:
-                        body.Append($"<{gathered}");
-                        tagStack.Push($"</{gathered}>");
-                        stage = ParsingStage.Attribute;
-                        break;
-                     case ParsingStage.Attribute when gatheredIsEmpty:
-                        body.Append('>');
-                        stage = ParsingStage.Text;
-                        break;
-                     case ParsingStage.Attribute when gathered.StartsWith('@'):
-                        stage = ParsingStage.AttributeValue;
-                        attribute = gathered.Drop(1);
-                        break;
-                     case ParsingStage.Attribute:
-                        body.Append('>');
-                        goto case ParsingStage.Tag;
-                     case ParsingStage.AttributeValue:
-                        stage = ParsingStage.Attribute;
-                        body.Append($" {attribute}=\"{gathered}\"");
-                        break;
-                     case ParsingStage.Text when gatheredIsEmpty:
-                     {
-                        if (tagStack.Pop() is (true, var tag))
-                        {
-                           body.Append(tag);
-                        }
-                        else
-                        {
-                           return fail($"Unbalanced tags at {index}");
-                        }
-
-                        break;
-                     }
-                     case ParsingStage.Text:
-                        stage = ParsingStage.Tag;
-                        body.Append(getText(gathered));
+                     default:
+                        gatherer.GatherCharacter(character);
                         break;
                   }
 
                   break;
                }
-               case '/' when escaped:
-                  gathering.Append(character);
-                  escaped = false;
-                  break;
-               case '/':
-                  escaped = true;
-                  break;
-               case ' ' when stage is ParsingStage.AttributeValue or ParsingStage.StyleKey:
-                  gathering.Append(character);
-                  break;
-               case ' ' or '\t' or '\r' or '\n' when stage is not ParsingStage.Text:
+               case ParsingStage.Style:
                {
-                  break;
-               }
-               case ' ' or '\t' or '\r' or '\n':
-                  gathering.Append(character);
+                  switch (character)
+                  {
+                     case '/' or '[' or ']' when gatherer.Escaped:
+                        gatherer.GatherCharacter(character);
+                        break;
+                     case '/':
+                        gatherer.Escaped = true;
+                        break;
+                     case '[':
+                        gatherer.BeginStyleName();
+                        break;
+                     case ']':
+                        gatherer.EndStyle();
+                        break;
+                     default:
+                        gatherer.GatherCharacter(character);
+                        break;
+                  }
 
                   break;
-               default:
-                  gathering.Append(character);
+               }
+               case ParsingStage.StyleName:
+               {
+                  switch (character)
+                  {
+                     case '/' or '(' or ']' when gatherer.Escaped:
+                        gatherer.GatherCharacter(character);
+                        break;
+                     case '/':
+                        gatherer.Escaped = true;
+                        break;
+                     case '(':
+                        gatherer.BeginStyleKey();
+                        break;
+                     case ']':
+                        gatherer.EndStyleName();
+                        break;
+                     default:
+                        gatherer.GatherCharacter(character);
+                        break;
+                  }
+
                   break;
+               }
+               case ParsingStage.StyleKey:
+               {
+                  switch (character)
+                  {
+                     case '/' or ')' when gatherer.Escaped:
+                        gatherer.GatherCharacter(character);
+                        break;
+                     case '/':
+                        gatherer.Escaped = true;
+                        break;
+                     case ')':
+                        gatherer.BeginStyleValue();
+                        break;
+                     default:
+                        gatherer.GatherCharacter(character);
+                        break;
+                  }
+                  break;
+               }
+               case ParsingStage.Tag:
+               {
+                  switch (character)
+                  {
+                     case '/' or '(' or '[' or '`' or ']' when gatherer.Escaped:
+                        gatherer.GatherCharacter(character);
+                        break;
+                     case '/':
+                        gatherer.Escaped = true;
+                        break;
+                     case '[':
+                        gatherer.BeginTag();
+                        break;
+                     case '(':
+                        gatherer.BeginAttribute();
+                        break;
+                     case '`':
+                        gatherer.BeginText();
+                        break;
+                     case ']':
+                        gatherer.EndTag();
+                        break;
+                     default:
+                        gatherer.GatherCharacter(character);
+                        break;
+                  }
+
+                  break;
+               }
+               case ParsingStage.Attribute:
+               {
+                  switch (character)
+                  {
+                     case '/' or ')' when gatherer.Escaped:
+                        gatherer.GatherCharacter(character);
+                        break;
+                     case '/':
+                        gatherer.Escaped = true;
+                        break;
+                     case ')':
+                        gatherer.EndAttribute();
+                        break;
+                     default:
+                        gatherer.GatherCharacter(character);
+                        break;
+                  }
+
+                  break;
+               }
+               case ParsingStage.Text:
+               {
+                  switch (character)
+                  {
+                     case '/' or '`' when gatherer.Escaped:
+                        gatherer.GatherCharacter(character);
+                        break;
+                     case '/':
+                        gatherer.Escaped = true;
+                        break;
+                     case '`':
+                        gatherer.EndText();
+                        break;
+                     default:
+                        gatherer.GatherCharacter(character);
+                        break;
+                  }
+
+                  break;
+               }
             }
 
             index++;
          }
 
-         if (stage is ParsingStage.Text && gathering.Length > 0)
-         {
-            body.Append(getText(gathering.ToString()));
-         }
+         gatherer.EndAll();
 
-         while (tagStack.Pop() is (true, var tag))
-         {
-            body.Append(tag);
-         }
-
-         return Render(styles, body);
+         return Render(gatherer.Styles, gatherer.Body);
       }
       catch (Exception exception)
       {
          return exception;
       }
-
-      string getText(string originalText) => MarkupTextHolder.Markupify(originalText, QuoteType.Double);
    }
 
    protected Optional<string> Render(AutoStringHash<Set<StyleKeyValue>> styles, StringBuilder body)

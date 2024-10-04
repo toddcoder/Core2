@@ -2,13 +2,14 @@
 
 public enum ParsingStage
 {
-   Starting,
+   Name,
    Style,
    StyleName,
    StyleKey,
    StyleValue,
    Body,
    Tag,
+   Waiting,
    Attribute,
    AttributeValue,
    Text,

@@ -150,12 +150,19 @@ public class MarkupTests
    [TestMethod]
    public void HtmlParserTest()
    {
-      using var writer = new StringWriter();
-      writer.WriteLine("style[p[font-size>11pt>font-family>Consolas>]");
-      writer.WriteLine(".fb-p[font-family>Times New Roman>]]");
-      writer.WriteLine("p[@id>remedy>@class>fb-p>strong>`Build for Release `]em[`1.4.0 /[PSA/]`]]");
-      writer.WriteLine("p>`This is text only`");
-      var parser = new HtmlParser(writer.ToString(), true);
+      var accumulator = new LineAccumulator();
+      accumulator += "style[";
+      accumulator += "p[ font-size(11pt) font-family(Consolas) ]";
+      accumulator += ".fb-p[ color(blue) ]";
+      accumulator += "]";
+      accumulator += "p[";
+      accumulator += "id(remedy) class(fb-p)";
+      accumulator += "`Build for Release `";
+      accumulator += "em[";
+      accumulator += "`1.4.0 [PSA]`";
+      accumulator += "]";
+      accumulator += "]";
+      var parser = new HtmlParser(accumulator.ToString(), true);
       var _html = parser.Parse();
       if (_html is (true, var html))
       {
@@ -170,38 +177,40 @@ public class MarkupTests
    [TestMethod]
    public void HtmlParserTest1()
    {
-      using var writer = new StringWriter();
-      writer.WriteLine("style[");
-      writer.WriteLine("table, th, td[");
-      writer.WriteLine("border>1px solid black>");
-      writer.WriteLine("border-collapse>collapse>");
-      writer.WriteLine("padding>5px>");
-      writer.WriteLine("font-family>Verdana>");
-      writer.WriteLine("]");
-      writer.WriteLine("tr:nth-child(even)[");
-      writer.WriteLine("color>white>");
-      writer.WriteLine("background-color>salmon>");
-      writer.WriteLine("]");
-      writer.WriteLine("]");
+      var lines = new LineAccumulator();
 
-      writer.WriteLine("table[");
-      writer.WriteLine("tr[");
-      writer.WriteLine("th[`Alfa`]");
-      writer.WriteLine("th[`Bravo`]");
-      writer.WriteLine("th[`Charlie`]");
-      writer.WriteLine("]");
-      writer.WriteLine("tr[");
-      writer.WriteLine("td[`alpha`]");
-      writer.WriteLine("td[`beta`]");
-      writer.WriteLine("td[`kappa`]");
-      writer.WriteLine("]");
-      writer.WriteLine("tr[");
-      writer.WriteLine("td[`ah`]");
-      writer.WriteLine("td[`bo`]");
-      writer.WriteLine("td[`tso`]");
-      writer.WriteLine("]");
+      lines += "style[";
+      lines += "table, th, td[";
+      lines += "border(1px solid black)";
+      lines += "border-collapse(collapse)";
+      lines += "padding(5px)";
+      lines += "font-family(Verdana)";
+      lines += "]";
+      lines += "tr:nth-child(even)[";
+      lines += "color(white)";
+      lines += "background-color(salmon)";
+      lines += "]";
+      lines += "]";
 
-      var parser = new HtmlParser(writer.ToString(), true);
+      lines += "table[";
+      lines += "tr[";
+      lines += "th[`Alfa`]";
+      lines += "th[`Bravo`]";
+      lines += "th[`Charlie`]";
+      lines += "]";
+      lines += "tr[";
+      lines += "td[`alpha`]";
+      lines += "td[`beta`]";
+      lines += "td[`kappa`]";
+      lines += "]";
+      lines += "tr[";
+      lines += "td[`ah`]";
+      lines += "td[`bo`]";
+      lines += "td[`tso`]";
+      lines += "]";
+      lines += "]";
+
+      var parser = new HtmlParser(lines.ToString(), false);
       var _html = parser.Parse();
       if (_html is (true, var html))
       {
@@ -218,33 +227,33 @@ public class MarkupTests
    {
       var accumulator = new LineAccumulator();
       accumulator += "style[";
-      accumulator += ".header[color>white>background-color>blue>]";
-      accumulator += ".title[font-weight>bold>font-size>16px>]";
-      accumulator += ".bold[font-weight>bold>font-size>14px>]";
-      accumulator += "body[font-family>Verdana>font-size>11px>]";
+      accumulator += ".header[color(white) background-color(blue)]";
+      accumulator += ".title[font-weight(bold) font-size(16px)]";
+      accumulator += ".bold[font-weight(bold) font-size(14px)]";
+      accumulator += "body[font-family(Verdana) font-size(11px)]";
       accumulator += "]";
 
-      accumulator += "p[@class>title>`Merged Branches`]";
-      accumulator += "table[@border>1px black solid>";
-      accumulator += "th[@class>header>b>`Branch`>]";
+      accumulator += "p[@class(title) `Merged Branches`]";
+      accumulator += "table[@border(1px black solid)";
+      accumulator += "th[@class(header) b[`Branch`]]";
       accumulator += "tr[td[`Alpha`]]";
       accumulator += "tr[td[`Bravo`]]";
       accumulator += "tr[td[`Charlie`]]";
       accumulator += "]";
       accumulator += "hr%";
-      accumulator += "p[@class>title>`Conflicted Branches`]";
-      accumulator += "table[@border>1px black solid>";
-      accumulator += "th[@class>header>b[`branch1`]]";
-      accumulator += "th[@class>header>b[`file`]]";
+      accumulator += "p[@class(title) `Conflicted Branches`]";
+      accumulator += "table[@border(1px black solid)";
+      accumulator += "th[@class(header) b[`branch1`]]";
+      accumulator += "th[@class(header) b[`file`]]";
       accumulator += "tr[td[`file1`]]";
       accumulator += "tr[td[`file2`]]";
       accumulator += "tr[td[`file3`]]";
       accumulator += "]";
       accumulator += "style[";
-      accumulator += "p[margin>0>]";
+      accumulator += "p[margin(0)]";
       _ = accumulator + "]";
 
-      var parser = new HtmlParser(accumulator.ToString(), true);
+      var parser = new HtmlParser(accumulator.ToString(), false);
       var _html = parser.Parse();
       if (_html is (true, var html))
       {
