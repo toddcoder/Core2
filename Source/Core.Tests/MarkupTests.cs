@@ -210,7 +210,7 @@ public class MarkupTests
       lines += "]";
       lines += "]";
 
-      var parser = new HtmlParser(lines.ToString(), false);
+      var parser = new HtmlParser(lines.ToString(), true);
       var _html = parser.Parse();
       if (_html is (true, var html))
       {
@@ -233,18 +233,18 @@ public class MarkupTests
       accumulator += "body[font-family(Verdana) font-size(11px)]";
       accumulator += "]";
 
-      accumulator += "p[@class(title) `Merged Branches`]";
-      accumulator += "table[@border(1px black solid)";
-      accumulator += "th[@class(header) b[`Branch`]]";
+      accumulator += "p[class(title) `Merged Branches`]";
+      accumulator += "table[border(1px black solid)";
+      accumulator += "th[class(header) b[`Branch`]]";
       accumulator += "tr[td[`Alpha`]]";
       accumulator += "tr[td[`Bravo`]]";
       accumulator += "tr[td[`Charlie`]]";
       accumulator += "]";
-      accumulator += "hr%";
-      accumulator += "p[@class(title) `Conflicted Branches`]";
-      accumulator += "table[@border(1px black solid)";
-      accumulator += "th[@class(header) b[`branch1`]]";
-      accumulator += "th[@class(header) b[`file`]]";
+      accumulator += "hr[]";
+      accumulator += "p[class(title) `Conflicted Branches`]";
+      accumulator += "table[border(1px black solid)";
+      accumulator += "th[class(header) b[`branch1`]]";
+      accumulator += "th[class(header) b[`file`]]";
       accumulator += "tr[td[`file1`]]";
       accumulator += "tr[td[`file2`]]";
       accumulator += "tr[td[`file3`]]";
@@ -253,7 +253,7 @@ public class MarkupTests
       accumulator += "p[margin(0)]";
       _ = accumulator + "]";
 
-      var parser = new HtmlParser(accumulator.ToString(), false);
+      var parser = new HtmlParser(accumulator.ToString(), true);
       var _html = parser.Parse();
       if (_html is (true, var html))
       {

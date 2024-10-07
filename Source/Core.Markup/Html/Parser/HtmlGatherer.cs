@@ -54,7 +54,7 @@ public class HtmlGatherer()
 
       switch (stage)
       {
-         case ParsingStage.Name or ParsingStage.Tag or ParsingStage.StyleName or ParsingStage.Attribute:
+         case ParsingStage.Name or ParsingStage.Tag or ParsingStage.StyleName:
             if (char.IsLetter(character) || character == '-')
             {
                gathering.Append(character);
