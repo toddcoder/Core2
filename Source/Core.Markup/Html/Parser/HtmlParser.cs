@@ -109,6 +109,7 @@ public class HtmlParser(string source, bool tidy)
                         gatherer.GatherCharacter(character);
                         break;
                   }
+
                   break;
                }
                case ParsingStage.Tag:
@@ -120,6 +121,9 @@ public class HtmlParser(string source, bool tidy)
                         break;
                      case '/':
                         gatherer.Escaped = true;
+                        break;
+                     case '[' when gatherer.Gathered == "style":
+                        gatherer.BeginStyle();
                         break;
                      case '[':
                         gatherer.BeginTag();

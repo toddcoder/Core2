@@ -225,35 +225,35 @@ public class MarkupTests
    [TestMethod]
    public void HtmlParserTest2()
    {
-      var accumulator = new LineAccumulator();
-      accumulator += "style[";
-      accumulator += ".header[color(white) background-color(blue)]";
-      accumulator += ".title[font-weight(bold) font-size(16px)]";
-      accumulator += ".bold[font-weight(bold) font-size(14px)]";
-      accumulator += "body[font-family(Verdana) font-size(11px)]";
-      accumulator += "]";
+      var lines = new LineAccumulator();
+      lines += "style[";
+      lines += ".header[color(white) background-color(blue)]";
+      lines += ".title[font-weight(bold) font-size(16px)]";
+      lines += ".bold[font-weight(bold) font-size(14px)]";
+      lines += "body[font-family(Verdana) font-size(11px)]";
+      lines += "]";
 
-      accumulator += "p[class(title) `Merged Branches`]";
-      accumulator += "table[border(1px black solid)";
-      accumulator += "th[class(header) b[`Branch`]]";
-      accumulator += "tr[td[`Alpha`]]";
-      accumulator += "tr[td[`Bravo`]]";
-      accumulator += "tr[td[`Charlie`]]";
-      accumulator += "]";
-      accumulator += "hr[]";
-      accumulator += "p[class(title) `Conflicted Branches`]";
-      accumulator += "table[border(1px black solid)";
-      accumulator += "th[class(header) b[`branch1`]]";
-      accumulator += "th[class(header) b[`file`]]";
-      accumulator += "tr[td[`file1`]]";
-      accumulator += "tr[td[`file2`]]";
-      accumulator += "tr[td[`file3`]]";
-      accumulator += "]";
-      accumulator += "style[";
-      accumulator += "p[margin(0)]";
-      _ = accumulator + "]";
+      lines += "p[class(title) `Merged Branches`]";
+      lines += "table[border(1px black solid)";
+      lines += "th[class(header) b[`Branch`]]";
+      lines += "tr[td[`Alpha`]]";
+      lines += "tr[td[`Bravo`]]";
+      lines += "tr[td[`Charlie`]]";
+      lines += "]";
+      lines += "hr[]";
+      lines += "p[class(title) `Conflicted Branches`]";
+      lines += "table[border(1px black solid)";
+      lines += "th[class(header) b[`branch1`]]";
+      lines += "th[class(header) b[`file`]]";
+      lines += "tr[td[`file1`]]";
+      lines += "tr[td[`file2`]]";
+      lines += "tr[td[`file3`]]";
+      lines += "]";
+      lines += "style[";
+      lines += "p[margin(0)]";
+      _ = lines + "]";
 
-      var parser = new HtmlParser(accumulator.ToString(), true);
+      var parser = new HtmlParser(lines.ToString(), true);
       var _html = parser.Parse();
       if (_html is (true, var html))
       {

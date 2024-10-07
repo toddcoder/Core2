@@ -6,7 +6,7 @@ using Core.Strings;
 
 namespace Core.Markup.Html.Parser;
 
-public class HtmlGatherer()
+public class HtmlGatherer
 {
    protected AutoStringHash<Set<StyleKeyValue>> styles = new(_ => [], true);
    protected StringBuilder body = new();
