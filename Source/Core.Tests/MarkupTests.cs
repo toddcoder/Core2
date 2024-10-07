@@ -150,19 +150,19 @@ public class MarkupTests
    [TestMethod]
    public void HtmlParserTest()
    {
-      var accumulator = new LineAccumulator();
-      accumulator += "style[";
-      accumulator += "p[ font-size(11pt) font-family(Consolas) ]";
-      accumulator += ".fb-p[ color(blue) ]";
-      accumulator += "]";
-      accumulator += "p[";
-      accumulator += "id(remedy) class(fb-p)";
-      accumulator += "`Build for Release `";
-      accumulator += "em[";
-      accumulator += "`1.4.0 [PSA]`";
-      accumulator += "]";
-      accumulator += "]";
-      var parser = new HtmlParser(accumulator.ToString(), true);
+      var lines = new LineAccumulator();
+      lines += "style[";
+      lines += "p[ font-size(11pt) font-family(Consolas) ]";
+      lines += ".fb-p[ color(blue) ]";
+      lines += "]";
+      lines += "p[";
+      lines += "id(remedy) class(fb-p)";
+      lines += "`Build for Release `";
+      lines += "em[";
+      lines += "`1.4.0 [PSA]`";
+      lines += "]";
+      lines += "]";
+      var parser = new HtmlParser(lines.ToString(), true);
       var _html = parser.Parse();
       if (_html is (true, var html))
       {

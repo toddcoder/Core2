@@ -44,8 +44,17 @@ public class HtmlGatherer
 
    public StringBuilder Body => body;
 
-   public void GatherCharacter(char character)
+   public void GatherCharacter(char character, bool inDefault = false)
    {
+      if (inDefault && Escaped)
+      {
+         gathering.Append('/');
+         gathering.Append(character);
+         Escaped = false;
+
+         return;
+      }
+
       if (Escaped)
       {
          gathering.Append(character);
@@ -145,6 +154,7 @@ public class HtmlGatherer
       {
          body.Append('>');
       }
+
       if (tagStack.Pop() is (true, var endTag))
       {
          body.Append(endTag);

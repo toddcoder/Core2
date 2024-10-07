@@ -27,7 +27,7 @@ public class HtmlParser(string source, bool tidy)
                {
                   switch (character)
                   {
-                     case '/' or '[' when gatherer.Escaped:
+                     case '[' when gatherer.Escaped:
                         gatherer.GatherCharacter(character);
                         break;
                      case '/':
@@ -40,7 +40,7 @@ public class HtmlParser(string source, bool tidy)
                         gatherer.BeginTag();
                         break;
                      default:
-                        gatherer.GatherCharacter(character);
+                        gatherer.GatherCharacter(character, true);
                         break;
                   }
 
@@ -50,7 +50,7 @@ public class HtmlParser(string source, bool tidy)
                {
                   switch (character)
                   {
-                     case '/' or '[' or ']' when gatherer.Escaped:
+                     case '[' or ']' when gatherer.Escaped:
                         gatherer.GatherCharacter(character);
                         break;
                      case '/':
@@ -63,7 +63,7 @@ public class HtmlParser(string source, bool tidy)
                         gatherer.EndStyle();
                         break;
                      default:
-                        gatherer.GatherCharacter(character);
+                        gatherer.GatherCharacter(character, true);
                         break;
                   }
 
@@ -73,7 +73,7 @@ public class HtmlParser(string source, bool tidy)
                {
                   switch (character)
                   {
-                     case '/' or '(' or ']' when gatherer.Escaped:
+                     case '(' or ']' when gatherer.Escaped:
                         gatherer.GatherCharacter(character);
                         break;
                      case '/':
@@ -86,7 +86,7 @@ public class HtmlParser(string source, bool tidy)
                         gatherer.EndStyleName();
                         break;
                      default:
-                        gatherer.GatherCharacter(character);
+                        gatherer.GatherCharacter(character, true);
                         break;
                   }
 
@@ -96,7 +96,7 @@ public class HtmlParser(string source, bool tidy)
                {
                   switch (character)
                   {
-                     case '/' or ')' when gatherer.Escaped:
+                     case ')' when gatherer.Escaped:
                         gatherer.GatherCharacter(character);
                         break;
                      case '/':
@@ -106,7 +106,7 @@ public class HtmlParser(string source, bool tidy)
                         gatherer.BeginStyleValue();
                         break;
                      default:
-                        gatherer.GatherCharacter(character);
+                        gatherer.GatherCharacter(character, true);
                         break;
                   }
 
@@ -116,7 +116,7 @@ public class HtmlParser(string source, bool tidy)
                {
                   switch (character)
                   {
-                     case '/' or '(' or '[' or '`' or ']' when gatherer.Escaped:
+                     case '(' or '[' or '`' or ']' when gatherer.Escaped:
                         gatherer.GatherCharacter(character);
                         break;
                      case '/':
@@ -138,7 +138,7 @@ public class HtmlParser(string source, bool tidy)
                         gatherer.EndTag();
                         break;
                      default:
-                        gatherer.GatherCharacter(character);
+                        gatherer.GatherCharacter(character, true);
                         break;
                   }
 
@@ -148,7 +148,7 @@ public class HtmlParser(string source, bool tidy)
                {
                   switch (character)
                   {
-                     case '/' or ')' when gatherer.Escaped:
+                     case ')' when gatherer.Escaped:
                         gatherer.GatherCharacter(character);
                         break;
                      case '/':
@@ -158,7 +158,7 @@ public class HtmlParser(string source, bool tidy)
                         gatherer.EndAttribute();
                         break;
                      default:
-                        gatherer.GatherCharacter(character);
+                        gatherer.GatherCharacter(character, true);
                         break;
                   }
 
@@ -178,13 +178,7 @@ public class HtmlParser(string source, bool tidy)
                         gatherer.EndText();
                         break;
                      default:
-                        if (gatherer.Escaped)
-                        {
-                           gatherer.AppendToGathering('/');
-                           gatherer.Escaped = false;
-                        }
-
-                        gatherer.GatherCharacter(character);
+                        gatherer.GatherCharacter(character, true);
                         break;
                   }
 
