@@ -184,7 +184,7 @@ public class HtmlGatherer
 
    public void EndAttribute()
    {
-      body.Append($" {attribute}=\"{gathered}\"");
+      body.Append($" {attribute}=\"{MarkupTextHolder.Markupify(gathered, QuoteType.Double)}\"");
       stage = ParsingStage.Tag;
       gathering.Clear();
    }
