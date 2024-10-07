@@ -222,4 +222,6 @@ public class HtmlGatherer
          body.Append(tag);
       }
    }
+
+   public void Clear() => gathering.Clear();
 }

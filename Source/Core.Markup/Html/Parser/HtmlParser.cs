@@ -2,22 +2,37 @@
 using Core.Collections;
 using Core.Enumerables;
 using Core.Markup.Xml;
+using Core.Matching;
 using Core.Monads;
+using Core.Strings;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Html.Parser;
 
 public class HtmlParser(string source, bool tidy)
 {
    public static implicit operator HtmlParser(string source) => new(source, true);
-   protected int index;
+
+   protected Maybe<bool> _tidy = nil;
 
    public Optional<string> Parse()
    {
       try
       {
+         string localSource;
+         if (source.Matches("'#' /('tidy' | 'untidy') /s+; f") is (true, var result))
+         {
+            _tidy = result.FirstGroup == "tidy";
+            localSource = source.Drop(result.Length);
+         }
+         else
+         {
+            localSource = source;
+         }
+
          var gatherer = new HtmlGatherer();
 
-         foreach (var character in source)
+         foreach (var character in localSource)
          {
             gatherer.Gather();
 
@@ -191,8 +206,6 @@ public class HtmlParser(string source, bool tidy)
                   break;
                }
             }
-
-            index++;
          }
 
          gatherer.EndAll();
@@ -244,7 +257,15 @@ public class HtmlParser(string source, bool tidy)
          writer.WriteLine("</html>");
          var html = writer.ToString();
 
-         return tidy ? html.TidyXml(true) : html;
+         if (_tidy is (true, var overriddenTidy))
+         {
+         }
+         else
+         {
+            overriddenTidy = tidy;
+         }
+
+         return overriddenTidy ? html.TidyXml(true) : html;
       }
       catch (Exception exception)
       {

@@ -270,16 +270,17 @@ public class MarkupTests
    {
       var lines = new LineAccumulator();
 
+      lines += "#tidy";
       lines += "br.";
-      lines += "p[class(standard) `Todd E. Bennett`]";
-      lines += "p[class(italic) `Analyst, Senior DevOps Engineering (Evolve)`]";
-      lines += "p[class(bold) `Enterprise Products`]";
+      lines += "p[class(standard) `Mortimer J. Snerd`]";
+      lines += "p[class(italic) `Code Serf`]";
+      lines += "p[class(bold) `Computer Lab of Chaos`]";
       lines += "br.";
-      lines += "p[class(fixed) `713-381-5485 Office`]";
-      lines += "p[class(fixed) `713-417-6357 Cell`]";
-      _ = lines + "a[class(fixed) href(mailto:tebennett) `Todd E. Bennett`]";
+      lines += "p[class(fixed) `###-###-#### Office`]";
+      lines += "p[class(fixed) `###-###-#### Cell`]";
+      _ = lines + "a[class(fixed) href(mailto:mjsnerd@clc.com) `Mortimer J. Snerd`]";
 
-      var parser = new HtmlParser(lines.ToString(), true);
+      var parser = new HtmlParser(lines.ToString(), false);
       var _html = parser.Parse();
       if (_html is (true, var html))
       {
