@@ -74,6 +74,8 @@ public class HtmlGatherer
       }
    }
 
+   public void AppendToGathering(char character) => gathering.Append(character);
+
    public void BeginTag()
    {
       if (closedStack.Pop() is (true, false))

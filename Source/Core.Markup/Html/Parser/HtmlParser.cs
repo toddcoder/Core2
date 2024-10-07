@@ -180,7 +180,8 @@ public class HtmlParser(string source, bool tidy)
                      default:
                         if (gatherer.Escaped)
                         {
-                           gatherer.GatherCharacter('/');
+                           gatherer.AppendToGathering('/');
+                           gatherer.Escaped = false;
                         }
 
                         gatherer.GatherCharacter(character);
