@@ -264,4 +264,30 @@ public class MarkupTests
          Console.WriteLine(exception.Message);
       }
    }
+
+   [TestMethod]
+   public void BrTest()
+   {
+      var lines = new LineAccumulator();
+
+      lines += "br.";
+      lines += "p[class(standard) `Todd E. Bennett`]";
+      lines += "p[class(italic) `Analyst, Senior DevOps Engineering (Evolve)`]";
+      lines += "p[class(bold) `Enterprise Products`]";
+      lines += "br.";
+      lines += "p[class(fixed) `713-381-5485 Office`]";
+      lines += "p[class(fixed) `713-417-6357 Cell`]";
+      _ = lines + "a[class(fixed) href(mailto:tebennett) `Todd E. Bennett`]";
+
+      var parser = new HtmlParser(lines.ToString(), true);
+      var _html = parser.Parse();
+      if (_html is (true, var html))
+      {
+         Console.WriteLine(html);
+      }
+      else if (_html.Exception is (true, var exception))
+      {
+         Console.WriteLine(exception.Message);
+      }
+   }
 }

@@ -39,6 +39,9 @@ public class HtmlParser(string source, bool tidy)
                      case '[':
                         gatherer.BeginTag();
                         break;
+                     case '.':
+                        gatherer.ClosedTag();
+                        break;
                      default:
                         gatherer.GatherCharacter(character, true);
                         break;
