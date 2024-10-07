@@ -240,7 +240,7 @@ public class MarkupTests
       lines += "tr[td[`Bravo`]]";
       lines += "tr[td[`Charlie`]]";
       lines += "]";
-      lines += "hr[]";
+      lines += "br.";
       lines += "p[class(title) `Conflicted Branches/Files`]";
       lines += "table[border(1px black solid)";
       lines += "th[class(header) b[`branch1`]]";

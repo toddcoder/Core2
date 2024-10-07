@@ -168,6 +168,20 @@ public class HtmlGatherer
       gathering.Clear();
    }
 
+   public void ClosedTag()
+   {
+      if (closedStack.Pop() is (true, false))
+      {
+         body.Append('>');
+         closedStack.Push(true);
+      }
+
+      body.Append($"<{gathered} />");
+      stage = ParsingStage.Tag;
+      InStyle = false;
+      gathering.Clear();
+   }
+
    public void EndAttribute()
    {
       body.Append($" {attribute}=\"{gathered}\"");

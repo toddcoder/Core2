@@ -116,7 +116,7 @@ public class HtmlParser(string source, bool tidy)
                {
                   switch (character)
                   {
-                     case '(' or '[' or '`' or ']' when gatherer.Escaped:
+                     case '(' or '[' or '`' or ']' or '.' when gatherer.Escaped:
                         gatherer.GatherCharacter(character);
                         break;
                      case '/':
@@ -136,6 +136,9 @@ public class HtmlParser(string source, bool tidy)
                         break;
                      case ']':
                         gatherer.EndTag();
+                        break;
+                     case '.':
+                        gatherer.ClosedTag();
                         break;
                      default:
                         gatherer.GatherCharacter(character, true);
