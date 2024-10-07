@@ -168,7 +168,7 @@ public class HtmlParser(string source, bool tidy)
                {
                   switch (character)
                   {
-                     case '/' or '`' when gatherer.Escaped:
+                     case '`' when gatherer.Escaped:
                         gatherer.GatherCharacter(character);
                         break;
                      case '/':
@@ -178,6 +178,11 @@ public class HtmlParser(string source, bool tidy)
                         gatherer.EndText();
                         break;
                      default:
+                        if (gatherer.Escaped)
+                        {
+                           gatherer.GatherCharacter('/');
+                        }
+
                         gatherer.GatherCharacter(character);
                         break;
                   }
