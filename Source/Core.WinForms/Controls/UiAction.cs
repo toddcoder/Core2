@@ -3965,6 +3965,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       var bitmap = new Bitmap(Width, Height);
       DrawToBitmap(bitmap, ClientRectangle);
       _image = bitmap;
+      Invalidate();
    }
 
    public void EndUpdate()
@@ -3973,6 +3974,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       {
          image.Dispose();
          _image = nil;
+         Invalidate();
       }
    }
 }
