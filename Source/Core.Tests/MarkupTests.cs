@@ -273,7 +273,7 @@ public class MarkupTests
       lines += "#tidy";
       lines += "br.";
       lines += "p[class(standard) `Mortimer J. Snerd`]";
-      lines += "p[class(italic) `Code Serf`]";
+      lines += "p[class(italic) `Code~Serf`]";
       lines += "p[class(bold) `Computer Lab of Chaos`]";
       lines += "br.";
       lines += "p[class(fixed) `###-###-#### Office`]";

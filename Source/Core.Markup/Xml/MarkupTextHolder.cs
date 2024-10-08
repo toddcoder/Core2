@@ -7,7 +7,7 @@ public class MarkupTextHolder
 {
    public static string Markupify(string text)
    {
-      text = text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("~", "&nbsp;");
+      text = text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("~", "&#160;");
       return replaceBrackets(text);
    }
 

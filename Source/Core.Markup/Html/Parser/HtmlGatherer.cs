@@ -201,7 +201,7 @@ public class HtmlGatherer
       gathering.Clear();
    }
 
-   protected string getText() => MarkupTextHolder.Markupify(gathered, QuoteType.Double);
+   protected string getText() => gathered.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
 
    public void EndText()
    {

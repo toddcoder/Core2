@@ -1,16 +1,20 @@
 ﻿using System.Text;
+using System.Xml;
 using Core.Collections;
 using Core.Enumerables;
-using Core.Markup.Xml;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
+using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Markup.Html.Parser;
 
 public class HtmlParser(string source, bool tidy)
 {
+   private const string PATTERN_EMPTY_ELEMENT = "'<' /(-['//!'] -['>']+ -['//']) '><//' /(-['>']+) '>'; f";
+   private const string TEXT_EMPTY_ELEMENT = "<$1/>";
+
    public static implicit operator HtmlParser(string source) => new(source, true);
 
    protected Maybe<bool> _tidy = nil;
@@ -265,7 +269,42 @@ public class HtmlParser(string source, bool tidy)
             overriddenTidy = tidy;
          }
 
-         return overriddenTidy ? html.TidyXml(true) : html;
+         return overriddenTidy ? tidyHtml(html) : html.Replace("~", "&#160;");
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
+   protected Optional<string> tidyHtml(string html)
+   {
+      try
+      {
+         var document = new XmlDocument();
+         document.LoadXml(html);
+         document.LoadXml(document.OuterXml.Substitute(PATTERN_EMPTY_ELEMENT, TEXT_EMPTY_ELEMENT));
+
+         var encoding = Encoding.UTF8;
+
+         using var stream = new MemoryStream();
+         using var writer = new XmlTextWriter(stream, encoding);
+         writer.Formatting = Formatting.Indented;
+         writer.Indentation = 3;
+         writer.QuoteChar = '"';
+
+         document.Save(writer);
+
+         var _text = fromStream();
+         return _text.Map(t => t.Replace("~", "&#160;")) | "";
+
+         Result<string> fromStream() => tryTo(() =>
+         {
+            stream.Position = 0;
+            using var reader = new StreamReader(stream, encoding);
+
+            return reader.ReadToEnd();
+         });
       }
       catch (Exception exception)
       {
