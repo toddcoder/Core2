@@ -11,6 +11,7 @@ public partial class Form6 : Form
    protected ExTextBox textBox = new() { BorderStyle = BorderStyle.None };
    protected CoreDateTimePicker picker = new();
    protected UiAction uiAlternates = new();
+   protected UiAction uiReadOnlyAlternates = new();
 
    public Form6()
    {
@@ -27,7 +28,7 @@ public partial class Form6 : Form
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col * 100f;
-      _ = builder.Row + 40 + 40 + 60 + +60 + 100f;
+      _ = builder.Row + 40 + 40 + 60 + 60 + 60 + 100f;
       builder.SetUp();
 
       (builder + uiTextDivider + false).Row();
@@ -37,6 +38,9 @@ public partial class Form6 : Form
       (builder + picker).Row();
 
       (builder + uiAlternates).Row();
+
+      uiReadOnlyAlternates.Dock = DockStyle.Fill;
+      (builder + uiReadOnlyAlternates).Row();
 
       uiAlternates.RectangleCount = 6;
       uiAlternates.PaintOnRectangle += (_, e) =>
@@ -69,6 +73,12 @@ public partial class Form6 : Form
       }
 
       uiAlternates.Refresh();
+
+      uiReadOnlyAlternates.BeginUpdate();
+      uiReadOnlyAlternates.AlternateReadOnly("alfa", "bravo", "charlie", "delta", "echo", "foxtrot");
+      uiReadOnlyAlternates.SetColors(UiActionType.Message);
+      uiReadOnlyAlternates.Refresh();
+      uiReadOnlyAlternates.EndUpdate();
    }
 
    protected static IEnumerable<string> getLetters()

@@ -233,6 +233,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    protected Maybe<PieProgressProcessor> _pieProgressProcessor = nil;
    protected bool locked;
    protected DividerValidation dividerValidation = new DividerValidation.None();
+   protected Maybe<Image> _updating = nil;
 
    public event EventHandler<AutomaticMessageArgs>? AutomaticMessage;
    public event EventHandler<PaintEventArgs>? Painting;
@@ -321,10 +322,34 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          {
             case UiActionType.CheckBox:
                setUpCheckBox(text, BoxChecked);
+               _alternateWriter = new CheckBoxWriter(this, Alternates, AutoSizeText, _floor, _ceiling);
                break;
-            case UiActionType.Alternate:
+            case UiActionType.Alternate when _alternateWriter is (true, var alternateWriter):
+            {
                RectangleCount = Alternates.Length;
+               var newAlternateWriter = new AlternateWriter(this, Alternates, AutoSizeText, _floor, _ceiling, UseEmojis);
+               for (var i = 0; i < RectangleCount; i++)
+               {
+                  newAlternateWriter.SetForeColor(i, alternateWriter.GetAlternateForeColor(i));
+                  newAlternateWriter.SetBackColor(i, alternateWriter.GetAlternateBackColor(i));
+               }
+
+               _alternateWriter = newAlternateWriter;
                break;
+            }
+            case UiActionType.ReadOnlyAlternate when _alternateWriter is (true, var alternateWriter):
+            {
+               RectangleCount = Alternates.Length;
+               var newAlternateWriter = new ReadOnlyAlternateWriter(this, Alternates, AutoSizeText, _floor, _ceiling, UseEmojis);
+               for (var i = 0; i < RectangleCount; i++)
+               {
+                  newAlternateWriter.SetForeColor(i, alternateWriter.GetAlternateForeColor(i));
+                  newAlternateWriter.SetBackColor(i, alternateWriter.GetAlternateBackColor(i));
+               }
+
+               _alternateWriter = newAlternateWriter;
+               break;
+            }
          }
 
          refresh();
@@ -1506,6 +1531,12 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
    protected override void OnPaint(PaintEventArgs e)
    {
+      if (_image is (true, var image))
+      {
+         e.Graphics.DrawImage(image, Location);
+         return;
+      }
+
       base.OnPaint(e);
 
       if (!Enabled && !_symbolWriter && !locked)
@@ -1667,17 +1698,28 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             writer.Write(e.Graphics, text, false);
             break;
          case UiActionType.Symbol when _symbolWriter is (true, var symbolWriter):
+         {
             symbolWriter.OnPaint(e.Graphics, clientRectangle, Enabled);
             break;
+         }
          case UiActionType.Button:
             writer.Write(e.Graphics, text, false);
             break;
          case UiActionType.Alternate when _alternateWriter is (true, var alternateWriter):
+         {
             alternateWriter.OnPaint(e.Graphics);
             break;
+         }
+         case UiActionType.ReadOnlyAlternate when _alternateWriter is (true, var alternateWriter):
+         {
+            alternateWriter.OnPaint(e.Graphics);
+            break;
+         }
          case UiActionType.CheckBox when _alternateWriter is (true, var alternateWriter):
+         {
             alternateWriter.OnPaint(e.Graphics);
             break;
+         }
          case UiActionType.Divider:
          {
             var rectangle = getDividerRectangle();
@@ -1982,6 +2024,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
    protected override void OnPaintBackground(PaintEventArgs pevent)
    {
+      if (_image)
+      {
+         return;
+      }
+
       if (!Enabled && !_symbolWriter)
       {
          DisabledWriter.OnPaintBackground(pevent.Graphics, ClientRectangle);
@@ -3394,6 +3441,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
    public void Alternate(params string[] alternates) => createAlternate(alternates);
 
+   public void AlternateReadOnly(params string[] alternates) => createReadOnlyAlternate(alternates);
+
    public void AlternateDeletable(params string[] alternates) => createDeletable(alternates);
 
    protected void createAlternate(string[] alternates)
@@ -3411,6 +3460,24 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       type = UiActionType.Alternate;
       RectangleCount = alternates.Length;
       _alternateWriter = new AlternateWriter(this, alternates, AutoSizeText, _floor, _ceiling, UseEmojis);
+      refresh();
+   }
+
+   protected void createReadOnlyAlternate(string[] alternates)
+   {
+      if (alternates.Length < 1)
+      {
+         Failure("You should have at least one alternate");
+         return;
+      }
+
+      FloatingException(false);
+      Busy(false);
+      _taskBarProgress = nil;
+
+      type = UiActionType.ReadOnlyAlternate;
+      RectangleCount = alternates.Length;
+      _alternateWriter = new ReadOnlyAlternateWriter(this, alternates, AutoSizeText, _floor, _ceiling, UseEmojis);
       refresh();
    }
 
@@ -3521,6 +3588,17 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       }
    }
 
+   public void SetForeColors(Color color)
+   {
+      if (_alternateWriter is (true, var alternateWriter))
+      {
+         for (var i = 0; i < rectangles.Length; i++)
+         {
+            alternateWriter.SetForeColor(i, color);
+         }
+      }
+   }
+
    public Maybe<Color> GetForeColor(int index) => _alternateWriter.Map(w => w.GetForeColor(index));
 
    public void SetBackColor(int index, Color color)
@@ -3528,6 +3606,17 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       if (_alternateWriter is (true, var alternateWriter))
       {
          alternateWriter.SetBackColor(index, color);
+      }
+   }
+
+   public void SetBackColors(Color color)
+   {
+      if (_alternateWriter is (true, var alternateWriter))
+      {
+         for (var i = 0; i < rectangles.Length; i++)
+         {
+            alternateWriter.SetBackColor(i, color);
+         }
       }
    }
 
@@ -3542,6 +3631,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       SetForeColor(index, GetForeColor(type));
       SetBackColor(index, GetBackColor(type));
       refresh();
+   }
+
+   public void SetColors(UiActionType type)
+   {
+      for (var i = 0; i < rectangles.Length; i++)
+      {
+         SetColors(i, type);
+      }
    }
 
    public Maybe<Color> GetAlternateForeColor(int index) => _alternateWriter.Map(w => w.GetAlternateForeColor(index));
@@ -3862,4 +3959,20 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    }
 
    public bool DividerIsValid => dividerValidation is DividerValidation.Valid;
+
+   public void BeginUpdate()
+   {
+      var bitmap = new Bitmap(Width, Height);
+      DrawToBitmap(bitmap, ClientRectangle);
+      _image = bitmap;
+   }
+
+   public void EndUpdate()
+   {
+      if (_image is (true, var image))
+      {
+         image.Dispose();
+         _image = nil;
+      }
+   }
 }

@@ -27,6 +27,7 @@ public enum UiActionType
    Display,
    Symbol,
    Alternate,
+   ReadOnlyAlternate,
    CheckBox,
    Divider,
    Done
