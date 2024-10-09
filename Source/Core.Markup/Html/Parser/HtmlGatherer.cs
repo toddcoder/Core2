@@ -210,6 +210,19 @@ public class HtmlGatherer
       stage = ParsingStage.Tag;
    }
 
+   public void BeginRaw()
+   {
+      gathering.Clear();
+      stage = ParsingStage.Raw;
+   }
+
+   public void EndRaw()
+   {
+      body.Append(gathering);
+      gathering.Clear();
+      stage = ParsingStage.Tag;
+   }
+
    public void EndAll()
    {
       if (stage is ParsingStage.Text && gathering.Length > 0)

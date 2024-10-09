@@ -138,7 +138,7 @@ public class HtmlParser(string source, bool tidy)
                {
                   switch (character)
                   {
-                     case '(' or '[' or '`' or ']' or '.' when gatherer.Escaped:
+                     case '(' or '[' or '`' or ']' or '.' or '{' when gatherer.Escaped:
                         gatherer.GatherCharacter(character);
                         break;
                      case '/':
@@ -161,6 +161,9 @@ public class HtmlParser(string source, bool tidy)
                         break;
                      case '.':
                         gatherer.ClosedTag();
+                        break;
+                     case '{':
+                        gatherer.BeginRaw();
                         break;
                      default:
                         gatherer.GatherCharacter(character, true);
@@ -201,6 +204,26 @@ public class HtmlParser(string source, bool tidy)
                         break;
                      case '`':
                         gatherer.EndText();
+                        break;
+                     default:
+                        gatherer.GatherCharacter(character, true);
+                        break;
+                  }
+
+                  break;
+               }
+               case ParsingStage.Raw:
+               {
+                  switch (character)
+                  {
+                     case '}' when gatherer.Escaped:
+                        gatherer.GatherCharacter(character);
+                        break;
+                     case '}':
+                        gatherer.EndRaw();
+                        break;
+                     case '/':
+                        gatherer.Escaped = true;
                         break;
                      default:
                         gatherer.GatherCharacter(character, true);

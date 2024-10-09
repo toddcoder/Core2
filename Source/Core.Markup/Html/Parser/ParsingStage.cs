@@ -6,12 +6,8 @@ public enum ParsingStage
    Style,
    StyleName,
    StyleKey,
-   StyleValue,
-   Body,
    Tag,
-   Waiting,
    Attribute,
-   AttributeValue,
    Text,
-   EndTag
+   Raw
 }

@@ -278,7 +278,30 @@ public class MarkupTests
       lines += "br.";
       lines += "p[class(fixed) `###-###-#### Office`]";
       lines += "p[class(fixed) `###-###-#### Cell`]";
+      lines += "{<div style='page-break-after: always'></div>}";
       _ = lines + "a[class(fixed) href(mailto:mjsnerd@clc.com) `Mortimer J. Snerd`]";
+
+      var parser = new HtmlParser(lines.ToString(), false);
+      var _html = parser.Parse();
+      if (_html is (true, var html))
+      {
+         Console.WriteLine(html);
+      }
+      else if (_html.Exception is (true, var exception))
+      {
+         Console.WriteLine(exception.Message);
+      }
+   }
+
+   [TestMethod]
+   public void RawHtmlTest()
+   {
+      var lines = new LineAccumulator();
+
+      lines += "#untidy";
+      lines += "br.";
+      lines += "{<div style='page-break-after: always'><//div>}";
+      _ = lines + "br.";
 
       var parser = new HtmlParser(lines.ToString(), false);
       var _html = parser.Parse();
