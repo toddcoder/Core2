@@ -234,6 +234,9 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    protected bool locked;
    protected DividerValidation dividerValidation = new DividerValidation.None();
    protected Maybe<Image> _updating = nil;
+   protected Maybe<string> _divMessage = nil;
+   protected Maybe<Color> _divMessageForeColor = nil;
+   protected Maybe<Color> _divMessageBackColor = nil;
 
    public event EventHandler<AutomaticMessageArgs>? AutomaticMessage;
    public event EventHandler<PaintEventArgs>? Painting;
@@ -1716,36 +1719,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          }
          case UiActionType.Divider:
          {
-            var rectangle = getDividerRectangle();
-            var dividerForeColor = getDividerForeColor();
-            var dividerBackColor = getDividerBackColor();
-            var _dividerText = getDividerValidationText();
-            if (isDirty)
-            {
-               using var brush = new HatchBrush(HatchStyle.DiagonalCross, dividerBackColor, dividerForeColor);
-               e.Graphics.FillRectangle(brush, rectangle);
-            }
-            else
-            {
-               using var brush = new SolidBrush(dividerBackColor);
-               e.Graphics.FillRectangle(brush, rectangle);
-            }
-
-            if (_dividerText is (true, var dividerText))
-            {
-               var dividerWriter = new RectangleWriter(dividerText, rectangle, CardinalAlignment.East)
-                  { FontSize = 8f, ForeColor = dividerForeColor, UseEmojis = UseEmojis };
-               dividerWriter.Write(e.Graphics);
-            }
-
-            var textRectangle = getDividerTextRectangle(e.Graphics, clientRectangle);
-            using var backBrush = new SolidBrush(Color.CadetBlue);
-            fillRectangle(e.Graphics, backBrush, textRectangle);
-
-            using var pen = new Pen(dividerForeColor);
-            var flags = TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter | TextFormatFlags.EndEllipsis |
-               TextFormatFlags.LeftAndRightPadding;
-            TextRenderer.DrawText(e.Graphics, text, Font, textRectangle, Color.White, flags);
+            drawDivider(e, clientRectangle);
             break;
          }
          default:
@@ -1840,6 +1814,55 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             }
          }
       }
+   }
+
+   protected void drawDivider(PaintEventArgs e, Rectangle clientRectangle)
+   {
+      var rectangle = getDividerRectangle();
+      var dividerForeColor = _divMessageForeColor | getDividerForeColor;
+      var dividerBackColor = _divMessageBackColor | getDividerBackColor;
+      var _dividerText = getDividerValidationText();
+
+      if (isDirty)
+      {
+         using var brush = new HatchBrush(HatchStyle.DiagonalCross, dividerBackColor, dividerForeColor);
+         e.Graphics.FillRectangle(brush, rectangle);
+      }
+      else
+      {
+         using var brush = new SolidBrush(dividerBackColor);
+         e.Graphics.FillRectangle(brush, rectangle);
+      }
+
+      var textRectangle = getDividerTextRectangle(e.Graphics, clientRectangle);
+
+      if (_dividerText is (true, var dividerText))
+      {
+         var dividerWriter = new RectangleWriter(dividerText, rectangle, CardinalAlignment.East)
+            { FontSize = 8f, ForeColor = dividerForeColor, UseEmojis = UseEmojis };
+         dividerWriter.Write(e.Graphics);
+      }
+      else if (_divMessage is (true, var divMessage))
+      {
+         var messageRectangle = rectangle;
+         messageRectangle.X = textRectangle.X + textRectangle.Width + 4;
+         messageRectangle.Width = rectangle.Width - messageRectangle.X - 4;
+         var messageWriter = new RectangleWriter(divMessage, messageRectangle)
+         {
+            FontSize = 8f,
+            ForeColor = dividerForeColor,
+            UseEmojis = UseEmojis
+         };
+         messageWriter.Write(e.Graphics);
+      }
+
+      using var backBrush = new SolidBrush(Color.CadetBlue);
+      fillRectangle(e.Graphics, backBrush, textRectangle);
+
+      var writer = new RectangleWriter(text, textRectangle) { ForeColor = Color.White, Font = Font!, UseEmojis = UseEmojis };
+      writer.Write(e.Graphics);
+
+      return;
 
       Color getDividerForeColor() => dividerValidation is DividerValidation.Failure ? Color.Black : Color.White;
 
@@ -3748,6 +3771,52 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    public bool Required { get; set; }
 
    public void Divider(string message) => ShowMessage(message, UiActionType.Divider);
+
+   public void DividerMessage(string message, Color foreColor, Color backColor)
+   {
+      _divMessage = message;
+      _divMessageForeColor = foreColor;
+      _divMessageBackColor = backColor;
+      Invalidate();
+   }
+
+   public void DividerMessage(string message, UiActionType type)
+   {
+      _divMessageForeColor = globalForeColors.Maybe[type];
+      _divMessageBackColor = globalBackColors.Maybe[type];
+      if (_divMessageForeColor is (true, var foreColor) && _divMessageBackColor is (true, var backColor))
+      {
+         DividerMessage(message, foreColor, backColor);
+      }
+   }
+
+   public void DividerMessage(string message)
+   {
+      _divMessage = message;
+      Invalidate();
+   }
+
+   public void DividerMessage(Color foreColor, Color backColor)
+   {
+      _divMessageForeColor = foreColor;
+      _divMessageBackColor = backColor;
+      Invalidate();
+   }
+
+   public void DividerMessage(UiActionType type)
+   {
+      _divMessageForeColor = foreColors[type];
+      _divMessageBackColor = backColors[type];
+      Invalidate();
+   }
+
+   public void DividerMessage()
+   {
+      _divMessage = nil;
+      _divMessageForeColor = nil;
+      _divMessageBackColor = nil;
+      Invalidate();
+   }
 
    protected Rectangle getDividerRectangle()
    {

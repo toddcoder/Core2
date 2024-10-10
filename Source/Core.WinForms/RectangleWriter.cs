@@ -172,6 +172,12 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
       }
    }
 
+   public Maybe<Font> Font
+   {
+      get => _font;
+      set => _font = value;
+   }
+
    public Rectangle UsedRectangle { get; set; } = Rectangle.Empty;
 
    public TextFormatFlags UsedFlags { get; set; } = TextFormatFlags.Default;

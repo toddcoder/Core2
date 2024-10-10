@@ -16,6 +16,7 @@ public partial class Form6 : Form
    protected UiAction uiAlternates = new();
    protected UiAction uiReadOnlyAlternates = new();
    protected UiAction uiApplication = new();
+   protected UiAction uiDivider = new();
 
    public Form6()
    {
@@ -34,9 +35,12 @@ public partial class Form6 : Form
          _ = uiTextDivider & (text.IsNotEmpty(), "text is empty") & (text is "alfa" or "bravo", "Expected alfa or bravo");
       };
 
+      uiDivider.Divider("Divider");
+      uiDivider.DividerMessage("bad!", UiActionType.Failure);
+
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 32 + 100f;
-      _ = builder.Row + 40 + 40 + 60 + 60 + 60 + 32 + 32 + 100f;
+      _ = builder.Row + 40 + 40 + 60 + 60 + 60 + 32 + 32 + 60 + 100f;
       builder.SetUp();
 
       (builder + uiTextDivider + false).SpanCol(2).Row();
@@ -53,6 +57,8 @@ public partial class Form6 : Form
       (builder + uiApplication).Row();
 
       (builder + pictureBox).Row();
+
+      (builder + uiDivider).SpanCol(2).Row();
 
       uiAlternates.RectangleCount = 6;
       uiAlternates.PaintOnRectangle += (_, e) =>
