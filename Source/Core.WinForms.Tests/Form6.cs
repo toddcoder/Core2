@@ -1,4 +1,5 @@
-﻿using Core.Enumerables;
+﻿using Core.Applications;
+using Core.Enumerables;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
@@ -7,14 +8,21 @@ namespace Core.WinForms.Tests;
 
 public partial class Form6 : Form
 {
+   protected Image image;
+   protected PictureBox pictureBox = new();
    protected UiAction uiTextDivider = new();
    protected ExTextBox textBox = new() { BorderStyle = BorderStyle.None };
    protected CoreDateTimePicker picker = new();
    protected UiAction uiAlternates = new();
    protected UiAction uiReadOnlyAlternates = new();
+   protected UiAction uiApplication = new();
 
    public Form6()
    {
+      var resources = new Resources<Form6>();
+      using var stream = resources.Stream("Application.png");
+      image = Image.FromStream(stream);
+
       InitializeComponent();
 
       uiTextDivider.Divider("Text");
@@ -27,20 +35,24 @@ public partial class Form6 : Form
       };
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
-      _ = builder.Col * 100f;
-      _ = builder.Row + 40 + 40 + 60 + 60 + 60 + 100f;
+      _ = builder.Col + 32 + 100f;
+      _ = builder.Row + 40 + 40 + 60 + 60 + 60 + 32 + 32 + 100f;
       builder.SetUp();
 
-      (builder + uiTextDivider + false).Row();
+      (builder + uiTextDivider + false).SpanCol(2).Row();
 
-      (builder + textBox).Row();
+      (builder + textBox).SpanCol(2).Row();
 
-      (builder + picker).Row();
+      (builder + picker).SpanCol(2).Row();
 
-      (builder + uiAlternates).Row();
+      (builder + uiAlternates).SpanCol(2).Row();
 
       uiReadOnlyAlternates.Dock = DockStyle.Fill;
-      (builder + uiReadOnlyAlternates).Row();
+      (builder + uiReadOnlyAlternates).SpanCol(2).Row();
+
+      (builder + uiApplication).Row();
+
+      (builder + pictureBox).Row();
 
       uiAlternates.RectangleCount = 6;
       uiAlternates.PaintOnRectangle += (_, e) =>
@@ -79,6 +91,13 @@ public partial class Form6 : Form
       uiReadOnlyAlternates.SetColors(UiActionType.Message);
       uiReadOnlyAlternates.Refresh();
       uiReadOnlyAlternates.EndUpdate();
+
+      uiApplication.StretchImage = true;
+      uiApplication.Image = image;
+      uiApplication.Refresh();
+
+      pictureBox.Image = image;
+      pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
    }
 
    protected static IEnumerable<string> getLetters()

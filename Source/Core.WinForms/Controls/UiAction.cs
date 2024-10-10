@@ -1531,12 +1531,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
    protected override void OnPaint(PaintEventArgs e)
    {
-      if (_image is (true, var image))
-      {
-         e.Graphics.DrawImage(image, Location);
-         return;
-      }
-
       base.OnPaint(e);
 
       if (!Enabled && !_symbolWriter && !locked)
@@ -2024,8 +2018,37 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
    protected override void OnPaintBackground(PaintEventArgs pevent)
    {
-      if (_image)
+      var clientRectangle = getClientRectangle();
+
+      if (_image is (true, var image))
       {
+         pevent.Graphics.FillRectangle(SystemBrushes.Control, clientRectangle);
+         if (StretchImage)
+         {
+            pevent.Graphics.DrawImage(image, clientRectangle with { X = 0, Y = 0 });
+         }
+         else
+         {
+            var x = new Lazy<int>(() => centerHorizontal(image));
+            var y = new Lazy<int>(() => centerVertical(image));
+            var right = new Lazy<int>(() => rightHorizontal(image));
+            var bottom = new Lazy<int>(() => bottomVertical(image));
+            var location = CardinalAlignment switch
+            {
+               CardinalAlignment.Center => new Point(x.Value, y.Value),
+               CardinalAlignment.North => new Point(x.Value, 2),
+               CardinalAlignment.NorthEast => new Point(right.Value, 2),
+               CardinalAlignment.East => new Point(right.Value, y.Value),
+               CardinalAlignment.SouthEast => new Point(right.Value, bottom.Value),
+               CardinalAlignment.South => new Point(x.Value, bottom.Value),
+               CardinalAlignment.SouthWest => new Point(2, bottom.Value),
+               CardinalAlignment.West => new Point(2, y.Value),
+               CardinalAlignment.NorthWest => new Point(2, 2),
+               _ => new Point(2, 2)
+            };
+            pevent.Graphics.DrawImage(image, location);
+         }
+
          return;
       }
 
@@ -2038,8 +2061,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       base.OnPaintBackground(pevent);
 
       activateProcessor(pevent.Graphics);
-
-      var clientRectangle = getClientRectangle();
 
       switch (type)
       {
@@ -2180,7 +2201,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          pevent.Graphics.DrawLine(lightPen, new Point(width, top), new Point(width, height));
       }
 
-      if (_image is (true, var image))
+      /*if (_image is (true, var image))
       {
          if (StretchImage)
          {
@@ -2207,7 +2228,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             };
             pevent.Graphics.DrawImage(image, location);
          }
-      }
+      }*/
 
       PaintingBackground?.Invoke(this, pevent);
 
