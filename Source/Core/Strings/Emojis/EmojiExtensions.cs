@@ -51,6 +51,11 @@ public static class EmojiExtensions
       Emoji.BigX => "╳",
       Emoji.Mail => "✉",
       Emoji.Menu => "☰",
+      Emoji.Left => "⇐",
+      Emoji.Up => "⇑",
+      Emoji.Right => "⇒",
+      Emoji.Down => "⇓",
+      Emoji.Shift => "⇧",
       _ => ""
    };
 
@@ -105,6 +110,11 @@ public static class EmojiExtensions
                "big-x" => "╳",
                "mail" => "✉",
                "menu" => "☰",
+               "left" => "⇐",
+               "up" => "⇑",
+               "right" => "⇒",
+               "down" => "⇓",
+               "shift" => "⇧",
                _ => nil
             };
             if (_replacement is (true, var replacement))

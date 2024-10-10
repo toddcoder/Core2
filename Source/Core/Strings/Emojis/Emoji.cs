@@ -44,5 +44,10 @@ public enum Emoji
    Stop,
    BigX,
    Mail,
-   Menu
+   Menu,
+   Left,
+   Up,
+   Right,
+   Down,
+   Shift
 }
