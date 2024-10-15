@@ -49,5 +49,7 @@ public enum Emoji
    Up,
    Right,
    Down,
-   Shift
+   Shift,
+   Bug,
+   Feature
 }

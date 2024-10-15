@@ -56,6 +56,8 @@ public static class EmojiExtensions
       Emoji.Right => "⇒",
       Emoji.Down => "⇓",
       Emoji.Shift => "⇧",
+      Emoji.Bug => "🐞",
+      Emoji.Feature => "🏆",
       _ => ""
    };
 
@@ -115,6 +117,8 @@ public static class EmojiExtensions
                "right" => "⇒",
                "down" => "⇓",
                "shift" => "⇧",
+               "bug" => "🐞",
+               "feature" => "🏆",
                _ => nil
             };
             if (_replacement is (true, var replacement))
