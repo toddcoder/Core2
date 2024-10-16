@@ -252,7 +252,7 @@ public class HtmlParser(string source, bool tidy)
          using var writer = new StringWriter();
          writer.WriteLine("<html>");
          writer.WriteLine("<head>");
-         writer.WriteLine("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" />");
+         writer.WriteLine("<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" charset=\"utf-u\" />");
          writer.WriteLine("<style>");
 
          foreach (var (styleName, styleKeyValues) in styles.Where(t => t.Key != "body"))
