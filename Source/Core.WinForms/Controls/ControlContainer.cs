@@ -51,6 +51,13 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       return id;
    }
 
+   public void Rearrange()
+   {
+      setWidth();
+      setHeight();
+      arrangeControls();
+   }
+
    protected void resize()
    {
       if (isUpdating)
@@ -270,9 +277,20 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
+   [Obsolete("Use BeginUpdate")]
    public void BeginUpdating() => isUpdating = false;
 
+   public void BeginUpdate() => isUpdating = false;
+
+   [Obsolete("Use EndUpdate")]
    public void EndUpdating()
+   {
+      isUpdating = true;
+      resize();
+      Invalidate();
+   }
+
+   public void EndUpdate()
    {
       isUpdating = true;
       resize();
