@@ -7,7 +7,7 @@ namespace Core.WinForms.Controls;
 public partial class LabelText : UserControl
 {
    protected UiAction uiLabel = new() { TabStop = true };
-   protected ExTextBox textBox = new() { BorderStyle = BorderStyle.None };
+   protected ExTextBox textBox = new() { BorderStyle = BorderStyle.None, Font = new Font("Consolas", 12f) };
    protected bool isLocked;
 
    public new event EventHandler? TextChanged;

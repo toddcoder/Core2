@@ -7,7 +7,7 @@ namespace Core.WinForms.Controls;
 public partial class LabelRichText : UserControl
 {
    protected UiAction uiLabel = new() { TabStop = true };
-   protected ExRichTextBox textBox = new() { BorderStyle = BorderStyle.None };
+   protected ExRichTextBox textBox = new() { BorderStyle = BorderStyle.None, Font = new Font("Consolas", 12f) };
    protected UiAction uiCopy = new();
    protected UiAction uiPaste = new();
    protected UiAction uiSelectAll = new();

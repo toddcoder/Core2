@@ -41,26 +41,31 @@
          tableLayoutPanel.Controls.Add(dateTimePicker, 0, 1);
          tableLayoutPanel.Dock = DockStyle.Fill;
          tableLayoutPanel.Location = new Point(0, 0);
+         tableLayoutPanel.Margin = new Padding(4, 4, 4, 4);
          tableLayoutPanel.Name = "tableLayoutPanel";
          tableLayoutPanel.RowCount = 2;
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-         tableLayoutPanel.Size = new Size(150, 150);
+         tableLayoutPanel.Size = new Size(193, 190);
          tableLayoutPanel.TabIndex = 0;
          // 
          // dateTimePicker
          // 
-         dateTimePicker.Location = new Point(3, 78);
+         dateTimePicker.Location = new Point(4, 99);
+         dateTimePicker.Margin = new Padding(4, 4, 4, 4);
          dateTimePicker.Name = "dateTimePicker";
-         dateTimePicker.Size = new Size(38, 23);
+         dateTimePicker.Size = new Size(48, 26);
          dateTimePicker.TabIndex = 0;
          // 
          // LabelDate
          // 
-         AutoScaleDimensions = new SizeF(7F, 15F);
+         AutoScaleDimensions = new SizeF(9F, 19F);
          AutoScaleMode = AutoScaleMode.Font;
          Controls.Add(tableLayoutPanel);
+         Font = new Font("Consolas", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+         Margin = new Padding(4, 4, 4, 4);
          Name = "LabelDate";
+         Size = new Size(193, 190);
          tableLayoutPanel.ResumeLayout(false);
          ResumeLayout(false);
       }
