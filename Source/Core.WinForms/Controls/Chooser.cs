@@ -207,7 +207,7 @@ public partial class Chooser : Form
 
       text = withEmojis(text);
 
-      if (overrideAppearance(text, foreColor, backColor) is (true, var tuple))
+      if (overrideAppearance(listViewItems.Items.Count, text, foreColor, backColor) is (true, var tuple))
       {
          (text, foreColor, backColor, _font) = tuple;
       }
@@ -226,7 +226,7 @@ public partial class Chooser : Form
 
       text = withEmojis(text);
 
-      if (overrideAppearance(text, foreColor, backColor) is (true, var tuple))
+      if (overrideAppearance(item.Index, text, foreColor, backColor) is (true, var tuple))
       {
          (text, foreColor, backColor, _font) = tuple;
       }
@@ -239,10 +239,10 @@ public partial class Chooser : Form
       updateText(item, text, _font);
    }
 
-   protected Maybe<(string text, Color foreColor, Color backColor, Maybe<Font> _font)> overrideAppearance(string text, Color foreColor,
+   protected Maybe<(string text, Color foreColor, Color backColor, Maybe<Font> _font)> overrideAppearance(int index, string text, Color foreColor,
       Color backColor)
    {
-      var args = new AppearanceOverrideArgs(text, foreColor, backColor);
+      var args = new AppearanceOverrideArgs(index, text, foreColor, backColor);
       uiAction.OnAppearanceOverride(args);
       if (args.Override)
       {

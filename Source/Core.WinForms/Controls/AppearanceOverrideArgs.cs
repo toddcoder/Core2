@@ -2,8 +2,9 @@
 
 public class AppearanceOverrideArgs : EventArgs
 {
-   public AppearanceOverrideArgs(string text, Color foreColor, Color backColor)
+   public AppearanceOverrideArgs(int index, string text, Color foreColor, Color backColor)
    {
+      Index = index;
       Text = text;
       ForeColor = foreColor;
       BackColor = backColor;
@@ -12,6 +13,8 @@ public class AppearanceOverrideArgs : EventArgs
       Italic = false;
       Bold = false;
    }
+
+   public int Index { get; }
 
    public string Text { get; set; }
 
