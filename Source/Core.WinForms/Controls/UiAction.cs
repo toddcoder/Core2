@@ -335,6 +335,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
                {
                   newAlternateWriter.SetForeColor(i, alternateWriter.GetAlternateForeColor(i));
                   newAlternateWriter.SetBackColor(i, alternateWriter.GetAlternateBackColor(i));
+                  newAlternateWriter.SetFontStyle(i, alternateWriter.GetFontStyle(i));
                }
 
                _alternateWriter = newAlternateWriter;
@@ -348,6 +349,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
                {
                   newAlternateWriter.SetForeColor(i, alternateWriter.GetAlternateForeColor(i));
                   newAlternateWriter.SetBackColor(i, alternateWriter.GetAlternateBackColor(i));
+                  newAlternateWriter.SetFontStyle(i, alternateWriter.GetFontStyle(i));
                }
 
                _alternateWriter = newAlternateWriter;
@@ -3643,6 +3645,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       }
    }
 
+   public void SetFontStyle(int index, FontStyle fontStyle)
+   {
+      if (_alternateWriter is (true, var alternateWriter))
+      {
+         alternateWriter.SetFontStyle(index, fontStyle);
+      }
+   }
+
    public Maybe<Color> GetForeColor(int index) => _alternateWriter.Map(w => w.GetForeColor(index));
 
    public void SetBackColor(int index, Color color)
@@ -3666,6 +3676,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
    public Maybe<Color> GetBackColor(int index) => _alternateWriter.Map(w => w.GetBackColor(index));
 
+   public Maybe<FontStyle> GetFontStyle(int index) => _alternateWriter.Map(w => w.GetFontStyle(index));
+
    public Color GetForeColor(UiActionType type) => getForeColor(type);
 
    public Color GetBackColor(UiActionType type) => getBackColor(type);
@@ -3688,6 +3700,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    public Maybe<Color> GetAlternateForeColor(int index) => _alternateWriter.Map(w => w.GetAlternateForeColor(index));
 
    public Maybe<Color> GetAlternateBackColor(int index) => _alternateWriter.Map(w => w.GetAlternateBackColor(index));
+
+   public Maybe<FontStyle> GetAlternateFontStyle(int index) => _alternateWriter.Map(w => w.GetFontStyle(index));
 
    public void RemoveAlternate(int index)
    {

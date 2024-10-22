@@ -15,7 +15,7 @@ public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, boo
    {
       var (_, textRectangle, _) = splitRectangle(rectangle);
 
-      writer.Font = uiAction.NonNullFont;
+      writer.Font = getFont(index);
       writer.Color = GetAlternateForeColor(index);
       var backColor = GetAlternateBackColor(index);
       fillRectangle(g, rectangle, backColor);

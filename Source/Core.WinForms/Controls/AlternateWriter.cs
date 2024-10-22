@@ -13,6 +13,7 @@ public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSi
    protected Lazy<Font> disabledFont = new(() => new Font(uiAction.NonNullFont, FontStyle.Italic));
    protected Hash<int, Color> foreColors = [];
    protected Hash<int, Color> backColors = [];
+   protected Hash<int, FontStyle> fontStyles = [];
 
    protected UiAction uiAction = uiAction;
 
@@ -58,6 +59,8 @@ public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSi
       SetForeColor(index, uiAction.GetForeColor(type));
       SetBackColor(index, uiAction.GetBackColor(type));
    }
+
+   public void SetFontStyle(int index, FontStyle style) => fontStyles[index] = style;
 
    public int SelectedIndex
    {
@@ -169,6 +172,10 @@ public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSi
       }
    }
 
+   public FontStyle GetFontStyle(int index) => fontStyles.Maybe[index] | FontStyle.Regular;
+
+   protected Font getFont(int index) => new(uiAction.NonNullFont, GetFontStyle(index));
+
    protected virtual void onPaint(Graphics g, int index, Rectangle rectangle, UiActionWriter writer, string alternate)
    {
       var (penSize, textRectangle, smallRectangle) = splitRectangle(rectangle);
@@ -193,7 +200,7 @@ public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSi
       }
       else
       {
-         writer.Font = uiAction.NonNullFont;
+         writer.Font = getFont(index);
          writer.Color = GetAlternateForeColor(index);
          var backColor = GetAlternateBackColor(index);
          fillRectangle(g, rectangle, backColor);
