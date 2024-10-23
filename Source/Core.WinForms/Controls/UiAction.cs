@@ -3221,10 +3221,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       }
    }
 
-   public void SizeToText()
+   public void SizeToText(int padding = 40)
    {
       var size = TextRenderer.MeasureText(text, font);
-      Width = size.Width + 40;
+      Width = size.Width + padding;
    }
 
    public void WriteLine(object obj)

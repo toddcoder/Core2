@@ -941,6 +941,18 @@ public static class EnumerableExtensions
       return accumulator;
    }
 
+   public static Maybe<TResult> Fold<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<Maybe<TResult>, TSource, TResult> foldFunc)
+      where TResult : notnull
+   {
+      Maybe<TResult> _result = nil;
+      foreach (var source in enumerable)
+      {
+         _result = foldFunc(_result, source);
+      }
+
+      return _result;
+   }
+
    public static Hash<TKey, TValue[]> Group<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> groupingFunc) where TKey : notnull
    {
       Hash<TKey, List<TValue>> hash = [];

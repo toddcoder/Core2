@@ -10,8 +10,7 @@ public partial class Form6 : Form
 {
    protected Image image;
    protected PictureBox pictureBox = new();
-   protected UiAction uiTextDivider = new();
-   protected ExTextBox textBox = new() { BorderStyle = BorderStyle.None };
+   protected LabelText ltText = new("text") { CanDirty = false };
    protected CoreDateTimePicker picker = new();
    protected UiAction uiAlternates = new();
    protected UiAction uiReadOnlyAlternates = new();
@@ -26,26 +25,34 @@ public partial class Form6 : Form
 
       InitializeComponent();
 
-      uiTextDivider.Divider("Text");
-
-      textBox.TextChanged += (_, _) =>
+      ltText.TextChanged += (_, _) =>
       {
-         var text = textBox.Text;
-         uiTextDivider.DividerValidation = new DividerValidation.None();
-         _ = uiTextDivider & (text.IsNotEmpty(), "text is empty") & (text is "alfa" or "bravo", "Expected alfa or bravo");
+         var text = ltText.Text;
+         ltText.Label.DividerValidation = new DividerValidation.None();
+         _ = ltText.Label & (text.IsNotEmpty(), "text is empty") & (text is "alfa" or "bravo", "Expected alfa or bravo");
       };
+
+      var uiAlfa = new UiAction();
+      uiAlfa.Button("alfa");
+      uiAlfa.Click += (_, _) => ltText.TextBox.SelectedText = "alfa";
+      uiAlfa.ClickText = "Insert alfa";
+
+      var uiBravo = new UiAction();
+      uiBravo.Button("bravo");
+      uiBravo.Click += (_, _) => ltText.TextBox.SelectedText = "bravo";
+      uiBravo.ClickText = "Insert bravo";
+
+      ltText.AddUiActions(uiAlfa, uiBravo);
 
       uiDivider.Divider("Divider");
       uiDivider.DividerMessage("bad!", UiActionType.Failure);
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 32 + 100f;
-      _ = builder.Row + 40 + 40 + 60 + 60 + 60 + 32 + 32 + 60 + 100f;
+      _ = builder.Row + 80 + 60 + 60 + 60 + 32 + 32 + 60 + 100f;
       builder.SetUp();
 
-      (builder + uiTextDivider + false).SpanCol(2).Row();
-
-      (builder + textBox).SpanCol(2).Row();
+      (builder + ltText).SpanCol(2).Row();
 
       (builder + picker).SpanCol(2).Row();
 
