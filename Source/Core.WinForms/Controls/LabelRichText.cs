@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public partial class LabelRichText : UserControl
+public partial class LabelRichText : UserControl, ILabelUiActionHost
 {
    protected UiAction uiLabel = new() { TabStop = true };
    protected ExRichTextBox textBox = new() { BorderStyle = BorderStyle.None, Font = new Font("Consolas", 12f) };
@@ -16,6 +16,7 @@ public partial class LabelRichText : UserControl
    protected UiAction uiUnderline = new();
    protected bool isLocked;
    protected Maybe<(int start, int length)> _selection = nil;
+   protected LabelUiActionHost<ExRichTextBox> host;
 
    public new event EventHandler? TextChanged;
 
@@ -50,6 +51,8 @@ public partial class LabelRichText : UserControl
 
       (builder + uiLabel + false).Row();
       (builder + textBox).Row();
+
+      host = new LabelUiActionHost<ExRichTextBox>(tableLayoutPanel, uiLabel, textBox, b => b.Row + 40 + 100f);
    }
 
    public new string Text
@@ -113,4 +116,16 @@ public partial class LabelRichText : UserControl
    }
 
    public bool CanDirty { get; set; } = true;
+
+   public void AddUiAction(UiAction action) => host.AddUiAction(action);
+
+   public void AddUiActions(params UiAction[] actions) => host.AddUiActions(actions);
+
+   public bool ActionsVisible
+   {
+      get => host.ActionsVisible;
+      set => host.ActionsVisible = value;
+   }
+
+   public void ClearActions() => host.ClearActions();
 }

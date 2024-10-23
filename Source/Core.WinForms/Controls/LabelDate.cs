@@ -3,10 +3,11 @@ using Core.WinForms.TableLayoutPanels;
 
 namespace Core.WinForms.Controls;
 
-public partial class LabelDate : UserControl
+public partial class LabelDate : UserControl, ILabelUiActionHost
 {
    protected UiAction uiLabel = new();
    protected bool isLocked;
+   protected LabelUiActionHost<CoreDateTimePicker> host;
 
    public event EventHandler? ValueChanged;
 
@@ -34,6 +35,8 @@ public partial class LabelDate : UserControl
 
       (builder + uiLabel + false).Row();
       (builder + dateTimePicker).Row();
+
+      host = new LabelUiActionHost<CoreDateTimePicker>(tableLayoutPanel, uiLabel, dateTimePicker, b => b.Row * 2 * 50f);
    }
 
    public DateTime Value
@@ -78,4 +81,16 @@ public partial class LabelDate : UserControl
    }
 
    public bool CanDirty { get; set; } = true;
+
+   public void AddUiAction(UiAction action) => host.AddUiAction(action);
+
+   public void AddUiActions(params UiAction[] actions) => host.AddUiActions(actions);
+
+   public bool ActionsVisible
+   {
+      get => host.ActionsVisible;
+      set => host.ActionsVisible = value;
+   }
+
+   public void ClearActions() => host.ClearActions();
 }
