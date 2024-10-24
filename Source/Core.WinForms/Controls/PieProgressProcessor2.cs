@@ -22,7 +22,8 @@ public class PieProgressProcessor2(Rectangle rectangle, int maximum)
       g.DrawLine(pen1, left, right);
 
       using var pen2 = new Pen(Color.Coral, 10);
-      var newRight = right with { X = (int)((right.X - left.X) * ((float)index / maximum)) };
+      var newX = maximum > 0 ? (int)((right.X - left.X) * ((float)index / maximum)) : 0;
+      var newRight = right with { X = newX };
       g.DrawLine(pen2, left, newRight);
    }
 }
