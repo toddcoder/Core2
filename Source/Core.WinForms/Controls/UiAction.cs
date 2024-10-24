@@ -228,9 +228,9 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       Interval = 100,
       Enabled = false
    };
-   protected Maybe<BusyTextProcessor> _statusBusyProcessor = nil;
+   protected Maybe<BusyTextProcessor2> _statusBusyProcessor = nil;
    protected Fader fader;
-   protected Maybe<PieProgressProcessor> _pieProgressProcessor = nil;
+   protected Maybe<PieProgressProcessor2> _pieProgressProcessor = nil;
    protected bool locked;
    protected DividerValidation dividerValidation = new DividerValidation.None();
    protected Maybe<Image> _updating = nil;
@@ -3870,8 +3870,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          {
             case StatusType.Progress:
             {
-               var (_, rectangle) = getRectangle(getClientRectangle());
-               var pieProgressProcessor = new PieProgressProcessor(rectangle, maximum, getForeColor());
+               var rectangle = getClientRectangle();
+               var pieProgressProcessor = new PieProgressProcessor2(rectangle, maximum);
                _pieProgressProcessor = pieProgressProcessor;
                this.Do(Refresh);
                break;
@@ -3880,7 +3880,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             {
                if (_pieProgressProcessor is (true, var pieProgressProcessor))
                {
-                  pieProgressProcessor.Advance();
+                  pieProgressProcessor.OnTick();
                   this.Do(Refresh);
                }
 
@@ -3922,27 +3922,19 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       {
          case StatusType.Busy:
          {
-            var (radius, rectangle) = getRectangle(clientRectangle);
+            var rectangle = getClientRectangle();
 
-            (var statusBusyProcessor, _statusBusyProcessor) = _statusBusyProcessor.Create(() => new BusyTextProcessor(getForeColor(), rectangle)
-            {
-               SpokeThickness = 1, OuterRadius = radius, InnerRadius = radius - 2
-            });
+            (var statusBusyProcessor, _statusBusyProcessor) =
+               _statusBusyProcessor.Create(() => new BusyTextProcessor2(getForeColor(), Color.Gray, rectangle));
             statusBusyProcessor.OnTick();
-            statusBusyProcessor.OnPaint(g);
+            statusBusyProcessor.OnPaintAfterTick(g, statusAlpha);
 
             break;
          }
          case StatusType.Done:
          {
-            var (_, rectangle) = getRectangle(clientRectangle);
-
-            var foreColor = Color.White.WithAlpha(statusAlpha);
-            var backColor = Color.CadetBlue.WithAlpha(statusAlpha);
-            using var brush = new SolidBrush(backColor);
-            g.FillRectangle(brush, rectangle);
-            using var pen = new Pen(foreColor, 2);
-            g.DrawRectangle(pen, rectangle);
+            var rectangle = getClientRectangle();
+            BusyTextProcessor2.OnPaint(g, Color.White, Color.CadetBlue, rectangle, statusAlpha);
 
             break;
          }
@@ -3950,14 +3942,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             break;
          default:
          {
-            var (_, rectangle) = getRectangle(clientRectangle);
+            var rectangle = getClientRectangle();
 
-            var foreColor = getForeColor(status).WithAlpha(statusAlpha);
-            var backColor = getBackColor(status).WithAlpha(statusAlpha);
-            using var brush = new SolidBrush(backColor);
-            g.FillEllipse(brush, rectangle);
-            using var pen = new Pen(foreColor, 2);
-            g.DrawEllipse(pen, rectangle);
+            var foreColor = getForeColor(status);
+            var backColor = getBackColor(status);
+            BusyTextProcessor2.OnPaint(g, foreColor, backColor, rectangle, statusAlpha);
 
             break;
          }

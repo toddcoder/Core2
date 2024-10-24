@@ -56,7 +56,7 @@ public class StandardDialog
 
    public bool ValidateNames { get; set; }
 
-   protected string removeDot(string extension) => extension.StartsWith(".") ? extension.Drop(1) : extension;
+   protected string removeDot(string extension) => extension.StartsWith('.') ? extension.Drop(1) : extension;
 
    public Optional<FileName> OpenFileDialog(Form parentForm, string fileType = "")
    {
