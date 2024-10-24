@@ -548,6 +548,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       BusyStyle.Sine => new SineBusyProcessor(clientRectangle),
       BusyStyle.Rectangle => new RectangleBusyProcessor(clientRectangle),
       BusyStyle.BarberPole => new BarberPoleBusyProcessor(clientRectangle),
+      BusyStyle.Gradient => new GradientBusyProcessor(clientRectangle),
       _ => new DefaultBusyProcessor(clientRectangle)
    };
 

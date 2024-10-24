@@ -5,5 +5,6 @@ public enum BusyStyle
    Default,
    Sine,
    Rectangle,
-   BarberPole
+   BarberPole,
+   Gradient
 }

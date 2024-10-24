@@ -32,6 +32,11 @@ public partial class Form6 : Form
          _ = ltText.Label & (text.IsNotEmpty(), "text is empty") & (text is "alfa" or "bravo", "Expected alfa or bravo");
       };
 
+      var uiBusy = new UiAction();
+      uiBusy.Message("busy");
+      uiBusy.Click += (_, _) => uiBusy.Busy(true);
+      uiBusy.ClickText = "Set to busy";
+
       var uiAlfa = new UiAction();
       uiAlfa.Button("alfa");
       uiAlfa.Click += (_, _) => ltText.TextBox.SelectedText = "alfa";
@@ -42,7 +47,7 @@ public partial class Form6 : Form
       uiBravo.Click += (_, _) => ltText.TextBox.SelectedText = "bravo";
       uiBravo.ClickText = "Insert bravo";
 
-      ltText.AddUiActions(uiAlfa, uiBravo);
+      ltText.AddUiActions(uiBusy, uiAlfa, uiBravo);
 
       uiDivider.Divider("Divider");
       uiDivider.DividerMessage("bad!", UiActionType.Failure);
