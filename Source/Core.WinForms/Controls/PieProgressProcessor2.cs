@@ -18,12 +18,14 @@ public class PieProgressProcessor2(Rectangle rectangle, int maximum)
 
    public void OnPaint(Graphics g)
    {
-      using var pen1 = new Pen(Color.CadetBlue, 10);
-      g.DrawLine(pen1, left, right);
+      if (maximum > 0)
+      {
+         using var pen1 = new Pen(Color.CadetBlue, 10);
+         g.DrawLine(pen1, left, right);
 
-      using var pen2 = new Pen(Color.Coral, 10);
-      var newX = maximum > 0 ? (int)((right.X - left.X) * ((float)index / maximum)) : 0;
-      var newRight = right with { X = newX };
-      g.DrawLine(pen2, left, newRight);
+         using var pen2 = new Pen(Color.Coral, 10);
+         var newRight = right with { X = (int)((right.X - left.X) * ((float)index / maximum)) };
+         g.DrawLine(pen2, left, newRight);
+      }
    }
 }
