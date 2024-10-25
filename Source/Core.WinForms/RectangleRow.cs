@@ -26,6 +26,8 @@ public class RectangleRow(int top, int width, RectangleAlignment alignment = Rec
       return arrange();
    }
 
+   public void Add(Size size) => Add(new Rectangle(Point.Empty, size));
+
    public void Arrange() => arrange();
 
    public void BeginUpdate() => rearrange = false;
