@@ -51,7 +51,7 @@ public class LabelUiActionHost<TControl>(TableLayoutPanel tableLayoutPanel, UiAc
 
    public bool ActionsVisible
    {
-      get => actions.Count != 0 && actions.Select(a => a.Visible).Fold(bool (b, a) => b | false && a) | false;
+      get => actions.Count != 0 && actions.Select(a => a.Visible).Fold(bool (b, a) => b && a, false);
       set
       {
          foreach (var uiAction in actions)
