@@ -130,6 +130,8 @@ public class RectangleRow(int top, int width, RectangleAlignment alignment = Rec
       }
    }
 
+   public Rectangle this[int index] => row[index];
+
    public IEnumerator<Rectangle> GetEnumerator() => row.GetEnumerator();
 
    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
