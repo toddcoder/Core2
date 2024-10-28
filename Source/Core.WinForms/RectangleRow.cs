@@ -158,7 +158,7 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
 
    public Rectangle this[int index] => row[index];
 
-   public bool MayContain()
+   public bool MayContain(Rectangle rectangle)
    {
       return mayContain();
 
@@ -173,13 +173,29 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
             _ => false
          };
 
-         bool leftMayContain() => leftEnumerable().FirstOrNone().Map(clientRectangle.Contains) | false;
+         bool leftMayContain()
+         {
+            IEnumerable<Rectangle> left = [.. leftEnumerable(), rectangle];
+            return left.FirstOrNone().Map(clientRectangle.Contains) | false;
+         }
 
-         bool rightMayContain() => rightEnumerable().FirstOrNone().Map(clientRectangle.Contains) | false;
+         bool rightMayContain()
+         {
+            IEnumerable<Rectangle> right = [.. rightEnumerable(), rectangle];
+            return right.FirstOrNone().Map(clientRectangle.Contains) | false;
+         }
 
-         bool centerMayContain() => centerEnumerable().FirstOrNone().Map(clientRectangle.Contains) | false;
+         bool centerMayContain()
+         {
+            IEnumerable<Rectangle> center = [.. centerEnumerable(), rectangle];
+            return center.FirstOrNone().Map(clientRectangle.Contains) | false;
+         }
 
-         bool spreadMayContain() => spreadEnumerable().FirstOrNone().Map(clientRectangle.Contains) | false;
+         bool spreadMayContain()
+         {
+            IEnumerable<Rectangle> spread = [.. spreadEnumerable(), rectangle];
+            return spread.FirstOrNone().Map(clientRectangle.Contains) | false;
+         }
       }
    }
 
