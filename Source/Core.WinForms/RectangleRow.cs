@@ -1,15 +1,17 @@
 ﻿using System.Collections;
+using Core.Collections;
 using Core.Enumerables;
 
 namespace Core.WinForms;
 
-public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignment = RectangleAlignment.Left, int padding = 4) : IEnumerable<Rectangle>
+public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignment = RectangleAlignment.Left, int padding = 4) : IEnumerable<Rectangle>, IHash<string, Rectangle>
 {
    protected RectangleAlignment alignment = alignment;
    protected int top = clientRectangle.Top + padding;
    protected int width = clientRectangle.Width;
    protected List<Rectangle> row = [];
    protected bool rearrange = true;
+   protected StringHash<Rectangle> rectangles = [];
 
    public RectangleAlignment Alignment
    {
@@ -21,13 +23,25 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
       }
    }
 
+   public Rectangle ClientRectangle => clientRectangle;
+
    public bool Add(Rectangle rectangle)
    {
       row.Add(rectangle);
       return arrange();
    }
 
+   public bool Add(Rectangle rectangle, string key)
+   {
+      row.Add(rectangle);
+      rectangles[key] = rectangle;
+
+      return arrange();
+   }
+
    public void Add(Size size) => Add(new Rectangle(Point.Empty, size));
+
+   public void Add(Size size, string key) => Add(new Rectangle(Point.Empty, size), key);
 
    public void Arrange() => arrange();
 
@@ -113,6 +127,82 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
       }
    }
 
+   protected IEnumerable<Rectangle> enumerable(IEnumerable<Rectangle> rectangles)
+   {
+      if (rearrange)
+      {
+         return alignment switch
+         {
+            RectangleAlignment.Left => leftEnumerable(rectangles),
+            RectangleAlignment.Right => rightEnumerable(rectangles),
+            RectangleAlignment.Center => centerEnumerable(rectangles),
+            RectangleAlignment.Spread => spreadEnumerable(rectangles),
+            _ => []
+         };
+      }
+      else
+      {
+         return [];
+      }
+   }
+
+   protected IEnumerable<Rectangle> leftEnumerable(IEnumerable<Rectangle> rectangles)
+   {
+      var left = padding;
+      foreach (var rectangle in rectangles)
+      {
+         var newRectangle = rectangle with { X = left, Y = top };
+         yield return newRectangle;
+
+         left += newRectangle.Width + padding;
+      }
+   }
+
+   protected IEnumerable<Rectangle> rightEnumerable(IEnumerable<Rectangle> rectangles)
+   {
+      var right = width;
+
+      foreach (var rectangle in rectangles.Reversed())
+      {
+         var left = right - rectangle.Width - padding;
+         var newRectangle = rectangle with { X = left, Y = top };
+         yield return newRectangle;
+
+         right = left;
+      }
+   }
+
+   protected IEnumerable<Rectangle> centerEnumerable(IEnumerable<Rectangle> rectangles)
+   {
+      Rectangle[] array = [.. rectangles];
+      var innerWidth = array.Select(r => r.Width).Sum();
+      innerWidth += array.Length - 1;
+      var remainder = width - innerWidth;
+      var left = remainder / 2;
+      foreach (var rectangle in array)
+      {
+         var newRectangle = rectangle with { X = left, Y = top };
+         yield return newRectangle;
+
+         left += newRectangle.Width + padding;
+      }
+   }
+
+   protected IEnumerable<Rectangle> spreadEnumerable(IEnumerable<Rectangle> rectangles)
+   {
+      Rectangle[] array = [.. rectangles];
+      var innerWidth = array.Select(r => r.Width).Sum();
+      var newPadding = (width - innerWidth) / (array.Length + 1);
+      var left = newPadding;
+      foreach (var rectangle in array)
+      {
+         var newRectangle = rectangle with { X = left, Y = top };
+         yield return newRectangle;
+
+         left += newRectangle.Width + newPadding;
+      }
+   }
+
    protected bool arrange()
    {
       if (rearrange)
@@ -160,6 +250,14 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
 
    public Rectangle this[Index index] => row[index];
 
+   public Rectangle this[string key] => rectangles[key];
+
+   public bool ContainsKey(string key) => rectangles.ContainsKey(key);
+
+   public Hash<string, Rectangle> GetHash() => rectangles;
+
+   public HashInterfaceMaybe<string, Rectangle> Items => new(rectangles);
+
    public bool MayContain(Rectangle rectangle)
    {
       return mayContain();
@@ -175,33 +273,43 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
             _ => false
          };
 
+         bool contains(Rectangle rectangle) => clientRectangle.Contains(rectangle);
+
          bool leftMayContain()
          {
             IEnumerable<Rectangle> left = [.. leftEnumerable(), rectangle];
-            return left.FirstOrNone().Map(clientRectangle.Contains) | false;
+            return leftEnumerable(left).LastOrNone().Map(contains) | false;
          }
 
          bool rightMayContain()
          {
             IEnumerable<Rectangle> right = [.. rightEnumerable(), rectangle];
-            return right.FirstOrNone().Map(clientRectangle.Contains) | false;
+            return rightEnumerable(right).LastOrNone().Map(contains) | false;
          }
 
          bool centerMayContain()
          {
             IEnumerable<Rectangle> center = [.. centerEnumerable(), rectangle];
-            return center.FirstOrNone().Map(clientRectangle.Contains) | false;
+            return centerEnumerable(center).LastOrNone().Map(contains) | false;
          }
 
          bool spreadMayContain()
          {
             IEnumerable<Rectangle> spread = [.. spreadEnumerable(), rectangle];
-            return spread.FirstOrNone().Map(clientRectangle.Contains) | false;
+            return spreadEnumerable(spread).LastOrNone().Map(contains) | false;
          }
       }
    }
 
+   public bool MayContain(Size size) => MayContain(new Rectangle(Point.Empty, size));
+
    public IEnumerator<Rectangle> GetEnumerator() => row.GetEnumerator();
 
    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+   public RectangleRow NextRow()
+   {
+      var nextRectangle = clientRectangle.BottomOf(clientRectangle);
+      return new RectangleRow(nextRectangle, alignment, padding);
+   }
 }
