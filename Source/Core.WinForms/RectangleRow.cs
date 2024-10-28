@@ -158,6 +158,8 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
 
    public Rectangle this[int index] => row[index];
 
+   public Rectangle this[Index index] => row[index];
+
    public bool MayContain(Rectangle rectangle)
    {
       return mayContain();
