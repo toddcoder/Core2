@@ -52,7 +52,7 @@ public partial class Form7 : Form
       (builder + uiAlignment).Row();
       (builder + panel).Row();
 
-      rectangleRow = new RectangleRow(panel.ClientRectangle.Top, panel.ClientRectangle.Width);
+      rectangleRow = new RectangleRow(panel.ClientRectangle);
       rectangleRow.BeginUpdate();
       rectangleRow.Add(uiOne.ClientRectangle);
       rectangleRow.Add(uiTwo.ClientRectangle);
