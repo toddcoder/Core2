@@ -134,7 +134,7 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
          return alignment switch
          {
             RectangleAlignment.Left => leftEnumerable(rectangles),
-            RectangleAlignment.Right => rightEnumerable(rectangles),
+            RectangleAlignment.Right => rightEnumerable(rectangles).Reversed(),
             RectangleAlignment.Center => centerEnumerable(rectangles),
             RectangleAlignment.Spread => spreadEnumerable(rectangles),
             _ => []
@@ -229,7 +229,7 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
 
       bool arrangeRight()
       {
-         row = [..rightEnumerable()];
+         row = [..rightEnumerable().Reversed()];
          return row.LastOrNone().Map(clientRectangle.Contains) | false;
       }
 
@@ -284,7 +284,7 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
          bool rightMayContain()
          {
             IEnumerable<Rectangle> right = [.. rightEnumerable(), rectangle];
-            return rightEnumerable(right).LastOrNone().Map(contains) | false;
+            return rightEnumerable(right).Reversed().LastOrNone().Map(contains) | false;
          }
 
          bool centerMayContain()
