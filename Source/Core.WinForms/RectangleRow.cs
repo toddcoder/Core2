@@ -132,6 +132,92 @@ public class RectangleRow(int top, int width, RectangleAlignment alignment = Rec
 
    public Rectangle this[int index] => row[index];
 
+   public bool MayContain(Rectangle candidateRectangle, Rectangle clientRectangle)
+   {
+      return arrange();
+
+      bool arrange()
+      {
+         return alignment switch
+         {
+            RectangleAlignment.Left => arrangeLeft(),
+            RectangleAlignment.Right => arrangeRight(),
+            RectangleAlignment.Center => arrangeCenter(),
+            RectangleAlignment.Spread => arrangeSpread(),
+            _ => false
+         };
+
+         bool arrangeLeft()
+         {
+            var left = padding;
+            foreach (var rectangle in row)
+            {
+               var newRectangle = rectangle with { X = left, Y = top };
+               left += newRectangle.Width + padding;
+            }
+
+            candidateRectangle = candidateRectangle with { X = left, Y = top };
+
+            return clientRectangle.Contains(candidateRectangle);
+         }
+
+         bool arrangeRight()
+         {
+            var right = width;
+
+            List<Rectangle> list = [];
+            foreach (var rectangle in row.Reversed())
+            {
+               var left = right - rectangle.Width - padding;
+               var newRectangle = rectangle with { X = left, Y = top };
+               list.Add(newRectangle);
+               right = left;
+            }
+
+            row = [.. list.Reversed()];
+
+            return right >= 0;
+         }
+
+         bool arrangeCenter()
+         {
+            var innerWidth = row.Select(r => r.Width).Sum();
+            innerWidth += row.Count - 1;
+            var remainder = width - innerWidth;
+            var left = remainder / 2;
+            List<Rectangle> list = [];
+            foreach (var rectangle in row)
+            {
+               var newRectangle = rectangle with { X = left, Y = top };
+               list.Add(newRectangle);
+               left += newRectangle.Width + padding;
+            }
+
+            row = list;
+
+            return remainder >= 0;
+         }
+
+         bool arrangeSpread()
+         {
+            var innerWidth = row.Select(r => r.Width).Sum();
+            var newPadding = (width - innerWidth) / (row.Count + 1);
+            var left = newPadding;
+            List<Rectangle> list = [];
+            foreach (var rectangle in row)
+            {
+               var newRectangle = rectangle with { X = left, Y = top };
+               list.Add(newRectangle);
+               left += newRectangle.Width + newPadding;
+            }
+
+            row = list;
+
+            return newPadding >= 0;
+         }
+      }
+   }
+
    public IEnumerator<Rectangle> GetEnumerator() => row.GetEnumerator();
 
    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
