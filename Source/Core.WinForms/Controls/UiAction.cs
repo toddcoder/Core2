@@ -3776,6 +3776,12 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       Refresh();
    }
 
+   public void ResetProgress()
+   {
+      index = 0;
+      value = 0;
+   }
+
    public void Pulse()
    {
       workingAlpha = 255;

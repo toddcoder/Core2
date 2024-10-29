@@ -7,6 +7,7 @@ namespace Core.WinForms.Tests;
 
 public partial class Form7 : Form
 {
+   protected TestCycle cycle = new();
    protected UiAction uiAlignment = new();
    protected UiAction uiOne = new();
    protected UiAction uiTwo = new();
@@ -15,6 +16,7 @@ public partial class Form7 : Form
    protected Maybe<SubText> _one = nil;
    protected Maybe<SubText> _two = nil;
    protected Maybe<SubText> _three = nil;
+   protected DoubleProgress dpProgress = new();
 
    public Form7()
    {
@@ -46,11 +48,12 @@ public partial class Form7 : Form
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 100f;
-      _ = builder.Row + 80 + 100f;
+      _ = builder.Row + 80 + 100 + 80 + 100f;
       builder.SetUp();
 
       (builder + uiAlignment).Row();
       (builder + panel).Row();
+      (builder + dpProgress).Row();
 
       rectangleRow = new RectangleRow(panel.ClientRectangle);
       rectangleRow.BeginUpdate();
@@ -61,6 +64,9 @@ public partial class Form7 : Form
       panel.BackColor = Color.RosyBrown;
 
       rearrange();
+
+      dpProgress.TopMaximum = cycle.OuterLength;
+      dpProgress.BottomMaximum = cycle.InnerLength;
    }
 
    protected void rearrange()
@@ -81,5 +87,27 @@ public partial class Form7 : Form
       uiThree.Location = rectangle.Location;
       uiThree.RemoveSubText(_three);
       _three = uiThree.SubText(rectangle.ToString()).Set.MiniInverted().SubText;
+   }
+
+   protected void Form7_Load(object sender, EventArgs e)
+   {
+      Show();
+      Application.DoEvents();
+
+      timer.Enabled = true;
+   }
+
+   protected void timer_Tick(object sender, EventArgs e)
+   {
+      var _next = cycle.Next();
+      if (_next is (true, var (outer, inner)))
+      {
+         dpProgress.Progress(outer, inner);
+      }
+      else
+      {
+         dpProgress.Done();
+         timer.Enabled = false;
+      }
    }
 }

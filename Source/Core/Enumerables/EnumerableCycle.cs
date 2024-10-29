@@ -5,25 +5,22 @@ namespace Core.Enumerables;
 
 public class EnumerableCycle<T> : IEnumerable<T>
 {
-   protected T[] array;
+   protected List<T> list = [];
    protected int index;
    protected int length;
    protected int cycle;
 
-   public EnumerableCycle(IEnumerable<T> enumerable)
+   public void Add(T item)
    {
-      array = [.. enumerable];
-
-      index = 0;
-      length = array.Length;
-      cycle = 0;
+      list.Add(item);
+      length = list.Count;
    }
 
    public T Next()
    {
       if (index < length)
       {
-         var next = array[index];
+         var next = list[index];
          index++;
          return next;
       }
@@ -31,7 +28,7 @@ public class EnumerableCycle<T> : IEnumerable<T>
       {
          index = 0;
          cycle++;
-         return array[index];
+         return list[index];
       }
    }
 
@@ -41,11 +38,13 @@ public class EnumerableCycle<T> : IEnumerable<T>
 
    public int Cycle => cycle;
 
+   public bool Cycling { get; set; } = true;
+
    public IEnumerator<T> GetEnumerator()
    {
-      foreach (var item in array)
+      while (Cycling)
       {
-         yield return item;
+         yield return Next();
       }
    }
 
