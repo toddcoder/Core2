@@ -8,7 +8,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms;
 
-public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment alignment = CardinalAlignment.Center, bool wordWrap = false)
+public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment alignment = CardinalAlignment.Center, bool wordWrap = false, bool ellipses = false)
 {
    protected const string DEFAULT_FONT_NAME = "Consolas";
    protected const float DEFAULT_FONT_SIZE = 12f;
@@ -20,7 +20,7 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
 
    public static RectangleWriter RetrieveHard(string key) => stashedWriters[key];
 
-   protected static TextFormatFlags getFlags(CardinalAlignment alignment, bool wordWrap)
+   protected static TextFormatFlags getFlags(CardinalAlignment alignment, bool wordWrap, bool ellipses)
    {
       var alignmentFlags = alignment switch
       {
@@ -40,6 +40,11 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
       if (wordWrap)
       {
          textFormatFlags |= TextFormatFlags.WordBreak;
+      }
+
+      if (ellipses)
+      {
+         textFormatFlags |= TextFormatFlags.EndEllipsis;
       }
 
       return textFormatFlags;
@@ -62,7 +67,7 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
    protected float penSize = 1f;
    protected DashStyle dashStyle = DashStyle.Solid;
    protected bool useEmojis = true;
-   protected TextFormatFlags flags = getFlags(alignment, wordWrap);
+   protected TextFormatFlags flags = getFlags(alignment, wordWrap, ellipses);
 
    public string Text
    {
@@ -184,11 +189,19 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
 
    public float UsedFontSize { get; set; }
 
-   public static Size TextSize(Graphics g, string text, Font font, CardinalAlignment alignment = CardinalAlignment.Center, bool wordWrap = false) =>
-      TextRenderer.MeasureText(g, text, font, Size.Empty, getFlags(alignment, wordWrap));
+   public bool Ellipses { get; set; }
 
-   public static Size TextSize(Graphics g, string text, CardinalAlignment alignment = CardinalAlignment.Center, bool wordWrap = false) =>
-      TextSize(g, text, DefaultFont(), alignment, wordWrap);
+   public static Size TextSize(Graphics g, string text, Font font, CardinalAlignment alignment = CardinalAlignment.Center, bool wordWrap = false,
+      bool ellipses = false)
+   {
+      return TextRenderer.MeasureText(g, text, font, Size.Empty, getFlags(alignment, wordWrap, ellipses));
+   }
+
+   public static Size TextSize(Graphics g, string text, CardinalAlignment alignment = CardinalAlignment.Center, bool wordWrap = false,
+      bool ellipses = false)
+   {
+      return TextSize(g, text, DefaultFont(), alignment, wordWrap, ellipses);
+   }
 
    protected Maybe<Font> getAdjustedFont(Graphics g, string expandedText)
    {
@@ -263,7 +276,7 @@ public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment
                var restrictedRectangle = getRestrictedRectangle(g, expandedText, font, restricted.Alignment, restricted.XMargin, restricted.YMargin);
                fillRectangle(restrictedRectangle, backColor);
                writingRectangle = restrictedRectangle;
-               writingFlags = getFlags(restricted.Alignment, wordWrap);
+               writingFlags = getFlags(restricted.Alignment, wordWrap, Ellipses);
                break;
             }
             case BackgroundRestriction.UseWriterAlignment useWriterAlignment:
