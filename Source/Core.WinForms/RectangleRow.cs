@@ -4,7 +4,8 @@ using Core.Enumerables;
 
 namespace Core.WinForms;
 
-public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignment = RectangleAlignment.Left, int padding = 4) : IEnumerable<Rectangle>, IHash<string, Rectangle>
+public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignment = RectangleAlignment.Left, int padding = 4)
+   : IEnumerable<Rectangle>, IHash<string, Rectangle>
 {
    protected RectangleAlignment alignment = alignment;
    protected int top = clientRectangle.Top + padding;
@@ -31,6 +32,16 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
       return arrange();
    }
 
+   public bool AddRange(IEnumerable<Rectangle> rectangles)
+   {
+      foreach (var rectangle in rectangles)
+      {
+         row.Add(rectangle);
+      }
+
+      return arrange();
+   }
+
    public bool Add(Rectangle rectangle, string key)
    {
       row.Add(rectangle);
@@ -40,6 +51,16 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
    }
 
    public void Add(Size size) => Add(new Rectangle(Point.Empty, size));
+
+   public bool AddRange(IEnumerable<Size> sizes)
+   {
+      foreach (var size in sizes)
+      {
+         row.Add(new Rectangle(Point.Empty, size));
+      }
+
+      return arrange();
+   }
 
    public void Add(Size size, string key) => Add(new Rectangle(Point.Empty, size), key);
 
