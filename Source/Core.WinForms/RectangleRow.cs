@@ -334,5 +334,5 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
       return new RectangleRow(nextRectangle, alignment, padding);
    }
 
-   public int Count() => row.Count;
+   public int Count => row.Count;
 }
