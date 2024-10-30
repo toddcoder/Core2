@@ -333,4 +333,6 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
       var nextRectangle = clientRectangle.BottomOf(clientRectangle);
       return new RectangleRow(nextRectangle, alignment, padding);
    }
+
+   public int Count() => row.Count;
 }
