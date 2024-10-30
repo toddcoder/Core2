@@ -61,7 +61,7 @@
          // 
          // timer
          // 
-         timer.Interval = 5000;
+         timer.Interval = 1000;
          timer.Tick += timer_Tick;
          // 
          // Form7

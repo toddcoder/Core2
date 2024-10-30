@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Tests;
 
-public class TestCycle : IEnumerable<(string outerValue, string innerValue)>
+public class TestCycle : IEnumerable<(string outerValue, string innerValue, bool reset)>
 {
    protected string[] outer = ["Alfa", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot"];
    protected string[] inner = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
@@ -15,22 +15,16 @@ public class TestCycle : IEnumerable<(string outerValue, string innerValue)>
 
    public int InnerLength => inner.Length;
 
-   public Maybe<(string outerValue, string innerValue)> Next()
+   public Maybe<(string outerValue, string innerValue, bool reset)> Next()
    {
       if (innerIndex < 9)
       {
-         var tuple = (outer[outerIndex], inner[innerIndex]);
-         innerIndex++;
-
-         return tuple;
+         return (outer[outerIndex], inner[innerIndex++], false);
       }
-      else if (outerIndex < 6)
+      else if (outerIndex + 1 < 6)
       {
-         var tuple = (outer[outerIndex], inner[innerIndex]);
-         outerIndex++;
          innerIndex = 0;
-
-         return tuple;
+         return (outer[++outerIndex], inner[innerIndex], true);
       }
       else
       {
@@ -38,7 +32,7 @@ public class TestCycle : IEnumerable<(string outerValue, string innerValue)>
       }
    }
 
-   public IEnumerator<(string outerValue, string innerValue)> GetEnumerator()
+   public IEnumerator<(string outerValue, string innerValue, bool reset)> GetEnumerator()
    {
       while (Next() is (true, var tuple))
       {

@@ -1,6 +1,4 @@
-﻿using Core.WinForms.TableLayoutPanels;
-
-namespace Core.WinForms.Controls;
+﻿namespace Core.WinForms.Controls;
 
 public partial class DoubleProgress : UserControl
 {
@@ -11,13 +9,10 @@ public partial class DoubleProgress : UserControl
    {
       InitializeComponent();
 
-      var builder = new TableLayoutBuilder(tableLayoutPanel);
-      _ = builder.Col + 100f;
-      _ = builder.Row * 2 * 50f;
-      builder.SetUp();
+      Controls.Add(uiTop);
+      Controls.Add(uiBottom);
 
-      (builder + uiTop).Row();
-      (builder + uiBottom).Row();
+      arrange();
    }
 
    public int TopMaximum
@@ -82,5 +77,24 @@ public partial class DoubleProgress : UserControl
    {
       ResetTop();
       ResetBottom();
+   }
+
+   protected void arrange()
+   {
+      var halfHeight = ClientRectangle.Height / 2;
+
+      uiTop.Location = Point.Empty;
+      uiTop.Width = ClientRectangle.Width;
+      uiTop.Height = halfHeight;
+
+      uiBottom.Location = new Point(0, halfHeight + 1);
+      uiBottom.Width = ClientRectangle.Width;
+      uiBottom.Height = halfHeight;
+   }
+
+   protected override void OnResize(EventArgs e)
+   {
+      base.OnResize(e);
+      arrange();
    }
 }

@@ -28,34 +28,16 @@
       /// </summary>
       private void InitializeComponent()
       {
-         tableLayoutPanel = new TableLayoutPanel();
          SuspendLayout();
-         // 
-         // tableLayoutPanel
-         // 
-         tableLayoutPanel.ColumnCount = 2;
-         tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-         tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-         tableLayoutPanel.Dock = DockStyle.Fill;
-         tableLayoutPanel.Location = new Point(0, 0);
-         tableLayoutPanel.Name = "tableLayoutPanel";
-         tableLayoutPanel.RowCount = 2;
-         tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-         tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-         tableLayoutPanel.Size = new Size(150, 150);
-         tableLayoutPanel.TabIndex = 0;
          // 
          // DoubleProgress
          // 
          AutoScaleDimensions = new SizeF(7F, 15F);
          AutoScaleMode = AutoScaleMode.Font;
-         Controls.Add(tableLayoutPanel);
          Name = "DoubleProgress";
          ResumeLayout(false);
       }
 
       #endregion
-
-      private TableLayoutPanel tableLayoutPanel;
    }
 }

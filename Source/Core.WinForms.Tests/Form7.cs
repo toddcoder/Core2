@@ -100,8 +100,12 @@ public partial class Form7 : Form
    protected void timer_Tick(object sender, EventArgs e)
    {
       var _next = cycle.Next();
-      if (_next is (true, var (outer, inner)))
+      if (_next is (true, var (outer, inner, reset)))
       {
+         if (reset)
+         {
+            dpProgress.ResetBottom();
+         }
          dpProgress.Progress(outer, inner);
       }
       else
