@@ -107,15 +107,14 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
 
    protected IEnumerable<Rectangle> rightEnumerable()
    {
-      var right = width;
-
+      var right = clientRectangle.Right - padding;
       foreach (var rectangle in row.Reversed())
       {
-         var left = right - rectangle.Width - padding;
+         var left = right - rectangle.Width;
          var newRectangle = rectangle with { X = left, Y = top };
          yield return newRectangle;
 
-         right = left;
+         right = left - padding;
       }
    }
 
