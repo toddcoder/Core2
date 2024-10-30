@@ -4,10 +4,11 @@ using Core.Enumerables;
 
 namespace Core.WinForms;
 
-public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignment = RectangleAlignment.Left, int padding = 4)
-   : IEnumerable<Rectangle>, IHash<string, Rectangle>
+public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignment = RectangleAlignment.Left,
+   RectangleDirection direction = RectangleDirection.Horizontal, int padding = 4) : IEnumerable<Rectangle>, IHash<string, Rectangle>
 {
    protected RectangleAlignment alignment = alignment;
+   protected RectangleDirection direction = direction;
    protected int top = clientRectangle.Top + padding;
    protected int width = clientRectangle.Width;
    protected List<Rectangle> row = [];
@@ -20,6 +21,16 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
       set
       {
          alignment = value;
+         arrange();
+      }
+   }
+
+   public RectangleDirection Direction
+   {
+      get => direction;
+      set
+      {
+         direction = value;
          arrange();
       }
    }
@@ -95,26 +106,56 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
 
    protected IEnumerable<Rectangle> leftEnumerable()
    {
-      var left = padding;
-      foreach (var rectangle in row)
+      if (direction is RectangleDirection.Horizontal)
       {
-         var newRectangle = rectangle with { X = left, Y = top };
-         yield return newRectangle;
+         var x = padding;
+         foreach (var rectangle in row)
+         {
+            var newRectangle = rectangle with { X = x, Y = top };
+            yield return newRectangle;
 
-         left += newRectangle.Width + padding;
+            x += newRectangle.Width + padding;
+         }
+      }
+      else
+      {
+         var y = padding;
+         foreach (var rectangle in row)
+         {
+            var newRectangle = rectangle with { X = padding, Y = y };
+            yield return newRectangle;
+
+            y += newRectangle.Height + padding;
+         }
       }
    }
 
    protected IEnumerable<Rectangle> rightEnumerable()
    {
-      var right = clientRectangle.Right - padding;
-      foreach (var rectangle in row.Reversed())
+      if (direction is RectangleDirection.Horizontal)
       {
-         var left = right - rectangle.Width;
-         var newRectangle = rectangle with { X = left, Y = top };
-         yield return newRectangle;
+         var right = clientRectangle.Right - padding;
+         foreach (var rectangle in row.Reversed())
+         {
+            var x = right - rectangle.Width;
+            var newRectangle = rectangle with { X = x, Y = top };
+            yield return newRectangle;
 
-         right = left - padding;
+            right = x - padding;
+         }
+      }
+      else
+      {
+         var right = clientRectangle.Right - padding;
+         var y = padding;
+         foreach (var rectangle in row)
+         {
+            var x = right - rectangle.Width - padding;
+            var newRectangle = rectangle with { X = x, Y = y };
+            yield return newRectangle;
+
+            y += rectangle.Height + padding;
+         }
       }
    }
 
@@ -249,7 +290,15 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
 
       bool arrangeRight()
       {
-         row = [..rightEnumerable().Reversed()];
+         if (direction is RectangleDirection.Horizontal)
+         {
+            row = [..rightEnumerable().Reversed()];
+         }
+         else
+         {
+            row = [.. rightEnumerable()];
+         }
+
          return row.LastOrNone().Map(clientRectangle.Contains) | false;
       }
 
@@ -304,7 +353,9 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
          bool rightMayContain()
          {
             IEnumerable<Rectangle> right = [.. rightEnumerable(), rectangle];
-            return rightEnumerable(right).Reversed().LastOrNone().Map(contains) | false;
+            var reversed = direction is RectangleDirection.Horizontal ? rightEnumerable(right).Reversed() : rightEnumerable(right);
+
+            return reversed.LastOrNone().Map(contains) | false;
          }
 
          bool centerMayContain()
@@ -330,7 +381,7 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
    public RectangleRow NextRow()
    {
       var nextRectangle = clientRectangle.BottomOf(clientRectangle);
-      return new RectangleRow(nextRectangle, alignment, padding);
+      return new RectangleRow(nextRectangle, alignment, direction, padding);
    }
 
    public int Count => row.Count;

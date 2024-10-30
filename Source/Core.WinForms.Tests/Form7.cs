@@ -22,7 +22,7 @@ public partial class Form7 : Form
    {
       InitializeComponent();
 
-      uiAlignment.Alternate("Left", "Right", "Center", "Spread");
+      uiAlignment.Alternate("Left", "Right", "Center", "Spread", "Left Vertical", "Right Vertical");
       uiAlignment.ClickOnAlternate += (_, e) =>
       {
          rectangleRow!.Alignment = e.RectangleIndex switch
@@ -31,7 +31,14 @@ public partial class Form7 : Form
             1 => RectangleAlignment.Right,
             2 => RectangleAlignment.Center,
             3 => RectangleAlignment.Spread,
+            4=> RectangleAlignment.Left,
+            5 => RectangleAlignment.Right,
             _ => rectangleRow.Alignment
+         };
+         rectangleRow.Direction = e.RectangleIndex switch
+         {
+            >= 0 and < 4 => RectangleDirection.Horizontal,
+            _ => RectangleDirection.Vertical
          };
          rearrange();
       };
@@ -48,7 +55,7 @@ public partial class Form7 : Form
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 100f;
-      _ = builder.Row + 80 + 100 + 80 + 100f;
+      _ = builder.Row + 80 + 100f + 80;
       builder.SetUp();
 
       (builder + uiAlignment).Row();
@@ -106,6 +113,7 @@ public partial class Form7 : Form
          {
             dpProgress.ResetBottom();
          }
+
          dpProgress.Progress(outer, inner);
       }
       else

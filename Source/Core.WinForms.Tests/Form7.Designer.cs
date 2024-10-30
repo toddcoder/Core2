@@ -47,7 +47,7 @@
          tableLayoutPanel.RowCount = 2;
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-         tableLayoutPanel.Size = new Size(800, 450);
+         tableLayoutPanel.Size = new Size(1209, 837);
          tableLayoutPanel.TabIndex = 0;
          // 
          // panel
@@ -56,7 +56,7 @@
          panel.Dock = DockStyle.Fill;
          panel.Location = new Point(3, 3);
          panel.Name = "panel";
-         panel.Size = new Size(394, 219);
+         panel.Size = new Size(598, 412);
          panel.TabIndex = 0;
          // 
          // timer
@@ -68,9 +68,10 @@
          // 
          AutoScaleDimensions = new SizeF(7F, 15F);
          AutoScaleMode = AutoScaleMode.Font;
-         ClientSize = new Size(800, 450);
+         ClientSize = new Size(1209, 837);
          Controls.Add(tableLayoutPanel);
          Name = "Form7";
+         StartPosition = FormStartPosition.CenterScreen;
          Text = "Form7";
          Load += Form7_Load;
          tableLayoutPanel.ResumeLayout(false);
