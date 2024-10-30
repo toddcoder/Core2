@@ -63,6 +63,12 @@ public partial class DoubleProgress : UserControl
       bottomVisible();
    }
 
+   public void BusyOnBottom(string text)
+   {
+      uiBottom.Busy(text);
+      bottomVisible();
+   }
+
    public void Done()
    {
       uiTop.Visible = false;
