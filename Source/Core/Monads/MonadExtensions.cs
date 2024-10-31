@@ -136,13 +136,9 @@ public static class MonadExtensions
                return fail("No tuple value can be null");
             }
          }
+      }
 
-         return new Success<T>(value);
-      }
-      else
-      {
-         return new Success<T>(value);
-      }
+      return new Success<T>(value);
    }
 
    public static Result<T> Failure<T>(this string message) where T : notnull => fail(message);
@@ -210,6 +206,50 @@ public static class MonadExtensions
          if (_maybe is (true, var maybe))
          {
             yield return maybe;
+         }
+      }
+   }
+
+   public static IEnumerable<T> Where<T>(this IEnumerable<Maybe<T>> enumerable) where T : notnull
+   {
+      foreach (var _maybe in enumerable)
+      {
+         if (_maybe is (true, var value))
+         {
+            yield return value;
+         }
+      }
+   }
+
+   public static IEnumerable<T> Where<T>(this IEnumerable<Result<T>> enumerable) where T : notnull
+   {
+      foreach (var _result in enumerable)
+      {
+         if (_result is (true, var value))
+         {
+            yield return value;
+         }
+      }
+   }
+
+   public static IEnumerable<T> Where<T>(this IEnumerable<Completion<T>> enumerable) where T : notnull
+   {
+      foreach (var _completion in enumerable)
+      {
+         if (_completion is (true, var value))
+         {
+            yield return value;
+         }
+      }
+   }
+
+   public static IEnumerable<T> Where<T>(this IEnumerable<Optional<T>> enumerable) where T : notnull
+   {
+      foreach (var _optional in enumerable)
+      {
+         if (_optional is (true, var value))
+         {
+            yield return value;
          }
       }
    }
