@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Core.Collections;
 using Core.Enumerables;
+using Core.Monads;
 
 namespace Core.WinForms;
 
@@ -37,43 +38,75 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
 
    public Rectangle ClientRectangle => clientRectangle;
 
-   public bool Add(Rectangle rectangle)
+   public void Add(Rectangle rectangle)
    {
       row.Add(rectangle);
-      return arrange();
+      arrange();
    }
 
-   public bool AddRange(IEnumerable<Rectangle> rectangles)
+   public void Add(Maybe<Rectangle> _rectangle)
+   {
+      if (_rectangle is (true, var rectangle))
+      {
+         Add(rectangle);
+      }
+   }
+
+   public void AddRange(IEnumerable<Rectangle> rectangles)
    {
       foreach (var rectangle in rectangles)
       {
          row.Add(rectangle);
       }
 
-      return arrange();
+      arrange();
    }
 
-   public bool Add(Rectangle rectangle, string key)
+   public void Add(Rectangle rectangle, string key)
    {
       row.Add(rectangle);
       rectangles[key] = rectangle;
 
-      return arrange();
+      arrange();
+   }
+
+   public void Add(Maybe<Rectangle> _rectangle, string key)
+   {
+      if (_rectangle is (true, var rectangle))
+      {
+         Add(rectangle, key);
+      }
    }
 
    public void Add(Size size) => Add(new Rectangle(Point.Empty, size));
 
-   public bool AddRange(IEnumerable<Size> sizes)
+   public void Add(Maybe<Size> _size)
+   {
+      if (_size is (true, var size))
+      {
+         Add(size);
+      }
+   }
+
+   public void AddRange(IEnumerable<Size> sizes)
    {
       foreach (var size in sizes)
       {
          row.Add(new Rectangle(Point.Empty, size));
       }
 
-      return arrange();
+      arrange();
    }
 
    public void Add(Size size, string key) => Add(new Rectangle(Point.Empty, size), key);
+
+   public void Add(Maybe<Size> _size, string key)
+   {
+      if (_size is (true, var size))
+      {
+         Add(size, key);
+      }
+   }
 
    public void Arrange() => arrange();
 
@@ -264,31 +297,30 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
       }
    }
 
-   protected bool arrange()
+   protected void arrange()
    {
       if (rearrange)
       {
-         return alignment switch
+         switch (alignment)
          {
-            RectangleAlignment.Left => arrangeLeft(),
-            RectangleAlignment.Right => arrangeRight(),
-            RectangleAlignment.Center => arrangeCenter(),
-            RectangleAlignment.Spread => arrangeSpread(),
-            _ => true
-         };
-      }
-      else
-      {
-         return false;
-      }
-
-      bool arrangeLeft()
-      {
-         row = [.. leftEnumerable()];
-         return row.LastOrNone().Map(clientRectangle.Contains) | false;
+            case RectangleAlignment.Left:
+               arrangeLeft();
+               break;
+            case RectangleAlignment.Right:
+               arrangeRight();
+               break;
+            case RectangleAlignment.Center:
+               arrangeCenter();
+               break;
+            case RectangleAlignment.Spread:
+               arrangeSpread();
+               break;
+         }
       }
 
-      bool arrangeRight()
+      void arrangeLeft() => row = [.. leftEnumerable()];
+
+      void arrangeRight()
       {
          if (direction is RectangleDirection.Horizontal)
          {
@@ -298,21 +330,11 @@ public class RectangleRow(Rectangle clientRectangle, RectangleAlignment alignmen
          {
             row = [.. rightEnumerable()];
          }
-
-         return row.LastOrNone().Map(clientRectangle.Contains) | false;
       }
 
-      bool arrangeCenter()
-      {
-         row = [.. centerEnumerable()];
-         return row.LastOrNone().Map(clientRectangle.Contains) | false;
-      }
+      void arrangeCenter() => row = [.. centerEnumerable()];
 
-      bool arrangeSpread()
-      {
-         row = [..spreadEnumerable()];
-         return row.LastOrNone().Map(clientRectangle.Contains) | false;
-      }
+      void arrangeSpread() => row = [..spreadEnumerable()];
    }
 
    public Rectangle this[int index] => row[index];

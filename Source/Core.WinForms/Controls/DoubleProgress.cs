@@ -2,8 +2,8 @@
 
 public partial class DoubleProgress : UserControl
 {
-   protected UiAction uiTop = new() { Visible = false };
-   protected UiAction uiBottom = new() { Visible = false };
+   protected UiAction uiTop = new() { Visible = false, Padding = new Padding(0), Margin = new Padding(0) };
+   protected UiAction uiBottom = new() { Visible = false, Padding = new Padding(0), Margin = new Padding(0) };
 
    public DoubleProgress()
    {
