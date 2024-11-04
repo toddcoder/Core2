@@ -37,13 +37,52 @@ public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, boo
 
    public string Alternate => alternates[0];
 
+   protected Maybe<Rectangle[]> getRectangles(Graphics g)
+   {
+      List<int> widths = [];
+      var totalWidth = 0;
+      foreach (var alternate in alternates)
+      {
+         var size = RectangleWriter.TextSize(g, alternate, uiAction.NonNullFont);
+         widths.Add(size.Width);
+         totalWidth += size.Width;
+      }
+
+      var clientRectangle = uiAction.ClientRectangle;
+      var remainingWidths = clientRectangle.Width - totalWidth;
+      if (remainingWidths > 0)
+      {
+         var padding = remainingWidths / alternates.Length;
+         var rectangles = new Rectangle[alternates.Length];
+         var left = clientRectangle.Left;
+         var top = clientRectangle.Top;
+         var height = clientRectangle.Height;
+
+         for (var i = 0; i < alternates.Length; i++)
+         {
+            var width = widths[i] + padding;
+            rectangles[i] = new Rectangle(left, top, width, height);
+            left += width;
+         }
+
+         return rectangles;
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
    public void OnPaint(Graphics g)
    {
       var clientRectangle = uiAction.ClientRectangle;
       using var brush = new SolidBrush(Color.CadetBlue);
       g.FillRectangle(brush, clientRectangle);
 
-      foreach (var (i, (rectangle, alternate)) in uiAction.Rectangles.Zip(Alternates).Indexed())
+      var rectangles = getRectangles(g) | (() => uiAction.Rectangles);
+      uiAction.Rectangles=rectangles;
+
+      foreach (var (i, (rectangle, alternate)) in rectangles.Zip(Alternates).Indexed())
       {
          var writer = new RectangleWriter(alternate, rectangle)
          {

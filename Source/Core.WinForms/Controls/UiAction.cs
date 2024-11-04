@@ -3417,7 +3417,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       }
    }
 
-   public Rectangle[] Rectangles => rectangles;
+   public Rectangle[] Rectangles
+   {
+      get => rectangles;
+      set => rectangles = value;
+   }
 
    public void KeyMatch(Keys keys, string downMessage, string upMessage, TimeSpan elapsedTime)
    {
