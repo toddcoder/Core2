@@ -78,4 +78,20 @@ public static class ControlExtensions
    }
 
    public static Point CursorPosition(this Control control) => control.Get(() => control.PointToClient(Cursor.Position));
+
+   public static void MoveTo(this Control control, Point location) => control.Location = location;
+
+   public static void MoveTo(this Control control, int x, int y) => control.MoveTo(new Point(x, y));
+
+   public static void MoveTo(this Control control, Rectangle rectangle)
+   {
+      control.MoveTo(rectangle.Location);
+      control.Size = rectangle.Size;
+   }
+
+   public static void MoveTo(this Control control, Point location, Size size) => control.MoveTo(new Rectangle(location, size));
+
+   public static void MoveTo(this Control control, int x, int y, Size size) => control.MoveTo(new Point(x, y), size);
+
+   public static void MoveTo(this Control control, Point location, int width, int height) => control.MoveTo(location, new Size(width, height));
 }
