@@ -4087,4 +4087,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          Invalidate();
       }
    }
+
+   public void ZeroOut()
+   {
+      Padding = new Padding(0);
+      Margin = new Padding(0);
+   }
 }
