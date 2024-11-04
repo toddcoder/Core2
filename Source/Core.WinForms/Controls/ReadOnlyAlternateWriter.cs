@@ -1,4 +1,5 @@
-﻿using Core.Collections;
+﻿using System.Drawing.Drawing2D;
+using Core.Collections;
 using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
@@ -57,6 +58,7 @@ public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, boo
             var start = rectangle.Location;
             var stop = start with { Y = rectangle.Bottom };
             using var pen = new Pen(Color.White);
+            pen.DashStyle = DashStyle.Dash;
             g.DrawLine(pen, start, stop);
          }
       }
