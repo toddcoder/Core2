@@ -645,4 +645,13 @@ public static class ArrayExtensions
    }
 
    public static T[] RemoveAt<T>(this T[] array, int index) => [.. array.Indexed().Where(t => t.index != index).Select(t => t.item)];
+
+   public static IEnumerable<(int index, T item)> Indexed<T>(this T[] array)
+   {
+      var index = 0;
+      foreach (var item in array)
+      {
+         yield return (index++, item);
+      }
+   }
 }

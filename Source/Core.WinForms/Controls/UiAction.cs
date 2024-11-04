@@ -217,7 +217,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    protected Maybe<int> _ceiling = nil;
    protected Maybe<KeyMatch> _keyMatch = nil;
    protected Maybe<SymbolWriter> _symbolWriter = nil;
-   protected Maybe<AlternateWriter> _alternateWriter = nil;
+   protected Maybe<IAlternateWriter> _alternateWriter = nil;
    protected bool showToGo;
    protected Maybe<string> _title = nil;
    protected UiActionButtonType buttonType = UiActionButtonType.Normal;
@@ -331,20 +331,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             {
                RectangleCount = Alternates.Length;
                var newAlternateWriter = new AlternateWriter(this, Alternates, AutoSizeText, _floor, _ceiling, UseEmojis);
-               for (var i = 0; i < RectangleCount; i++)
-               {
-                  newAlternateWriter.SetForeColor(i, alternateWriter.GetAlternateForeColor(i));
-                  newAlternateWriter.SetBackColor(i, alternateWriter.GetAlternateBackColor(i));
-                  newAlternateWriter.SetFontStyle(i, alternateWriter.GetFontStyle(i));
-               }
-
-               _alternateWriter = newAlternateWriter;
-               break;
-            }
-            case UiActionType.ReadOnlyAlternate when _alternateWriter is (true, var alternateWriter):
-            {
-               RectangleCount = Alternates.Length;
-               var newAlternateWriter = new ReadOnlyAlternateWriter(this, Alternates, AutoSizeText, _floor, _ceiling, UseEmojis);
                for (var i = 0; i < RectangleCount; i++)
                {
                   newAlternateWriter.SetForeColor(i, alternateWriter.GetAlternateForeColor(i));
@@ -1709,7 +1695,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             alternateWriter.OnPaint(e.Graphics);
             break;
          }
-         case UiActionType.ReadOnlyAlternate when _alternateWriter is (true, var alternateWriter):
+         case UiActionType.ReadOnlyAlternate when _alternateWriter is (true, ReadOnlyAlternateWriter alternateWriter):
          {
             alternateWriter.OnPaint(e.Graphics);
             break;
@@ -3523,7 +3509,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
       type = UiActionType.ReadOnlyAlternate;
       RectangleCount = alternates.Length;
-      _alternateWriter = new ReadOnlyAlternateWriter(this, alternates, AutoSizeText, _floor, _ceiling, UseEmojis);
+      _alternateWriter = new ReadOnlyAlternateWriter(this, alternates, AutoSizeText);
       refresh();
    }
 

@@ -7,6 +7,7 @@ using Core.Monads;
 namespace Core.WinForms.Controls;
 
 public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling, bool useEmojis)
+   : IAlternateWriter
 {
    protected int selectedIndex;
    protected int disabledIndex = -1;
