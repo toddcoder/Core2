@@ -67,6 +67,12 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost
       set => textBox.Rtf = value;
    }
 
+   public string[] Lines
+   {
+      get => textBox.Lines;
+      set => textBox.Lines = value;
+   }
+
    public void UpdateText(string text)
    {
       try
@@ -86,6 +92,19 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost
       {
          isLocked = true;
          textBox.Rtf = rtf;
+      }
+      finally
+      {
+         isLocked = false;
+      }
+   }
+
+   public void UpdateLines(string[] lines)
+   {
+      try
+      {
+         isLocked = true;
+         textBox.Lines = lines;
       }
       finally
       {
