@@ -11,6 +11,10 @@ public class Clickable
 
    public bool ShowFocus { get; set; } = true;
 
+   public bool MouseInside => mouseInside;
+
+   public bool MouseDown => mouseDown;
+
    public void OnPaint(Control control, PaintEventArgs e, Rectangle rectangle, Color color)
    {
       if (ClickGlyph)
