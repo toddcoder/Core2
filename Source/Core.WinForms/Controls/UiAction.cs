@@ -325,7 +325,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          {
             case UiActionType.CheckBox:
                setUpCheckBox(text, BoxChecked);
-               _alternateWriter = new CheckBoxWriter(this, Alternates, AutoSizeText, _floor, _ceiling, UseEmojis);
+               _alternateWriter = new CheckBoxWriter(this, Alternates, _floor, _ceiling, UseEmojis);
                break;
             case UiActionType.Alternate when _alternateWriter is (true, var alternateWriter):
             {
@@ -3549,7 +3549,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    protected void setUpCheckBox(string message, bool initialValue)
    {
       RectangleCount = 1;
-      var checkBoxWriter = new CheckBoxWriter(this, [message], AutoSizeText, _floor, _ceiling, UseEmojis) { BoxChecked = initialValue };
+      var checkBoxWriter = new CheckBoxWriter(this, [message], _floor, _ceiling, UseEmojis) { BoxChecked = initialValue };
       _alternateWriter = checkBoxWriter;
       Text = message;
    }

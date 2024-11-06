@@ -8,23 +8,27 @@ namespace Core.WinForms.Controls;
 
 public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, bool autoSizeText) : IAlternateWriter
 {
+   protected readonly Color defaultForeColor = Color.White;
+   protected readonly Color defaultBackColor = Color.CadetBlue;
+   protected const FontStyle DEFAULT_FONT_STYLE = FontStyle.Regular;
+
    protected Hash<int, Color> foreColors = [];
    protected Hash<int, Color> backColors = [];
    protected Hash<int, FontStyle> fontStyles = [];
 
-   public Maybe<Color> GetForeColor(int index) => foreColors.Maybe[index] | Color.White;
+   public Maybe<Color> GetForeColor(int index) => foreColors.Maybe[index];
 
-   public Color GetAlternateForeColor(int index) => foreColors.Maybe[index] | Color.CadetBlue;
+   public Color GetAlternateForeColor(int index) => foreColors.Maybe[index] | defaultForeColor;
 
    public void SetForeColor(int index, Color color) => foreColors[index] = color;
 
    public Maybe<Color> GetBackColor(int index) => backColors.Maybe[index];
 
-   public Color GetAlternateBackColor(int index) => backColors.Maybe[index] | Color.CadetBlue;
+   public Color GetAlternateBackColor(int index) => backColors.Maybe[index] | defaultBackColor;
 
    public void SetBackColor(int index, Color color) => backColors[index] = color;
 
-   public FontStyle GetFontStyle(int index) => fontStyles.Maybe[index] | FontStyle.Regular;
+   public FontStyle GetFontStyle(int index) => fontStyles.Maybe[index] | DEFAULT_FONT_STYLE;
 
    public void SetFontStyle(int index, FontStyle style) => fontStyles[index] = style;
 
@@ -74,10 +78,6 @@ public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, boo
 
    public void OnPaint(Graphics g)
    {
-      var clientRectangle = uiAction.ClientRectangle;
-      using var brush = new SolidBrush(Color.CadetBlue);
-      g.FillRectangle(brush, clientRectangle);
-
       var rectangles = getRectangles(g) | (() => uiAction.Rectangles);
       uiAction.Rectangles = rectangles;
 

@@ -101,7 +101,8 @@ public partial class Form6 : Form
 
       uiReadOnlyAlternates.BeginUpdate();
       uiReadOnlyAlternates.AlternateReadOnly("alfa", "bravo", "charlie", "delta", "echo", "foxtrot");
-      uiReadOnlyAlternates.SetColors(UiActionType.Message);
+      /*uiReadOnlyAlternates.SetColors(UiActionType.Message);
+      uiReadOnlyAlternates.SetColors(0, UiActionType.Success);*/
       uiReadOnlyAlternates.Refresh();
       uiReadOnlyAlternates.EndUpdate();
 

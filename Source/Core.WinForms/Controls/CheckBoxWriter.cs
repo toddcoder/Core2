@@ -5,7 +5,7 @@ using Core.Monads;
 
 namespace Core.WinForms.Controls;
 
-public class CheckBoxWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling, bool useEmojis)
+public class CheckBoxWriter(UiAction uiAction, string[] alternates, Maybe<int> _floor, Maybe<int> _ceiling, bool useEmojis)
    : IAlternateWriter
 {
    protected readonly Color defaultForeColor = Color.White;
@@ -86,7 +86,7 @@ public class CheckBoxWriter(UiAction uiAction, string[] alternates, bool autoSiz
 
    public void OnPaint(Graphics g)
    {
-      var writer = new UiActionWriter(CardinalAlignment.Center, autoSizeText, _floor, _ceiling, UiActionButtonType.Normal, useEmojis);
+      var writer = new UiActionWriter(CardinalAlignment.Center, true, _floor, _ceiling, UiActionButtonType.Normal, useEmojis);
       foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
       {
          onPaint(g, index, rectangle, writer, alternates[index]);
