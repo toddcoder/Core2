@@ -287,6 +287,7 @@ public partial class Form1 : Form
       textBox.Text = "test text";
 
       richTextBox = new ExRichTextBox();
+      richTextBox.Shortcut(Keys.Control | Keys.D, _ => richTextBox.DuplicateCurrentLine());
       (builder + richTextBox).SpanCol(2).Next();
       richTextBox.Text = "test text";
 

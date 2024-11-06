@@ -886,4 +886,14 @@ public class ExRichTextBox : RichTextBox, IHasObjectId
          e.Handled = true;
       }
    }
+
+   public void DuplicateCurrentLine()
+   {
+      var index = GetLineFromCharIndex(SelectionStart);
+      var text = Lines[index];
+      var startIndex = GetFirstCharIndexFromLine(index);
+      var stopIndex = startIndex + text.Length;
+      Select(stopIndex, 0);
+      SelectedText = Environment.NewLine + text;
+   }
 }
