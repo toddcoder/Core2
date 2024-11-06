@@ -8,9 +8,10 @@ namespace Core.WinForms.Controls;
 public class CheckBoxWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling, bool useEmojis)
    : IAlternateWriter
 {
-   protected readonly Color defaultForeColor = Color.Black;
-   protected readonly Color defaultBackColor = Color.AntiqueWhite;
-   protected readonly FontStyle defaultFontStyle = FontStyle.Regular;
+   protected readonly Color defaultForeColor = Color.White;
+   protected readonly Color defaultBackColor = Color.CadetBlue;
+   protected const FontStyle DEFAULT_FONT_STYLE = FontStyle.Regular;
+
    protected Hash<int, Color> foreColors = [];
    protected Hash<int, Color> backColors = [];
    protected Hash<int, FontStyle> fontStyles = [];
@@ -29,7 +30,7 @@ public class CheckBoxWriter(UiAction uiAction, string[] alternates, bool autoSiz
 
    public void SetBackColor(int index, Color color) => backColors[index] = color;
 
-   public FontStyle GetFontStyle(int index) => fontStyles.Maybe[index] | defaultFontStyle;
+   public FontStyle GetFontStyle(int index) => fontStyles.Maybe[index] | DEFAULT_FONT_STYLE;
 
    public void SetFontStyle(int index, FontStyle style) => fontStyles[index] = style;
 
@@ -61,6 +62,7 @@ public class CheckBoxWriter(UiAction uiAction, string[] alternates, bool autoSiz
       {
          drawUnchecked(rectangle);
       }
+
       return;
 
       Font getFont() => new(uiAction.NonNullFont, GetFontStyle(index));

@@ -1,8 +1,7 @@
 ﻿using System.Drawing.Drawing2D;
 using Core.Collections;
-using Core.Enumerables;
 using Core.Monads;
-using Core.Numbers;
+using static Core.Arrays.ArrayExtensions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -15,7 +14,7 @@ public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, boo
 
    public Maybe<Color> GetForeColor(int index) => foreColors.Maybe[index] | Color.White;
 
-   public Color GetAlternateForeColor(int index) => backColors.Maybe[index] | Color.CadetBlue;
+   public Color GetAlternateForeColor(int index) => foreColors.Maybe[index] | Color.CadetBlue;
 
    public void SetForeColor(int index, Color color) => foreColors[index] = color;
 
@@ -29,9 +28,9 @@ public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, boo
 
    public void SetFontStyle(int index, FontStyle style) => fontStyles[index] = style;
 
-   public Maybe<string> GetAlternate(int index) => maybe<string>() & index.Between(0).Until(alternates.Length) & (() => alternates[index]);
+   public Maybe<string> GetAlternate(int index) => alternates.Maybe(index);
 
-   public int SelectedIndex { get; set; }= -1;
+   public int SelectedIndex { get; set; } = -1;
 
    public int DisabledIndex { get; set; } = -1;
 
@@ -80,13 +79,15 @@ public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, boo
       g.FillRectangle(brush, clientRectangle);
 
       var rectangles = getRectangles(g) | (() => uiAction.Rectangles);
-      uiAction.Rectangles=rectangles;
+      uiAction.Rectangles = rectangles;
 
       foreach (var (i, (rectangle, alternate)) in rectangles.Zip(Alternates).Indexed())
       {
          var writer = new RectangleWriter(alternate, rectangle)
          {
-            ForeColor = Color.White,
+            ForeColor = GetAlternateForeColor(i),
+            BackColor = GetAlternateBackColor(i),
+            BackgroundRestriction = new BackgroundRestriction.Fill(),
             Font = uiAction.NonNullFont,
             AutoSizeText = autoSizeText
          };
