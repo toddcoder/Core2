@@ -1,33 +1,95 @@
 ﻿using System.Windows.Forms.VisualStyles;
+using Core.Arrays;
+using Core.Collections;
 using Core.Monads;
 
 namespace Core.WinForms.Controls;
 
-public class CheckBoxWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling)
-   : AlternateWriter(uiAction, alternates, autoSizeText, _floor, _ceiling, false)
+public class CheckBoxWriter(UiAction uiAction, string[] alternates, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling, bool useEmojis)
+   : IAlternateWriter
 {
-   public bool BoxChecked
-   {
-      get => selectedIndex != -1;
-      set => selectedIndex = value ? 0 : -1;
-   }
+   protected readonly Color defaultForeColor = Color.Black;
+   protected readonly Color defaultBackColor = Color.AntiqueWhite;
+   protected readonly FontStyle defaultFontStyle = FontStyle.Regular;
+   protected Hash<int, Color> foreColors = [];
+   protected Hash<int, Color> backColors = [];
+   protected Hash<int, FontStyle> fontStyles = [];
 
-   protected override void drawUnselected(Graphics g, Pen pen, Rectangle rectangle, Color backColor)
+   public bool BoxChecked { get; set; }
+
+   public Maybe<Color> GetForeColor(int index) => foreColors.Maybe[index];
+
+   public Color GetAlternateForeColor(int index) => foreColors.Maybe[index] | defaultForeColor;
+
+   public void SetForeColor(int index, Color color) => foreColors[index] = color;
+
+   public Maybe<Color> GetBackColor(int index) => backColors.Maybe[index];
+
+   public Color GetAlternateBackColor(int index) => backColors.Maybe[index] | defaultBackColor;
+
+   public void SetBackColor(int index, Color color) => backColors[index] = color;
+
+   public FontStyle GetFontStyle(int index) => fontStyles.Maybe[index] | defaultFontStyle;
+
+   public void SetFontStyle(int index, FontStyle style) => fontStyles[index] = style;
+
+   public Maybe<string> GetAlternate(int index) => alternates.Maybe(index);
+
+   public int SelectedIndex { get; set; }
+
+   public int DisabledIndex { get; set; }
+
+   public string Alternate => alternates.Maybe(SelectedIndex);
+
+   protected void onPaint(Graphics g, int index, Rectangle rectangle, UiActionWriter writer, string alternate)
    {
       g.HighQuality();
-      CheckBoxRenderer.RenderMatchingApplicationState = true;
-      var size = CheckBoxRenderer.GetGlyphSize(g, CheckBoxState.UncheckedNormal);
-      var glyphRectangle = size.West(rectangle, 2);
-      CheckBoxRenderer.DrawCheckBox(g, glyphRectangle.Location, CheckBoxState.UncheckedNormal);
+
+      writer.Font = getFont();
+      writer.Color = GetAlternateForeColor(index);
+      var backColor = GetAlternateBackColor(index);
+      using var brush = new SolidBrush(backColor);
+      g.FillRectangle(brush, rectangle);
+      writer.Rectangle = rectangle;
+      writer.Write(g, alternate, false);
+
+      if (BoxChecked)
+      {
+         drawChecked(rectangle);
+      }
+      else
+      {
+         drawUnchecked(rectangle);
+      }
+      return;
+
+      Font getFont() => new(uiAction.NonNullFont, GetFontStyle(index));
+
+      void drawUnchecked(Rectangle rectangle)
+      {
+         CheckBoxRenderer.RenderMatchingApplicationState = true;
+         var size = CheckBoxRenderer.GetGlyphSize(g, CheckBoxState.UncheckedNormal);
+         var glyphRectangle = size.West(rectangle, 2);
+         CheckBoxRenderer.DrawCheckBox(g, glyphRectangle.Location, CheckBoxState.UncheckedNormal);
+      }
+
+      void drawChecked(Rectangle rectangle)
+      {
+         CheckBoxRenderer.RenderMatchingApplicationState = true;
+         var size = CheckBoxRenderer.GetGlyphSize(g, CheckBoxState.CheckedNormal);
+         var glyphRectangle = size.West(rectangle, 2);
+         CheckBoxRenderer.DrawCheckBox(g, glyphRectangle.Location, CheckBoxState.CheckedNormal);
+      }
    }
 
-   protected override void drawSelected(Graphics g, Rectangle rectangle, Rectangle alternateRectangle, int index, Color foreColor, Color backColor,
-      int penSize)
+   public void OnPaint(Graphics g)
    {
-      g.HighQuality();
-      CheckBoxRenderer.RenderMatchingApplicationState = true;
-      var size = CheckBoxRenderer.GetGlyphSize(g, CheckBoxState.CheckedNormal);
-      var glyphRectangle = size.West(rectangle, 2);
-      CheckBoxRenderer.DrawCheckBox(g, glyphRectangle.Location, CheckBoxState.CheckedNormal);
+      var writer = new UiActionWriter(CardinalAlignment.Center, autoSizeText, _floor, _ceiling, UiActionButtonType.Normal, useEmojis);
+      foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
+      {
+         onPaint(g, index, rectangle, writer, alternates[index]);
+      }
    }
+
+   public string[] Alternates => alternates;
 }

@@ -96,6 +96,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
    protected string cueBanner = string.Empty;
    protected Maybe<SubText> _validateSubText = nil;
    protected bool validatesMessages;
+   protected Hash<Keys, Action<KeyEventArgs>> shortcuts = [];
 
    public new event EventHandler<PaintEventArgs>? Paint;
    public new event EventHandler<ValidatingArgs>? Validating;
@@ -458,7 +459,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
       {
          return new Size(0, 0);
       }
-      else if (text.Contains(" "))
+      else if (text.Contains(' '))
       {
          var size = graphics.MeasureString(text, font).ToSize();
          return size with { Width = size.Width + 8 };
@@ -466,7 +467,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
       else
       {
          var size = graphics.MeasureString(text, font);
-         CharacterRange[] ranges = [new CharacterRange(0, text.Length)];
+         CharacterRange[] ranges = [new(0, text.Length)];
          var format = new StringFormat();
          format.SetMeasurableCharacterRanges(ranges);
          var regions = graphics.MeasureCharacterRanges(text, font, new RectangleF(0, 0, size.Width, size.Height), format);
@@ -767,6 +768,12 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
    {
       base.OnKeyUp(e);
 
+      if (shortcuts.Maybe[e.KeyData] is (true, var action))
+      {
+         action(e);
+         e.Handled = true;
+      }
+
       if (RefreshOnTextChange)
       {
          Refresh();
@@ -778,4 +785,10 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
    public bool UseEmojis => false;
 
    public long ObjectId { get; set; }
+
+   public ExTextBox Shortcut(Keys keys, Action<KeyEventArgs> action)
+   {
+      shortcuts[keys] = action;
+      return this;
+   }
 }

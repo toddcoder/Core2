@@ -52,6 +52,8 @@ public partial class Form4 : Form
       };
       uiInsert.ClickText = "Insert UiAction";
 
+      textCaption.Shortcut(Keys.Control | Keys.R, _ => textCaption.Text = "foobar");
+
       uiIndexes.NoStatus("indexes");
       uiIndexes.Click += (_, _) =>
       {

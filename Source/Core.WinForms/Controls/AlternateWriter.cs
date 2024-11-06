@@ -1,7 +1,6 @@
 ﻿using System.Windows.Forms.VisualStyles;
 using Core.Arrays;
 using Core.Collections;
-using Core.Enumerables;
 using Core.Monads;
 
 namespace Core.WinForms.Controls;
@@ -106,7 +105,7 @@ public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSi
 
    public string[] Alternates => alternates;
 
-   public Maybe<string> GetAlternate(int index) => alternates.Of(index);
+   public Maybe<string> GetAlternate(int index) => alternates.Maybe(index);
 
    protected static void fillRectangle(Graphics g, Rectangle rectangle, Color color)
    {

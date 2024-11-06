@@ -160,12 +160,12 @@ public static class ArrayExtensions
 
    public static bool ContainsValue<T>(this T[] array, T value) => Array.IndexOf(array, value) > -1;
 
-   public static T Of<T>(this T[] array, int index, T defaultValue)
+   public static T Maybe<T>(this T[] array, int index, T defaultValue)
    {
       return index.Between(0).Until(array.Length) ? array[index] : defaultValue;
    }
 
-   public static Maybe<T> Of<T>(this T[] array, int index) where T : notnull
+   public static Maybe<T> Maybe<T>(this T[] array, int index) where T : notnull
    {
       return maybe<T>() & index.Between(0).Until(array.Length) & (() => array[index]);
    }

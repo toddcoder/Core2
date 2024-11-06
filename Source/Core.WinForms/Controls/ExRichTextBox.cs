@@ -2,6 +2,7 @@
 using System.Drawing.Text;
 using Core.Applications;
 using Core.Assertions;
+using Core.Collections;
 using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
@@ -95,6 +96,7 @@ public class ExRichTextBox : RichTextBox, IHasObjectId
    protected int updatingCount;
    protected int leftMargin;
    protected List<ModificationState> modificationStates = [];
+   protected Hash<Keys, Action<KeyEventArgs>> shortcuts = [];
 
    public new event EventHandler<PaintEventArgs>? Paint;
    public event EventHandler<LineChangedEventArgs>? LineChanged;
@@ -867,4 +869,21 @@ public class ExRichTextBox : RichTextBox, IHasObjectId
    }
 
    public long ObjectId { get; set; }
+
+   public ExRichTextBox Shortcut(Keys keys, Action<KeyEventArgs> action)
+   {
+      shortcuts[keys] = action;
+      return this;
+   }
+
+   protected override void OnKeyUp(KeyEventArgs e)
+   {
+      base.OnKeyUp(e);
+
+      if (shortcuts.Maybe[e.KeyData] is (true, var action))
+      {
+         action(e);
+         e.Handled = true;
+      }
+   }
 }
