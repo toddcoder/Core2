@@ -51,8 +51,6 @@ public class CheckBoxWriter(UiAction uiAction, string[] alternates, Maybe<int> _
       var backColor = GetAlternateBackColor(index);
       using var brush = new SolidBrush(backColor);
       g.FillRectangle(brush, rectangle);
-      /*writer.Rectangle = rectangle;
-      writer.Write(g, alternate, false);*/
 
       if (BoxChecked)
       {
