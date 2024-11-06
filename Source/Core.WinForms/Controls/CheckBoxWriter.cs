@@ -51,8 +51,8 @@ public class CheckBoxWriter(UiAction uiAction, string[] alternates, Maybe<int> _
       var backColor = GetAlternateBackColor(index);
       using var brush = new SolidBrush(backColor);
       g.FillRectangle(brush, rectangle);
-      writer.Rectangle = rectangle;
-      writer.Write(g, alternate, false);
+      /*writer.Rectangle = rectangle;
+      writer.Write(g, alternate, false);*/
 
       if (BoxChecked)
       {
@@ -73,6 +73,8 @@ public class CheckBoxWriter(UiAction uiAction, string[] alternates, Maybe<int> _
          var size = CheckBoxRenderer.GetGlyphSize(g, CheckBoxState.UncheckedNormal);
          var glyphRectangle = size.West(rectangle, 2);
          CheckBoxRenderer.DrawCheckBox(g, glyphRectangle.Location, CheckBoxState.UncheckedNormal);
+         writer.Rectangle = rectangle with { Width = rectangle.Width - size.Width };
+         writer.Write(g, alternate, false);
       }
 
       void drawChecked(Rectangle rectangle)
@@ -81,6 +83,8 @@ public class CheckBoxWriter(UiAction uiAction, string[] alternates, Maybe<int> _
          var size = CheckBoxRenderer.GetGlyphSize(g, CheckBoxState.CheckedNormal);
          var glyphRectangle = size.West(rectangle, 2);
          CheckBoxRenderer.DrawCheckBox(g, glyphRectangle.Location, CheckBoxState.CheckedNormal);
+         writer.Rectangle = rectangle with { Width = rectangle.Width - size.Width };
+         writer.Write(g, alternate, false);
       }
    }
 
