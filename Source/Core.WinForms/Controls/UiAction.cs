@@ -1938,13 +1938,13 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       var backColor = new Lazy<Color>(getBackColor);
 
       var _legend = legends.Peek();
-      if (_legend is (true, var legend))
+      if (_legend is (true, { Visible: true } legend))
       {
          legend.Transparency = transparency;
          legend.Draw(graphics, foreColor.Value, backColor.Value);
       }
 
-      if (Working && _working is (true, var working))
+      if (Working && _working is (true, { Visible: true } working))
       {
          if (workingAlpha > 0)
          {
@@ -1957,7 +1957,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          working.Draw(graphics, foreColor.Value, backColor.Value);
       }
 
-      foreach (var subText in subTexts.Values)
+      foreach (var subText in subTexts.Values.Where(s => s.Visible))
       {
          subText.Transparency = transparency;
          subText.SetLocation(clientRectangle);

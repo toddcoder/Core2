@@ -432,12 +432,12 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
       g.PixelOffsetMode = PixelOffsetMode.HighQuality;
       g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
       var _legend = legends.Peek();
-      if (_legend is (true, var legend))
+      if (_legend is (true, { Visible: true } legend))
       {
          legend.Draw(g, legend.ForeColor | Color.White, legend.BackColor | Color.Black);
       }
 
-      foreach (var subText in subTexts.Values)
+      foreach (var subText in subTexts.Values.Where(s => s.Visible))
       {
          subText.SetLocation(clientRectangle);
          subText.Draw(g, subText.ForeColor | Color.White, subText.BackColor | Color.Black);

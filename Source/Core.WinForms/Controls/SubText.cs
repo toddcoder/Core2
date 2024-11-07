@@ -13,6 +13,11 @@ public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size s
    protected const string NEGATIVE = "❎";
    public const int GLYPH_WIDTH = 8;
 
+   protected string text = text;
+   protected int x = x;
+   protected int y = y;
+   protected bool invert = invert;
+   protected bool transparentBackground = transparentBackground;
    protected Maybe<Color> _foreColor = nil;
    protected Maybe<Color> _backColor = nil;
    protected Maybe<CardinalAlignment> _alignment = nil;
@@ -86,6 +91,8 @@ public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size s
       get => _backColor;
       set => _backColor = value;
    }
+
+   public bool Visible { get; set; } = true;
 
    public SubText SetFont(string fontName, float fontSize, FontStyle fontStyle)
    {
