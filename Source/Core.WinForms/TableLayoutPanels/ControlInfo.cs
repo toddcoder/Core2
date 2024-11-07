@@ -33,6 +33,12 @@ public class ControlInfo(TableLayoutBuilder builder, Control control)
       return controlInfo;
    }
 
+   public static ControlInfo operator +(ControlInfo controlInfo, FontStyle fontStyle)
+   {
+      controlInfo.fontStyle = fontStyle;
+      return controlInfo;
+   }
+
    public static ControlInfo operator +(ControlInfo controlInfo, DockStyle dockStyle)
    {
       controlInfo.dockStyle = dockStyle;
@@ -57,6 +63,7 @@ public class ControlInfo(TableLayoutBuilder builder, Control control)
    protected int rowSpan = 1;
    protected string fontName = "Consolas";
    protected float fontSize = 12f;
+   protected FontStyle fontStyle = FontStyle.Regular;
    protected DockStyle dockStyle = DockStyle.Fill;
 
    public TableLayoutBuilder Builder => builder;
@@ -85,6 +92,12 @@ public class ControlInfo(TableLayoutBuilder builder, Control control)
    {
       get => fontSize;
       set => fontSize = value;
+   }
+
+   public FontStyle FontStyle
+   {
+      get => fontStyle;
+      set => fontStyle = value;
    }
 
    public DockStyle DockStyle
@@ -118,7 +131,7 @@ public class ControlInfo(TableLayoutBuilder builder, Control control)
    {
       var column = _column | builder.CurrentColumn;
       var row = _row | builder.CurrentRow;
-      control.SetUpInTableLayoutPanel(builder.TableLayoutPanel, column, row, columnSpan, rowSpan, fontName, fontSize, dockStyle);
+      control.SetUpInTableLayoutPanel(builder.TableLayoutPanel, column, row, columnSpan, rowSpan, fontName, fontSize, fontStyle, dockStyle);
    }
 
    protected void reset()

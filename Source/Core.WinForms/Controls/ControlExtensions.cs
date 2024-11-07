@@ -2,9 +2,9 @@
 
 public static class ControlExtensions
 {
-   private static void setUpFont(Control control, string fontName, float fontSize)
+   private static void setUpFont(Control control, string fontName, float fontSize, FontStyle fontStyle)
    {
-      var font = new Font(fontName, fontSize);
+      var font = new Font(fontName, fontSize, fontStyle);
       if (control is UiAction uiAction)
       {
          uiAction.Font = font;
@@ -15,30 +15,31 @@ public static class ControlExtensions
       }
    }
 
-   private static void setUpDimensions(Control control, int x, int y, int width, int height, string fontName, float fontSize)
+   private static void setUpDimensions(Control control, int x, int y, int width, int height, string fontName, float fontSize, FontStyle fontStyle)
    {
       control.AutoSize = false;
       control.Location = new Point(x, y);
       control.Size = new Size(width, height);
-      setUpFont(control, fontName, fontSize);
+      setUpFont(control, fontName, fontSize, fontStyle);
    }
 
    public static void SetUp(this Control control, int x, int y, int width, int height, AnchorStyles anchor, string fontName = "Consolas",
-      float fontSize = 12f)
+      float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular)
    {
-      setUpDimensions(control, x, y, width, height, fontName, fontSize);
+      setUpDimensions(control, x, y, width, height, fontName, fontSize, fontStyle);
       control.Anchor = anchor;
    }
 
    public static void SetUp(this Control control, int x, int y, int width, int height, DockStyle dock, string fontName = "Consolas",
-      float fontSize = 12f)
+      float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular)
    {
-      setUpDimensions(control, x, y, width, height, fontName, fontSize);
+      setUpDimensions(control, x, y, width, height, fontName, fontSize, fontStyle);
       control.Dock = dock;
    }
 
    public static void SetUpInTableLayoutPanel(this Control control, TableLayoutPanel tableLayoutPanel, int column, int row, int columnSpan = 1,
-      int rowSpan = 1, string fontName = "Consolas", float fontSize = 12f, DockStyle dockStyle = DockStyle.Fill)
+      int rowSpan = 1, string fontName = "Consolas", float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular,
+      DockStyle dockStyle = DockStyle.Fill)
    {
       control.Dock = dockStyle;
       tableLayoutPanel.Controls.Add(control, column, row);
@@ -53,28 +54,29 @@ public static class ControlExtensions
          tableLayoutPanel.SetRowSpan(control, rowSpan);
       }
 
-      setUpFont(control, fontName, fontSize);
+      setUpFont(control, fontName, fontSize, fontStyle);
    }
 
    public static void SetUpInPanel(this Control control, Panel panel, string fontName = "Consolas", float fontSize = 12f,
-      DockStyle dockStyle = DockStyle.Fill)
+      FontStyle fontStyle = FontStyle.Regular, DockStyle dockStyle = DockStyle.Fill)
    {
       control.Dock = dockStyle;
       panel.Controls.Add(control);
-      setUpFont(control, fontName, fontSize);
+      setUpFont(control, fontName, fontSize, fontStyle);
    }
 
-   public static void SetUp(this Control control, int x, int y, int width, int height, string fontName = "Consolas", float fontSize = 12f)
+   public static void SetUp(this Control control, int x, int y, int width, int height, string fontName = "Consolas", float fontSize = 12f,
+      FontStyle fontStyle = FontStyle.Regular)
    {
-      setUpDimensions(control, x, y, width, height, fontName, fontSize);
+      setUpDimensions(control, x, y, width, height, fontName, fontSize, fontStyle);
    }
 
    public static void SetupInFlowLayoutPanel(this Control control, FlowLayoutPanel flowLayoutPanel, string fontName = "Consolas",
-      float fontSize = 12f, DockStyle dockStyle = DockStyle.Fill)
+      float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular, DockStyle dockStyle = DockStyle.Fill)
    {
       control.Dock = dockStyle;
       flowLayoutPanel.Controls.Add(control);
-      setUpFont(control, fontName, fontSize);
+      setUpFont(control, fontName, fontSize, fontStyle);
    }
 
    public static Point CursorPosition(this Control control) => control.Get(() => control.PointToClient(Cursor.Position));
