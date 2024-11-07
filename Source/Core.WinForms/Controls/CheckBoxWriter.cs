@@ -83,7 +83,7 @@ public class CheckBoxWriter(UiAction uiAction, string[] alternates, bool autoSiz
          var glyphRectangle = size.West(rectangle, 2);
          CheckBoxRenderer.DrawCheckBox(g, glyphRectangle.Location, CheckBoxState.CheckedNormal);
          var width = glyphRectangle.Width;
-         writer.Rectangle = rectangle with { X = rectangle.X + width, Width = rectangle.Width - width };
+         writer.Rectangle = rectangle with { X = rectangle.X + width + 4, Width = rectangle.Width - width - 8 };
          writer.Write(g, alternate, false);
       }
    }
