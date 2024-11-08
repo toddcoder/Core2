@@ -22,6 +22,8 @@ public interface IAlternateWriter
 
    Maybe<string> GetAlternate(int index);
 
+   void SetAlternate(int index, string alternate);
+
    int SelectedIndex { get; set; }
 
    int DisabledIndex { get; set; }

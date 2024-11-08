@@ -4083,4 +4083,12 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       Padding = new Padding(0);
       Margin = new Padding(0);
    }
+
+   public void SetAlternateText(int index, string alternate)
+   {
+      if (_alternateWriter is (true, var alternateWriter))
+      {
+         alternateWriter.SetAlternate(index, alternate);
+      }
+   }
 }

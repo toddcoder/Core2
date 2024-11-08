@@ -1,6 +1,7 @@
 ﻿using System.Drawing.Drawing2D;
 using Core.Collections;
 using Core.Monads;
+using Core.Numbers;
 using static Core.Arrays.ArrayExtensions;
 using static Core.Monads.MonadFunctions;
 
@@ -33,6 +34,14 @@ public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, boo
    public void SetFontStyle(int index, FontStyle style) => fontStyles[index] = style;
 
    public Maybe<string> GetAlternate(int index) => alternates.Maybe(index);
+
+   public void SetAlternate(int index, string alternate)
+   {
+      if (index.Between(0).Until(alternates.Length))
+      {
+         alternates[index] = alternate;
+      }
+   }
 
    public int SelectedIndex { get; set; } = -1;
 

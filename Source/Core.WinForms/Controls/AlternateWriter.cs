@@ -2,6 +2,7 @@
 using Core.Arrays;
 using Core.Collections;
 using Core.Monads;
+using Core.Numbers;
 
 namespace Core.WinForms.Controls;
 
@@ -61,6 +62,14 @@ public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSi
    }
 
    public void SetFontStyle(int index, FontStyle style) => fontStyles[index] = style;
+
+   public void SetAlternate(int index, string alternate)
+   {
+      if (index.Between(0).Until(alternates.Length))
+      {
+         alternates[index] = alternate;
+      }
+   }
 
    public int SelectedIndex
    {

@@ -2,6 +2,7 @@
 using Core.Arrays;
 using Core.Collections;
 using Core.Monads;
+using Core.Numbers;
 
 namespace Core.WinForms.Controls;
 
@@ -35,6 +36,14 @@ public class CheckBoxWriter(UiAction uiAction, string[] alternates, bool autoSiz
    public void SetFontStyle(int index, FontStyle style) => fontStyles[index] = style;
 
    public Maybe<string> GetAlternate(int index) => alternates.Maybe(index);
+
+   public void SetAlternate(int index, string alternate)
+   {
+      if (index.Between(0).Until(alternates.Length))
+      {
+         alternates[index] = alternate;
+      }
+   }
 
    public int SelectedIndex { get; set; }
 
