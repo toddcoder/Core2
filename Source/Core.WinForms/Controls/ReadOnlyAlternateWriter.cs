@@ -106,7 +106,7 @@ public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, boo
          {
             var start = rectangle.Location;
             var stop = start with { Y = rectangle.Bottom };
-            using var pen = new Pen(Color.White);
+            using var pen = new Pen(writer.ForeColor);
             pen.DashStyle = DashStyle.Dash;
             g.DrawLine(pen, start, stop);
          }
