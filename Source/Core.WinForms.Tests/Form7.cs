@@ -16,10 +16,12 @@ public partial class Form7 : Form
    protected Maybe<SubText> _one = nil;
    protected Maybe<SubText> _two = nil;
    protected Maybe<SubText> _three = nil;
-   protected DoubleProgress dpProgress = new();
+   protected DoubleProgress2 dpProgress = new();
+   protected bool first = true;
 
    public Form7()
    {
+      dpProgress.OuterMaximum = 6;
       InitializeComponent();
 
       uiAlignment.Alternate("Left", "Right", "Center", "Spread", "Left Vertical", "Right Vertical");
@@ -31,7 +33,7 @@ public partial class Form7 : Form
             1 => RectangleAlignment.Right,
             2 => RectangleAlignment.Center,
             3 => RectangleAlignment.Spread,
-            4=> RectangleAlignment.Left,
+            4 => RectangleAlignment.Left,
             5 => RectangleAlignment.Right,
             _ => rectangleRow.Alignment
          };
@@ -71,9 +73,6 @@ public partial class Form7 : Form
       panel.BackColor = Color.RosyBrown;
 
       rearrange();
-
-      dpProgress.TopMaximum = cycle.OuterLength;
-      dpProgress.BottomMaximum = cycle.InnerLength;
    }
 
    protected void rearrange()
@@ -109,17 +108,13 @@ public partial class Form7 : Form
       var _next = cycle.Next();
       if (_next is (true, var (outer, inner, reset)))
       {
-         if (reset)
+         if (reset || first)
          {
-            dpProgress.ResetBottom();
+            first = false;
+            dpProgress.AdvanceOuter(outer, 9);
          }
 
-         dpProgress.Progress(outer, inner);
-      }
-      else
-      {
-         dpProgress.Done();
-         timer.Enabled = false;
+         dpProgress.AdvanceInner(inner);
       }
    }
 }
