@@ -3483,9 +3483,9 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
    public void AlternateReadOnly(params string[] alternates) => createReadOnlyAlternate(alternates);
 
-   public void AlternateReadOnly(IEnumerable<string> alternates) => Alternate([.. alternates]);
+   public void AlternateReadOnly(IEnumerable<string> alternates) => AlternateReadOnly([.. alternates]);
 
-   public void AlternateReadOnly(ReadOnlySpan<string> alternates) => Alternate(alternates.ToArray());
+   public void AlternateReadOnly(ReadOnlySpan<string> alternates) => AlternateReadOnly(alternates.ToArray());
 
    public void AlternateDeletable(params string[] alternates) => createDeletable(alternates);
 
