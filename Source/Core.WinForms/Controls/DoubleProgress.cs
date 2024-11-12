@@ -27,6 +27,12 @@
          Invalidate();
       }
 
+      public void Done()
+      {
+         writer.Done();
+         Invalidate();
+      }
+
       protected override void OnResize(EventArgs e)
       {
          base.OnResize(e);

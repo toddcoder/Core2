@@ -31,6 +31,8 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
 
    protected string innerText = "";
 
+   protected bool isRunning = false;
+
    public int OuterMaximum
    {
       get => outerMaximum;
@@ -58,6 +60,8 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
 
    public void AdvanceOuter(string outerText, int innerMaximum)
    {
+      isRunning = true;
+
       this.outerText = outerText;
       this.innerMaximum = innerMaximum;
 
@@ -80,6 +84,11 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
       }
    }
 
+   public void Done()
+   {
+      isRunning = false;
+   }
+
    public void OnResize(Rectangle clientRectangle)
    {
       this.clientRectangle = clientRectangle;
@@ -99,35 +108,45 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
       return innerMaximum == 0 ? 0 : (double)innerIndex / innerMaximum;
    }
 
+   protected Color getForeColor() => isRunning ? foreColor : Color.LightGray;
+
+   protected Color getBackColor() => isRunning ? backColor : Color.LightGray;
+
    protected void drawOuter(Graphics g)
    {
-      using var circleBrush = new SolidBrush(backColor);
+      using var circleBrush = new SolidBrush(getBackColor());
       g.FillEllipse(circleBrush, pieRectangle);
-      using var pieBrush = new SolidBrush(foreColor);
+      using var pieBrush = new SolidBrush(getForeColor());
       g.FillPie(pieBrush, pieRectangle, 0, sweepAngle);
 
-      var writer = new RectangleWriter(outerText, nonPieRectangle, CardinalAlignment.NorthWest)
+      if (isRunning)
       {
-         Font = font,
-         ForeColor = Color.Black,
-         BackgroundRestriction = new BackgroundRestriction.UseWriterAlignment(4, 4)
-      };
-      writer.Write(g);
+         var writer = new RectangleWriter(outerText, nonPieRectangle, CardinalAlignment.NorthWest)
+         {
+            Font = font,
+            ForeColor = Color.Black,
+            BackgroundRestriction = new BackgroundRestriction.UseWriterAlignment(4, 4)
+         };
+         writer.Write(g);
+      }
    }
 
    protected void drawInner(Graphics g)
    {
-      using var backBrush = new SolidBrush(backColor);
+      using var backBrush = new SolidBrush(getBackColor());
       g.FillRectangle(backBrush, textRectangle);
 
-      using var foreBrush = new SolidBrush(foreColor);
+      using var foreBrush = new SolidBrush(getForeColor());
       g.FillRectangle(foreBrush, percentRectangle);
 
-      var writer = new RectangleWriter(innerText, textRectangle)
+      if (isRunning)
       {
-         Font = font,
-         ForeColor = Color.White
-      };
-      writer.Write(g);
+         var writer = new RectangleWriter(innerText, textRectangle)
+         {
+            Font = font,
+            ForeColor = Color.White
+         };
+         writer.Write(g);
+      }
    }
 }

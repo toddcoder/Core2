@@ -116,5 +116,9 @@ public partial class Form7 : Form
 
          dpProgress.AdvanceInner(inner);
       }
+      else
+      {
+         dpProgress.Done();
+      }
    }
 }
