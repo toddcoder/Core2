@@ -15,6 +15,8 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
 
    protected Rectangle pieRectangle;
 
+   protected Rectangle nonPieRectangle;
+
    protected Rectangle textRectangle;
 
    protected Rectangle percentRectangle;
@@ -44,6 +46,8 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
    {
       var width = Math.Min(clientRectangle.Width / 2, clientRectangle.Height);
       pieRectangle = clientRectangle with { Width = width };
+
+      nonPieRectangle = clientRectangle with { X = clientRectangle.X + width, Width = clientRectangle.Width - width };
 
       var left = pieRectangle.Width / 2 - 4;
       width = clientRectangle.Width - left - 4;
@@ -84,14 +88,10 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
 
    public void OnPaint(PaintEventArgs e)
    {
-      using var bitmap = new Bitmap(clientRectangle.Width, clientRectangle.Height);
-      using var g = Graphics.FromImage(bitmap);
-      g.HighQuality();
+      e.Graphics.HighQuality();
 
-      drawInner(g);
-      drawOuter(g);
-
-      e.Graphics.DrawImage(bitmap, clientRectangle.Location);
+      drawInner(e.Graphics);
+      drawOuter(e.Graphics);
    }
 
    protected double getInnerPercent()
@@ -106,7 +106,7 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
       using var pieBrush = new SolidBrush(foreColor);
       g.FillPie(pieBrush, pieRectangle, 0, sweepAngle);
 
-      var writer = new RectangleWriter(outerText, pieRectangle, CardinalAlignment.NorthWest)
+      var writer = new RectangleWriter(outerText, nonPieRectangle, CardinalAlignment.NorthWest)
       {
          Font = font,
          ForeColor = Color.Black,

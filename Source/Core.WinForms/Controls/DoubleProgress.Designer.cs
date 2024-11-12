@@ -30,10 +30,11 @@
       {
          SuspendLayout();
          // 
-         // DoubleProgress
+         // DoubleProgress2
          // 
          AutoScaleDimensions = new SizeF(7F, 15F);
          AutoScaleMode = AutoScaleMode.Font;
+         DoubleBuffered = true;
          Name = "DoubleProgress";
          ResumeLayout(false);
       }

@@ -16,7 +16,7 @@ public partial class Form7 : Form
    protected Maybe<SubText> _one = nil;
    protected Maybe<SubText> _two = nil;
    protected Maybe<SubText> _three = nil;
-   protected DoubleProgress2 dpProgress = new();
+   protected DoubleProgress dpProgress = new();
    protected bool first = true;
 
    public Form7()

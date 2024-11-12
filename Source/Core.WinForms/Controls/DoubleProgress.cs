@@ -1,106 +1,46 @@
-﻿namespace Core.WinForms.Controls;
-
-public partial class DoubleProgress : UserControl
+﻿namespace Core.WinForms.Controls
 {
-   protected UiAction uiTop = new() { Visible = false, Padding = new Padding(0), Margin = new Padding(0) };
-   protected UiAction uiBottom = new() { Visible = false, Padding = new Padding(0), Margin = new Padding(0) };
-
-   public DoubleProgress()
+   public partial class DoubleProgress : UserControl
    {
-      InitializeComponent();
+      protected DoubleProgressWriter writer = DoubleProgressWriter.Empty;
 
-      Controls.Add(uiTop);
-      Controls.Add(uiBottom);
-
-      arrange();
-   }
-
-   public int TopMaximum
-   {
-      get => uiTop.Maximum;
-      set => uiTop.Maximum = value;
-   }
-
-   public int BottomMaximum
-   {
-      get => uiBottom.Maximum;
-      set => uiBottom.Maximum = value;
-   }
-
-   protected static void visible(UiAction uiAction)
-   {
-      if (!uiAction.Visible)
+      public DoubleProgress()
       {
-         uiAction.Visible = true;
-      }
-   }
-
-   protected void topVisible() => visible(uiTop);
-
-   protected void bottomVisible() => visible(uiBottom);
-
-   public void Progress(string topText, string bottomText)
-   {
-      if (topText != uiTop.NonNullText)
-      {
-         uiTop.Progress(topText);
-         topVisible();
+         InitializeComponent();
       }
 
-      uiBottom.Progress(bottomText);
-      bottomVisible();
-   }
+      public int OuterMaximum
+      {
+         get => writer.OuterMaximum;
+         set => writer.OuterMaximum = value;
+      }
 
-   public void ProgressOnTop(string text)
-   {
-      uiTop.Progress(text);
-      topVisible();
-   }
+      public void AdvanceOuter(string outerText, int innerMaximum)
+      {
+         writer.AdvanceOuter(outerText, innerMaximum);
+         Invalidate();
+      }
 
-   public void ProgressOnBottom(string text)
-   {
-      uiBottom.Progress(text);
-      bottomVisible();
-   }
+      public void AdvanceInner(string innerText)
+      {
+         writer.AdvanceInner(innerText);
+         Invalidate();
+      }
 
-   public void BusyOnBottom(string text)
-   {
-      uiBottom.Busy(text);
-      bottomVisible();
-   }
+      protected override void OnResize(EventArgs e)
+      {
+         base.OnResize(e);
 
-   public void Done()
-   {
-      uiTop.Visible = false;
-      uiBottom.Visible = false;
-   }
+         writer.OnResize(ClientRectangle);
 
-   public void ResetTop() => uiTop.ResetProgress();
+         Invalidate();
+      }
 
-   public void ResetBottom() => uiBottom.ResetProgress();
+      protected override void OnPaint(PaintEventArgs e)
+      {
+         base.OnPaint(e);
 
-   public void Reset()
-   {
-      ResetTop();
-      ResetBottom();
-   }
-
-   protected void arrange()
-   {
-      var halfHeight = ClientRectangle.Height / 2;
-
-      uiTop.Location = Point.Empty;
-      uiTop.Width = ClientRectangle.Width;
-      uiTop.Height = halfHeight;
-
-      uiBottom.Location = new Point(0, halfHeight + 1);
-      uiBottom.Width = ClientRectangle.Width;
-      uiBottom.Height = halfHeight;
-   }
-
-   protected override void OnResize(EventArgs e)
-   {
-      base.OnResize(e);
-      arrange();
+         writer.OnPaint(e);
+      }
    }
 }
