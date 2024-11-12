@@ -237,6 +237,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    protected Maybe<string> _divMessage = nil;
    protected Maybe<Color> _divMessageForeColor = nil;
    protected Maybe<Color> _divMessageBackColor = nil;
+   protected StringSet messages = [];
 
    public event EventHandler<AutomaticMessageArgs>? AutomaticMessage;
    public event EventHandler<PaintEventArgs>? Painting;
@@ -264,6 +265,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    public event EventHandler<EventArgs>? ChooserOpened;
    public event EventHandler<EventArgs>? ChooserClosed;
    public event EventHandler<EventArgs>? StatusFaded;
+   public event EventHandler<UiActionMessageArgs>? MessageReceived;
 
    public UiAction()
    {
@@ -4110,4 +4112,16 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          alternateWriter.SetAlternate(index, alternate);
       }
    }
+
+   public void RegisterMessage(string message) => messages.Add(message);
+
+   public void SendMessage(string message, object cargo)
+   {
+      if (messages.Contains(message))
+      {
+         MessageReceived?.Invoke(this, new UiActionMessageArgs(message, cargo));
+      }
+   }
+
+   public void SendMessage(string message) => SendMessage(message, nil);
 }
