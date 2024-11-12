@@ -1,10 +1,11 @@
-﻿using Core.Enumerables;
+﻿using System.Collections;
+using Core.Enumerables;
 using Core.WinForms.TableLayoutPanels;
 
 namespace Core.WinForms.Controls;
 
 public class LabelUiActionHost<TControl>(TableLayoutPanel tableLayoutPanel, UiAction uiLabel, TControl control,
-   Func<TableLayoutBuilder, AxisSetup> arrangeRow) where TControl : Control
+   Func<TableLayoutBuilder, AxisSetup> arrangeRow) : IEnumerable<UiAction> where TControl : Control
 {
    protected List<UiAction> actions = [];
 
@@ -62,4 +63,8 @@ public class LabelUiActionHost<TControl>(TableLayoutPanel tableLayoutPanel, UiAc
    }
 
    public void ClearActions() => actions.Clear();
+
+   public IEnumerator<UiAction> GetEnumerator() => actions.GetEnumerator();
+
+   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

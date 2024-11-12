@@ -1,6 +1,7 @@
 ﻿using Core.Monads;
 using Core.Objects;
 using Core.WinForms.TableLayoutPanels;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Core.WinForms.Controls;
 
@@ -116,4 +117,20 @@ public partial class LabelText : UserControl, ILabelUiActionHost
    }
 
    public void ClearActions() => host.ClearActions();
+
+   public void SendMessage(string message, object cargo)
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.SendMessage(message, cargo);
+      }
+   }
+
+   public void SendMessage(string message)
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.SendMessage(message);
+      }
+   }
 }

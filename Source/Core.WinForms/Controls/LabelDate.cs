@@ -93,4 +93,20 @@ public partial class LabelDate : UserControl, ILabelUiActionHost
    }
 
    public void ClearActions() => host.ClearActions();
+
+   public void SendMessage(string message, object cargo)
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.SendMessage(message, cargo);
+      }
+   }
+
+   public void SendMessage(string message)
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.SendMessage(message);
+      }
+   }
 }
