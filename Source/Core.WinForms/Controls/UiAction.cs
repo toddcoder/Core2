@@ -333,8 +333,19 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
                var newAlternateWriter = new AlternateWriter(this, Alternates, AutoSizeText, _floor, _ceiling, UseEmojis);
                for (var i = 0; i < RectangleCount; i++)
                {
-                  newAlternateWriter.SetForeColor(i, alternateWriter.GetAlternateForeColor(i));
+                  /*newAlternateWriter.SetForeColor(i, alternateWriter.GetAlternateForeColor(i));
                   newAlternateWriter.SetBackColor(i, alternateWriter.GetAlternateBackColor(i));
+                  newAlternateWriter.SetFontStyle(i, alternateWriter.GetFontStyle(i));*/
+                  if (alternateWriter.GetBackColor(i) is (true, var backColor))
+                  {
+                     newAlternateWriter.SetBackColor(i, backColor);
+                  }
+
+                  if (alternateWriter.GetForeColor(i) is (true, var foreColor))
+                  {
+                     newAlternateWriter.SetForeColor(i, foreColor);
+                  }
+
                   newAlternateWriter.SetFontStyle(i, alternateWriter.GetFontStyle(i));
                }
 

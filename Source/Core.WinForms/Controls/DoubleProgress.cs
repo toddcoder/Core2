@@ -29,7 +29,19 @@
 
       public void Done()
       {
-         writer.Done();
+         writer.Status = new DoubleProgressStatus.Idle();
+         Invalidate();
+      }
+
+      public void Failure(string message)
+      {
+         writer.Status = new DoubleProgressStatus.Failure(message);
+         Invalidate();
+      }
+
+      public void Exception(Exception exception)
+      {
+         writer.Status = new DoubleProgressStatus.Error(exception);
          Invalidate();
       }
 

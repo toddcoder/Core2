@@ -2,9 +2,6 @@
 
 public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
 {
-   protected Color backColor = Color.Coral;
-   protected Color foreColor = Color.LightSteelBlue;
-
    public static DoubleProgressWriter Empty => new(Rectangle.Empty, new Font("Consolas", 12f));
 
    protected int outerMaximum;
@@ -31,12 +28,22 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
 
    protected string innerText = "";
 
-   protected bool isRunning;
+   protected DoubleProgressStatus status = new DoubleProgressStatus.Idle();
 
    public int OuterMaximum
    {
       get => outerMaximum;
-      set => outerMaximum = value;
+      set
+      {
+         outerMaximum = value;
+         sweepAngle = 0;
+      }
+   }
+
+   public DoubleProgressStatus Status
+   {
+      get => status;
+      set => status = value;
    }
 
    protected Rectangle getPercentRectangle(double percent)
@@ -60,7 +67,7 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
 
    public void AdvanceOuter(string outerText, int innerMaximum)
    {
-      isRunning = true;
+      status = new DoubleProgressStatus.Running();
 
       this.outerText = outerText;
       this.innerMaximum = innerMaximum;
@@ -84,11 +91,6 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
       }
    }
 
-   public void Done()
-   {
-      isRunning = false;
-   }
-
    public void OnResize(Rectangle clientRectangle)
    {
       this.clientRectangle = clientRectangle;
@@ -108,24 +110,21 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
       return innerMaximum == 0 ? 0 : (double)innerIndex / innerMaximum;
    }
 
-   protected Color getForeColor() => isRunning ? foreColor : Color.LightGray;
-
-   protected Color getBackColor() => isRunning ? backColor : Color.LightGray;
-
    protected void drawOuter(Graphics g)
    {
-      using var circleBrush = new SolidBrush(getBackColor());
+      using var circleBrush = new SolidBrush(status.BackColor);
       g.FillEllipse(circleBrush, pieRectangle);
-      using var pieBrush = new SolidBrush(getForeColor());
-      g.FillPie(pieBrush, pieRectangle, 0, sweepAngle);
 
-      if (isRunning)
+      if (status is DoubleProgressStatus.Running)
       {
+         using var pieBrush = new SolidBrush(status.ForeColor);
+         g.FillPie(pieBrush, pieRectangle, 0, sweepAngle);
          var writer = new RectangleWriter(outerText, nonPieRectangle, CardinalAlignment.NorthWest)
          {
             Font = font,
             ForeColor = Color.Black,
-            BackgroundRestriction = new BackgroundRestriction.UseWriterAlignment(4, 4)
+            BackColor = Color.White,
+            BackgroundRestriction = new BackgroundRestriction.UseWriterAlignment(2, 2)
          };
          writer.Write(g);
       }
@@ -133,18 +132,36 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
 
    protected void drawInner(Graphics g)
    {
-      using var backBrush = new SolidBrush(getBackColor());
+      using var backBrush = new SolidBrush(status.BackColor);
       g.FillRectangle(backBrush, textRectangle);
 
-      using var foreBrush = new SolidBrush(getForeColor());
-      g.FillRectangle(foreBrush, percentRectangle);
-
-      if (isRunning)
+      switch (status)
       {
-         var writer = new RectangleWriter(innerText, textRectangle)
+         case DoubleProgressStatus.Error error:
+            write(error.Exception.Message, error.ForeColor);
+            break;
+         case DoubleProgressStatus.Failure failure:
+            write(failure.Message, failure.ForeColor);
+            break;
+         case DoubleProgressStatus.Idle:
+            break;
+         case DoubleProgressStatus.Running:
+         {
+            using var foreBrush = new SolidBrush(status.ForeColor);
+            g.FillRectangle(foreBrush, percentRectangle);
+            write(innerText, Color.White);
+            break;
+         }
+      }
+
+      return;
+
+      void write(string message, Color foreColor)
+      {
+         var writer = new RectangleWriter(message, textRectangle)
          {
             Font = font,
-            ForeColor = Color.White,
+            ForeColor = foreColor,
             AutoSizeText = true
          };
          writer.Write(g);

@@ -16,6 +16,7 @@ public partial class Form7 : Form
    protected Maybe<SubText> _one = nil;
    protected Maybe<SubText> _two = nil;
    protected Maybe<SubText> _three = nil;
+   protected UiAction uiFinal = new();
    protected DoubleProgress dpProgress = new();
    protected bool first = true;
 
@@ -55,13 +56,32 @@ public partial class Form7 : Form
       panel.Controls.Add(uiThree);
       uiThree.Size = new Size(200, 60);
 
+      uiFinal.Alternate("Done", "Failure", "Exception");
+      uiFinal.ClickOnRectangle += (_, e) =>
+      {
+         switch (e.RectangleIndex)
+         {
+            case 0:
+               dpProgress.Done();
+               break;
+            case 1:
+               dpProgress.Failure("Failed!");
+               break;
+            case 2:
+               dpProgress.Exception(fail("Exception!"));
+               break;
+         }
+      };
+      uiFinal.ClickText = "Select final status";
+
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 100f;
-      _ = builder.Row + 80 + 100f + 80;
+      _ = builder.Row + 80 + 100f + 80 + 80;
       builder.SetUp();
 
       (builder + uiAlignment).Row();
       (builder + panel).Row();
+      (builder + uiFinal).Row();
       (builder + dpProgress).Row();
 
       rectangleRow = new RectangleRow(panel.ClientRectangle);
@@ -119,6 +139,7 @@ public partial class Form7 : Form
       else
       {
          dpProgress.Done();
+         timer.Enabled = false;
       }
    }
 }
