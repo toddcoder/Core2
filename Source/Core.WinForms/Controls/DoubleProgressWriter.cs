@@ -31,7 +31,7 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
 
    protected string innerText = "";
 
-   protected bool isRunning = false;
+   protected bool isRunning;
 
    public int OuterMaximum
    {
@@ -144,7 +144,8 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
          var writer = new RectangleWriter(innerText, textRectangle)
          {
             Font = font,
-            ForeColor = Color.White
+            ForeColor = Color.White,
+            AutoSizeText = true
          };
          writer.Write(g);
       }
