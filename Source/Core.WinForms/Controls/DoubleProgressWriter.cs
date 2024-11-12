@@ -124,7 +124,7 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
             Font = font,
             ForeColor = Color.Black,
             BackColor = Color.White,
-            BackgroundRestriction = new BackgroundRestriction.UseWriterAlignment(2, 2)
+            BackgroundRestriction = new BackgroundRestriction.UseWriterAlignment(2)
          };
          writer.Write(g);
       }
