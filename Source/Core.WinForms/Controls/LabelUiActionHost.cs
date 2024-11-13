@@ -11,7 +11,11 @@ public class LabelUiActionHost<TControl>(TableLayoutPanel tableLayoutPanel, UiAc
 
    public void AddUiAction(UiAction action)
    {
-      action.SizeToText();
+      if (action.HostCanSizeToText)
+      {
+         action.SizeToText();
+      }
+
       actions.Add(action);
 
       rearrangeActions();
@@ -21,7 +25,11 @@ public class LabelUiActionHost<TControl>(TableLayoutPanel tableLayoutPanel, UiAc
    {
       foreach (var uiAction in actions)
       {
-         uiAction.SizeToText();
+         if (uiAction.HostCanSizeToText)
+         {
+            uiAction.SizeToText();
+         }
+
          this.actions.Add(uiAction);
       }
 
