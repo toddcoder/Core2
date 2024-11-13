@@ -19,6 +19,7 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost
    protected LabelUiActionHost<ExRichTextBox> host;
 
    public new event EventHandler? TextChanged;
+   public event EventHandler<UiActionMessageArgs>? MessageReceived;
 
    public LabelRichText(string label)
    {
@@ -140,6 +141,14 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost
 
    public void AddUiActions(params UiAction[] actions) => host.AddUiActions(actions);
 
+   public void HookMessageReceived()
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.MessageReceived += (_, e) => MessageReceived?.Invoke(this, e);
+      }
+   }
+
    public bool ActionsVisible
    {
       get => host.ActionsVisible;
@@ -161,6 +170,14 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost
       foreach (var uiAction in host)
       {
          uiAction.SendMessage(message);
+      }
+   }
+
+   public void RegisterMessage(string message)
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.RegisterMessage(message);
       }
    }
 }

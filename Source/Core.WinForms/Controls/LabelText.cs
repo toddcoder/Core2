@@ -1,7 +1,6 @@
 ﻿using Core.Monads;
 using Core.Objects;
 using Core.WinForms.TableLayoutPanels;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace Core.WinForms.Controls;
 
@@ -13,6 +12,7 @@ public partial class LabelText : UserControl, ILabelUiActionHost
    protected LabelUiActionHost<ExTextBox> host;
 
    public new event EventHandler? TextChanged;
+   public event EventHandler<UiActionMessageArgs>? MessageReceived;
 
    public LabelText(string label)
    {
@@ -109,6 +109,13 @@ public partial class LabelText : UserControl, ILabelUiActionHost
 
    public void AddUiActions(params UiAction[] actions) => host.AddUiActions(actions);
 
+   public void HookMessageReceived()
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.MessageReceived += (_, e) => MessageReceived?.Invoke(this, e);
+      }
+   }
 
    public bool ActionsVisible
    {
@@ -131,6 +138,14 @@ public partial class LabelText : UserControl, ILabelUiActionHost
       foreach (var uiAction in host)
       {
          uiAction.SendMessage(message);
+      }
+   }
+
+   public void RegisterMessage(string message)
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.RegisterMessage(message);
       }
    }
 }

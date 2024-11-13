@@ -10,6 +10,7 @@ public partial class LabelDate : UserControl, ILabelUiActionHost
    protected LabelUiActionHost<CoreDateTimePicker> host;
 
    public event EventHandler? ValueChanged;
+   public event EventHandler<UiActionMessageArgs>? MessageReceived;
 
    public LabelDate(string label)
    {
@@ -86,6 +87,14 @@ public partial class LabelDate : UserControl, ILabelUiActionHost
 
    public void AddUiActions(params UiAction[] actions) => host.AddUiActions(actions);
 
+   public void HookMessageReceived()
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.MessageReceived += (_, e) => MessageReceived?.Invoke(this, e);
+      }
+   }
+
    public bool ActionsVisible
    {
       get => host.ActionsVisible;
@@ -107,6 +116,14 @@ public partial class LabelDate : UserControl, ILabelUiActionHost
       foreach (var uiAction in host)
       {
          uiAction.SendMessage(message);
+      }
+   }
+
+   public void RegisterMessage(string message)
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.RegisterMessage(message);
       }
    }
 }
