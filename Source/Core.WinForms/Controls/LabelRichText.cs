@@ -19,7 +19,7 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost
    protected LabelUiActionHost<ExRichTextBox> host;
 
    public new event EventHandler? TextChanged;
-   public event EventHandler<UiActionMessageArgs>? MessageReceived;
+   public event EventHandler<LabelActionMessageArgs>? MessageReceived;
 
    public LabelRichText(string label)
    {
@@ -145,7 +145,7 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost
    {
       foreach (var uiAction in host)
       {
-         uiAction.MessageReceived += (_, e) => MessageReceived?.Invoke(this, e);
+         uiAction.MessageReceived += (_, e) => MessageReceived?.Invoke(this, new LabelActionMessageArgs(uiAction, e.Message, e.Cargo));
       }
    }
 

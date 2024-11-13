@@ -12,7 +12,7 @@ public partial class LabelText : UserControl, ILabelUiActionHost
    protected LabelUiActionHost<ExTextBox> host;
 
    public new event EventHandler? TextChanged;
-   public event EventHandler<UiActionMessageArgs>? MessageReceived;
+   public event EventHandler<LabelActionMessageArgs>? MessageReceived;
 
    public LabelText(string label)
    {
@@ -113,7 +113,7 @@ public partial class LabelText : UserControl, ILabelUiActionHost
    {
       foreach (var uiAction in host)
       {
-         uiAction.MessageReceived += (_, e) => MessageReceived?.Invoke(this, e);
+         uiAction.MessageReceived += (_, e) => MessageReceived?.Invoke(this, new LabelActionMessageArgs(uiAction, e.Message, e.Cargo));
       }
    }
 
