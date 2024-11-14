@@ -48,6 +48,7 @@ public partial class Form5 : Form
          }
       };
 
+      textBoxContainer.ShowLastFocus = false;
       foreach (var _ in Enumerable.Range(0, 3))
       {
          var control = new TextBox { Text = "" };

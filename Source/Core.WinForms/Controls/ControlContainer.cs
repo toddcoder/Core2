@@ -38,8 +38,9 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
             Invalidate();
             GotFocus?.Invoke(this, new ControlFocusArgs<TControl>(control, id));
          };
-         Controls.Add(control);
       }
+
+      Controls.Add(control);
 
       resize();
 
