@@ -12,15 +12,11 @@ public partial class Form4 : Form
    protected UiAction uiInsert = new();
    protected ExTextBox textCaption = new();
    protected UiAction uiIndexes = new() { ClickGlyph = true };
+   protected UiAction uiWaiting = new();
 
    public Form4()
    {
       InitializeComponent();
-
-      var builder = new TableLayoutBuilder(tableLayoutPanel);
-      _ = builder.Col * 5 * 20f;
-      _ = builder.Row + 60 + 60 + 100f;
-      builder.SetUp();
 
       uiAdd.Button("Add");
       uiAdd.Click += (_, _) =>
@@ -69,14 +65,23 @@ public partial class Form4 : Form
       };
       uiInsert.ClickText = "Select index";
 
+      uiWaiting.CheckBox("Waiting", false);
+      uiWaiting.Click += (_, _) => textCaption.Waiting = uiWaiting.BoxChecked;
+
+      var builder = new TableLayoutBuilder(tableLayoutPanel);
+      _ = builder.Col * 5 * 20f;
+      _ = builder.Row + 60 + 60 + 60 + 100f;
+      builder.SetUp();
+
       (builder + container).SpanCol(5).Row();
 
       (builder + uiAdd).Next();
       (builder + uiRemove).Next();
       (builder + uiInsert).Next();
       (builder + textCaption).Next();
-
       (builder + uiIndexes).Row();
+
+      (builder + uiWaiting).Next();
 
       container.AddRange("alfa", "bravo", "charlie", "delta", "echo", "foxtrot");
    }

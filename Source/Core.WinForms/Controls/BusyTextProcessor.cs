@@ -61,15 +61,30 @@ public class BusyTextProcessor
       return spokeAngles;
    }
 
-   protected static Rectangle getDrawRectangle(Rectangle clientRectangle)
+   protected static Rectangle getDrawRectangle(Rectangle clientRectangle, bool leftSide)
    {
       var side = clientRectangle.Height;
-      return clientRectangle with { Width = side, Height = side };
+      var drawRectangle = clientRectangle with { Width = side, Height = side };
+      if (leftSide)
+      {
+         return drawRectangle;
+      }
+      else
+      {
+         return drawRectangle with { X = clientRectangle.Right - side };
+      }
    }
 
-   protected static Rectangle getTextRectangle(Rectangle drawRectangle, Rectangle clientRectangle)
+   protected static Rectangle getTextRectangle(Rectangle drawRectangle, Rectangle clientRectangle, bool leftSide)
    {
-      return clientRectangle with { X = clientRectangle.X + drawRectangle.Width, Width = clientRectangle.Width - drawRectangle.Width };
+      if (leftSide)
+      {
+         return clientRectangle with { X = clientRectangle.X + drawRectangle.Width, Width = clientRectangle.Width - drawRectangle.Width };
+      }
+      else
+      {
+         return clientRectangle with { Width = clientRectangle.Width - drawRectangle.Width };
+      }
    }
 
    protected static PointF getCenter(Rectangle drawRectangle)
@@ -77,14 +92,14 @@ public class BusyTextProcessor
       return new PointF(drawRectangle.X + drawRectangle.Height / 2, drawRectangle.Y + drawRectangle.Height / 2);
    }
 
-   public BusyTextProcessor(Color color, Rectangle clientRectangle)
+   public BusyTextProcessor(Color color, Rectangle clientRectangle, bool leftSide = true)
    {
       this.color = color;
 
       colors = generatePalette(this.color);
       angles = generateAngles();
-      drawRectangle = getDrawRectangle(clientRectangle);
-      textRectangle = getTextRectangle(drawRectangle, clientRectangle);
+      drawRectangle = getDrawRectangle(clientRectangle, leftSide);
+      textRectangle = getTextRectangle(drawRectangle, clientRectangle, leftSide);
       center = getCenter(drawRectangle);
    }
 

@@ -7,6 +7,7 @@ using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Core.WinForms.Controls;
 
@@ -97,6 +98,9 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
    protected Maybe<SubText> _validateSubText = nil;
    protected bool validatesMessages;
    protected Hash<Keys, Action<KeyEventArgs>> shortcuts = [];
+   protected Lazy<Timer> timer;
+   protected Maybe<BusyTextProcessor> _busyTextProcessor = nil;
+   protected bool waiting;
 
    public new event EventHandler<PaintEventArgs>? Paint;
    public new event EventHandler<ValidatingArgs>? Validating;
@@ -129,6 +133,38 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
             SelectAll();
          }
       };
+
+      timer = new Lazy<Timer>(getTimer);
+   }
+
+   protected BusyTextProcessor getBusyTextProcessor() => new(Color.Gray, ClientRectangle, false);
+
+   protected Timer getTimer()
+   {
+      var newTimer = new Timer { Enabled = false, Interval = 500 };
+      newTimer.Tick += (_, _) =>
+      {
+         (var busyTextProcessor, _busyTextProcessor) = _busyTextProcessor.Create(getBusyTextProcessor);
+         busyTextProcessor.OnTick();
+         Invalidate();
+      };
+
+      return newTimer;
+   }
+
+   public bool Waiting
+   {
+      get => waiting;
+      set
+      {
+         waiting = value;
+         timer.Value.Enabled = waiting;
+         if (!waiting)
+         {
+            _busyTextProcessor = nil;
+         }
+         Invalidate();
+      }
    }
 
    public bool AutoSelectAll { get; set; }
@@ -422,6 +458,12 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
 
       drawAllSubTexts(e.Graphics, e.ClipRectangle);
 
+      if (waiting)
+      {
+         (var busyTextProcessor, _busyTextProcessor) = _busyTextProcessor.Create(getBusyTextProcessor);
+         busyTextProcessor.OnPaint(e);
+      }
+
       Paint?.Invoke(this, e);
    }
 
@@ -449,6 +491,8 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
       base.OnResize(e);
 
       windowExtender.ReinitializeCanvas();
+
+      _busyTextProcessor = nil;
    }
 
    public void ReassignHandle() => windowExtender.AssignHandle(Handle);
