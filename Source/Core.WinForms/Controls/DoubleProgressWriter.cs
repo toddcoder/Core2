@@ -124,7 +124,8 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
             Font = font,
             ForeColor = Color.Black,
             BackColor = Color.White,
-            BackgroundRestriction = new BackgroundRestriction.UseWriterAlignment(2)
+            BackgroundRestriction = new BackgroundRestriction.UseWriterAlignment(2),
+            UseEmojis = false
          };
          writer.Write(g);
       }
@@ -162,7 +163,8 @@ public class DoubleProgressWriter(Rectangle clientRectangle, Font font)
          {
             Font = font,
             ForeColor = foreColor,
-            AutoSizeText = true
+            AutoSizeText = true,
+            UseEmojis = false
          };
          writer.Write(g);
       }
