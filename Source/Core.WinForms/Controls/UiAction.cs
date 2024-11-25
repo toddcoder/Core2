@@ -4126,4 +4126,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    public void SendMessage(string message) => SendMessage(message, nil);
 
    public bool HostCanSizeToText { get; set; } = true;
+
+   public int HostCanSizeToTextPadding { get; set; } = 40;
 }

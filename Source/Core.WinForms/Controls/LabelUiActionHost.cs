@@ -13,7 +13,7 @@ public class LabelUiActionHost<TControl>(TableLayoutPanel tableLayoutPanel, UiAc
    {
       if (action.HostCanSizeToText)
       {
-         action.SizeToText();
+         action.SizeToText(action.HostCanSizeToTextPadding);
       }
 
       actions.Add(action);
@@ -27,7 +27,7 @@ public class LabelUiActionHost<TControl>(TableLayoutPanel tableLayoutPanel, UiAc
       {
          if (uiAction.HostCanSizeToText)
          {
-            uiAction.SizeToText();
+            uiAction.SizeToText(uiAction.HostCanSizeToTextPadding);
          }
 
          this.actions.Add(uiAction);
