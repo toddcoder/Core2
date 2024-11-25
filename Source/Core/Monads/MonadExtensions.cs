@@ -1106,4 +1106,12 @@ public static class MonadExtensions
          return result.Exception;
       }
    }
+
+   public static Maybe<Unit> SameMaybe(this string string1, string string2) => maybe<Unit>() & string1.Same(string2) & unit;
+
+   public static Optional<Unit> SameOptional(this string string1, string string2) => optional<Unit>() & string1.Same(string2) & unit;
+
+   public static Completion<Unit> SameCompletion(this string string1, string string2) => string1.Same(string2) ? unit : nil;
+
+   public static Result<Unit> SameResult(this string string1, string string2) => string1.Same(string2) ? unit : fail("strings don't match");
 }
