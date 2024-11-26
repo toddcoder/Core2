@@ -70,7 +70,15 @@ public class LabelUiActionHost<TControl>(TableLayoutPanel tableLayoutPanel, UiAc
       }
    }
 
-   public void ClearActions() => actions.Clear();
+   public void ClearActions()
+   {
+      foreach (var uiAction in actions)
+      {
+         tableLayoutPanel.Controls.Remove(uiAction);
+      }
+
+      actions.Clear();
+   }
 
    public IEnumerator<UiAction> GetEnumerator() => actions.GetEnumerator();
 
