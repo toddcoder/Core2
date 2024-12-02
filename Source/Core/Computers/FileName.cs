@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using Core.Assertions;
 using Core.Enumerables;
 using Core.Matching;
@@ -24,6 +25,15 @@ namespace Core.Computers;
 public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>, IFullPath, IValidPath<FileName>
 {
    public static Result<FileName> FromString(string file) => file.Must().BeAValidFileName().OrFailure().Map(f => (FileName)f);
+
+   public static FileName FromText(FolderName folder, string text, string extension)
+   {
+      var invalidCharacters = new string(Path.GetInvalidFileNameChars()).Replace('"', '_');
+      var pattern = $"[{invalidCharacters.Escape()}]";
+      var file = folder.File(Regex.Replace(text, pattern, "_").Trim(), extension);
+
+      return file;
+   }
 
    [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
    public static extern bool PathYetAnotherMakeUniqueName(StringBuilder uniqueName, string path, string? shortTemplate, string longTemplate);
