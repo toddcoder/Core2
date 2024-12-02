@@ -4,6 +4,7 @@ using System.Linq;
 using Core.Arrays;
 using Core.Assertions;
 using Core.Collections;
+using Core.Configurations;
 using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
@@ -1464,6 +1465,20 @@ public static class EnumerableExtensions
       for (var i = startIndex; i < array.Length; i++)
       {
          if (array[i]!.Equals(item))
+         {
+            return i;
+         }
+      }
+
+      return nil;
+   }
+
+   public static Maybe<int> Find<T>(this IEnumerable<T> items, Func<T, bool> predicate, int startIndex = 0)
+   {
+      T[] array = [.. items];
+      for (var i = startIndex; i < array.Length; i++)
+      {
+         if (predicate(array[i]))
          {
             return i;
          }
