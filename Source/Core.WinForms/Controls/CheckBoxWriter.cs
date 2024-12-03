@@ -78,7 +78,7 @@ public class CheckBoxWriter(UiAction uiAction, string[] alternates, bool autoSiz
       {
          CheckBoxRenderer.RenderMatchingApplicationState = true;
          var size = CheckBoxRenderer.GetGlyphSize(g, CheckBoxState.UncheckedNormal);
-         var glyphRectangle = size.West(rectangle, 2);
+         var glyphRectangle = size.West(rectangle, 4);
          CheckBoxRenderer.DrawCheckBox(g, glyphRectangle.Location, CheckBoxState.UncheckedNormal);
          var width = glyphRectangle.Width;
          writer.Rectangle = rectangle with { X = rectangle.X + width, Width = rectangle.Width - width };
@@ -89,10 +89,10 @@ public class CheckBoxWriter(UiAction uiAction, string[] alternates, bool autoSiz
       {
          CheckBoxRenderer.RenderMatchingApplicationState = true;
          var size = CheckBoxRenderer.GetGlyphSize(g, CheckBoxState.CheckedNormal);
-         var glyphRectangle = size.West(rectangle, 2);
+         var glyphRectangle = size.West(rectangle, 4);
          CheckBoxRenderer.DrawCheckBox(g, glyphRectangle.Location, CheckBoxState.CheckedNormal);
          var width = glyphRectangle.Width;
-         writer.Rectangle = rectangle with { X = rectangle.X + width + 4, Width = rectangle.Width - width - 8 };
+         writer.Rectangle = rectangle with { X = rectangle.X + width, Width = rectangle.Width - width };
          writer.Write(g, alternate, false);
       }
    }

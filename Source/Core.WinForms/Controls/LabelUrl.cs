@@ -1,4 +1,5 @@
-﻿using Core.Strings;
+﻿using Core.Monads;
+using Core.Strings;
 using Core.WinForms.TableLayoutPanels;
 using System.Diagnostics;
 
@@ -10,8 +11,11 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
    protected UiAction uiUrl = new() { UseEmojis = false, AutoSizeText = true };
    protected ExTextBox textBox = new() { Visible = false };
    protected LabelUiActionHost<UiAction> host;
+   protected bool isLocked;
 
+   public new event EventHandler? TextChanged;
    public event EventHandler<EventArgs>? UrlChanged;
+   public event EventHandler<LabelActionMessageArgs>? MessageReceived;
 
    public LabelUrl(string label)
    {
@@ -103,6 +107,14 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
             uiUrl.Visible = true;
          }
       };
+      textBox.TextChanged += (_, _) =>
+      {
+         if (!isLocked)
+         {
+            TextChanged?.Invoke(this, EventArgs.Empty);
+            uiLabel.IsDirty = CanDirty;
+         }
+      };
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 100f;
@@ -121,21 +133,39 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
    public string Url
    {
       get => uiUrl.NonNullText;
-      set
+      set => display(value);
+   }
+
+   public void UpdateUrl(string url)
+   {
+      try
       {
-         display(value);
-         UrlChanged?.Invoke(this, EventArgs.Empty);
+         isLocked = true;
+         display(url);
+      }
+      finally
+      {
+         isLocked = false;
       }
    }
 
    public string Branch { get; set; } = "";
 
-   protected void display(string text) => uiUrl.Display(text, Color.Blue, Color.White);
+   protected void display(string text)
+   {
+      uiUrl.Display(text, Color.Blue, Color.White);
+      if (!isLocked)
+      {
+         UrlChanged?.Invoke(this, EventArgs.Empty);
+         uiUrl.IsDirty = CanDirty;
+         uiUrl.Refresh();
+      }
+   }
 
    public void Clear()
    {
       Branch = "";
-      display("");
+      UpdateUrl("");
    }
 
    public void AddUiAction(UiAction action) => host.AddUiAction(action);
@@ -152,5 +182,57 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
    {
       get => host.ActionsVisible;
       set => host.ActionsVisible = value;
+   }
+
+   public StatusType Status
+   {
+      get => uiLabel.Status;
+      set => uiLabel.Status = value;
+   }
+
+   public void ExceptionStatus(Exception exception) => uiLabel.ExceptionStatus(exception);
+
+   public void FailureStatus(string message) => uiLabel.FailureStatus(message);
+
+   public void ShowStatus(Optional<Unit> _optional, Either<string, Func<string>> failureFunc) => uiLabel.ShowStatus(_optional, failureFunc);
+
+   public bool IsDirty
+   {
+      get => uiLabel.IsDirty;
+      set => uiLabel.IsDirty = value;
+   }
+
+   public bool CanDirty { get; set; }
+
+   public void HookMessageReceived()
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.MessageReceived += (_, e) => MessageReceived?.Invoke(this, new LabelActionMessageArgs(uiAction, e.Message, e.Cargo));
+      }
+   }
+
+   public void SendMessage(string message, object cargo)
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.SendMessage(message, cargo);
+      }
+   }
+
+   public void SendMessage(string message)
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.SendMessage(message);
+      }
+   }
+
+   public void RegisterMessage(string message)
+   {
+      foreach (var uiAction in host)
+      {
+         uiAction.RegisterMessage(message);
+      }
    }
 }

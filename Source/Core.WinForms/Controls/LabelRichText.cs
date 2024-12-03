@@ -135,7 +135,7 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost
       set => uiLabel.IsDirty = value;
    }
 
-   public bool CanDirty { get; set; } = true;
+   public bool CanDirty { get; set; }
 
    public void AddUiAction(UiAction action) => host.AddUiAction(action);
 
