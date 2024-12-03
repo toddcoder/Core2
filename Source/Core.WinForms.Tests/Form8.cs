@@ -36,10 +36,6 @@ public partial class Form8 : Form
       _ = builder.Col * 5 * 20f;
       _ = builder.Row + 100f;
       builder.SetUp();
-
-      var uiAlfa = new UiAction();
-      uiAlfa.CheckBox("Schema Change", false);
-      (builder + uiAlfa).Next();
    }
 
    protected override void OnResize(EventArgs e)
