@@ -95,6 +95,14 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
          textBox.Visible = false;
          uiUrl.Visible = true;
       };
+      textBox.MouseDown += (_, _) =>
+      {
+         if (!textBox.ClientRectangle.Contains(PointToClient(Cursor.Position)))
+         {
+            textBox.Visible = false;
+            uiUrl.Visible = true;
+         }
+      };
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 100f;
@@ -132,7 +140,11 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
 
    public void AddUiAction(UiAction action) => host.AddUiAction(action);
 
-   public void AddUiActions(params UiAction[] actions) => host.AddUiActions(actions);
+   public void AddUiActions(params UiAction[] actions)
+   {
+      host.AddUiActions(actions);
+      textBox.SetUpInTableLayoutPanel(tableLayoutPanel, 0, 1, actions.Length + 1);
+   }
 
    public void ClearActions() => host.ClearActions();
 
