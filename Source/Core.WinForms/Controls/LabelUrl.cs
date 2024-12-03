@@ -6,7 +6,7 @@ namespace Core.WinForms.Controls;
 
 public partial class LabelUrl : UserControl, ILabelUiActionHost
 {
-   protected UiAction uiDivider = new();
+   protected UiAction uiLabel = new();
    protected UiAction uiUrl = new() { UseEmojis = false, AutoSizeText = true };
    protected ExTextBox textBox = new() { Visible = false };
    protected LabelUiActionHost<UiAction> host;
@@ -17,7 +17,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
    {
       InitializeComponent();
 
-      uiDivider.Divider(label);
+      uiLabel.Divider(label);
 
       uiUrl.Font = new Font("Consolas", 1f, FontStyle.Underline);
       uiUrl.DoubleClick += (_, _) =>
@@ -56,16 +56,16 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
                   process.StartInfo.FileName = url;
                   process.Start();
 
-                  uiDivider.Status = StatusType.Success;
+                  uiLabel.Status = StatusType.Success;
                }
                else
                {
-                  uiDivider.FailureStatus("empty url");
+                  uiLabel.FailureStatus("empty url");
                }
             }
             catch (Exception exception)
             {
-               uiDivider.ExceptionStatus(exception);
+               uiLabel.ExceptionStatus(exception);
             }
          }
       };
@@ -97,18 +97,18 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
       };
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
-      _ = builder.Col + 100f + 160 + 160;
+      _ = builder.Col + 100f;
       _ = builder.Row * 2 * 50f;
       builder.SetUp();
 
-      (builder + uiDivider + false).SpanCol(3).Row();
-      (builder + uiUrl).SpanCol(3).Next();
-      (builder + textBox + (0, 1)).SpanCol(3).Row();
+      (builder + uiLabel + false).Row();
+      (builder + uiUrl).Next();
+      (builder + textBox + (0, 1)).Row();
 
-      host = new LabelUiActionHost<UiAction>(tableLayoutPanel, uiDivider, uiUrl, b => b.Row * 2 * 50f);
+      host = new LabelUiActionHost<UiAction>(tableLayoutPanel, uiLabel, uiUrl, b => b.Row * 2 * 50f);
    }
 
-   public UiAction Label => uiDivider;
+   public UiAction Label => uiLabel;
 
    public string Url
    {

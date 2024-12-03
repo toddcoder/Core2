@@ -335,9 +335,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
                var newAlternateWriter = new AlternateWriter(this, Alternates, AutoSizeText, _floor, _ceiling, UseEmojis);
                for (var i = 0; i < RectangleCount; i++)
                {
-                  /*newAlternateWriter.SetForeColor(i, alternateWriter.GetAlternateForeColor(i));
-                  newAlternateWriter.SetBackColor(i, alternateWriter.GetAlternateBackColor(i));
-                  newAlternateWriter.SetFontStyle(i, alternateWriter.GetFontStyle(i));*/
                   if (alternateWriter.GetBackColor(i) is (true, var backColor))
                   {
                      newAlternateWriter.SetBackColor(i, backColor);
@@ -2720,6 +2717,13 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    {
       timer.Enabled = false;
       oneTimeTimer = false;
+   }
+
+   public void StopTimers()
+   {
+      timer.Enabled = false;
+      oneTimeTimer = false;
+      timerPaint.Enabled = false;
    }
 
    public void NotifyDefault(bool value) => ButtonType = value ? UiActionButtonType.Default : UiActionButtonType.Cancel;

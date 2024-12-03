@@ -18,7 +18,7 @@ public class LabelUiActionHost<TControl>(TableLayoutPanel tableLayoutPanel, UiAc
 
       actions.Add(action);
 
-      rearrangeActions();
+      RearrangeActions();
    }
 
    public void AddUiActions(params UiAction[] actions)
@@ -33,29 +33,32 @@ public class LabelUiActionHost<TControl>(TableLayoutPanel tableLayoutPanel, UiAc
          this.actions.Add(uiAction);
       }
 
-      rearrangeActions();
+      RearrangeActions();
    }
 
-   protected void rearrangeActions()
+   public void RearrangeActions()
    {
-      var builder = new TableLayoutBuilder(tableLayoutPanel);
-      _ = builder.Col + 100f;
-      foreach (var uiAction in actions)
+      if (actions.Count > 0)
       {
-         _ = builder.Col + uiAction.Width;
+         var builder = new TableLayoutBuilder(tableLayoutPanel);
+         _ = builder.Col + 100f;
+         foreach (var uiAction in actions)
+         {
+            _ = builder.Col + uiAction.Width;
+         }
+
+         _ = arrangeRow(builder);
+         builder.SetUp();
+
+         (builder + uiLabel).Next();
+         foreach (var uiAction in actions.Take(actions.Count - 1))
+         {
+            (builder + uiAction).Next();
+         }
+
+         (builder + actions[^1]).Row();
+         (builder + control).SpanCol(actions.Count + 1).Row();
       }
-
-      _ = arrangeRow(builder);
-      builder.SetUp();
-
-      (builder + uiLabel).Next();
-      foreach (var uiAction in actions.Take(actions.Count - 1))
-      {
-         (builder + uiAction).Next();
-      }
-
-      (builder + actions[^1]).Row();
-      (builder + control).SpanCol(actions.Count + 1).Row();
    }
 
    public bool ActionsVisible
