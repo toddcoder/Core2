@@ -3994,7 +3994,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    protected static (int radius, Rectangle rectangle) getRectangle(Rectangle clientRectangle)
    {
       var diameter = getDiameter(clientRectangle);
-      var top = clientRectangle.Height / 2 - diameter / 2;
+      var top = 4;//clientRectangle.Height / 2 - diameter / 2;
       return (diameter / 2, new Rectangle(4, top, diameter, diameter));
    }
 
