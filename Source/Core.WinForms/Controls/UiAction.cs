@@ -517,6 +517,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
       fader = new Fader(this);
       fader.FadeComplete += (_, _) => fader.ClearTransparentLayeredWindow();
+
+      LeftStripe = nil;
    }
 
    [Obsolete("Use ctor()")]
@@ -1780,6 +1782,13 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       drawTitle(e.Graphics, clientRectangle);
 
       drawStatus(e.Graphics, clientRectangle);
+
+      if (LeftStripe is (true, var leftStripe))
+      {
+         using var stripePen = new Pen(getForeColor());
+         stripePen.DashStyle = leftStripe;
+         e.Graphics.DrawLine(stripePen, 0, 0, 0, Height);
+      }
 
       Painting?.Invoke(this, e);
       return;
@@ -4132,4 +4141,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    public bool HostCanSizeToText { get; set; } = true;
 
    public int HostCanSizeToTextPadding { get; set; } = 40;
+
+   public Maybe<DashStyle> LeftStripe
+   {
+      get;
+      set
+      {
+         field = value;
+         Invalidate();
+      }
+   }
 }

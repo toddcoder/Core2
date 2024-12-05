@@ -12,6 +12,7 @@ public partial class Form5 : Form
    protected UiAction uiAction2 = new();
    protected UiAction uiAction3 = new();
    protected UiAction uiAction4 = new();
+   protected Header header = new();
    protected ControlContainer<TextBox> textBoxContainer = ControlContainer<TextBox>.HorizontalContainer();
 
    public Form5()
@@ -48,6 +49,13 @@ public partial class Form5 : Form
          }
       };
 
+      var columnSize = new ColumnSize.Percent(33.33f);
+      (header + "a" + "alpha" + columnSize).HeaderColumn();
+      (header + "b" + "bravo" + columnSize).HeaderColumn();
+      (header + "c" + "charlie" + columnSize).HeaderColumn();
+      header.Arrange();
+      header.HeaderClick += (_, e) => Text = e.Name;
+
       textBoxContainer.ShowLastFocus = false;
       foreach (var _ in Enumerable.Range(0, 3))
       {
@@ -59,7 +67,7 @@ public partial class Form5 : Form
 
       var builder = new TableLayoutBuilder(tableLayoutPanel1);
       _ = builder.Col + 50f + 50f;
-      _ = builder.Row + 40 + 60 + 60 + 60 + 100f;
+      _ = builder.Row + 40 + 60 + 60 + 30 + 60 + 100f;
       builder.SetUp();
 
       (builder + textBox).Row();
@@ -69,6 +77,8 @@ public partial class Form5 : Form
 
       (builder + uiAction3).Next();
       (builder + uiAction4).Row();
+
+      (builder + header).SpanCol(2).Row();
 
       (builder + textBoxContainer).SpanCol(2).Row();
 

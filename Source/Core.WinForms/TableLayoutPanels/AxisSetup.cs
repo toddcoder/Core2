@@ -1,4 +1,5 @@
 ﻿using Core.Monads;
+using Core.WinForms.Controls;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.TableLayoutPanels;
@@ -14,6 +15,21 @@ public class AxisSetup
    public static AxisSetup operator +(AxisSetup axisSetup, float percent)
    {
       axisSetup.values.Add(percent);
+      return axisSetup;
+   }
+
+   public static AxisSetup operator +(AxisSetup axisSetup, ColumnSize columnSize)
+   {
+      switch (columnSize)
+      {
+         case ColumnSize.Absolute absolute:
+            axisSetup.values.Add(absolute.Amount);
+            break;
+         case ColumnSize.Percent percent:
+            axisSetup.values.Add(percent.Amount);
+            break;
+      }
+
       return axisSetup;
    }
 
