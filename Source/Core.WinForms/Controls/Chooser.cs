@@ -29,6 +29,7 @@ public partial class Chooser : Form
 
    public Maybe<Chosen> Open()
    {
+      UpdateZOrder();
       ShowDialog();
       return Choice;
    }
