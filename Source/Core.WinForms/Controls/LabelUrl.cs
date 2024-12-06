@@ -91,6 +91,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
                textBox.Visible = false;
                uiUrl.Visible = true;
                display(textBox.Text);
+               e.Handled = true;
                break;
          }
       };
