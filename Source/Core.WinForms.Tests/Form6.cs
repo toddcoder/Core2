@@ -28,8 +28,16 @@ public partial class Form6 : Form
       ltText.TextChanged += (_, _) =>
       {
          var text = ltText.Text;
-         ltText.Label.DividerValidation = new DividerValidation.None();
-         _ = ltText.Label & (text.IsNotEmpty(), "text is empty") & (text is "alfa" or "bravo", "Expected alfa or bravo");
+         if (text.StartsWith('#'))
+         {
+            text = text.Drop(1);
+            ltText.LabelString = text;
+         }
+         else
+         {
+            ltText.Label.DividerValidation = new DividerValidation.None();
+            _ = ltText.Label & (text.IsNotEmpty(), "text is empty") & (text is "alfa" or "bravo", "Expected alfa or bravo");
+         }
       };
 
       var uiAlfa = new UiAction();

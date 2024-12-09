@@ -115,6 +115,12 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost
 
    public UiAction Label => uiLabel;
 
+   public string LabelString
+   {
+      get => uiLabel.NonNullText;
+      set => uiLabel.Divider(value);
+   }
+
    public ExRichTextBox TextBox => textBox;
 
    public StatusType Status

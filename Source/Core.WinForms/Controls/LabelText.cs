@@ -83,6 +83,12 @@ public partial class LabelText : UserControl, ILabelUiActionHost
 
    public UiAction Label => uiLabel;
 
+   public string LabelString
+   {
+      get => uiLabel.NonNullText;
+      set => uiLabel.Divider(value);
+   }
+
    public ExTextBox TextBox => textBox;
 
    public StatusType Status

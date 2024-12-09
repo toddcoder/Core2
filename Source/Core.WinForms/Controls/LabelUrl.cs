@@ -131,6 +131,12 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
 
    public UiAction Label => uiLabel;
 
+   public string LabelString
+   {
+      get => uiLabel.NonNullText;
+      set => uiLabel.Divider(value);
+   }
+
    public string Url
    {
       get => uiUrl.NonNullText;

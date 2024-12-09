@@ -61,6 +61,12 @@ public partial class LabelDate : UserControl, ILabelUiActionHost
 
    public UiAction Label => uiLabel;
 
+   public string LabelString
+   {
+      get => uiLabel.NonNullText;
+      set => uiLabel.Divider(value);
+   }
+
    public DateTimePicker DateTimePicker => dateTimePicker;
 
    public StatusType Status

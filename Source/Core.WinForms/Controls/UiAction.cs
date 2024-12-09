@@ -1863,11 +1863,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          messageWriter.Write(e.Graphics);
       }
 
-      using var backBrush = new SolidBrush(Color.CadetBlue);
-      fillRectangle(e.Graphics, backBrush, textRectangle);
-
       if (text.IsNotEmpty())
       {
+         using var backBrush = new SolidBrush(Color.CadetBlue);
+         fillRectangle(e.Graphics, backBrush, textRectangle);
+
          var writer = new RectangleWriter(text, textRectangle) { ForeColor = Color.White, Font = Font!, UseEmojis = UseEmojis };
          writer.Write(e.Graphics);
       }
