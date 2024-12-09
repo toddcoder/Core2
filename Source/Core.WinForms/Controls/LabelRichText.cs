@@ -1,5 +1,4 @@
 ﻿using Core.Monads;
-using Core.Strings;
 using Core.WinForms.TableLayoutPanels;
 using static Core.Monads.MonadFunctions;
 
@@ -26,10 +25,7 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost
    {
       InitializeComponent();
 
-      if (label.IsNotEmpty())
-      {
-         uiLabel.Divider(label);
-      }
+      uiLabel.Divider(label);
 
       textBox.Text = "";
       textBox.TextChanged += (_, _) =>

@@ -1,5 +1,4 @@
 ﻿using Core.Monads;
-using Core.Strings;
 using Core.WinForms.TableLayoutPanels;
 
 namespace Core.WinForms.Controls;
@@ -17,10 +16,7 @@ public partial class LabelDate : UserControl, ILabelUiActionHost
    {
       InitializeComponent();
 
-      if (label.IsNotEmpty())
-      {
-         uiLabel.Divider(label);
-      }
+      uiLabel.Divider(label);
 
       dateTimePicker.Format = DateTimePickerFormat.Short;
       dateTimePicker.Value = DateTime.Now;
