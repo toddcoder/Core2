@@ -96,4 +96,11 @@ public static class ControlExtensions
    public static void MoveTo(this Control control, int x, int y, Size size) => control.MoveTo(new Point(x, y), size);
 
    public static void MoveTo(this Control control, Point location, int width, int height) => control.MoveTo(location, new Size(width, height));
+
+   public static void ZeroOut(this Control control)
+   {
+      control.Padding = new Padding(0);
+      control.Margin = new Padding(0);
+   }
+
 }
