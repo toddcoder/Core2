@@ -1,5 +1,6 @@
 ﻿using Core.Monads;
 using Core.Objects;
+using Core.Strings;
 using Core.WinForms.TableLayoutPanels;
 
 namespace Core.WinForms.Controls;
@@ -18,7 +19,10 @@ public partial class LabelText : UserControl, ILabelUiActionHost
    {
       InitializeComponent();
 
-      uiLabel.Divider(label);
+      if (label.IsNotEmpty())
+      {
+         uiLabel.Divider(label);
+      }
 
       textBox.Text = "";
       textBox.TextChanged += (_, _) =>

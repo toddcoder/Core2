@@ -21,7 +21,10 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
    {
       InitializeComponent();
 
-      uiLabel.Divider(label);
+      if (label.IsNotEmpty())
+      {
+         uiLabel.Divider(label);
+      }
 
       uiUrl.Font = new Font("Consolas", 1f, FontStyle.Underline);
       uiUrl.DoubleClick += (_, _) =>
