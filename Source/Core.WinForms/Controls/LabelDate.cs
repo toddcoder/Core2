@@ -1,5 +1,6 @@
 ﻿using Core.Monads;
 using Core.WinForms.TableLayoutPanels;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
@@ -8,6 +9,7 @@ public partial class LabelDate : UserControl, ILabelUiActionHost
    protected UiAction uiLabel = new();
    protected bool isLocked;
    protected LabelUiActionHost<CoreDateTimePicker> host;
+   protected Maybe<DateTimePickerFormat> _lastFormat = nil;
 
    public event EventHandler? ValueChanged;
    public event EventHandler<LabelActionMessageArgs>? MessageReceived;
@@ -38,12 +40,39 @@ public partial class LabelDate : UserControl, ILabelUiActionHost
       (builder + dateTimePicker).Row();
 
       host = new LabelUiActionHost<CoreDateTimePicker>(tableLayoutPanel, uiLabel, dateTimePicker, b => b.Row * 2 * 50f);
+      CustomFormat = nil;
    }
 
    public DateTime Value
    {
       get => dateTimePicker.Value;
       set => dateTimePicker.Value = value == DateTime.MinValue ? DateTime.Today : value;
+   }
+
+   public Maybe<string> CustomFormat
+   {
+      get;
+      set
+      {
+         field = value;
+         if (field is (true, var customFormat))
+         {
+            _lastFormat = dateTimePicker.Format;
+            dateTimePicker.Format = DateTimePickerFormat.Custom;
+            dateTimePicker.CustomFormat = customFormat;
+         }
+         else if (_lastFormat is (true, var lastFormat))
+         {
+            dateTimePicker.Format = lastFormat;
+            _lastFormat = nil;
+         }
+      }
+   }
+
+   public bool ShowUpDown
+   {
+      get => dateTimePicker.ShowUpDown;
+      set => dateTimePicker.ShowUpDown = value;
    }
 
    public void UpdateValue(DateTime dateTime)
