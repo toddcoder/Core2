@@ -210,6 +210,8 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
+   public int Count => objectHash.Count;
+
    protected override void OnResize(EventArgs e)
    {
       base.OnResize(e);
