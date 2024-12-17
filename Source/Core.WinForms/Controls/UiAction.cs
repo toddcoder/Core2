@@ -3550,7 +3550,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
       type = UiActionType.ReadOnlyAlternate;
       RectangleCount = alternates.Length;
-      _alternateWriter = new ReadOnlyAlternateWriter(this, alternates, AutoSizeText);
+      _alternateWriter = new ReadOnlyAlternateWriter(this, alternates, AutoSizeText, UseEmojis);
       refresh();
    }
 

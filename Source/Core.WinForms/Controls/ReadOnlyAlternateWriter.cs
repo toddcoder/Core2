@@ -7,7 +7,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, bool autoSizeText) : IAlternateWriter
+public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, bool autoSizeText, bool useEmojis) : IAlternateWriter
 {
    protected readonly Color defaultForeColor = Color.White;
    protected readonly Color defaultBackColor = Color.CadetBlue;
@@ -98,7 +98,8 @@ public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, boo
             BackColor = GetAlternateBackColor(i),
             BackgroundRestriction = new BackgroundRestriction.Fill(),
             Font = uiAction.NonNullFont,
-            AutoSizeText = autoSizeText
+            AutoSizeText = autoSizeText,
+            UseEmojis = useEmojis
          };
          writer.Write(g);
 
