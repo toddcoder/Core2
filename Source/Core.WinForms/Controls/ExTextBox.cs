@@ -163,6 +163,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
          {
             _busyTextProcessor = nil;
          }
+
          Invalidate();
       }
    }
@@ -296,6 +297,12 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
    }
 
    public int GetLeftMargin() => (int)User32.SendMessage(Handle, User32.Messages.GetMargins, User32.LEFT_MARGIN, 0);
+
+   public int SetLeftMargin(int leftMargin)
+   {
+      _leftMargin = leftMargin;
+      return (int)User32.SendMessage(Handle, User32.Messages.SetMargins, leftMargin, 0);
+   }
 
    public SubText SubText(string text, Color foreColor, Color backColor)
    {
