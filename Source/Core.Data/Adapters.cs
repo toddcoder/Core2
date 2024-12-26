@@ -7,6 +7,7 @@ using Core.Data.Setups;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
+using Microsoft.Data.SqlClient;
 using static Core.Monads.AttemptFunctions;
 using static Core.Monads.MonadFunctions;
 

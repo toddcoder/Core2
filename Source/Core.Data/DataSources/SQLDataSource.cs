@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using System.Data.SqlClient;
 using Core.Assertions;
 using Core.Collections;
 using Core.Dates.DateIncrements;
@@ -7,6 +6,7 @@ using Core.Enumerables;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
+using Microsoft.Data.SqlClient;
 using static System.Convert;
 
 namespace Core.Data.DataSources;

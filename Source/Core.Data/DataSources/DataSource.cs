@@ -7,6 +7,7 @@ using Core.Matching;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
+using Microsoft.Data.SqlClient;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.DataSources;

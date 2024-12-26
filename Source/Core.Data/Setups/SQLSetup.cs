@@ -1,5 +1,4 @@
-﻿using System.Data.SqlClient;
-using Core.Assertions;
+﻿using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
 using Core.Configurations;
@@ -10,6 +9,7 @@ using Core.Dates.DateIncrements;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
+using Microsoft.Data.SqlClient;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.Setups;

@@ -1,5 +1,5 @@
-﻿using System.Data.SqlClient;
-using Core.Monads;
+﻿using Core.Monads;
+using Microsoft.Data.SqlClient;
 
 namespace Core.Data.Setups;
 
