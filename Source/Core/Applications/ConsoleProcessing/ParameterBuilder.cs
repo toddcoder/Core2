@@ -30,8 +30,6 @@ public class ParameterBuilder(string name, CommandBuilder commandBuilder)
       return builder;
    }
 
-   public static Parameter operator +(ParameterBuilder builder, ParameterTerminal _) => builder.Parameter();
-
    public string Name => name;
 
    protected Maybe<Type> _type = nil;

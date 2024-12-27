@@ -7,7 +7,6 @@ using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static Core.Applications.ConsoleProcessing.TerminalFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests;
@@ -455,14 +454,14 @@ public class ApplicationTests
       var processor = new ConsoleProcessor();
 
       var fileCommand = processor + "file" + file;
-      _ = fileCommand + "source" + typeof(FileName) + "Source file" + parameter;
-      _ = fileCommand + "target" + typeof(FolderName) + true + "Target folder" + parameter;
-      _ = fileCommand + command;
+      (fileCommand + "source" + typeof(FileName) + "Source file").Parameter();
+      (fileCommand + "target" + typeof(FolderName) + true + "Target folder").Parameter();
+      fileCommand.Command();
 
       var formatCommand = processor + "format" + format;
-      _ = formatCommand + "initialize" + typeof(bool) + true + 'i' + "Initialize disk" + parameter;
-      _ = formatCommand + "drive" + typeof(string) + 'd' + "Drive to format" + parameter;
-      _ = formatCommand + command;
+      (formatCommand + "initialize" + typeof(bool) + true + 'i' + "Initialize disk").Parameter();
+      (formatCommand + "drive" + typeof(string) + 'd' + "Drive to format").Parameter();
+      formatCommand.Command();
 
       var _result = processor.Execute(@"file --source P:\Temp\angular.txt");
       if (!_result)

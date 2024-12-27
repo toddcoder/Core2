@@ -1,7 +1,6 @@
 ﻿using System;
 using Core.Collections;
 using Core.Monads;
-using static Core.Applications.ConsoleProcessing.TerminalFunctions;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.ConsoleProcessing;
@@ -71,7 +70,7 @@ public class ConsoleProcessor(string parameterPrefix = "--", string shortcutPref
          }
       }
 
-      return helpCommand + command;
+      return helpCommand.Command();
    }
 
    protected Optional<Unit> help(CommandValue commandValue)

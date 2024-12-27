@@ -13,8 +13,6 @@ public class CommandBuilder(string commandName, ConsoleProcessor consoleProcesso
       return builder;
    }
 
-   public static Command operator +(CommandBuilder builder, CommandTerminal _) => builder.Command();
-
    public static ParameterBuilder operator +(CommandBuilder builder, string parameterName)
    {
       return new ParameterBuilder(parameterName, builder);
