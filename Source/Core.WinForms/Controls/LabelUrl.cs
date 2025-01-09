@@ -144,19 +144,11 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
                break;
          }
       };
-      /*textBox.LostFocus += (_, _) =>
+      textBox.LostFocus += (_, _) =>
       {
          textLayoutPanel.Visible = false;
          uiUrl.Visible = true;
       };
-      textBox.MouseDown += (_, _) =>
-      {
-         if (!textBox.ClientRectangle.Contains(PointToClient(Cursor.Position)))
-         {
-            textLayoutPanel.Visible = false;
-            uiUrl.Visible = true;
-         }
-      };*/
       textBox.TextChanged += (_, _) =>
       {
          if (!isLocked)
