@@ -1,4 +1,5 @@
-﻿using Core.WinForms.Controls;
+﻿using Core.Matching;
+using Core.WinForms.Controls;
 using Core.WinForms.Drawing;
 using Core.WinForms.TableLayoutPanels;
 
@@ -27,6 +28,20 @@ public partial class Form9 : Form
       uiFailure.Failure("failure");
 
       luUrl1.Url = "http://google.com";
+      luUrl1.UrlChanged += (_, e) =>
+      {
+         var url = e.Url;
+         if (url.Matches(@"&view=\w+$; u") is (true, var result1))
+         {
+            result1.ZerothGroup = "";
+            e.Url = result1.Text;
+         }
+         else if (url.Matches(@"\?_a=overview$; u") is (true, var result2))
+         {
+            result2.ZerothGroup = "";
+            e.Url = result2.Text;
+         }
+      };
       luUrl2.Url = "http://google.com";
       luUrl2.AddUiActions(uiSuccess, uiFailure);
 

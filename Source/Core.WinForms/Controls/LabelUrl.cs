@@ -20,7 +20,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
    protected bool isLocked;
 
    public new event EventHandler? TextChanged;
-   public event EventHandler<EventArgs>? UrlChanged;
+   public event EventHandler<UrlChangedArgs>? UrlChanged;
    public event EventHandler<LabelActionMessageArgs>? MessageReceived;
 
    public LabelUrl(string label)
@@ -266,14 +266,21 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
 
    public string Branch { get; set; } = "";
 
-   protected void display(string text)
+   protected void display(string url)
    {
-      uiUrl.Display(text, Color.Blue, Color.White);
-      if (!isLocked)
+      var args = new UrlChangedArgs(url);
+      UrlChanged?.Invoke(this, args);
+      if (!args.Cancel)
       {
-         UrlChanged?.Invoke(this, EventArgs.Empty);
-         uiUrl.IsDirty = CanDirty;
-         uiUrl.Refresh();
+         url = args.Url;
+
+         uiUrl.Display(url, Color.Blue, Color.White);
+         textBox.Text = url;
+         if (!isLocked)
+         {
+            uiUrl.IsDirty = CanDirty;
+            uiUrl.Refresh();
+         }
       }
    }
 
