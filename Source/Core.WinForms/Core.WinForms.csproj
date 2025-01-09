@@ -8,6 +8,18 @@
     <GenerateResourceWarnOnBinaryFormatterUse>false</GenerateResourceWarnOnBinaryFormatterUse>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Controls\Cancel.png" />
+    <None Remove="Controls\CheckBoxChecked.png" />
+    <None Remove="Controls\Copy.png" />
+    <None Remove="Controls\Paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\Cancel.png" />
+    <EmbeddedResource Include="Controls\CheckBoxChecked.png" />
+    <EmbeddedResource Include="Controls\Copy.png" />
+    <EmbeddedResource Include="Controls\Paste.png" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 </Project>

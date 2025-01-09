@@ -1,4 +1,6 @@
-﻿namespace Core.WinForms.Controls;
+﻿using Core.Applications;
+
+namespace Core.WinForms.Controls;
 
 public static class ControlExtensions
 {
@@ -103,4 +105,13 @@ public static class ControlExtensions
       control.Margin = new Padding(0);
    }
 
+   public static Image Image<T>(this Resources<T> resources, string name)
+   {
+      using var stream = resources.Stream(name);
+      return System.Drawing.Image.FromStream(stream);
+   }
+
+   public static Resources<TControl> Resources<TControl>(this TControl _) where TControl : Control => new();
+
+   public static Resources<TControl> Resources<TControl>(this TControl _, string path) where TControl : Control => new(path);
 }

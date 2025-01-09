@@ -2,6 +2,7 @@
 using Core.Strings;
 using Core.WinForms.TableLayoutPanels;
 using System.Diagnostics;
+using Core.Applications;
 
 namespace Core.WinForms.Controls;
 
@@ -24,6 +25,12 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
 
    public LabelUrl(string label)
    {
+      var resources = new Resources<LabelUrl>();
+      var copyImage = resources.Image("Copy.png");
+      var pasteImage = resources.Image("Paste.png");
+      var okImage = resources.Image("CheckBoxChecked.png");
+      var cancelImage = resources.Image("Cancel.png");
+
       InitializeComponent();
 
       uiLabel.Divider(label);
@@ -137,7 +144,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
                break;
          }
       };
-      textBox.LostFocus += (_, _) =>
+      /*textBox.LostFocus += (_, _) =>
       {
          textLayoutPanel.Visible = false;
          uiUrl.Visible = true;
@@ -149,7 +156,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
             textLayoutPanel.Visible = false;
             uiUrl.Visible = true;
          }
-      };
+      };*/
       textBox.TextChanged += (_, _) =>
       {
          if (!isLocked)
@@ -159,7 +166,8 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
          }
       };
 
-      uiCopy.Button("/copy");
+      uiCopy.Button("");
+      uiCopy.Image = copyImage;
       uiCopy.ZeroOut();
       uiCopy.Click += (_, _) =>
       {
@@ -171,7 +179,8 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
       };
       uiCopy.ClickText = "Copy text";
 
-      uiPaste.Button("/paste");
+      uiPaste.Button("");
+      uiPaste.Image = pasteImage;
       uiPaste.ZeroOut();
       uiPaste.Click += (_, _) =>
       {
@@ -183,7 +192,8 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
       };
       uiPaste.ClickText = "Paste text";
 
-      uiOk.Button("/check");
+      uiOk.Button("");
+      uiOk.Image = okImage;
       uiOk.ZeroOut();
       uiOk.Click += (_, _) =>
       {
@@ -193,7 +203,8 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
       };
       uiOk.ClickText = "Accept URL changes";
 
-      uiCancel.Button("/x");
+      uiCancel.Button("");
+      uiCancel.Image = cancelImage;
       uiCancel.ZeroOut();
       uiCancel.Click += (_, _) =>
       {
