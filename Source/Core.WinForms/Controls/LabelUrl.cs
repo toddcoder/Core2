@@ -26,17 +26,6 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
       uiUrl.Font = new Font("Consolas", 1f, FontStyle.Underline);
       uiUrl.DoubleClick += (_, _) =>
       {
-         if (ModifierKeys is not Keys.Control)
-         {
-            textBox.Text = uiUrl.Text;
-            textBox.BringToFront();
-            uiUrl.Visible = false;
-            textBox.Visible = true;
-            textBox.Focus();
-         }
-      };
-      uiUrl.Click += (_, _) =>
-      {
          if (ModifierKeys is Keys.Control)
          {
             openUrl(uiUrl.NonNullText);
@@ -45,6 +34,47 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
          {
             Clipboard.SetText(uiUrl.NonNullText);
             uiUrl.Status = StatusType.Done;
+         }
+
+         return;
+
+         void openUrl(string url)
+         {
+            try
+            {
+               if (url.IsNotEmpty())
+               {
+                  using var process = new Process();
+                  process.StartInfo.UseShellExecute = true;
+                  process.StartInfo.FileName = url;
+                  process.Start();
+
+                  uiLabel.Status = StatusType.Success;
+               }
+               else
+               {
+                  uiLabel.FailureStatus("empty url");
+               }
+            }
+            catch (Exception exception)
+            {
+               uiLabel.ExceptionStatus(exception);
+            }
+         }
+      };
+      uiUrl.Click += (_, _) =>
+      {
+         if (ModifierKeys is Keys.Control)
+         {
+            openUrl(uiUrl.NonNullText);
+         }
+         else
+         {
+            textBox.Text = uiUrl.Text;
+            textBox.BringToFront();
+            uiUrl.Visible = false;
+            textBox.Visible = true;
+            textBox.Focus();
          }
 
          return;
@@ -92,6 +122,13 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
                uiUrl.Visible = true;
                display(textBox.Text);
                e.Handled = true;
+               break;
+            case Keys.C when e.Control && uiUrl.NonNullText.IsNotEmpty():
+               Clipboard.SetText(uiUrl.NonNullText);
+               uiUrl.Status = StatusType.Done;
+               break;
+            case Keys.V when e.Control && Clipboard.ContainsText():
+               display(Clipboard.GetText());
                break;
          }
       };
