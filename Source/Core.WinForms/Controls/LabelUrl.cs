@@ -9,7 +9,12 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
 {
    protected UiAction uiLabel = new();
    protected UiAction uiUrl = new() { UseEmojis = false, AutoSizeText = true };
-   protected ExTextBox textBox = new() { Visible = false };
+   protected TableLayoutPanel textLayoutPanel = new() { Visible = false };
+   protected ExTextBox textBox = new();
+   protected UiAction uiCopy = new() { ClickGlyph = false };
+   protected UiAction uiPaste = new() { ClickGlyph = false };
+   protected UiAction uiOk = new() { ClickGlyph = false };
+   protected UiAction uiCancel = new() { ClickGlyph = false };
    protected LabelUiActionHost<UiAction> host;
    protected bool isLocked;
 
@@ -73,7 +78,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
             textBox.Text = uiUrl.Text;
             textBox.BringToFront();
             uiUrl.Visible = false;
-            textBox.Visible = true;
+            textLayoutPanel.Visible = true;
             textBox.Focus();
          }
 
@@ -106,19 +111,18 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
 
       Url = "";
 
-      Controls.Add(textBox);
-
+      textBox.ZeroOut();
       textBox.KeyUp += (_, e) =>
       {
          switch (e.KeyCode)
          {
             case Keys.Escape:
-               textBox.Visible = false;
+               textLayoutPanel.Visible = false;
                uiUrl.Visible = true;
                e.Handled = true;
                break;
             case Keys.Enter:
-               textBox.Visible = false;
+               textLayoutPanel.Visible = false;
                uiUrl.Visible = true;
                display(textBox.Text);
                e.Handled = true;
@@ -129,19 +133,20 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
                break;
             case Keys.V when e.Control && Clipboard.ContainsText():
                display(Clipboard.GetText());
+               uiUrl.Status = StatusType.Done;
                break;
          }
       };
       textBox.LostFocus += (_, _) =>
       {
-         textBox.Visible = false;
+         textLayoutPanel.Visible = false;
          uiUrl.Visible = true;
       };
       textBox.MouseDown += (_, _) =>
       {
          if (!textBox.ClientRectangle.Contains(PointToClient(Cursor.Position)))
          {
-            textBox.Visible = false;
+            textLayoutPanel.Visible = false;
             uiUrl.Visible = true;
          }
       };
@@ -154,14 +159,69 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
          }
       };
 
-      var builder = new TableLayoutBuilder(tableLayoutPanel);
+      uiCopy.Button("/copy");
+      uiCopy.ZeroOut();
+      uiCopy.Click += (_, _) =>
+      {
+         if (textBox.Text.IsNotEmpty())
+         {
+            Clipboard.SetText(uiUrl.NonNullText);
+            uiUrl.Status = StatusType.Done;
+         }
+      };
+      uiCopy.ClickText = "Copy text";
+
+      uiPaste.Button("/paste");
+      uiPaste.ZeroOut();
+      uiPaste.Click += (_, _) =>
+      {
+         if (Clipboard.ContainsText())
+         {
+            display(Clipboard.GetText());
+            uiUrl.Status = StatusType.Done;
+         }
+      };
+      uiPaste.ClickText = "Paste text";
+
+      uiOk.Button("/check");
+      uiOk.ZeroOut();
+      uiOk.Click += (_, _) =>
+      {
+         textLayoutPanel.Visible = false;
+         uiUrl.Visible = true;
+         display(textBox.Text);
+      };
+      uiOk.ClickText = "Accept URL changes";
+
+      uiCancel.Button("/x");
+      uiCancel.ZeroOut();
+      uiCancel.Click += (_, _) =>
+      {
+         textLayoutPanel.Visible = false;
+         uiUrl.Visible = true;
+      };
+      uiCancel.ClickText = "Cancel URL changes";
+
+      var builder = new TableLayoutBuilder(textLayoutPanel);
+      _ = builder.Col + 100f;
+      _ = builder.Col * 4 * 40;
+      _ = builder.Row + 100f;
+      builder.SetUp();
+
+      (builder + textBox).Next();
+      (builder + uiCopy).Next();
+      (builder + uiPaste).Next();
+      (builder + uiOk).Next();
+      (builder + uiCancel).Row();
+
+      builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 100f;
       _ = builder.Row * 2 * 50f;
       builder.SetUp();
 
       (builder + uiLabel + false).Row();
       (builder + uiUrl).Next();
-      (builder + textBox + (0, 1)).Row();
+      (builder + textLayoutPanel + (0, 1)).Row();
 
       host = new LabelUiActionHost<UiAction>(tableLayoutPanel, uiLabel, uiUrl, b => b.Row * 2 * 50f);
    }
