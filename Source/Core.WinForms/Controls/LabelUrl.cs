@@ -288,7 +288,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
    public void AddUiActions(params UiAction[] actions)
    {
       host.AddUiActions(actions);
-      textBox.SetUpInTableLayoutPanel(tableLayoutPanel, 0, 1, actions.Length + 1);
+      textLayoutPanel.SetUpInTableLayoutPanel(tableLayoutPanel, 0, 1, actions.Length + 1);
    }
 
    public void ClearActions() => host.ClearActions();
