@@ -8,7 +8,8 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms;
 
-public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment alignment = CardinalAlignment.Center, bool wordWrap = false, bool ellipses = false)
+public class RectangleWriter(string text, Rectangle rectangle, CardinalAlignment alignment = CardinalAlignment.Center, bool wordWrap = false,
+   bool ellipses = false)
 {
    protected const string DEFAULT_FONT_NAME = "Consolas";
    protected const float DEFAULT_FONT_SIZE = 12f;

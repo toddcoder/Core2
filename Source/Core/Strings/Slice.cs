@@ -19,4 +19,6 @@ public struct Slice
       index = Index;
       length = Length;
    }
+
+   public override string ToString() => Text.Drop(Index).Keep(Length);
 }
