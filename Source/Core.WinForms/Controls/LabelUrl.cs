@@ -11,7 +11,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
    protected UiAction uiLabel = new();
    protected UiAction uiUrl = new() { UseEmojis = false, AutoSizeText = true };
    protected TableLayoutPanel textLayoutPanel = new() { Visible = false };
-   protected ExTextBox textBox = new();
+   protected ExTextBox textBox = new() { TextAlign = HorizontalAlignment.Center, ForeColor = Color.Blue };
    protected UiAction uiCopy = new() { ClickGlyph = false };
    protected UiAction uiPaste = new() { ClickGlyph = false };
    protected UiAction uiOk = new() { ClickGlyph = false };
