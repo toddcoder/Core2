@@ -112,7 +112,7 @@ public class SettingSetter(Setting setting, string key)
    {
       set
       {
-         var innerSetting = new Setting(key);
+         var innerSetting = new Setting(key) { IsHash = true };
          foreach (var (hashKey, hashValue) in value)
          {
             innerSetting[hashKey] = hashValue;
@@ -146,7 +146,7 @@ public class SettingSetter(Setting setting, string key)
       return _newSetting;
    }
 
-   protected void setTuple<T>(Setting tupleSetting, string name, T value)
+   protected static void setTuple<T>(Setting tupleSetting, string name, T value)
    {
       switch (value)
       {

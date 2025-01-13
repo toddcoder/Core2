@@ -89,7 +89,7 @@ public class SettingTests
       public override int GetHashCode() => Payload.GetHashCode();
    }
 
-   protected Maybe<(string server, string database)> getServerDatabase(Setting setting)
+   protected static Maybe<(string server, string database)> getServerDatabase(Setting setting)
    {
       return
          from connections in setting.Maybe.Setting("connections")
@@ -211,7 +211,9 @@ public class SettingTests
    public void DeserializationTest()
    {
       var source = @"enum: Bravo; intValue: 153; stringValue: foobar; file: C:\temp\temp.txt; doubles: 1.0, 5.0, 3.0; isTrue: true; " +
-         @"escape: ""`r `t \ foobar""";
+         """
+         escape: "`r `t \ foobar"
+         """;
       var _object =
          from setting in Setting.FromString(source)
          from obj in setting.Deserialize<object>()
@@ -972,6 +974,53 @@ public class SettingTests
             var array = alfaSetting.Value.Array("array");
             Console.WriteLine(array.ToString(", "));
          }
+      }
+   }
+
+   [TestMethod]
+   public void ReadFolderConfigurationTest()
+   {
+      var setting = new Setting();
+      setting.Set("string").String = "string";
+      setting.Set("int32").Int32 = 153;
+      setting.Set("bool").Boolean = true;
+
+      var innerSetting = new Setting("innerSetting");
+      innerSetting.Set("string").String = "inner string";
+      setting.Set("innerSetting").Setting = innerSetting;
+
+      string[] array = ["alfa", "bravo", "charlie"];
+      setting.Set("array").Array = array;
+      setting.Set("hash").StringHash = array.ToStringHash(i => i.Keep(1), i => i);
+
+      FolderName baseFolder = @"C:\Temp\Configuration";
+      var configuration = new FolderConfiguration(baseFolder.Guarantee());
+
+      var _result = configuration.Update(setting);
+      if (_result)
+      {
+         var _setting = configuration.Setting();
+         if (_setting)
+         {
+            setting = _setting;
+            var _serialized = Serializer.Serialize(setting);
+            if (_serialized is (true, var serialized))
+            {
+               Console.WriteLine(serialized);
+            }
+            else
+            {
+               Console.WriteLine(_serialized.Exception.Message);
+            }
+         }
+      }
+      else if (_result.Exception is (true, var exception))
+      {
+         Console.WriteLine(exception.Message);
+      }
+      else
+      {
+         Console.WriteLine("not found");
       }
    }
 }

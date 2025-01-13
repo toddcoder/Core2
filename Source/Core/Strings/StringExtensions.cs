@@ -2377,4 +2377,28 @@ public static class StringExtensions
          return nil;
       }
    }
+
+   public static bool IsBase64(this string input)
+   {
+      if (input.IsEmpty() || input.Length % 4 != 0)
+      {
+         return false;
+      }
+      else if (!input.IsMatch("^ ['a-zA-Z0-9+//']* '='0%2 $; f"))
+      {
+         return false;
+      }
+      else
+      {
+         try
+         {
+            input.FromBase64();
+            return true;
+         }
+         catch (FormatException)
+         {
+            return false;
+         }
+      }
+   }
 }
