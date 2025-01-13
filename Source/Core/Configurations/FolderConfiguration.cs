@@ -60,6 +60,20 @@ public class FolderConfiguration(FolderName baseFolder)
    {
       foreach (var file in currentFolder.Files.Where(f => f.Name.IsMatch(validNamePattern) && f.Extension == ".setting"))
       {
+         loadFile(currentSetting, file);
+      }
+
+      foreach (var folder in currentFolder.Folders.Where(f => f.Name.IsMatch(validNamePattern)))
+      {
+         var folderSetting = new Setting(folder.Name);
+         loadSetting(folderSetting, folder);
+         currentSetting.Set(folder.Name).Setting = folderSetting;
+      }
+   }
+
+   protected static void loadFile(Setting currentSetting, FileName file)
+   {
+      {
          var text = file.TryTo.Text | "";
          if (text.IsNotEmpty())
          {
@@ -88,19 +102,21 @@ public class FolderConfiguration(FolderName baseFolder)
                   case "hash":
                      currentSetting.Set(key).StringHash = text.Lines().Select(l => getHashItem(l) | (l, "")).ToStringHash(t => t.key, t => t.value);
                      break;
+                  case "redirect":
+                  {
+                     FileName redirectTo = text;
+                     if (redirectTo)
+                     {
+                        loadFile(currentSetting, redirectTo);
+                     }
+                     break;
+                  }
                   default:
                      currentSetting.Set(key).String = text;
                      break;
                }
             }
          }
-      }
-
-      foreach (var folder in currentFolder.Folders.Where(f => f.Name.IsMatch(validNamePattern)))
-      {
-         var folderSetting = new Setting(folder.Name);
-         loadSetting(folderSetting, folder);
-         currentSetting.Set(folder.Name).Setting = folderSetting;
       }
 
       return;
@@ -130,25 +146,31 @@ public class FolderConfiguration(FolderName baseFolder)
       foreach (var (key, text) in currentSetting.Items())
       {
          var type = "string";
-         if (text is "true" or "false")
+         var content = text;
+         if (content is "true" or "false")
          {
             type = "boolean";
          }
-         else if (text.Maybe().Int32())
+         else if (content.Maybe().Int32())
          {
             type = "int32";
          }
-         else if (text.Maybe().Double())
+         else if (content.Maybe().Double())
          {
             type = "double";
          }
-         else if (text.IsBase64())
+         else if (content.IsBase64())
          {
             type = "base64";
          }
+         else if (content.StartsWith("->"))
+         {
+            type = "redirect";
+            content = content.Drop(2).Trim();
+         }
 
          var file = currentFolder + $"{key}.{type}.setting";
-         file.Text = text;
+         file.Text = content;
       }
 
       foreach (var (key, setting) in currentSetting.Settings().Where(t => t.setting.IsArray))
