@@ -127,11 +127,13 @@ public class Pattern : IEquatable<Pattern>
 
    public Pattern Unfriend() => new(regex, options, false);
 
+   protected RRegex getRegex() => compiledRegex.Memoize(regex, r => new RRegex(r, options | RegexOptions.Compiled));
+
    public Optional<MatchResult> MatchedBy(string input)
    {
       try
       {
-         var rRegex = compiledRegex.Memoize(regex, r => new RRegex(r, options | RegexOptions.Compiled));
+         var rRegex = getRegex();
          var newMatches = rRegex.Matches(input)
             .Select((m, i) => new Match
             {
@@ -205,4 +207,6 @@ public class Pattern : IEquatable<Pattern>
    public static bool operator !=(Pattern left, Pattern right) => !Equals(left, right);
 
    public static bool operator !=(Pattern pattern, string input) => !pattern.Equals(input);
+
+   public string Replace(string input, string replacement) => getRegex().Replace(input, replacement);
 }
