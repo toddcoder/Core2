@@ -163,7 +163,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
       uiCopy.ZeroOut();
       uiCopy.Click += (_, _) =>
       {
-         if (textBox.Text.IsNotEmpty())
+         if (uiUrl.NonNullText.IsNotEmpty())
          {
             Clipboard.SetText(uiUrl.NonNullText);
             uiUrl.Status = StatusType.Done;
