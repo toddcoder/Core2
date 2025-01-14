@@ -144,11 +144,6 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
                break;
          }
       };
-      textBox.LostFocus += (_, _) =>
-      {
-         textLayoutPanel.Visible = false;
-         uiUrl.Visible = true;
-      };
       textBox.TextChanged += (_, _) =>
       {
          if (!isLocked)
@@ -163,10 +158,13 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
       uiCopy.ZeroOut();
       uiCopy.Click += (_, _) =>
       {
-         if (uiUrl.NonNullText.IsNotEmpty())
+         if (textBox.Text.IsNotEmpty())
          {
-            Clipboard.SetText(uiUrl.NonNullText);
+            Clipboard.SetText(textBox.Text);
             uiUrl.Status = StatusType.Done;
+
+            textLayoutPanel.Visible = false;
+            uiUrl.Visible = true;
          }
       };
       uiCopy.ClickText = "Copy text";
@@ -180,6 +178,9 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
          {
             display(Clipboard.GetText());
             uiUrl.Status = StatusType.Done;
+
+            textLayoutPanel.Visible = false;
+            uiUrl.Visible = true;
          }
       };
       uiPaste.ClickText = "Paste text";
