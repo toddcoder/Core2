@@ -4114,7 +4114,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          Invalidate();
       }
    }
-   
+
    public void SetAlternateText(int index, string alternate)
    {
       if (_alternateWriter is (true, var alternateWriter))

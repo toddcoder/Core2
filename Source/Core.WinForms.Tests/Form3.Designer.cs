@@ -29,6 +29,8 @@
       private void InitializeComponent()
       {
          tableLayoutPanel = new TableLayoutPanel();
+         listBox1 = new ListBox();
+         tableLayoutPanel.SuspendLayout();
          SuspendLayout();
          // 
          // tableLayoutPanel
@@ -36,6 +38,7 @@
          tableLayoutPanel.ColumnCount = 2;
          tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
          tableLayoutPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+         tableLayoutPanel.Controls.Add(listBox1, 0, 0);
          tableLayoutPanel.Dock = DockStyle.Fill;
          tableLayoutPanel.Location = new Point(0, 0);
          tableLayoutPanel.Name = "tableLayoutPanel";
@@ -44,6 +47,16 @@
          tableLayoutPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
          tableLayoutPanel.Size = new Size(800, 450);
          tableLayoutPanel.TabIndex = 0;
+         // 
+         // listBox1
+         // 
+         listBox1.Dock = DockStyle.Fill;
+         listBox1.FormattingEnabled = true;
+         listBox1.ItemHeight = 15;
+         listBox1.Location = new Point(3, 3);
+         listBox1.Name = "listBox1";
+         listBox1.Size = new Size(394, 219);
+         listBox1.TabIndex = 0;
          // 
          // Form3
          // 
@@ -54,11 +67,13 @@
          Name = "Form3";
          Text = "Form3";
          WindowState = FormWindowState.Maximized;
+         tableLayoutPanel.ResumeLayout(false);
          ResumeLayout(false);
       }
 
       #endregion
 
       private TableLayoutPanel tableLayoutPanel;
+      private ListBox listBox1;
    }
 }

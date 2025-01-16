@@ -1,10 +1,42 @@
-﻿using Core.WinForms.Controls;
+﻿using Core.WinForms.Components;
+using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
 
 namespace Core.WinForms.Tests;
 
 public partial class Form3 : Form
 {
+   protected class RandomNumbers(ListBox listBox, UiAction uiAction) : Background
+   {
+      protected Random random = new();
+      protected List<int> numbers = [];
+
+      public override void Initialize()
+      {
+         uiAction.Busy(true);
+         numbers.Clear();
+      }
+
+      public override void DoWork()
+      {
+         for (var i = 0; i < 100; i++)
+         {
+            numbers.Add(random.Next(1, 100));
+         }
+      }
+
+      public override void RunWorkerCompleted()
+      {
+         foreach (var number in numbers)
+         {
+            listBox.Items.Add(number);
+         }
+
+         uiAction.Success("Done");
+      }
+   }
+
+   protected RandomNumbers randomNumbers;
    protected UiAction uiChooserTop = new() { ChooserGlyph = true };
    protected UiAction uiChooserBottom = new() { ChooserGlyph = true };
    protected UiAction uiResult = new();
@@ -12,6 +44,8 @@ public partial class Form3 : Form
    public Form3()
    {
       InitializeComponent();
+
+      randomNumbers = new RandomNumbers(listBox1, uiResult);
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 100f;
@@ -37,8 +71,12 @@ public partial class Form3 : Form
       };
       uiChooserBottom.ClickText = "Select items";
 
+      uiResult.Button("Start");
+      uiResult.Click += (_, _) => randomNumbers.RunWorkerAsync();
+
       (builder + uiChooserTop).Row();
-      (builder + uiChooserBottom).NextRow().Row();
+      (builder + listBox1).Row();
+      (builder + uiChooserBottom).Row();
       (builder + uiResult).Row();
 
       return;
