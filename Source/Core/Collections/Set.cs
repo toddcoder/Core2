@@ -68,7 +68,7 @@ public class Set<T> : IEnumerable<T>, IEquatable<Set<T>>
 
    public int Count => content.Count;
 
-   public virtual void Add(T item) => content.Add(item);
+   public virtual bool Add(T item) => content.Add(item);
 
    public void AddRange(IEnumerable<T> enumerable)
    {
