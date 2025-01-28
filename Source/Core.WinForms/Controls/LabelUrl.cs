@@ -6,7 +6,7 @@ using Core.Applications;
 
 namespace Core.WinForms.Controls;
 
-public partial class LabelUrl : UserControl, ILabelUiActionHost
+public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
 {
    protected UiAction uiLabel = new();
    protected UiAction uiUrl = new() { UseEmojis = false, AutoSizeText = true };
@@ -350,4 +350,6 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost
          uiAction.RegisterMessage(message);
       }
    }
+
+   public long ObjectId { get; set; }
 }

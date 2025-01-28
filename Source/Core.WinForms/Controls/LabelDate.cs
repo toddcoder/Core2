@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public partial class LabelDate : UserControl, ILabelUiActionHost
+public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
 {
    protected UiAction uiLabel = new();
    protected bool isLocked;
@@ -161,4 +161,6 @@ public partial class LabelDate : UserControl, ILabelUiActionHost
          uiAction.RegisterMessage(message);
       }
    }
+
+   public long ObjectId { get; set; }
 }
