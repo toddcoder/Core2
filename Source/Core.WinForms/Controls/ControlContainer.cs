@@ -13,6 +13,8 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    public static ControlContainer<TControl> VerticalContainer() => new() { Direction = ControlDirection.Vertical };
 
+   public static ControlContainer<TControl> ReadingContainer() => new() { Direction = ControlDirection.Reading };
+
    protected ObjectHash<TControl> objectHash = new();
    protected Maybe<int> _width = nil;
    protected Maybe<int> _height = nil;
@@ -21,6 +23,9 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    protected bool showLastFocus = true;
    protected Maybe<long> _lastIdFocus = nil;
    protected bool isUpdating = true;
+   protected int horizontalCount = 4;
+   protected int verticalCount = 2;
+   protected Maybe<int> _readingHeight = nil;
 
    public new event EventHandler<ControlFocusArgs<TControl>>? GotFocus;
 
@@ -41,6 +46,11 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
 
       Controls.Add(control);
+
+      if (Direction is ControlDirection.Reading)
+      {
+         _readingHeight = control.Height;
+      }
 
       resize();
 
@@ -82,6 +92,8 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
          ControlDirection.Horizontal when count == 0 => nil,
          ControlDirection.Horizontal => (clientWidth() - (count + 1) * padding) / count,
          ControlDirection.Vertical => clientWidth() - 2 * padding,
+         ControlDirection.Reading when count == 0 => nil,
+         ControlDirection.Reading => (clientWidth() - (horizontalCount + 1) * padding) / horizontalCount,
          _ => nil
       };
    }
@@ -95,6 +107,8 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
          ControlDirection.Horizontal => clientHeight() - 2 * padding,
          ControlDirection.Vertical when count == 0 => nil,
          ControlDirection.Vertical => (clientHeight() - (count + 1) * padding) / count,
+         ControlDirection.Reading when count == 0 => nil,
+         ControlDirection.Reading => (clientHeight() - (verticalCount + 1) * padding) / verticalCount,
          _ => nil
       };
    }
@@ -133,16 +147,52 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
+   protected void arrangeReading(int width, int height)
+   {
+      var left = padding;
+      var top = padding;
+
+      var maxWidth = clientWidth();
+      var maxHeight = clientHeight();
+
+      foreach (var control in objectHash.Objects())
+      {
+         if (left + width > maxWidth)
+         {
+            left = padding;
+            top += height;
+         }
+
+         if (top + height > maxHeight)
+         {
+            break;
+         }
+
+         control.Location = new Point(left, top);
+         control.Size = new Size(width, height);
+         left += width + padding;
+      }
+   }
+
    protected void arrangeControls()
    {
       switch (direction)
       {
          case ControlDirection.Horizontal when _width is (true, var width):
+         {
             arrangeHorizontal(width);
             break;
+         }
          case ControlDirection.Vertical when _height is (true, var height):
+         {
             arrangeVertical(height);
             break;
+         }
+         case ControlDirection.Reading when _width is (true, var width) && _height is (true, var height):
+         {
+            arrangeReading(width, height);
+            break;
+         }
       }
    }
 
@@ -211,6 +261,18 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    }
 
    public int Count => objectHash.Count;
+
+   public int HorizontalCount
+   {
+      get => horizontalCount;
+      set => horizontalCount = value;
+   }
+
+   public int VerticalCount
+   {
+      get => verticalCount;
+      set => verticalCount = value;
+   }
 
    protected override void OnResize(EventArgs e)
    {

@@ -3,5 +3,6 @@
 public enum ControlDirection
 {
    Horizontal,
-   Vertical
+   Vertical,
+   Reading
 }
