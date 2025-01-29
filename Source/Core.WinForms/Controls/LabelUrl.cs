@@ -22,6 +22,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
    public new event EventHandler? TextChanged;
    public event EventHandler<UrlChangedArgs>? UrlChanged;
    public event EventHandler<LabelActionMessageArgs>? MessageReceived;
+   public event EventHandler? Activated;
 
    public LabelUrl(string label)
    {
@@ -82,6 +83,8 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
          }
          else
          {
+            Activated?.Invoke(this, EventArgs.Empty);
+
             textBox.Text = uiUrl.Text;
             textBox.BringToFront();
             uiUrl.Visible = false;
