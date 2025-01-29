@@ -1846,7 +1846,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       if (_dividerText is (true, var dividerText))
       {
          var dividerWriter = new RectangleWriter(dividerText, rectangle, CardinalAlignment.East)
-            { FontSize = 8f, ForeColor = dividerForeColor, UseEmojis = UseEmojis };
+            { FontSize = 8f, ForeColor = dividerForeColor, UseEmojis = UseEmojis, AutoSizeText = AutoSizeText };
          dividerWriter.Write(e.Graphics);
       }
       else if (_divMessage is (true, var divMessage))
@@ -1858,7 +1858,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          {
             FontSize = 8f,
             ForeColor = dividerForeColor,
-            UseEmojis = UseEmojis
+            UseEmojis = UseEmojis,
+            AutoSizeText = AutoSizeText
          };
          messageWriter.Write(e.Graphics);
       }

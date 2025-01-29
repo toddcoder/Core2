@@ -25,7 +25,6 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    protected bool isUpdating = true;
    protected int horizontalCount = 4;
    protected int verticalCount = 2;
-   protected Maybe<int> _readingHeight = nil;
 
    public new event EventHandler<ControlFocusArgs<TControl>>? GotFocus;
 
@@ -46,11 +45,6 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
 
       Controls.Add(control);
-
-      if (Direction is ControlDirection.Reading)
-      {
-         _readingHeight = control.Height;
-      }
 
       resize();
 
