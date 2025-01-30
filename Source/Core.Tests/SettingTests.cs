@@ -1023,4 +1023,42 @@ public class SettingTests
          Console.WriteLine("not found");
       }
    }
+
+   [TestMethod]
+   public void MergeSettingsTest()
+   {
+      var targetSetting = new Setting();
+      targetSetting.Set("a").String = "alfa";
+      targetSetting.Set("c").String = "charlie";
+      targetSetting.Set("e").String = "echo";
+      targetSetting.Set("one").Int32 = 1;
+      targetSetting.Set("three").Int32 = 3;
+      targetSetting.Set("false").Boolean = false;
+
+      var sourceSetting = new Setting();
+      sourceSetting.Set("b").String = "bravo";
+      sourceSetting.Set("d").String = "delta";
+      sourceSetting.Set("f").String = "foxtrot";
+      sourceSetting.Set("two").Int32 = 2;
+      sourceSetting.Set("four").Int32 = 4;
+      targetSetting.Set("true").Boolean = true;
+
+      var innerSetting = new Setting("inner");
+      innerSetting.Set("alfa").String = "a";
+      innerSetting.Set("bravo").String = "b";
+      innerSetting.Set("charlie").String = "c";
+      targetSetting.Set("inner").Setting = innerSetting;
+
+      targetSetting.Merge(sourceSetting);
+
+      var _json = Serializer.Serialize(targetSetting);
+      if (_json is (true, var json))
+      {
+         Console.WriteLine(json);
+      }
+      else
+      {
+         Console.WriteLine(_json.Exception.Message);
+      }
+   }
 }

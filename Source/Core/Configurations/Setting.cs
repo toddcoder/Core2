@@ -844,4 +844,17 @@ public class Setting(string rootKey = "_$root") : ConfigurationItem, IHash<strin
    public IEnumerable<Setting> SelectOnlySettings(string path) => SelectItems(path).OfType<Setting>();
 
    public IEnumerable<Item> SelectOnlyItems(string path) => SelectItems(path).OfType<Item>();
+
+   public void Merge(Setting sourceSetting)
+   {
+      foreach (var (key, setting) in sourceSetting.Settings())
+      {
+         Set(key).Setting = setting;
+      }
+
+      foreach (var (key, item) in sourceSetting.Items())
+      {
+         this[key] = item;
+      }
+   }
 }
