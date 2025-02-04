@@ -266,7 +266,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    public event EventHandler<EventArgs>? ChooserClosed;
    public event EventHandler<EventArgs>? StatusFaded;
    public event EventHandler<UiActionMessageArgs>? MessageReceived;
-   public event EventHandler<EventArgs>? BoxCheckChanged;
 
    public UiAction()
    {
@@ -3651,7 +3650,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          {
             checkBoxWriter.BoxChecked = value;
             Refresh();
-            BoxCheckChanged?.Invoke(this, EventArgs.Empty);
          }
       }
    }
