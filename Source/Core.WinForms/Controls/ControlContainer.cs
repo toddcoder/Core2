@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Drawing.Drawing2D;
+using Core.DataStructures;
 using Core.Monads;
 using Core.Numbers;
 using Core.Objects;
@@ -25,6 +26,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    protected bool isUpdating = true;
    protected int horizontalCount = 4;
    protected int verticalCount = 2;
+   protected MaybeStack<TControl> stack = [];
 
    public new event EventHandler<ControlFocusArgs<TControl>>? GotFocus;
 
@@ -53,11 +55,18 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
          hasObjectId.ObjectId = id;
       }
 
+      stack.Push(control);
+
       return id;
    }
 
-   public long Remove(TControl control)
+   public Maybe<long> Remove(TControl control)
    {
+      if (Controls.Count == 0)
+      {
+         return nil;
+      }
+
       var id = -1L;
 
       Controls.Remove(control);
@@ -71,6 +80,8 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
       return id;
    }
+
+   public Maybe<long> RemoveLast() => stack.Pop().Map(Remove);
 
    public void Rearrange()
    {
