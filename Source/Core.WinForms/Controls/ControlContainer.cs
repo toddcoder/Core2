@@ -56,6 +56,22 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       return id;
    }
 
+   public long Remove(TControl control)
+   {
+      var id = -1L;
+
+      Controls.Remove(control);
+      if (control is IHasObjectId hasObjectId)
+      {
+         remove(hasObjectId.ObjectId);
+         id = hasObjectId.ObjectId;
+      }
+
+      resize();
+
+      return id;
+   }
+
    public void Rearrange()
    {
       setWidth();
