@@ -158,6 +158,19 @@ public static class EnumerableExtensions
       }
    }
 
+   public static Maybe<int> IndexOf<T>(this IEnumerable<T> enumerable, T needle) where T : notnull
+   {
+      foreach (var (index, item) in enumerable.Indexed())
+      {
+         if (needle.Equals(item))
+         {
+            return index;
+         }
+      }
+
+      return nil;
+   }
+
    public static Maybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable) where T : notnull
    {
       var first = enumerable.FirstOrDefault();
