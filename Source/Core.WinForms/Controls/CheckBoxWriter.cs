@@ -1,6 +1,7 @@
 ﻿using System.Windows.Forms.VisualStyles;
 using Core.Arrays;
 using Core.Collections;
+using Core.Enumerables;
 using Core.Monads;
 using Core.Numbers;
 

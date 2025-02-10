@@ -1247,6 +1247,7 @@ public static class EnumerableExtensions
       }
    }
 
+   [Obsolete("Use native index")]
    public static IEnumerable<(int index, T item)> IndexedEnumerable<T>(this IEnumerable<T> enumerable)
    {
       var index = 0;

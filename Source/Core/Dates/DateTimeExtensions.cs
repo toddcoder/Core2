@@ -273,31 +273,39 @@ public static class DateTimeExtensions
 
    public static bool OldEnough(this DateTime date, TimeSpan age) => NowServer.Now - date >= age;
 
-   private static Maybe<string> differenceInMinutes(int minutes) => minutes switch
+   private static Maybe<string> differenceInMinutes(int minutes, bool longForm) => minutes switch
    {
-      0 => "Just now",
-      < 60 => minutes.Plural("minute(s) ago"),
+      0 when longForm => "Just now",
+      0 => "now",
+      < 60 when longForm => minutes.Plural("minute(s) ago"),
+      < 60 => $"{minutes} min",
       _ => nil
    };
 
-   private static Maybe<string> differenceInHours(int hours) => hours switch
+   private static Maybe<string> differenceInHours(int hours, bool longForm) => hours switch
    {
-      < 24 => hours.Plural("hour(s) ago"),
+      < 24 when longForm => hours.Plural("hour(s) ago"),
+      < 24 => $"{hours} hr",
       _ => nil
    };
 
    private static int dayOfWeek(DateTime dateTime) => (int)dateTime.DayOfWeek;
 
-   private static string differenceInDays(int days, DateTime today, DateTime dateOnly) => days switch
+   private static string differenceInDays(int days, DateTime today, DateTime dateOnly, bool longForm) => days switch
    {
-      1 => "Yesterday",
-      <= 7 when dayOfWeek(today) > dayOfWeek(dateOnly) => dateOnly.DayOfWeek.ToString(),
-      <= 7 => $"Last {dateOnly.DayOfWeek}",
-      _ when dateOnly.Year == today.Year => dateOnly.ToString("MMMM d"),
-      _ => dateOnly.ToString("MMMM d, yyyy")
+      1 when longForm => "Yesterday",
+      1 => "yest.",
+      <= 7 when dayOfWeek(today) > dayOfWeek(dateOnly) && longForm => dateOnly.DayOfWeek.ToString(),
+      <= 7 when dayOfWeek(today) > dayOfWeek(dateOnly) => dateOnly.DayOfWeek.ToString().Keep(3).ToLower(),
+      <= 7 when longForm => $"Last {dateOnly.DayOfWeek}",
+      <= 7 => $"last {dateOnly.DayOfWeek.ToString().Keep(3).ToLower()}",
+      _ when dateOnly.Year == today.Year && longForm => dateOnly.ToString("MMMM d"),
+      _ when dateOnly.Year == today.Year => dateOnly.ToString("MMM d").ToLower(),
+      _ when longForm => dateOnly.ToString("MMMM d, yyyy"),
+      _ => dateOnly.ToString("MMM d, yy").ToLower()
    };
 
-   public static string DescriptionBetweenDates(this DateTime date1, DateTime date2)
+   public static string DescriptionBetweenDates(this DateTime date1, DateTime date2, bool longForm = true)
    {
       DateTime date;
       DateTime now;
@@ -319,36 +327,39 @@ public static class DateTimeExtensions
       LazyMaybe<string> _hours = nil;
       var dayDifference = new Lazy<int>(() => (int)now.Subtract(dateOnly).TotalDays);
 
-      if (_minutes.ValueOf(differenceInMinutes(minuteDifference.Value)) is (true, var minutes))
+      if (_minutes.ValueOf(differenceInMinutes(minuteDifference.Value, longForm)) is (true, var minutes))
       {
          return minutes;
       }
-      else if (_hours.ValueOf(differenceInHours(hourDifference.Value)) is (true, var hours))
+      else if (_hours.ValueOf(differenceInHours(hourDifference.Value, longForm)) is (true, var hours))
       {
          return hours;
       }
       else
       {
-         return differenceInDays(dayDifference.Value, now, dateOnly);
+         return differenceInDays(dayDifference.Value, now, dateOnly, longForm);
       }
    }
 
-   public static string DescriptionToGo(this DateTime startDate, DateTime endDate)
+   public static string DescriptionToGo(this DateTime startDate, DateTime endDate, bool longForm = true)
    {
-      static Maybe<string> secondsToGo(int seconds) => seconds switch
+      static Maybe<string> secondsToGo(int seconds, bool longForm) => seconds switch
       {
-         0 => "Calculating",
-         < 60 => seconds.Plural("second(s) to go"),
+         0 when longForm => "Calculating",
+         0 => "...",
+         < 60 when longForm => seconds.Plural("second(s) to go"),
+         < 60 => seconds.Plural($"{seconds} sec"),
          _ => nil
       };
 
-      static Maybe<string> minutesToGo(int minutes) => minutes switch
+      static Maybe<string> minutesToGo(int minutes, bool longForm) => minutes switch
       {
-         < 60 => minutes.Plural("minute(s) to go"),
+         < 60 when longForm => minutes.Plural("minute(s) to go"),
+         < 60 => $"{minutes} min",
          _ => nil
       };
 
-      static Maybe<string> hoursToGo(int hours) => hours.Plural("hour(s) to go");
+      static Maybe<string> hoursToGo(int hours, bool longForm) => longForm ? hours.Plural("hour(s) to go") : $"{hours} hr";
 
       var dateOnly = startDate.Truncate();
       var secondDifference = new Lazy<int>(() => (int)endDate.Subtract(startDate).TotalSeconds);
@@ -359,56 +370,74 @@ public static class DateTimeExtensions
       LazyMaybe<string> _hours = nil;
       var dayDifference = new Lazy<int>(() => (int)endDate.Subtract(dateOnly).TotalDays);
 
-      if (_seconds.ValueOf(secondsToGo(secondDifference.Value)) is (true, var seconds))
+      if (_seconds.ValueOf(secondsToGo(secondDifference.Value, longForm)) is (true, var seconds))
       {
          return seconds;
       }
-      else if (_minutes.ValueOf(minutesToGo(minuteDifference.Value)) is (true, var minutes))
+      else if (_minutes.ValueOf(minutesToGo(minuteDifference.Value, longForm)) is (true, var minutes))
       {
          return minutes;
       }
-      else if (_hours.ValueOf(hoursToGo(hourDifference.Value)) is (true, var hours))
+      else if (_hours.ValueOf(hoursToGo(hourDifference.Value, longForm)) is (true, var hours))
       {
          return hours;
       }
       else
       {
-         return differenceInDays(dayDifference.Value, endDate, dateOnly);
+         return differenceInDays(dayDifference.Value, endDate, dateOnly, longForm);
       }
    }
 
-   public static string DescriptionFromNow(this DateTime date)
+   public static string DescriptionFromNow(this DateTime date, bool longForm = true)
    {
       var now = NowServer.Now;
-      return date.DescriptionBetweenDates(now);
+      return date.DescriptionBetweenDates(now, longForm);
    }
 
-   public static string DescriptionToGo(this TimeSpan elapsedTime)
+   public static string DescriptionToGo(this TimeSpan elapsedTime, bool longForm = true)
    {
-      return NowServer.Now.DescriptionToGo(NowServer.Now + elapsedTime);
+      return NowServer.Now.DescriptionToGo(NowServer.Now + elapsedTime, longForm);
    }
 
-   public static string DescriptionToGo(this double milliseconds)
+   public static string DescriptionToGo(this double milliseconds, bool longForm = true)
    {
-      var descriptionToGo = TimeSpan.FromMilliseconds(milliseconds).DescriptionToGo();
-      if (descriptionToGo == "Just now")
+      var descriptionToGo = TimeSpan.FromMilliseconds(milliseconds).DescriptionToGo(longForm);
+      if (longForm)
       {
-         return "Almost there";
+         if (descriptionToGo == "Just now")
+         {
+            return "Almost there";
+         }
+         else
+         {
+            return descriptionToGo.Substitute("/b 'ago' $; f", "to go");
+         }
       }
       else
       {
-         return descriptionToGo.Substitute("/b 'ago' $; f", "to go");
+         if (descriptionToGo == "now")
+         {
+            return "almost";
+         }
+         else
+         {
+            return descriptionToGo;
+         }
       }
    }
 
-   public static string DescriptionToGo(this TimeSpan elapsedTime, int percent)
+   public static string DescriptionToGo(this TimeSpan elapsedTime, int percent, bool longForm = true)
    {
       switch (percent)
       {
-         case 0:
+         case 0 when longForm:
             return "Unknown";
-         case 100:
+         case 0:
+            return "?";
+         case 100 when longForm:
             return "Done";
+         case 100:
+            return "done";
          default:
          {
             var totalMilliseconds = elapsedTime.TotalMilliseconds;
@@ -417,11 +446,11 @@ public static class DateTimeExtensions
 
             if (remainingMilliseconds == 0)
             {
-               return "Unknown";
+               return longForm ? "Unknown" : "?";
             }
             else
             {
-               return remainingMilliseconds.DescriptionToGo();
+               return remainingMilliseconds.DescriptionToGo(longForm);
             }
          }
       }

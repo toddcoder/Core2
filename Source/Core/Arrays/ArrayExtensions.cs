@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.Assertions;
 using Core.Collections;
+using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
@@ -486,13 +487,13 @@ public static class ArrayExtensions
       }
    }
 
-   public static Maybe<int> Index<T>(this T[] array, T item, int startIndex = 0)
+   /*public static Maybe<int> Index<T>(this T[] array, T item, int startIndex = 0)
    {
       var index = Array.IndexOf(array, item, startIndex);
       return maybe<int>() & index > -1 & (() => index);
-   }
+   }*/
 
-   public static Maybe<int[]> Indexes<T>(this T[] array, T item, int startIndex = 0)
+   /*public static Maybe<int[]> Indexes<T>(this T[] array, T item, int startIndex = 0)
    {
       List<int> list = [];
       var index = Array.IndexOf(array, item, startIndex);
@@ -510,8 +511,9 @@ public static class ArrayExtensions
       {
          return nil;
       }
-   }
+   }*/
 
+   [Obsolete("Use native index")]
    public static IEnumerable<(int index, T value)> WithIndexes<T>(this T[] array)
    {
       for (var i = 0; i < array.Length; i++)
@@ -644,13 +646,4 @@ public static class ArrayExtensions
    }
 
    public static T[] RemoveAt<T>(this T[] array, int index) => [.. array.Indexed().Where(t => t.index != index).Select(t => t.item)];
-
-   public static IEnumerable<(int index, T item)> Indexed<T>(this T[] array)
-   {
-      var index = 0;
-      foreach (var item in array)
-      {
-         yield return (index++, item);
-      }
-   }
 }

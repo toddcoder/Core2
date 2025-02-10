@@ -254,7 +254,7 @@ public class DelimitedTextTests
       var destringified = delimitedText.Destringify(source);
       Console.WriteLine(destringified);
 
-      foreach (var (index, item) in delimitedText.Strings.IndexedEnumerable())
+      foreach (var (index, item) in delimitedText.Strings.Indexed())
       {
          Console.WriteLine($"{index}: {item}");
       }

@@ -625,7 +625,7 @@ public class Setting(string rootKey = "_$root") : ConfigurationItem, IHash<strin
    {
       set
       {
-         foreach (var (index, item) in value.IndexedEnumerable())
+         foreach (var (index, item) in value.Indexed())
          {
             this[$"${index}"] = item;
          }

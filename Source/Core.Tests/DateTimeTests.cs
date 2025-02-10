@@ -30,32 +30,74 @@ public class DateTimeTests
       checkAYearAgo();
    }
 
-   protected static void checkDate(string message, DateTime dateTime)
+   [TestMethod]
+   public void DescriptionFromNowShortTest()
    {
-      Console.WriteLine($"{message}: [{dateTime}, {dateTime.DayOfWeek}] = {dateTime.DescriptionFromNow()}");
+      var beginningDate = "06/01/2021 6:30:01 AM".Value().DateTime();
+      DateIncrementer incrementer = beginningDate;
+      NowServer.SetToTest(incrementer);
+
+      checkJustNowShort();
+      checkMinuteAgoShort();
+      checkHourAgoShort();
+      checkYesterdayShort();
+      checkDayBeforeYesterdayShort();
+      checkThreeDaysAgoShort();
+      check5DaysAgoShort();
+      check7DaysAgoShort();
+      check8DaysAgoShort();
+      check30DaysAgoShort();
+      checkAYearAgoShort();
    }
 
-   protected static void checkJustNow() => checkDate("Just now", NowServer.Now - 1.Millisecond());
+   protected static void checkDate(string message, DateTime dateTime, bool longForm)
+   {
+      Console.WriteLine($"{message}: [{dateTime}, {dateTime.DayOfWeek}] = {dateTime.DescriptionFromNow(longForm)}");
+   }
 
-   protected static void checkMinuteAgo() => checkDate("1 Minute", NowServer.Now - 1.Minute());
+   protected static void checkJustNow() => checkDate("Just now", NowServer.Now - 1.Millisecond(), true);
 
-   protected static void checkHourAgo() => checkDate("1 Hour", NowServer.Now - 1.Hour());
+   protected static void checkJustNowShort() => checkDate("now", NowServer.Now - 1.Millisecond(), false);
 
-   protected static void checkYesterday() => checkDate("Yesterday", NowServer.Today - 1.Day());
+   protected static void checkMinuteAgo() => checkDate("1 minute ago", NowServer.Now - 1.Minute(), true);
 
-   protected static void checkDayBeforeYesterday() => checkDate("Day before yesterday", NowServer.Now - 2.Days());
+   protected static void checkMinuteAgoShort() => checkDate("1 min", NowServer.Now - 1.Minute(), false);
 
-   protected static void checkThreeDaysAgo() => checkDate("3 days ago", NowServer.Now - 3.Days());
+   protected static void checkHourAgo() => checkDate("1 hour ago", NowServer.Now - 1.Hour(), true);
 
-   protected static void check5DaysAgo() => checkDate("5 days ago", NowServer.Today - 5.Days());
+   protected static void checkHourAgoShort() => checkDate("1 hr", NowServer.Now - 1.Hour(), false);
 
-   protected static void check7DaysAgo() => checkDate("7 days ago", NowServer.Today - 7.Days());
+   protected static void checkYesterday() => checkDate("Yesterday", NowServer.Today - 1.Day(), true);
 
-   protected static void check8DaysAgo() => checkDate("8 days ago", NowServer.Today - 8.Days());
+   protected static void checkYesterdayShort() => checkDate("yest.", NowServer.Today - 1.Day(), false);
 
-   protected static void check30DaysAgo() => checkDate("30 days ago", NowServer.Today - 30.Days());
+   protected static void checkDayBeforeYesterday() => checkDate("Sunday", NowServer.Now - 2.Days(), true);
 
-   protected static void checkAYearAgo() => checkDate("1 year ago", NowServer.Today - 365.Days());
+   protected static void checkDayBeforeYesterdayShort() => checkDate("sun", NowServer.Now - 2.Days(), false);
+
+   protected static void checkThreeDaysAgo() => checkDate("Last Saturday", NowServer.Now - 3.Days(), true);
+
+   protected static void checkThreeDaysAgoShort() => checkDate("last sat", NowServer.Now - 3.Days(), false);
+
+   protected static void check5DaysAgo() => checkDate("Last Thursday", NowServer.Today - 5.Days(), true);
+
+   protected static void check5DaysAgoShort() => checkDate("lat thu", NowServer.Today - 5.Days(), false);
+
+   protected static void check7DaysAgo() => checkDate("Last Tuesday", NowServer.Today - 7.Days(), true);
+
+   protected static void check7DaysAgoShort() => checkDate("last tue", NowServer.Today - 7.Days(), false);
+
+   protected static void check8DaysAgo() => checkDate("May 24", NowServer.Today - 8.Days(), true);
+
+   protected static void check8DaysAgoShort() => checkDate("yay 24", NowServer.Today - 8.Days(), false);
+
+   protected static void check30DaysAgo() => checkDate("May 2", NowServer.Today - 30.Days(), true);
+
+   protected static void check30DaysAgoShort() => checkDate("may 2", NowServer.Today - 30.Days(), false);
+
+   protected static void checkAYearAgo() => checkDate("June 1, 2020", NowServer.Today - 365.Days(), true);
+
+   protected static void checkAYearAgoShort() => checkDate("jun 1, 20", NowServer.Today - 365.Days(), false);
 
    [TestMethod]
    public void IncrementalDateDescriptionTest()
