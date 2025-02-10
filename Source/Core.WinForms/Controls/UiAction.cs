@@ -87,7 +87,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       [UiActionType.Console] = Color.White,
       [UiActionType.Busy] = Color.White,
       [UiActionType.MuteProgress] = Color.White,
-      [UiActionType.Divider] = Color.Black
+      [UiActionType.Divider] = Color.Black,
+      [UiActionType.ReadOnlyAlternate] = Color.White
    };
    protected static Hash<UiActionType, Color> globalBackColors = new()
    {
@@ -110,7 +111,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       [UiActionType.ProgressDefinite] = Color.CadetBlue,
       [UiActionType.ProgressIndefinite] = Color.CadetBlue,
       [UiActionType.MuteProgress] = Color.CadetBlue,
-      [UiActionType.Divider] = Color.White
+      [UiActionType.Divider] = Color.White,
+      [UiActionType.ReadOnlyAlternate] = Color.CadetBlue
    };
    protected static Hash<UiActionType, MessageStyle> globalStyles = new()
    {
