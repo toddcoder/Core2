@@ -103,6 +103,12 @@ public class BusyTextProcessor
       center = getCenter(drawRectangle);
    }
 
+   public Color Color
+   {
+      get => color;
+      set => color = value;
+   }
+
    protected void drawLine(Graphics graphics, PointF startPoint, PointF endPoint, Color color)
    {
       using var pen = new Pen(color, spokeThickness);

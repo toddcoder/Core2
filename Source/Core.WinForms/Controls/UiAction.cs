@@ -3962,6 +3962,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             {
                SpokeThickness = 1, OuterRadius = radius, InnerRadius = radius - 2
             });
+            statusBusyProcessor.Color = getForeColor();
             statusBusyProcessor.OnTick();
             statusBusyProcessor.OnPaint(g);
 
