@@ -4152,4 +4152,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          Invalidate();
       }
    }
+
+   public Maybe<Background> Background { get; set; } = nil;
+
+   public void RunBackground()
+   {
+      if (Background is (true, var background))
+      {
+         background.RunWorkerAsync();
+      }
+   }
 }
