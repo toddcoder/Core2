@@ -3,6 +3,7 @@ using System.Windows.Forms.VisualStyles;
 using Core.Collections;
 using Core.Monads;
 using Core.Numbers;
+using Core.Strings;
 using Core.Strings.Emojis;
 using Core.WinForms.Drawing;
 using static Core.Monads.MonadFunctions;
@@ -204,6 +205,12 @@ public partial class Chooser : Form
 
    protected void addItem(string text, Color foreColor, Color backColor)
    {
+      if (text.IsEmpty())
+      {
+         listViewItems.Items.Add("");
+         return;
+      }
+
       Maybe<Font> _font = nil;
 
       text = withEmojis(text);
@@ -457,6 +464,11 @@ public partial class Chooser : Form
    protected void listViewItems_SelectedIndexChanged(object sender, EventArgs e)
    {
       Choice = listViewItems.SelectedItem().Map(item => maybe<Chosen>() & returnSome(item.Index) & (() => getChosen(item)));
+      if (Choice is (true, { Value: "" }) || !Choice)
+      {
+         return;
+      }
+
       if (autoClose)
       {
          if (!multiChoice)
@@ -572,7 +584,14 @@ public partial class Chooser : Form
 
    protected void listViewItems_DrawItem(object sender, DrawListViewItemEventArgs e)
    {
-      if (multiChoice)
+      if (e.Item.Text == "")
+      {
+         e.DrawBackground();
+         using var pen = new Pen(Color.Red);
+         e.Graphics.DrawLine(pen, e.Bounds.Left, e.Bounds.Height / 2, e.Bounds.Right, e.Bounds.Height / 2);
+         e.DrawDefault = false;
+      }
+      else if (multiChoice)
       {
          e.DrawBackground();
          var checkBoxState = e.Item.Checked ? CheckBoxState.CheckedNormal : CheckBoxState.UncheckedPressed;
@@ -597,5 +616,10 @@ public partial class Chooser : Form
          e.Handled = true;
          Close();
       }
+   }
+
+   protected void listViewItems_DrawSubItem(object sender, DrawListViewSubItemEventArgs e)
+   {
+      e.DrawDefault = e is not { ColumnIndex: 0, SubItem.Text: "" };
    }
 }

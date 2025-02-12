@@ -37,7 +37,7 @@
          listViewItems.Activation = ItemActivation.OneClick;
          listViewItems.Columns.AddRange(new ColumnHeader[] { columnHeader1 });
          listViewItems.Dock = DockStyle.Fill;
-         listViewItems.Font = new Font("Consolas", 12F, FontStyle.Regular, GraphicsUnit.Point);
+         listViewItems.Font = new Font("Consolas", 12F);
          listViewItems.FullRowSelect = true;
          listViewItems.GridLines = true;
          listViewItems.Location = new Point(0, 0);
@@ -51,6 +51,7 @@
          listViewItems.UseCompatibleStateImageBehavior = false;
          listViewItems.View = View.Details;
          listViewItems.DrawItem += listViewItems_DrawItem;
+         listViewItems.DrawSubItem += listViewItems_DrawSubItem;
          listViewItems.ItemChecked += listViewItems_ItemChecked;
          listViewItems.SelectedIndexChanged += listViewItems_SelectedIndexChanged;
          // 

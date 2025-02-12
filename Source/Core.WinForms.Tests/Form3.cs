@@ -81,6 +81,6 @@ public partial class Form3 : Form
 
       return;
 
-      IEnumerable<string> getChoices() => ["alfa", "bravo", "charlie", "delta", "echo", "foxtrot"];
+      IEnumerable<string> getChoices() => ["alfa", "bravo", "charlie", "", "delta", "echo", "foxtrot"];
    }
 }
