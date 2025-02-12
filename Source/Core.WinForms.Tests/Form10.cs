@@ -7,6 +7,7 @@ namespace Core.WinForms.Tests;
 public partial class Form10 : Form
 {
    protected ControlContainer<UiAction> container = ControlContainer<UiAction>.ReadingContainer();
+   protected UiAction uiDirection = new() { ChooserGlyph = true };
    protected UiAction uiRemove = new();
    protected UiAction uiAdd = new();
    protected MaybeStack<UiAction> stack = [];
@@ -16,9 +17,29 @@ public partial class Form10 : Form
       InitializeComponent();
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
-      _ = builder.Col + 100f + 100 + 100;
+      _ = builder.Col + 100f + 200 + 100 + 100;
       _ = builder.Row + 100f + 40;
       builder.SetUp();
+
+      uiDirection.Success("Reading");
+      uiDirection.Click += (_, _) =>
+      {
+         var _chosen = uiDirection.Choose("Direction").Choices("Reading", "Horizontal", "Vertical")
+            .ModifyTitle(false).Choose();
+         if (_chosen is (true, var chosen))
+         {
+            container.Clear();
+            container.Direction = chosen.Value switch
+            {
+               "Reading" => ControlDirection.Reading,
+               "Horizontal" => ControlDirection.Horizontal,
+               "Vertical" => ControlDirection.Vertical,
+               _ => container.Direction
+            };
+            uiDirection.Success(chosen.Value);
+         }
+      };
+      uiDirection.ClickText = "Select direction";
 
       uiRemove.Button("/minus");
       uiRemove.Click += (_, _) =>
@@ -28,6 +49,7 @@ public partial class Form10 : Form
             container.Remove(uiLast);
          }
       };
+      uiRemove.ClickText = "Remove item";
 
       uiAdd.Button("/plus");
       uiAdd.Click += (_, _) =>
@@ -38,9 +60,11 @@ public partial class Form10 : Form
          container.Add(uiAction);
          stack.Push(uiAction);
       };
+      uiAdd.ClickText = "Add item";
 
-      (builder + container).SpanCol(2).Row();
-      (builder.SkipCol() + uiRemove).Next();
+      (builder + container).SpanCol(4).Row();
+      (builder.SkipCol() + uiDirection).Next();
+      (builder + uiRemove).Next();
       (builder + uiAdd).Row();
    }
 }
