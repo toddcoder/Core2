@@ -20,7 +20,17 @@ public class TableLayoutBuilder(TableLayoutPanel tableLayoutPanel)
 
    public AxisSetup Col => columnsSetup;
 
+   internal AxisSetup ColumnsSetup
+   {
+      set => columnsSetup = value;
+   }
+
    public AxisSetup Row => rowsSetup;
+
+   internal AxisSetup RowSetup
+   {
+      set => rowsSetup = value;
+   }
 
    public TableLayoutPanel TableLayoutPanel => tableLayoutPanel;
 
