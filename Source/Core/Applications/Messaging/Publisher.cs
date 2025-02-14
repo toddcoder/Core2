@@ -23,6 +23,20 @@ public class Publisher<TPayload> where TPayload : notnull
          {
             lock (mutex)
             {
+               Task.Run(() => subscriber.Received.Invoke(payload));
+            }
+         }
+      }
+   }
+
+   public void PublishSync(string topic, TPayload payload)
+   {
+      foreach (var (_, subscriber) in subscribers)
+      {
+         if (subscriber.Topic == topic)
+         {
+            lock (mutex)
+            {
                subscriber.Received.Invoke(payload);
             }
          }
