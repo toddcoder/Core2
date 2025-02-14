@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Monads;
 
 namespace Core.Applications.Messaging;
 
@@ -27,3 +28,5 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 
    ~Subscriber() => Unsubscribe();
 }
+
+public class Subscriber : Subscriber<Unit>;

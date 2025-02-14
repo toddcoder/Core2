@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Core.Collections;
+using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.Messaging;
@@ -45,3 +46,5 @@ public class Publisher<TPayload> where TPayload : notnull
       }
    }
 }
+
+public class Publisher : Publisher<Unit>;
