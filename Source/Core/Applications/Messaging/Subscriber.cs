@@ -13,7 +13,7 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
    {
       this.topic = topic;
 
-      Publisher<TPayload>.AddSubscriber(this);
+      Subscribe();
    }
 
    public Guid Id => id;
@@ -26,12 +26,9 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 
    public void Dispose()
    {
-      Publisher<TPayload>.RemoveSubscriber(this);
+      Unsubscribe();
       GC.SuppressFinalize(this);
    }
 
-   ~Subscriber()
-   {
-      Publisher<TPayload>.RemoveSubscriber(this);
-   }
+   ~Subscriber() => Unsubscribe();
 }

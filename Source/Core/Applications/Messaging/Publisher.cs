@@ -5,7 +5,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.Messaging;
 
-public class Publisher<TPayload>(string topic) where TPayload : notnull
+public class Publisher<TPayload> where TPayload : notnull
 {
    protected static Hash<Guid, Subscriber<TPayload>> subscribers = [];
 
@@ -15,7 +15,7 @@ public class Publisher<TPayload>(string topic) where TPayload : notnull
 
    protected object mutex = new();
 
-   public void Publish(TPayload payload)
+   public void Publish(string topic, TPayload payload)
    {
       foreach (var (_, subscriber) in subscribers)
       {
@@ -29,7 +29,7 @@ public class Publisher<TPayload>(string topic) where TPayload : notnull
       }
    }
 
-   public async Task PublishAsync(TPayload payload)
+   public async Task PublishAsync(string topic, TPayload payload)
    {
       foreach (var (_, subscriber) in subscribers)
       {

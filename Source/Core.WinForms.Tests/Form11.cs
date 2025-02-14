@@ -14,10 +14,10 @@ public partial class Form11 : Form
    {
       InitializeComponent();
 
-      var publisher = new Publisher<string>("user");
+      var publisher = new Publisher<string>();
 
       uiPublish.Button("Publish");
-      uiPublish.Click += (_, _) => publisher.Publish(Environment.UserName);
+      uiPublish.Click += (_, _) => publisher.Publish("user", Environment.UserName);
       uiPublish.ClickText = "Publish";
 
       uiSubscribe.Message("waiting");
