@@ -16,6 +16,8 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 
    public Guid Id => id;
 
+   public string Reader { get; set; } = "";
+
    public void Subscribe() => Publisher<TPayload>.AddSubscriber(this);
 
    public void Unsubscribe() => Publisher<TPayload>.RemoveSubscriber(this);

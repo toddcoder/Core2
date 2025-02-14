@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Core.Collections;
 using Core.Monads;
@@ -27,6 +28,17 @@ public class Publisher<TPayload> where TPayload : notnull
       }
    }
 
+   public void Publish(string topic, string reader, TPayload payload)
+   {
+      foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
+      {
+         lock (mutex)
+         {
+            Task.Run(() => subscriber.Received.Invoke(new Publication<TPayload>(topic, payload)));
+         }
+      }
+   }
+
    public void PublishSync(string topic, TPayload payload)
    {
       foreach (var (_, subscriber) in subscribers)
@@ -38,9 +50,28 @@ public class Publisher<TPayload> where TPayload : notnull
       }
    }
 
+   public void PublishSync(string topic, string reader, TPayload payload)
+   {
+      foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
+      {
+         lock (mutex)
+         {
+            subscriber.Received.Invoke(new Publication<TPayload>(topic, payload));
+         }
+      }
+   }
+
    public async Task PublishAsync(string topic, TPayload payload)
    {
       foreach (var (_, subscriber) in subscribers)
+      {
+         await subscriber.Received.InvokeAsync(new Publication<TPayload>(topic, payload));
+      }
+   }
+
+   public async Task PublishAsync(string topic, string reader, TPayload payload)
+   {
+      foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
       {
          await subscriber.Received.InvokeAsync(new Publication<TPayload>(topic, payload));
       }
@@ -60,6 +91,17 @@ public class Publisher : Publisher<Unit>
       }
    }
 
+   public void Publish(string topic, string reader)
+   {
+      foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
+      {
+         lock (mutex)
+         {
+            Task.Run(() => subscriber.Received.Invoke(new Publication(topic)));
+         }
+      }
+   }
+
    public void PublishSync(string topic)
    {
       foreach (var (_, subscriber) in subscribers)
@@ -71,9 +113,28 @@ public class Publisher : Publisher<Unit>
       }
    }
 
+   public void PublishSync(string topic, string reader)
+   {
+      foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
+      {
+         lock (mutex)
+         {
+            subscriber.Received.Invoke(new Publication(topic));
+         }
+      }
+   }
+
    public async Task PublishAsync(string topic)
    {
       foreach (var (_, subscriber) in subscribers)
+      {
+         await subscriber.Received.InvokeAsync(new Publication(topic));
+      }
+   }
+
+   public async Task PublishAsync(string topic, string reader)
+   {
+      foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
       {
          await subscriber.Received.InvokeAsync(new Publication(topic));
       }
