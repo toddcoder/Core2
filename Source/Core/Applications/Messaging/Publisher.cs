@@ -19,12 +19,9 @@ public class Publisher<TPayload> where TPayload : notnull
    {
       foreach (var (_, subscriber) in subscribers)
       {
-         if (subscriber.Topic == topic)
+         lock (mutex)
          {
-            lock (mutex)
-            {
-               Task.Run(() => subscriber.Received.Invoke(payload));
-            }
+            Task.Run(() => subscriber.Received.Invoke(new Publication<TPayload>(topic, payload)));
          }
       }
    }
@@ -33,12 +30,9 @@ public class Publisher<TPayload> where TPayload : notnull
    {
       foreach (var (_, subscriber) in subscribers)
       {
-         if (subscriber.Topic == topic)
+         lock (mutex)
          {
-            lock (mutex)
-            {
-               subscriber.Received.Invoke(payload);
-            }
+            subscriber.Received.Invoke(new Publication<TPayload>(topic, payload));
          }
       }
    }
@@ -47,10 +41,7 @@ public class Publisher<TPayload> where TPayload : notnull
    {
       foreach (var (_, subscriber) in subscribers)
       {
-         if (subscriber.Topic == topic)
-         {
-            await subscriber.Received.InvokeAsync(payload);
-         }
+         await subscriber.Received.InvokeAsync(new Publication<TPayload>(topic, payload));
       }
    }
 }

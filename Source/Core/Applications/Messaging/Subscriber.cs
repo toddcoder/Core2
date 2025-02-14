@@ -5,20 +5,15 @@ namespace Core.Applications.Messaging;
 public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 {
    protected Guid id = Guid.NewGuid();
-   protected string topic;
 
-   public readonly MessageEvent<TPayload> Received = new();
+   public readonly MessageEvent<Publication<TPayload>> Received = new();
 
-   public Subscriber(string topic)
+   public Subscriber()
    {
-      this.topic = topic;
-
       Subscribe();
    }
 
    public Guid Id => id;
-
-   public string Topic => topic;
 
    public void Subscribe() => Publisher<TPayload>.AddSubscriber(this);
 

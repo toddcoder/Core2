@@ -8,7 +8,7 @@ public partial class Form11 : Form
 {
    protected UiAction uiPublish = new();
    protected UiAction uiSubscribe = new();
-   protected Subscriber<string> subscriber = new("user");
+   protected Subscriber<string> subscriber = new();
 
    public Form11()
    {
@@ -22,7 +22,13 @@ public partial class Form11 : Form
 
       uiSubscribe.Message("waiting");
 
-      subscriber.Received.Handler = u => uiSubscribe.Success(u);
+      subscriber.Received.Handler = p =>
+      {
+         if (p.Topic == "user")
+         {
+            uiSubscribe.Success(p.Payload);
+         }
+      };
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col * 2 * 50f;
