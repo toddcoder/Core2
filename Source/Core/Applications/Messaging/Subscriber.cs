@@ -29,4 +29,7 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
    ~Subscriber() => Unsubscribe();
 }
 
-public class Subscriber : Subscriber<Unit>;
+public class Subscriber : Subscriber<Unit>
+{
+   public new readonly MessageEvent<Publication> Received = new();
+}

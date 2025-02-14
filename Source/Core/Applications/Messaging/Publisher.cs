@@ -47,4 +47,35 @@ public class Publisher<TPayload> where TPayload : notnull
    }
 }
 
-public class Publisher : Publisher<Unit>;
+public class Publisher : Publisher<Unit>
+{
+   public void Publish(string topic)
+   {
+      foreach (var (_, subscriber) in subscribers)
+      {
+         lock (mutex)
+         {
+            Task.Run(() => subscriber.Received.Invoke(new Publication(topic)));
+         }
+      }
+   }
+
+   public void PublishSync(string topic)
+   {
+      foreach (var (_, subscriber) in subscribers)
+      {
+         lock (mutex)
+         {
+            subscriber.Received.Invoke(new Publication(topic));
+         }
+      }
+   }
+
+   public async Task PublishAsync(string topic)
+   {
+      foreach (var (_, subscriber) in subscribers)
+      {
+         await subscriber.Received.InvokeAsync(new Publication(topic));
+      }
+   }
+}
