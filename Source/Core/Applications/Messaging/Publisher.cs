@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Core.Assertions;
 using Core.Collections;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
@@ -15,7 +16,26 @@ public class Publisher<TPayload> where TPayload : notnull
 
    public static void RemoveSubscriber(Subscriber<TPayload> subscriber) => subscribers.Maybe[subscriber.Id] = nil;
 
+   protected Maybe<string> _topic = nil;
    protected object mutex = new();
+
+   public Publisher(string topic)
+   {
+      _topic = topic;
+   }
+
+   public Publisher()
+   {
+      _topic = nil;
+   }
+
+   public void Publish(TPayload payload)
+   {
+      if (_topic is (true, var topic))
+      {
+         Publish(topic, payload);
+      }
+   }
 
    public void Publish(string topic, TPayload payload)
    {
@@ -36,6 +56,14 @@ public class Publisher<TPayload> where TPayload : notnull
          {
             Task.Run(() => subscriber.Received.Invoke(new Publication<TPayload>(topic, payload)));
          }
+      }
+   }
+
+   public void PublishSync(TPayload payload)
+   {
+      if (_topic is (true, var topic))
+      {
+         PublishSync(topic, payload);
       }
    }
 
@@ -63,6 +91,14 @@ public class Publisher<TPayload> where TPayload : notnull
       }
    }
 
+   public async Task PublishAsync(TPayload payload)
+   {
+      if (_topic is (true, var topic))
+      {
+         await PublishAsync(topic, payload);
+      }
+   }
+
    public async Task PublishAsync(string topic, TPayload payload)
    {
       foreach (var (_, subscriber) in subscribers)
@@ -82,6 +118,14 @@ public class Publisher<TPayload> where TPayload : notnull
 
 public class Publisher : Publisher<Unit>
 {
+   public void Publish()
+   {
+      if (_topic is (true, var topic))
+      {
+         Publish(topic);
+      }
+   }
+
    public void Publish(string topic)
    {
       foreach (var (_, subscriber) in subscribers)
@@ -101,6 +145,14 @@ public class Publisher : Publisher<Unit>
          {
             Task.Run(() => subscriber.Received.Invoke(new Publication(topic)));
          }
+      }
+   }
+
+   public void PublishSync()
+   {
+      if (_topic is (true, var topic))
+      {
+         PublishSync(topic);
       }
    }
 
@@ -125,6 +177,14 @@ public class Publisher : Publisher<Unit>
             subscriber.Received.Invoke(new Publication(topic));
             System.Threading.Thread.Sleep(500);
          }
+      }
+   }
+
+   public async Task PublishAsync()
+   {
+      if (_topic is (true, var topic))
+      {
+         await PublishAsync(topic);
       }
    }
 
