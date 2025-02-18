@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Core.Assertions;
 using Core.Collections;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
@@ -118,6 +117,14 @@ public class Publisher<TPayload> where TPayload : notnull
 
 public class Publisher : Publisher<Unit>
 {
+   public Publisher(string topic) : base(topic)
+   {
+   }
+
+   public Publisher()
+   {
+   }
+
    public void Publish()
    {
       if (_topic is (true, var topic))
