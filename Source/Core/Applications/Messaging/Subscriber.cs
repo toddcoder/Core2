@@ -7,7 +7,7 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 {
    protected Guid id = Guid.NewGuid();
 
-   public readonly MessageEvent<Publication<TPayload>> Received = new();
+   public readonly MessageEvent<Publication<TPayload>> Received = [];
 
    public Subscriber()
    {
@@ -33,5 +33,5 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 
 public class Subscriber : Subscriber<Unit>
 {
-   public new readonly MessageEvent<Publication> Received = new();
+   public new readonly MessageEvent<Publication> Received = [];
 }

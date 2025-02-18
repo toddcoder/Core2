@@ -46,6 +46,7 @@ public class Publisher<TPayload> where TPayload : notnull
          lock (mutex)
          {
             subscriber.Received.Invoke(new Publication<TPayload>(topic, payload));
+            System.Threading.Thread.Sleep(500);
          }
       }
    }
@@ -57,6 +58,7 @@ public class Publisher<TPayload> where TPayload : notnull
          lock (mutex)
          {
             subscriber.Received.Invoke(new Publication<TPayload>(topic, payload));
+            System.Threading.Thread.Sleep(500);
          }
       }
    }
@@ -109,6 +111,7 @@ public class Publisher : Publisher<Unit>
          lock (mutex)
          {
             subscriber.Received.Invoke(new Publication(topic));
+            System.Threading.Thread.Sleep(500);
          }
       }
    }
@@ -120,6 +123,7 @@ public class Publisher : Publisher<Unit>
          lock (mutex)
          {
             subscriber.Received.Invoke(new Publication(topic));
+            System.Threading.Thread.Sleep(500);
          }
       }
    }
