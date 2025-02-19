@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
@@ -30,6 +31,12 @@ public class Left<TLeft, TRight> : Either<TLeft, TRight>, IEquatable<Left<TLeft,
       isLeft = true;
       left = value;
       right = default!;
+   }
+
+   public override void Deconstruct(out Maybe<TLeft> left, out Maybe<TRight> right)
+   {
+      left = value;
+      right = nil;
    }
 
    public override object ToObject() => value;

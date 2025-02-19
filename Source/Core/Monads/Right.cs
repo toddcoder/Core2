@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Monads;
 
@@ -29,6 +30,12 @@ public class Right<TLeft, TRight> : Either<TLeft, TRight>, IEquatable<Right<TLef
    {
       isLeft = false;
       left = default!;
+      right = value;
+   }
+
+   public override void Deconstruct(out Maybe<TLeft> left, out Maybe<TRight> right)
+   {
+      left = nil;
       right = value;
    }
 

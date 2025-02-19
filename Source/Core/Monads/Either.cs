@@ -27,5 +27,7 @@ public abstract class Either<TLeft, TRight> where TLeft : notnull where TRight :
 
    public abstract void Deconstruct(out bool isLeft, out TLeft left, out TRight right);
 
+   public abstract void Deconstruct(out Maybe<TLeft> left, out Maybe<TRight> right);
+
    public abstract object ToObject();
 }
