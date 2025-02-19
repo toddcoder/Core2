@@ -4041,10 +4041,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       {
          switch (failureMessage)
          {
-            case (true, var message, _):
+            case ((true, var message), _):
                FailureStatus(message);
                break;
-            case (false, _, var func):
+            case (_, (true, var func)):
                FailureStatus(func());
                break;
          }
@@ -4077,10 +4077,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       {
          switch (failureMessage)
          {
-            case (true, var message, _):
+            case ((true, var message), _):
                FailureStatus(message);
                break;
-            case (false, _, var func):
+            case (_, (true, var func)):
                FailureStatus(func());
                break;
          }

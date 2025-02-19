@@ -178,11 +178,11 @@ public class MatchingTests
          {
             switch (item)
             {
-               case (true, var left, _):
-                  Console.WriteLine($"Leading: <{left.Text}>");
+               case ((true, var slice), _):
+                  Console.WriteLine($"Leading: <{slice.Text}>");
                   break;
-               case (false, _, var right):
-                  Console.WriteLine($"Match: <{right.Text}>");
+               case (_, (true, var match)):
+                  Console.WriteLine($"Match: <{match.Text}>");
                   break;
             }
          }

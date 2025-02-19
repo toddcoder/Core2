@@ -26,6 +26,7 @@ public class Left<TLeft, TRight> : Either<TLeft, TRight>, IEquatable<Left<TLeft,
       return leftMap(value);
    }
 
+   [Obsolete("Use two variable deconstruction")]
    public override void Deconstruct(out bool isLeft, out TLeft left, out TRight right)
    {
       isLeft = true;

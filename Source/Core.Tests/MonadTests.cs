@@ -676,10 +676,10 @@ public class MonadTests
       var _result = validateInput(request);
       switch (_result)
       {
-         case (true, var result, _):
+         case ((true, var result), _):
             result.SendMail();
             break;
-         case (false, _, var message):
+         case (_, (true, var message)):
             Console.WriteLine(message);
             break;
       }

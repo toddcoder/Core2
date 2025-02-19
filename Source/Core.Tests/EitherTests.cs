@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests;
 
@@ -11,14 +12,16 @@ public class EitherTests
    {
       Either<char, string> _left = 'a';
       Either<char, string> _right = "a";
-      if (_left is (true, var left, _))
+      var (_char, _) = _left;
+      if (_char)
       {
-         Console.WriteLine($"char {left}");
+         Console.WriteLine($"char {_char}");
       }
 
-      if (_right is  (false, _, var right))
+      var (_, _string) = _right;
+      if (_string)
       {
-         Console.WriteLine($"string {right}");
+         Console.WriteLine($"string {_string}");
       }
    }
 
@@ -27,26 +30,26 @@ public class EitherTests
    {
       Either<int, double> _left = 10;
       var dLeft = _left.Map(i => (double)i, d => (int)d);
-      switch (dLeft)
+      var (_double, _int) = dLeft;
+      if (_double is (true, var @double))
       {
-         case (true, var @double, _):
-            Console.WriteLine($"double {@double} is good");
-            break;
-         case (false, _, var @int):
-            Console.WriteLine($"int {@int} is good");
-            break;
+         Console.WriteLine($"double {@double} is good");
+      }
+      else if (_int is (true, var @int))
+      {
+         Console.WriteLine($"int {@int} is good");
       }
 
       Either<int, double> _right = 7.0;
       var iRight = _right.Map(i => i / 2.0, d => (int)d / 2);
-      switch (iRight)
+      var (_double2, _int2) = iRight;
+      if (_double2 is (true, var double2))
       {
-         case (true, var @double, _):
-            Console.WriteLine($"double {@double} is good");
-            break;
-         case (false, _, var @int):
-            Console.WriteLine($"int {@int} is good");
-            break;
+         Console.WriteLine($"double {double2} is good");
+      }
+      else if (_int2 is (true, var int2))
+      {
+         Console.WriteLine($"int {int2} is good");
       }
    }
 
@@ -65,5 +68,23 @@ public class EitherTests
 
       either = 10;
       Console.WriteLine(either);
+   }
+
+   [TestMethod]
+   public void NilTest()
+   {
+      Either<int, char> either = nil;
+      switch (either)
+      {
+         case ((true, var asInt), _):
+            Console.WriteLine($"{nameof(asInt)}: {asInt}");
+            break;
+         case (_, (true, var asChar)):
+            Console.WriteLine($"{nameof(asChar)}: {asChar}");
+            break;
+         default:
+            Console.WriteLine($"{nameof(either)}: {either}");
+            break;
+      }
    }
 }

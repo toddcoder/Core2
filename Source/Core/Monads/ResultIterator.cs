@@ -89,13 +89,14 @@ internal class ResultIterator<T> where T : notnull
       List<T> list = [];
       foreach (var either in getEnumerable())
       {
-         switch (either)
+         var (_result, _exception) = either;
+         if (_result is (true, var result))
          {
-            case (true, var result, _):
-               list.Add(result);
-               break;
-            case (false, _, var exception):
-               return (list, exception);
+            list.Add(result);
+         }
+         else if (_exception is (true, var exception))
+         {
+            return (list, exception);
          }
       }
 
