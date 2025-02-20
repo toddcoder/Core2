@@ -30,6 +30,12 @@ public abstract class Either<TLeft, TRight> where TLeft : notnull where TRight :
       return either is var (_, _right) ? _right | defaultValue : defaultValue();
    }
 
+   public static bool operator true(Either<TLeft, TRight> either) => either is not Neither<TLeft, TRight>;
+
+   public static bool operator false(Either<TLeft, TRight> either) => either is Neither<TLeft, TRight>;
+
+   public static implicit operator bool(Either<TLeft, TRight> either) => either is not Neither<TLeft, TRight>;
+
    public abstract Either<TLeftResult, TRightResult> Map<TLeftResult, TRightResult>(Func<TLeft, TLeftResult> leftMap,
       Func<TRight, TRightResult> rightMap) where TLeftResult : notnull where TRightResult : notnull;
 
