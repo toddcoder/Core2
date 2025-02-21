@@ -1,5 +1,6 @@
 ﻿using Core.Monads;
 using Core.Strings;
+using Core.Strings.Emojis;
 using static Core.Monads.MonadFunctions;
 using Timer = System.Timers.Timer;
 
@@ -55,28 +56,6 @@ public class UiToolTip : ToolTip
 
    protected void onPopUp(object? sender, PopupEventArgs e)
    {
-      Size getTextSize()
-      {
-         var size = TextRenderer.MeasureText(Text, font, Size.Empty, textFormatFlags);
-         var extraHeight = 0;
-         if (ToolTipTitle.IsNotEmpty())
-         {
-            extraHeight += 20;
-         }
-
-         if (uiAction.FailureToolTip || uiAction.ExceptionToolTip)
-         {
-            extraHeight += 20;
-         }
-
-         if (extraHeight > 0)
-         {
-            size = size with { Height = size.Height + extraHeight };
-         }
-
-         return size;
-      }
-
       if (uiAction.SuccessToolTip is (true, var successToolTip))
       {
          Text = successToolTip;
@@ -110,6 +89,31 @@ public class UiToolTip : ToolTip
       {
          Text = uiAction.NonNullText;
          e.ToolTipSize = getTextSize();
+      }
+
+      return;
+
+      Size getTextSize()
+      {
+         var text = useEmojis ? Text.EmojiSubstitutions() : Text;
+         var size = TextRenderer.MeasureText(text, font, Size.Empty, textFormatFlags);
+         var extraHeight = 0;
+         if (ToolTipTitle.IsNotEmpty())
+         {
+            extraHeight += 20;
+         }
+
+         if (uiAction.FailureToolTip || uiAction.ExceptionToolTip)
+         {
+            extraHeight += 20;
+         }
+
+         if (extraHeight > 0)
+         {
+            size = size with { Height = size.Height + extraHeight };
+         }
+
+         return size;
       }
    }
 

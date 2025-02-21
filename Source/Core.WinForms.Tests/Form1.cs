@@ -100,9 +100,10 @@ public partial class Form1 : Form
 
       var uiAlternates = new UiAction { AutoSizeText = true };
       (builder + uiAlternates + (0, 0)).Next();
-      uiAlternates.NoStatus("alternates action");
+      uiAlternates.NoStatus("alternates/bar.action");
       uiAlternates.WorkingAlignment = CardinalAlignment.SouthEast;
       uiAlternates.Maximum = 100;
+      uiAlternates.Click += (_, _) => uiAlternates.Success("alternates/bar.action");
 
       var uiButton1 = new UiAction();
       uiButton1.DefaultButton("alternates");
