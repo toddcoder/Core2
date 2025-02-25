@@ -34,4 +34,9 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 public class Subscriber : Subscriber<Unit>
 {
    public new readonly MessageEvent<Publication> Received = [];
+
+   public Subscriber()
+   {
+      Subscribe();
+   }
 }
