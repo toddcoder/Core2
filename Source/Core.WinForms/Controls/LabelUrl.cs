@@ -23,6 +23,8 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
    public event EventHandler<UrlChangedArgs>? UrlChanged;
    public event EventHandler<LabelActionMessageArgs>? MessageReceived;
    public event EventHandler? Activated;
+   public event EventHandler? Accepted;
+   public event EventHandler? Cancelled;
 
    public LabelUrl(string label)
    {
@@ -196,6 +198,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
          textLayoutPanel.Visible = false;
          uiUrl.Visible = true;
          display(textBox.Text);
+         Accepted?.Invoke(this, EventArgs.Empty);
       };
       uiOk.ClickText = "Accept URL changes";
 
@@ -206,6 +209,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
       {
          textLayoutPanel.Visible = false;
          uiUrl.Visible = true;
+         Cancelled?.Invoke(this, EventArgs.Empty);
       };
       uiCancel.ClickText = "Cancel URL changes";
 
