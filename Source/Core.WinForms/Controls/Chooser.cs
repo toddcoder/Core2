@@ -466,6 +466,7 @@ public partial class Chooser : Form
       Choice = listViewItems.SelectedItem().Map(item => maybe<Chosen>() & returnSome(item.Index) & (() => getChosen(item)));
       if (Choice is (true, { Value: "" }) || !Choice)
       {
+         Close();
          return;
       }
 
