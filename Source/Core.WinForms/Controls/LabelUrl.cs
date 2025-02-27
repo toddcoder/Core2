@@ -132,12 +132,14 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
                textLayoutPanel.Visible = false;
                uiUrl.Visible = true;
                e.Handled = true;
+               Cancelled?.Invoke(this, EventArgs.Empty);
                break;
             case Keys.Enter:
                textLayoutPanel.Visible = false;
                uiUrl.Visible = true;
                display(textBox.Text);
                e.Handled = true;
+               Accepted?.Invoke(this, EventArgs.Empty);
                break;
             case Keys.C when e.Control && uiUrl.NonNullText.IsNotEmpty():
                Clipboard.SetText(uiUrl.NonNullText);
