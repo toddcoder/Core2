@@ -31,8 +31,7 @@ public partial class Chooser : Form
    public Maybe<Chosen> Open()
    {
       UpdateZOrder();
-      ShowDialog(uiAction);
-
+      ShowDialog();
       return Choice;
    }
 
@@ -320,8 +319,8 @@ public partial class Chooser : Form
 
    protected void locate()
    {
-      var screenArea = Screen.GetWorkingArea(uiAction);
-      var location = screenArea.Location;//Cursor.Position;
+      var screenArea = Screen.GetWorkingArea(this);
+      var location = Cursor.Position;
       if (!FlyUp)
       {
          Height = screenArea.Height - location.Y - 32;
@@ -467,7 +466,6 @@ public partial class Chooser : Form
       Choice = listViewItems.SelectedItem().Map(item => maybe<Chosen>() & returnSome(item.Index) & (() => getChosen(item)));
       if (Choice is (true, { Value: "" }) || !Choice)
       {
-         Close();
          return;
       }
 
