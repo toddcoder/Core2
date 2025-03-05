@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Core.Applications.Messaging;
 
 namespace Core.WinForms;
 
@@ -54,5 +55,10 @@ public static class FormExtensions
    {
       var fi = createFlashWindowInfo(form.Handle, FLASHW_STOP, uint.MaxValue, 0);
       return FlashWindowEx(ref fi);
+   }
+
+   public static void UnsubscribeOnClose<TPayload>(this Subscriber<TPayload> subscriber, Form form) where TPayload : notnull
+   {
+      form.FormClosed += (_, _) => subscriber.Unsubscribe();
    }
 }
