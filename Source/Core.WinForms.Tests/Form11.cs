@@ -14,10 +14,8 @@ public partial class Form11 : Form
    {
       InitializeComponent();
 
-      var publisher = new Publisher<string>();
-
       uiPublish.Button("Publish");
-      uiPublish.Click += (_, _) => publisher.Publish("user", Environment.UserName);
+      uiPublish.Click += (_, _) => Publisher<string>.Publish("user", Environment.UserName);
       uiPublish.ClickText = "Publish";
 
       uiSubscribe.Message("waiting");
@@ -29,6 +27,7 @@ public partial class Form11 : Form
             uiSubscribe.Success(p.Payload);
          }
       };
+      subscriber.UnsubscribeOnClose(this);
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col * 2 * 50f;
@@ -38,6 +37,4 @@ public partial class Form11 : Form
       (builder + uiPublish).Next();
       (builder + uiSubscribe).Row();
    }
-
-   protected void Form11_FormClosing(object sender, FormClosingEventArgs e) => subscriber.Dispose();
 }

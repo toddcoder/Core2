@@ -53,7 +53,6 @@
          Controls.Add(tableLayoutPanel);
          Name = "Form11";
          Text = "Form11";
-         FormClosing += Form11_FormClosing;
          ResumeLayout(false);
       }
 

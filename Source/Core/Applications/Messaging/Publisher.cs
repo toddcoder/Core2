@@ -18,25 +18,31 @@ public class Publisher<TPayload> where TPayload : notnull
    protected Maybe<string> _topic = nil;
    protected object mutex = new();
 
-   public Publisher(string topic)
+   protected Publisher(string topic)
    {
       _topic = topic;
    }
 
-   public Publisher()
+   protected Publisher()
    {
       _topic = nil;
    }
 
-   public void Publish(TPayload payload)
+   protected void publish(TPayload payload)
    {
       if (_topic is (true, var topic))
       {
-         Publish(topic, payload);
+         publish(topic, payload);
       }
    }
 
-   public void Publish(string topic, TPayload payload)
+   public static void Publish(TPayload payload)
+   {
+      var publisher = new Publisher<TPayload>();
+      publisher.publish(payload);
+   }
+
+   protected void publish(string topic, TPayload payload)
    {
       foreach (var (_, subscriber) in subscribers)
       {
@@ -47,7 +53,7 @@ public class Publisher<TPayload> where TPayload : notnull
       }
    }
 
-   public void Publish(string topic, string reader, TPayload payload)
+   protected void publish(string topic, string reader, TPayload payload)
    {
       foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
       {
@@ -58,15 +64,27 @@ public class Publisher<TPayload> where TPayload : notnull
       }
    }
 
-   public void PublishSync(TPayload payload)
+   public static void Publish(string topic, TPayload payload)
+   {
+      var publisher = new Publisher<TPayload>(topic);
+      publisher.publish(topic, payload);
+   }
+
+   protected void publishSync(TPayload payload)
    {
       if (_topic is (true, var topic))
       {
-         PublishSync(topic, payload);
+         publishSync(topic, payload);
       }
    }
 
-   public void PublishSync(string topic, TPayload payload)
+   public static void PublishSync(TPayload payload)
+   {
+      var publisher = new Publisher<TPayload>();
+      publisher.publishSync(payload);
+   }
+
+   protected void publishSync(string topic, TPayload payload)
    {
       foreach (var (_, subscriber) in subscribers)
       {
@@ -78,7 +96,13 @@ public class Publisher<TPayload> where TPayload : notnull
       }
    }
 
-   public void PublishSync(string topic, string reader, TPayload payload)
+   public static void PublishSync(string topic, TPayload payload)
+   {
+      var publisher = new Publisher<TPayload>(topic);
+      publisher.publishSync(topic, payload);
+   }
+
+   protected void publishSync(string topic, string reader, TPayload payload)
    {
       foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
       {
@@ -90,15 +114,27 @@ public class Publisher<TPayload> where TPayload : notnull
       }
    }
 
-   public async Task PublishAsync(TPayload payload)
+   public static void PublishSync(string topic, string reader, TPayload payload)
+   {
+      var publisher = new Publisher<TPayload>(topic);
+      publisher.publishSync(topic, reader, payload);
+   }
+
+   protected async Task publishAsync(TPayload payload)
    {
       if (_topic is (true, var topic))
       {
-         await PublishAsync(topic, payload);
+         await publishAsync(topic, payload);
       }
    }
 
-   public async Task PublishAsync(string topic, TPayload payload)
+   public static async Task PublishAsync(TPayload payload)
+   {
+      var publisher = new Publisher<TPayload>();
+      await publisher.publishAsync(payload);
+   }
+
+   protected async Task publishAsync(string topic, TPayload payload)
    {
       foreach (var (_, subscriber) in subscribers)
       {
@@ -106,11 +142,23 @@ public class Publisher<TPayload> where TPayload : notnull
       }
    }
 
-   public async Task PublishAsync(string topic, string reader, TPayload payload)
+   public static async Task PublishAsync(string topic, TPayload payload)
+   {
+      var publisher = new Publisher<TPayload>(topic);
+      await publisher.publishAsync(topic, payload);
+   }
+
+   protected async Task publishAsync(string topic, string reader, TPayload payload)
    {
       foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
       {
          await subscriber.Received.InvokeAsync(new Publication<TPayload>(topic, payload));
       }
+   }
+
+   public static async Task PublishAsync(string topic, string reader, TPayload payload)
+   {
+      var publisher = new Publisher<TPayload>(topic);
+      await publisher.publishAsync(topic, reader, payload);
    }
 }
