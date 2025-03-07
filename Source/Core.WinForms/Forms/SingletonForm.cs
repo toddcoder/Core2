@@ -31,4 +31,6 @@ public class SingletonForm<T>(Func<T> initializer) where T : Form
    }
 
    public void Reset() => _reference = nil;
+
+   public bool Created => _reference;
 }
