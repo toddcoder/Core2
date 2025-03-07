@@ -116,8 +116,13 @@ public static class ControlExtensions
 
    public static Resources<TControl> Resources<TControl>(this TControl _, string path) where TControl : Control => new(path);
 
-   public static void UnsubscribeOnClose<TPayload>(this Subscriber<TPayload> subscriber, Control control) where TPayload : notnull
+   public static void UnsubscribeOnDisposed<TPayload>(this Subscriber<TPayload> subscriber, Control control) where TPayload : notnull
    {
       control.Disposed += (_, _) => subscriber.Unsubscribe();
+   }
+
+   public static void UnsubscribeOnRemoved<TPayload>(this Subscriber<TPayload> subscriber, Control control) where TPayload : notnull
+   {
+      control.ControlRemoved += (_, _) => subscriber.Unsubscribe();
    }
 }
