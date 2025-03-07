@@ -1,4 +1,5 @@
 ﻿using Core.Applications;
+using Core.Applications.Messaging;
 
 namespace Core.WinForms.Controls;
 
@@ -114,4 +115,9 @@ public static class ControlExtensions
    public static Resources<TControl> Resources<TControl>(this TControl _) where TControl : Control => new();
 
    public static Resources<TControl> Resources<TControl>(this TControl _, string path) where TControl : Control => new(path);
+
+   public static void UnsubscribeOnClose<TPayload>(this Subscriber<TPayload> subscriber, Control control) where TPayload : notnull
+   {
+      control.Disposed += (_, _) => subscriber.Unsubscribe();
+   }
 }
