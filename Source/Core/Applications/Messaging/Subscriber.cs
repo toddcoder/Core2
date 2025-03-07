@@ -8,9 +8,12 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 
    public readonly MessageEvent<Publication<TPayload>> Received = [];
 
-   public Subscriber()
+   public Subscriber(bool autoSubscribe = true)
    {
-      Subscribe();
+      if (autoSubscribe)
+      {
+         Subscribe();
+      }
    }
 
    public Guid Id => id;
@@ -18,6 +21,8 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
    public string Reader { get; set; } = "";
 
    public void Subscribe() => Publisher<TPayload>.AddSubscriber(this);
+
+   public void Queue() => Publisher<TPayload>.QueueSubscriber(this);
 
    public void Unsubscribe() => Publisher<TPayload>.RemoveSubscriber(this);
 

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Core.Collections;
+using Core.DataStructures;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
@@ -10,8 +11,11 @@ namespace Core.Applications.Messaging;
 public class Publisher<TPayload> where TPayload : notnull
 {
    protected static Hash<Guid, Subscriber<TPayload>> subscribers = [];
+   protected static MaybeQueue<Subscriber<TPayload>> pendingSubscribers = [];
 
    public static void AddSubscriber(Subscriber<TPayload> subscriber) => subscribers[subscriber.Id] = subscriber;
+
+   public static void QueueSubscriber(Subscriber<TPayload> subscriber) => pendingSubscribers.Enqueue(subscriber);
 
    public static void RemoveSubscriber(Subscriber<TPayload> subscriber) => subscribers.Maybe[subscriber.Id] = nil;
 
@@ -26,6 +30,14 @@ public class Publisher<TPayload> where TPayload : notnull
    protected Publisher()
    {
       _topic = nil;
+   }
+
+   protected void dequeuePendingSubscriptions()
+   {
+      while (pendingSubscribers.Dequeue() is (true, var subscriber))
+      {
+         AddSubscriber(subscriber);
+      }
    }
 
    protected void publish(TPayload payload)
@@ -51,6 +63,8 @@ public class Publisher<TPayload> where TPayload : notnull
             Task.Run(() => subscriber.Received.Invoke(new Publication<TPayload>(topic, payload)));
          }
       }
+
+      dequeuePendingSubscriptions();
    }
 
    protected void publish(string topic, string reader, TPayload payload)
@@ -62,6 +76,8 @@ public class Publisher<TPayload> where TPayload : notnull
             Task.Run(() => subscriber.Received.Invoke(new Publication<TPayload>(topic, payload)));
          }
       }
+
+      dequeuePendingSubscriptions();
    }
 
    public static void Publish(string topic, TPayload payload)
@@ -94,6 +110,8 @@ public class Publisher<TPayload> where TPayload : notnull
             System.Threading.Thread.Sleep(500);
          }
       }
+
+      dequeuePendingSubscriptions();
    }
 
    public static void PublishSync(string topic, TPayload payload)
@@ -112,6 +130,8 @@ public class Publisher<TPayload> where TPayload : notnull
             System.Threading.Thread.Sleep(500);
          }
       }
+
+      dequeuePendingSubscriptions();
    }
 
    public static void PublishSync(string topic, string reader, TPayload payload)
@@ -140,6 +160,8 @@ public class Publisher<TPayload> where TPayload : notnull
       {
          await subscriber.Received.InvokeAsync(new Publication<TPayload>(topic, payload));
       }
+
+      dequeuePendingSubscriptions();
    }
 
    public static async Task PublishAsync(string topic, TPayload payload)
@@ -154,6 +176,8 @@ public class Publisher<TPayload> where TPayload : notnull
       {
          await subscriber.Received.InvokeAsync(new Publication<TPayload>(topic, payload));
       }
+
+      dequeuePendingSubscriptions();
    }
 
    public static async Task PublishAsync(string topic, string reader, TPayload payload)
