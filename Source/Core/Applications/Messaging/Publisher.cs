@@ -67,6 +67,12 @@ public class Publisher<TPayload> where TPayload : notnull
       dequeuePendingSubscriptions();
    }
 
+   public static void Publish(string topic, string reader, TPayload payload)
+   {
+      var publisher = new Publisher<TPayload>(topic);
+      publisher.publish(topic, reader, payload);
+   }
+
    protected void publish(string topic, string reader, TPayload payload)
    {
       foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
