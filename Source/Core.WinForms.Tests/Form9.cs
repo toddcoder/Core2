@@ -8,7 +8,7 @@ namespace Core.WinForms.Tests;
 public partial class Form9 : Form
 {
    protected LabelUrl luUrl1 = new("url 1");
-   protected LabelUrl luUrl2 = new("url 2");
+   protected UrlEdit luUrl2 = new();
 
    public Form9()
    {
@@ -16,7 +16,7 @@ public partial class Form9 : Form
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 100f;
-      _ = builder.Row + 60 + 60 + 100f;
+      _ = builder.Row + 60 + 40 + 100f;
       builder.SetUp();
 
       var uiSuccess = new UiAction();
@@ -43,7 +43,6 @@ public partial class Form9 : Form
          }
       };
       luUrl2.Url = "http://google.com";
-      luUrl2.AddUiActions(uiSuccess, uiFailure);
 
       var uiCanvas = new UiAction();
       uiCanvas.Painting += (_, e) =>
