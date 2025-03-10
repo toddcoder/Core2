@@ -98,11 +98,11 @@ public class Logger : IDisposable
    {
       var prefix = type switch
       {
-         LogItemType.Message => '.',
-         LogItemType.Success => '!',
-         LogItemType.Failure => '?',
-         LogItemType.Exception => '*',
-         _ => '~'
+         LogItemType.Message => 'M',
+         LogItemType.Success => 'S',
+         LogItemType.Failure => 'F',
+         LogItemType.Exception => 'E',
+         _ => '#'
       };
       WriteRaw(prefix, message);
    }
@@ -115,18 +115,22 @@ public class Logger : IDisposable
 
    public void WriteException(Exception exception)
    {
-      var deepStack = exception.DeepStack().Lines();
+      var deepStack = exception.DeepException().Lines();
       if (deepStack.Length > 0)
       {
          Write(LogItemType.Exception, deepStack[0]);
          PushIndentation();
 
-         foreach (var line in deepStack.Skip(1))
+         foreach (var line in deepStack.Skip(1).Where(l => l.IsNotEmpty()))
          {
             Write(LogItemType.Exception, line);
          }
 
          PopIndentation();
+      }
+      else
+      {
+         Write(LogItemType.Exception, exception.Message);
       }
    }
 
@@ -142,5 +146,5 @@ public class Logger : IDisposable
 
    public void Flush(StringWriter outerWriter) => outerWriter.Write(writer.ToString());
 
-   public void Dispose() => writer.Dispose();
+   public virtual void Dispose() => writer.Dispose();
 }

@@ -125,4 +125,23 @@ public class FileNameTests
          }
       }
    }
+
+   [TestMethod]
+   public void AppenderTest()
+   {
+      FileName appendedFile = @"C:\Temp\append.txt";
+      appendedFile.Delete();
+      using (var appender = new FileAppender(appendedFile))
+      {
+         FolderName folder = @"C:\Temp";
+         foreach (var file in folder.Files)
+         {
+            appender.WriteLine(file.NameExtension);
+         }
+
+         appender.Flush();
+      }
+
+      Console.Write(appendedFile.Text);
+   }
 }
