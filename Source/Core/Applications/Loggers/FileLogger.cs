@@ -20,6 +20,8 @@ public class FileLogger(FileName file, int indentation = 0) : Logger(indentation
       appender.WriteLine($"{now:O} |{prefix}| {indentation}{message}");
    }
 
+   public override void WriteRule() => appender.WriteLine(RULE);
+
    public void Flush() => appender.Flush();
 
    public override void Dispose()

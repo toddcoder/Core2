@@ -134,7 +134,7 @@ public class Logger : IDisposable
       }
    }
 
-   public void WriteRule() => writer.WriteLine(RULE);
+   public virtual void WriteRule() => writer.WriteLine(RULE);
 
    public void Flush(FileName logFile)
    {
