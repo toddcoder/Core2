@@ -226,7 +226,7 @@ public static class User32
    public const int RIGHT_MARGIN = 0x0002;
 
    [Flags]
-   public enum Flags
+   public enum Flags : uint
    {
       NoSize = 0x0001,
       NoMove = 0x0002,
