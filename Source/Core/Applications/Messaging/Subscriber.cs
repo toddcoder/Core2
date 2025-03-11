@@ -34,3 +34,36 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 
    ~Subscriber() => Unsubscribe();
 }
+
+public class Subscriber : IDisposable
+{
+   protected Guid id = Guid.NewGuid();
+
+   public readonly MessageEvent<Publication> Received = [];
+
+   public Subscriber(bool autoSubscribe = true)
+   {
+      if (autoSubscribe)
+      {
+         Subscribe();
+      }
+   }
+
+   public Guid Id => id;
+
+   public string Reader { get; set; } = "";
+
+   public void Subscribe() => Publisher.AddSubscriber(this);
+
+   public void Queue() => Publisher.QueueSubscriber(this);
+
+   public void Unsubscribe() => Publisher.RemoveSubscriber(this);
+
+   public void Dispose()
+   {
+      Unsubscribe();
+      GC.SuppressFinalize(this);
+   }
+
+   ~Subscriber() => Unsubscribe();
+}
