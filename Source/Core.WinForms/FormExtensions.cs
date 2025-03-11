@@ -61,4 +61,9 @@ public static class FormExtensions
    {
       form.FormClosed += (_, _) => subscriber.Unsubscribe();
    }
+
+   public static void UnsubscribeOnClose(this Subscriber subscriber, Form form)
+   {
+      form.FormClosed += (_, _) => subscriber.Unsubscribe();
+   }
 }
