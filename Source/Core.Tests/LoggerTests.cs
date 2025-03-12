@@ -20,6 +20,11 @@ public class LoggerTests
          logger.WriteFailure("This is a failure");
          logger.WriteSuccess("This is a success");
          logger.WriteException(fail("This is an exception"));
+
+         logger.Location = "SetUpDocumentCompleted";
+         logger.WriteSuccess("Done");
+         logger.MaxLocationLength = 22;
+         logger.WriteMessage("Location length set to 22");
          logger.Flush();
       }
 

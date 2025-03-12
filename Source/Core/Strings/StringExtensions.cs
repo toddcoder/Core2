@@ -128,6 +128,26 @@ public static class StringExtensions
       }
    }
 
+   public static string EnsureLength(this string source, int length, char paddingCharacter = ' ')
+   {
+      if (source.IsEmpty())
+      {
+         return paddingCharacter.ToString().Repeat(length);
+      }
+      else if (source.Length < length)
+      {
+         return source.PadRight(length, paddingCharacter);
+      }
+      else if (source.Length > length)
+      {
+         return source.Keep(length - 3) + "...";
+      }
+      else
+      {
+         return source;
+      }
+   }
+
    public static string Elliptical(this string source, int limit, char upTo, bool pad = false, string ellipses = "…")
    {
       if (source.IsEmpty() || limit <= 0)
