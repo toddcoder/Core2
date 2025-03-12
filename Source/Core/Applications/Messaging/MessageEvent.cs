@@ -80,3 +80,77 @@ public class MessageEvent<TPayload> : IList<Action<TPayload>> where TPayload : n
       set => handlers[index] = value;
    }
 }
+
+public class MessageEvent : IList<Action>
+{
+   protected Maybe<Action> _handler = nil;
+   protected List<Action> handlers = [];
+
+   public Action Handler
+   {
+      set => _handler = value;
+   }
+
+   public void Invoke()
+   {
+      if (_handler is (true, var handler))
+      {
+         handler();
+      }
+      else
+      {
+         foreach (var handlerItem in handlers)
+         {
+            handlerItem();
+            System.Threading.Thread.Sleep(500);
+         }
+      }
+   }
+
+   public async Task InvokeAsync()
+   {
+      if (_handler is (true, var asyncHandler))
+      {
+         await Task.Run(() => asyncHandler());
+      }
+      else
+      {
+         foreach (var asyncHandlerItem in handlers)
+         {
+            await Task.Run(() => asyncHandlerItem);
+         }
+      }
+   }
+
+   public void ClearHandler() => _handler = nil;
+
+   public IEnumerator<Action> GetEnumerator() => handlers.GetEnumerator();
+
+   IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+   public void Add(Action item) => handlers.Add(item);
+
+   public void Clear() => handlers.Clear();
+
+   public bool Contains(Action item) => handlers.Contains(item);
+
+   public void CopyTo(Action[] array, int arrayIndex) => handlers.CopyTo(array, arrayIndex);
+
+   public bool Remove(Action item) => handlers.Remove(item);
+
+   public int Count => handlers.Count;
+
+   public bool IsReadOnly => false;
+
+   public int IndexOf(Action item) => handlers.IndexOf(item);
+
+   public void Insert(int index, Action item) => handlers.Insert(index, item);
+
+   public void RemoveAt(int index) => handlers.RemoveAt(index);
+
+   public Action this[int index]
+   {
+      get => handlers[index];
+      set => handlers[index] = value;
+   }
+}

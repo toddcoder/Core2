@@ -1,4 +1,5 @@
-﻿using Core.Monads;
+﻿using Core.Applications.Messaging;
+using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Forms;
@@ -10,9 +11,18 @@ public class SingletonForm<T>(Func<T> initializer) where T : Form
 
    public Maybe<T> Reference => _reference;
 
+   public readonly MessageEvent Created = new();
+   public readonly MessageEvent WasReset = new();
+
    public void Show()
    {
+      var uninitialized = !_reference;
       (var reference, _reference) = _reference.Create(initializer);
+      if (uninitialized)
+      {
+         reference.FormClosing += (_, _) => Reset();
+         Created.Invoke();
+      }
 
       if (reference.Visible)
       {
@@ -30,7 +40,11 @@ public class SingletonForm<T>(Func<T> initializer) where T : Form
       }
    }
 
-   public void Reset() => _reference = nil;
+   public void Reset()
+   {
+      _reference = nil;
+      WasReset.Invoke();
+   }
 
    public bool Available => _reference is (true, { IsDisposed: false, Visible: true });
 }
