@@ -56,12 +56,15 @@ public partial class Form5 : Form
       header.Arrange();
       header.HeaderClick += (_, e) => Text = e.Name;
 
+      textBoxContainer.BeginUpdate();
       textBoxContainer.ShowLastFocus = false;
       foreach (var _ in Enumerable.Range(0, 3))
       {
          var control = new TextBox { Text = "" };
          textBoxContainer.Add(control);
       }
+
+      textBoxContainer.EndUpdate();
 
       InitializeComponent();
 
@@ -104,9 +107,29 @@ public partial class Form5 : Form
       {
          var writer = new RectangleWriter(alignment.ToString(), rectangle, alignment)
          {
-            ForeColor = Color.Black, BackColor = Color.Bisque, BackgroundRestriction = new BackgroundRestriction.Restricted(alignment)
+            ForeColor = Color.Black,
+            BackColor = Color.Bisque,
+            BackgroundRestriction = new BackgroundRestriction.Restricted(alignment)
          };
          writer.Write(e.Graphics);
       }
+   }
+
+   protected void panel1_Click(object sender, EventArgs e)
+   {
+   }
+
+   protected void pictureBox1_Click(object sender, EventArgs e)
+   {
+      textBoxContainer.BeginUpdate();
+      textBoxContainer.Clear();
+      textBoxContainer.ShowLastFocus = false;
+      foreach (var _ in Enumerable.Range(0, 3))
+      {
+         var control = new TextBox { Text = "" };
+         textBoxContainer.Add(control);
+      }
+
+      textBoxContainer.EndUpdate();
    }
 }

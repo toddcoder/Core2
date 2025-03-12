@@ -34,6 +34,11 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    public long Add(TControl control)
    {
+      if (!isUpdating)
+      {
+         control.Visible = false;
+      }
+
       var (id, firstTime) = setControl(control);
 
       if (firstTime && showLastFocus)
@@ -148,6 +153,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
          control.Location = new Point(left, top);
          control.Size = size;
          left += width + padding;
+         control.Visible = true;
          control.Refresh();
       }
    }
@@ -164,6 +170,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
          control.Location = new Point(left, top);
          control.Size = size;
          top += height + padding;
+         control.Visible = true;
          control.Refresh();
       }
    }
@@ -191,6 +198,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
          control.Location = new Point(left, top);
          control.Size = new Size(width, height);
+         control.Visible = true;
          left += width + padding;
       }
    }
@@ -363,18 +371,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-   [Obsolete("Use BeginUpdate")]
-   public void BeginUpdating() => isUpdating = false;
-
    public void BeginUpdate() => isUpdating = false;
-
-   [Obsolete("Use EndUpdate")]
-   public void EndUpdating()
-   {
-      isUpdating = true;
-      resize();
-      Invalidate();
-   }
 
    public void EndUpdate()
    {

@@ -58,6 +58,7 @@
          panel1.Name = "panel1";
          panel1.Size = new Size(394, 219);
          panel1.TabIndex = 0;
+         panel1.Click += panel1_Click;
          // 
          // pictureBox1
          // 
@@ -67,6 +68,7 @@
          pictureBox1.Size = new Size(394, 219);
          pictureBox1.TabIndex = 1;
          pictureBox1.TabStop = false;
+         pictureBox1.Click += pictureBox1_Click;
          pictureBox1.Paint += pictureBox1_Paint;
          // 
          // Form5
