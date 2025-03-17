@@ -8,14 +8,14 @@ public partial class Form11 : Form
 {
    protected UiAction uiPublish = new();
    protected UiAction uiSubscribe = new();
-   protected Subscriber<string> subscriber = new();
+   protected Subscriber<string> subscriber = new("user-info");
 
    public Form11()
    {
       InitializeComponent();
 
       uiPublish.Button("Publish");
-      uiPublish.Click += (_, _) => Publisher<string>.Publish("user", Environment.UserName);
+      uiPublish.Click += (_, _) => Publisher<string>.Publish("user-info", "user", Environment.UserName);
       uiPublish.ClickText = "Publish";
 
       uiSubscribe.Message("waiting");

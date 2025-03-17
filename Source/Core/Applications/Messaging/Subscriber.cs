@@ -4,12 +4,14 @@ namespace Core.Applications.Messaging;
 
 public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 {
+   protected string name;
    protected Guid id = Guid.NewGuid();
 
    public readonly MessageEvent<Publication<TPayload>> Received = [];
 
-   public Subscriber(bool autoSubscribe = true)
+   public Subscriber(string name, bool autoSubscribe = true)
    {
+      this.name = name;
       if (autoSubscribe)
       {
          Subscribe();
@@ -18,13 +20,11 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 
    public Guid Id => id;
 
-   public string Reader { get; set; } = "";
+   public void Subscribe() => Publisher<TPayload>.AddSubscriber(name, this);
 
-   public void Subscribe() => Publisher<TPayload>.AddSubscriber(this);
+   public void Queue() => Publisher<TPayload>.QueueSubscriber(name, this);
 
-   public void Queue() => Publisher<TPayload>.QueueSubscriber(this);
-
-   public void Unsubscribe() => Publisher<TPayload>.RemoveSubscriber(this);
+   public void Unsubscribe() => Publisher<TPayload>.RemoveSubscriber(name, this);
 
    public void Dispose()
    {
@@ -37,12 +37,14 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 
 public class Subscriber : IDisposable
 {
+   protected string name;
    protected Guid id = Guid.NewGuid();
 
    public readonly MessageEvent<Publication> Received = [];
 
-   public Subscriber(bool autoSubscribe = true)
+   public Subscriber(string name, bool autoSubscribe = true)
    {
+      this.name = name;
       if (autoSubscribe)
       {
          Subscribe();
@@ -51,13 +53,11 @@ public class Subscriber : IDisposable
 
    public Guid Id => id;
 
-   public string Reader { get; set; } = "";
+   public void Subscribe() => Publisher.AddSubscriber(name, this);
 
-   public void Subscribe() => Publisher.AddSubscriber(this);
+   public void Queue() => Publisher.QueueSubscriber(name, this);
 
-   public void Queue() => Publisher.QueueSubscriber(this);
-
-   public void Unsubscribe() => Publisher.RemoveSubscriber(this);
+   public void Unsubscribe() => Publisher.RemoveSubscriber(name, this);
 
    public void Dispose()
    {

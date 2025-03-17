@@ -1,379 +1,229 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Core.Collections;
 using Core.DataStructures;
-using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.Messaging;
 
 public class Publisher<TPayload> where TPayload : notnull
 {
-   protected static Hash<Guid, Subscriber<TPayload>> subscribers = [];
-   protected static MaybeQueue<Subscriber<TPayload>> pendingSubscribers = [];
+   protected static StringHash<Hash<Guid, Subscriber<TPayload>>> subscribers = [];
+   protected static MaybeQueue<(string name, Subscriber<TPayload>subscriber)> pendingSubscribers = [];
 
-   public static void AddSubscriber(Subscriber<TPayload> subscriber) => subscribers[subscriber.Id] = subscriber;
+   public static void AddSubscriber(string name, Subscriber<TPayload> subscriber)
+   {
+      var hash = subscribers.Memoize(name, _ => new Hash<Guid, Subscriber<TPayload>>());
+      hash[subscriber.Id] = subscriber;
+   }
 
-   public static void QueueSubscriber(Subscriber<TPayload> subscriber) => pendingSubscribers.Enqueue(subscriber);
+   public static void QueueSubscriber(string name, Subscriber<TPayload> subscriber) => pendingSubscribers.Enqueue((name, subscriber));
 
-   public static void RemoveSubscriber(Subscriber<TPayload> subscriber) => subscribers.Maybe[subscriber.Id] = nil;
+   public static void RemoveSubscriber(string name, Subscriber<TPayload> subscriber)
+   {
+      if (subscribers.Maybe[name] is (true, var hash))
+      {
+         hash.Maybe[subscriber.Id] = nil;
+         if (hash.Count == 0)
+         {
+            subscribers.Maybe[name] = nil;
+         }
+      }
+   }
 
-   protected Maybe<string> _topic = nil;
+   protected string name;
    protected object mutex = new();
 
-   protected Publisher(string topic)
+   protected Publisher(string name)
    {
-      _topic = topic;
+      this.name = name;
    }
 
-   protected Publisher()
+   public void DequeuePendingSubscriptions()
    {
-      _topic = nil;
-   }
-
-   protected void dequeuePendingSubscriptions()
-   {
-      while (pendingSubscribers.Dequeue() is (true, var subscriber))
+      while (pendingSubscribers.Dequeue() is (true, var (pendingName, subscriber)))
       {
-         AddSubscriber(subscriber);
+         AddSubscriber(pendingName, subscriber);
       }
    }
 
-   protected void publish(TPayload payload)
+   public void Publish(string topic, TPayload payload)
    {
-      if (_topic is (true, var topic))
+      lock (mutex)
       {
-         publish(topic, payload);
-      }
-   }
-
-   public static void Publish(TPayload payload)
-   {
-      var publisher = new Publisher<TPayload>();
-      publisher.publish(payload);
-   }
-
-   protected void publish(string topic, TPayload payload)
-   {
-      foreach (var (_, subscriber) in subscribers)
-      {
-         lock (mutex)
+         foreach (var (publisherName, hash) in subscribers)
          {
-            Task.Run(() => subscriber.Received.Invoke(new Publication<TPayload>(topic, payload)));
+            if (publisherName == name)
+            {
+               foreach (var (_, subscriber) in hash)
+               {
+                  Task.Run(() => subscriber.Received.Invoke(new Publication<TPayload>(topic, payload)));
+               }
+            }
+         }
+
+         DequeuePendingSubscriptions();
+      }
+   }
+
+   public static void Publish(string name, string topic, TPayload payload)
+   {
+      var publisher = new Publisher<TPayload>(name);
+      publisher.Publish(topic, payload);
+   }
+
+   public void PublishSync(string topic, TPayload payload)
+   {
+      foreach (var (publisherName, hash) in subscribers)
+      {
+         if (publisherName == name)
+         {
+            foreach (var (_, subscriber) in hash)
+            {
+               subscriber.Received.Invoke(new Publication<TPayload>(topic, payload));
+            }
          }
       }
 
-      dequeuePendingSubscriptions();
+      DequeuePendingSubscriptions();
    }
 
-   public static void Publish(string topic, string reader, TPayload payload)
+   public static void PublishSync(string name, string topic, TPayload payload)
    {
-      var publisher = new Publisher<TPayload>(topic);
-      publisher.publish(topic, reader, payload);
+      var publisher = new Publisher<TPayload>(name);
+      publisher.PublishSync(topic, payload);
    }
 
-   protected void publish(string topic, string reader, TPayload payload)
+   public async Task PublishAsync(string topic, TPayload payload)
    {
-      foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
+      foreach (var (publisherName, hash) in subscribers)
       {
-         lock (mutex)
+         if (publisherName == name)
          {
-            Task.Run(() => subscriber.Received.Invoke(new Publication<TPayload>(topic, payload)));
+            foreach (var (_, subscriber) in hash)
+            {
+               await subscriber.Received.InvokeAsync(new Publication<TPayload>(topic, payload));
+            }
          }
       }
 
-      dequeuePendingSubscriptions();
+      DequeuePendingSubscriptions();
    }
 
-   public static void Publish(string topic, TPayload payload)
+   public static async Task PublishAsync(string name, string topic, TPayload payload)
    {
-      var publisher = new Publisher<TPayload>(topic);
-      publisher.publish(topic, payload);
-   }
-
-   protected void publishSync(TPayload payload)
-   {
-      if (_topic is (true, var topic))
-      {
-         publishSync(topic, payload);
-      }
-   }
-
-   public static void PublishSync(TPayload payload)
-   {
-      var publisher = new Publisher<TPayload>();
-      publisher.publishSync(payload);
-   }
-
-   protected void publishSync(string topic, TPayload payload)
-   {
-      foreach (var (_, subscriber) in subscribers)
-      {
-         lock (mutex)
-         {
-            subscriber.Received.Invoke(new Publication<TPayload>(topic, payload));
-            System.Threading.Thread.Sleep(500);
-         }
-      }
-
-      dequeuePendingSubscriptions();
-   }
-
-   public static void PublishSync(string topic, TPayload payload)
-   {
-      var publisher = new Publisher<TPayload>(topic);
-      publisher.publishSync(topic, payload);
-   }
-
-   protected void publishSync(string topic, string reader, TPayload payload)
-   {
-      foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
-      {
-         lock (mutex)
-         {
-            subscriber.Received.Invoke(new Publication<TPayload>(topic, payload));
-            System.Threading.Thread.Sleep(500);
-         }
-      }
-
-      dequeuePendingSubscriptions();
-   }
-
-   public static void PublishSync(string topic, string reader, TPayload payload)
-   {
-      var publisher = new Publisher<TPayload>(topic);
-      publisher.publishSync(topic, reader, payload);
-   }
-
-   protected async Task publishAsync(TPayload payload)
-   {
-      if (_topic is (true, var topic))
-      {
-         await publishAsync(topic, payload);
-      }
-   }
-
-   public static async Task PublishAsync(TPayload payload)
-   {
-      var publisher = new Publisher<TPayload>();
-      await publisher.publishAsync(payload);
-   }
-
-   protected async Task publishAsync(string topic, TPayload payload)
-   {
-      foreach (var (_, subscriber) in subscribers)
-      {
-         await subscriber.Received.InvokeAsync(new Publication<TPayload>(topic, payload));
-      }
-
-      dequeuePendingSubscriptions();
-   }
-
-   public static async Task PublishAsync(string topic, TPayload payload)
-   {
-      var publisher = new Publisher<TPayload>(topic);
-      await publisher.publishAsync(topic, payload);
-   }
-
-   protected async Task publishAsync(string topic, string reader, TPayload payload)
-   {
-      foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
-      {
-         await subscriber.Received.InvokeAsync(new Publication<TPayload>(topic, payload));
-      }
-
-      dequeuePendingSubscriptions();
-   }
-
-   public static async Task PublishAsync(string topic, string reader, TPayload payload)
-   {
-      var publisher = new Publisher<TPayload>(topic);
-      await publisher.publishAsync(topic, reader, payload);
+      var publisher = new Publisher<TPayload>(name);
+      await publisher.PublishAsync(topic, payload);
    }
 }
 
 public class Publisher
 {
-   protected static Hash<Guid, Subscriber> subscribers = [];
-   protected static MaybeQueue<Subscriber> pendingSubscribers = [];
+   protected static StringHash<Hash<Guid, Subscriber>> subscribers = [];
+   protected static MaybeQueue<(string name, Subscriber subscriber)> pendingSubscribers = [];
 
-   public static void AddSubscriber(Subscriber subscriber) => subscribers[subscriber.Id] = subscriber;
+   public static void AddSubscriber(string name, Subscriber subscriber)
+   {
+      var hash = subscribers.Memoize(name, _ => new Hash<Guid, Subscriber>());
+      hash[subscriber.Id] = subscriber;
+   }
 
-   public static void QueueSubscriber(Subscriber subscriber) => pendingSubscribers.Enqueue(subscriber);
+   public static void QueueSubscriber(string name, Subscriber subscriber) => pendingSubscribers.Enqueue((name, subscriber));
 
-   public static void RemoveSubscriber(Subscriber subscriber) => subscribers.Maybe[subscriber.Id] = nil;
+   public static void RemoveSubscriber(string name, Subscriber subscriber)
+   {
+      if (subscribers.Maybe[name] is (true, var hash))
+      {
+         hash.Maybe[subscriber.Id] = nil;
+         if (hash.Count == 0)
+         {
+            subscribers.Maybe[name] = nil;
+         }
+      }
+   }
 
-   protected Maybe<string> _topic = nil;
+   protected string name;
    protected object mutex = new();
 
-   protected Publisher(string topic)
+   protected Publisher(string name)
    {
-      _topic = topic;
+      this.name = name;
    }
 
-   protected Publisher()
+   public void DequeuePendingSubscriptions()
    {
-      _topic = nil;
-   }
-
-   protected void dequeuePendingSubscriptions()
-   {
-      while (pendingSubscribers.Dequeue() is (true, var subscriber))
+      while (pendingSubscribers.Dequeue() is (true, var (pendingName, subscriber)))
       {
-         AddSubscriber(subscriber);
+         AddSubscriber(pendingName, subscriber);
       }
    }
 
-   protected void publish()
+   public void Publish(string topic)
    {
-      if (_topic is (true, var topic))
+      lock (mutex)
       {
-         publish(topic);
-      }
-   }
-
-   public static void Publish()
-   {
-      var publisher = new Publisher();
-      publisher.publish();
-   }
-
-   protected void publish(string topic)
-   {
-      foreach (var (_, subscriber) in subscribers)
-      {
-         lock (mutex)
+         foreach (var (publisherName, hash) in subscribers)
          {
-            Task.Run(() => subscriber.Received.Invoke(new Publication(topic)));
+            if (publisherName == name)
+            {
+               foreach (var (_, subscriber) in hash)
+               {
+                  Task.Run(() => subscriber.Received.Invoke(new Publication(topic)));
+               }
+            }
+         }
+
+         DequeuePendingSubscriptions();
+      }
+   }
+
+   public static void Publish(string name, string topic)
+   {
+      var publisher = new Publisher(name);
+      publisher.Publish(topic);
+   }
+
+   public void PublishSync(string topic)
+   {
+      foreach (var (publisherName, hash) in subscribers)
+      {
+         if (publisherName == name)
+         {
+            foreach (var (_, subscriber) in hash)
+            {
+               subscriber.Received.Invoke(new Publication(topic));
+            }
          }
       }
 
-      dequeuePendingSubscriptions();
+      DequeuePendingSubscriptions();
    }
 
-   public static void Publish(string topic, string reader)
+   public static void PublishSync(string name, string topic)
    {
-      var publisher = new Publisher(topic);
-      publisher.publish(topic, reader);
+      var publisher = new Publisher(name);
+      publisher.PublishSync(topic);
    }
 
-   protected void publish(string topic, string reader)
+   public async Task PublishAsync(string topic)
    {
-      foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
+      foreach (var (publisherName, hash) in subscribers)
       {
-         lock (mutex)
+         if (publisherName == name)
          {
-            Task.Run(() => subscriber.Received.Invoke(new Publication(topic)));
+            foreach (var (_, subscriber) in hash)
+            {
+               await subscriber.Received.InvokeAsync(new Publication(topic));
+            }
          }
       }
 
-      dequeuePendingSubscriptions();
+      DequeuePendingSubscriptions();
    }
 
-   public static void Publish(string topic)
+   public static async Task PublishAsync(string name, string topic)
    {
-      var publisher = new Publisher(topic);
-      publisher.publish(topic);
-   }
-
-   protected void publishSync()
-   {
-      if (_topic is (true, var topic))
-      {
-         publishSync(topic);
-      }
-   }
-
-   public static void PublishSync()
-   {
-      var publisher = new Publisher();
-      publisher.publishSync();
-   }
-
-   protected void publishSync(string topic)
-   {
-      foreach (var (_, subscriber) in subscribers)
-      {
-         lock (mutex)
-         {
-            subscriber.Received.Invoke(new Publication(topic));
-            System.Threading.Thread.Sleep(500);
-         }
-      }
-
-      dequeuePendingSubscriptions();
-   }
-
-   public static void PublishSync(string topic)
-   {
-      var publisher = new Publisher(topic);
-      publisher.publishSync(topic);
-   }
-
-   protected void publishSync(string topic, string reader)
-   {
-      foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
-      {
-         lock (mutex)
-         {
-            subscriber.Received.Invoke(new Publication(topic));
-            System.Threading.Thread.Sleep(500);
-         }
-      }
-
-      dequeuePendingSubscriptions();
-   }
-
-   public static void PublishSync(string topic, string reader)
-   {
-      var publisher = new Publisher(topic);
-      publisher.publishSync(topic, reader);
-   }
-
-   protected async Task publishAsync()
-   {
-      if (_topic is (true, var topic))
-      {
-         await publishAsync(topic);
-      }
-   }
-
-   public static async Task PublishAsync()
-   {
-      var publisher = new Publisher();
-      await publisher.publishAsync();
-   }
-
-   protected async Task publishAsync(string topic)
-   {
-      foreach (var (_, subscriber) in subscribers)
-      {
-         await subscriber.Received.InvokeAsync(new Publication(topic));
-      }
-
-      dequeuePendingSubscriptions();
-   }
-
-   public static async Task PublishAsync(string topic)
-   {
-      var publisher = new Publisher(topic);
-      await publisher.publishAsync(topic);
-   }
-
-   protected async Task publishAsync(string topic, string reader)
-   {
-      foreach (var (_, subscriber) in subscribers.Where(i => i.Value.Reader == reader))
-      {
-         await subscriber.Received.InvokeAsync(new Publication(topic));
-      }
-
-      dequeuePendingSubscriptions();
-   }
-
-   public static async Task PublishAsync(string topic, string reader)
-   {
-      var publisher = new Publisher(topic);
-      await publisher.publishAsync(topic, reader);
+      var publisher = new Publisher(name);
+      await publisher.PublishAsync(topic);
    }
 }
