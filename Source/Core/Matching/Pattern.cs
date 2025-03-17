@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Collections;
 using Core.Matching.Parsers;
 using Core.Monads;
 using Core.Numbers;
+using Core.Objects;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.GetHashCodeGenerator;
@@ -13,13 +15,13 @@ using RRegex = System.Text.RegularExpressions.Regex;
 
 namespace Core.Matching;
 
-public class Pattern : IEquatable<Pattern>
+public partial class Pattern : IEquatable<Pattern>
 {
    protected static bool isFriendly;
 
    public static implicit operator Pattern(string source)
    {
-      var regex = new RRegex(@"\s*;\s*([icmsfu]{1,3})$", RegexOptions.IgnoreCase);
+      var regex = MyRegex();
       var matches = regex.Matches(source);
       if (matches.Count > 0)
       {
@@ -29,30 +31,30 @@ public class Pattern : IEquatable<Pattern>
          var multiline = false;
          var options = group.Value;
 
-         if (options.Contains("i"))
+         if (options.Contains('i'))
          {
             ignoreCase = true;
          }
-         else if (options.Contains("c"))
+         else if (options.Contains('c'))
          {
             ignoreCase = false;
          }
 
-         if (options.Contains("m"))
+         if (options.Contains('m'))
          {
             multiline = true;
          }
-         else if (options.Contains("s"))
+         else if (options.Contains('s'))
          {
             multiline = false;
          }
 
          bool friendly;
-         if (options.Contains("f"))
+         if (options.Contains('f'))
          {
             friendly = true;
          }
-         else if (options.Contains("u"))
+         else if (options.Contains('u'))
          {
             friendly = false;
          }
@@ -74,10 +76,7 @@ public class Pattern : IEquatable<Pattern>
       }
    }
 
-   public static Pattern operator +(Pattern pattern1, Pattern pattern2)
-   {
-      return new(pattern1.Regex + pattern2.Regex, pattern2.Options, pattern2.Friendly);
-   }
+   public static Pattern operator +(Pattern pattern1, Pattern pattern2) => new(pattern1.Regex + pattern2.Regex, pattern2.Options, pattern2.Friendly);
 
    public static Pattern operator +(Pattern pattern, string source)
    {
@@ -149,7 +148,7 @@ public class Pattern : IEquatable<Pattern>
          StringHash<int> namesToIndexes = [];
          foreach (var name in rRegex.GetGroupNames())
          {
-            if (RRegex.IsMatch(name, @"^[+-]?\d+$"))
+            if (MyRegex1().IsMatch(name))
             {
                continue;
             }
@@ -209,4 +208,10 @@ public class Pattern : IEquatable<Pattern>
    public static bool operator !=(Pattern pattern, string input) => !pattern.Equals(input);
 
    public string Replace(string input, string replacement) => getRegex().Replace(input, replacement);
+
+   [GeneratedRegex(@"\s*;\s*([icmsfu]{1,3})$", RegexOptions.IgnoreCase, "en-US")]
+   private static partial RRegex MyRegex();
+
+   [GeneratedRegex(@"^[+-]?\d+$")]
+   private static partial RRegex MyRegex1();
 }
