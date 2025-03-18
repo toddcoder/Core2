@@ -6,35 +6,66 @@ namespace Core.WinForms.Tests;
 
 public partial class Form11 : Form
 {
-   protected UiAction uiPublish = new();
-   protected UiAction uiSubscribe = new();
-   protected Subscriber<string> subscriber = new("user-info");
+   protected const string STATE_INFO = "state-info";
+   protected const string USER_INFO = "user-info";
+   protected const string TOPIC_USER = "user";
+   protected const string TOPIC_STATE = "state";
+
+   protected UiAction uiUserInfoPublish = new();
+   protected UiAction uiUserInfoSubscribe = new();
+   protected UiAction uiStatePublish = new();
+   protected LabelText ltStateSubscribe = new(STATE_INFO);
+   protected Subscriber<string> userInfoSubscriber = new(USER_INFO);
+   protected Subscriber<string> stateSubscriber = new(STATE_INFO);
+   protected Publisher<string> userInfoPublisher = new(USER_INFO);
+   protected Publisher<string> statePublisher = new(STATE_INFO);
 
    public Form11()
    {
       InitializeComponent();
 
-      uiPublish.Button("Publish");
-      uiPublish.Click += (_, _) => Publisher<string>.Publish("user-info", "user", Environment.UserName);
-      uiPublish.ClickText = "Publish";
+      uiUserInfoPublish.Button("Publish");
+      uiUserInfoPublish.Click += (_, _) => userInfoPublisher.Publish(TOPIC_USER, Environment.UserName);
+      uiUserInfoPublish.ClickText = "Publish";
 
-      uiSubscribe.Message("waiting");
+      uiUserInfoSubscribe.Message("waiting");
 
-      subscriber.Received.Handler = p =>
+      userInfoSubscriber.Received.Handler = p =>
       {
-         if (p.Topic == "user")
+         if (p.Topic == TOPIC_USER)
          {
-            uiSubscribe.Success(p.Payload);
+            uiUserInfoSubscribe.Do(() => uiUserInfoSubscribe.Success(p.Payload));
          }
       };
-      subscriber.UnsubscribeOnClose(this);
+      userInfoSubscriber.UnsubscribeOnClose(this);
+
+      uiStatePublish.Button("Publish");
+      uiStatePublish.Click += (_, _) => statePublisher.Publish(TOPIC_STATE, ltStateSubscribe.Text);
+      uiStatePublish.ClickText = "Publish";
+
+      stateSubscriber.Received.Handler = p =>
+      {
+         if (p.Topic == TOPIC_STATE)
+         {
+            listBox1.Do(() =>
+            {
+               listBox1.Items.Add(p.Payload);
+               ltStateSubscribe.Text = "";
+            });
+         }
+      };
+      stateSubscriber.UnsubscribeOnClose(this);
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
-      _ = builder.Col * 2 * 50f;
-      _ = builder.Row + 100f;
+      _ = builder.Col * 4 * 25f;
+      _ = builder.Row + 60 + 60 + 100f;
       builder.SetUp();
 
-      (builder + uiPublish).Next();
-      (builder + uiSubscribe).Row();
+      (builder + uiUserInfoPublish).SpanCol(1).Next();
+      (builder + uiUserInfoSubscribe).SpanCol(3).Row();
+
+      (builder + uiStatePublish).Next();
+      (builder + ltStateSubscribe).Next();
+      (builder + listBox1).SpanCol(2).SpanRow(2).Row();
    }
 }

@@ -34,7 +34,7 @@ public class Publisher<TPayload> where TPayload : notnull
    protected string name;
    protected object mutex = new();
 
-   protected Publisher(string name)
+   public Publisher(string name)
    {
       this.name = name;
    }
