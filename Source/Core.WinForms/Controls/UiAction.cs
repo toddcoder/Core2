@@ -474,6 +474,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
       Resize += (_, _) => determineFloorAndCeiling();
 
+      KeyDown += (_, _) =>
+      {
+         if (KeyDownCaption is not KeyDownCapture.None)
+         {
+            Invalidate();
+         }
+      };
+
       backgroundWorker = new Lazy<CoreBackgroundWorker>(() =>
       {
          var worker = new CoreBackgroundWorker();
@@ -1702,8 +1710,22 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             break;
          }
          case UiActionType.Button:
-            writer.Write(e.Graphics, text, false);
+         {
+            var caption = text;
+            if (KeyDownCaption.IsDown)
+            {
+               caption = KeyDownCaption switch
+               {
+                  KeyDownCapture.AltKey altKey => altKey.Caption,
+                  KeyDownCapture.ControlKey controlKey => controlKey.Caption,
+                  KeyDownCapture.ShiftKey shiftKey => shiftKey.Caption,
+                  _ => text
+               };
+            }
+
+            writer.Write(e.Graphics, caption, false);
             break;
+         }
          case UiActionType.Alternate when _alternateWriter is (true, var alternateWriter):
          {
             alternateWriter.OnPaint(e.Graphics);
@@ -2385,6 +2407,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       ButtonType = UiActionButtonType.Cancel;
       Button(text);
    }
+
+   public KeyDownCapture KeyDownCaption { get; set; } = new KeyDownCapture.None();
 
    public void StartAutomatic()
    {
@@ -3466,7 +3490,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
    public void KeyMatch(string downMessage, string upMessage) => KeyMatch(downMessage, upMessage, 500.Milliseconds());
 
-   public bool IsKeyDown => _keyMatch.Map(km => km.IsDown) | false;
+   public bool IsKeyDown => _keyMatch.Map(km => km.IsDown) | (() => KeyDownCaption.IsDown);
 
    public void Symbol(UiActionSymbol symbol, Color foreColor, Color backColor)
    {

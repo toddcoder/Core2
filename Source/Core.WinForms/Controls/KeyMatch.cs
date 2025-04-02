@@ -74,14 +74,6 @@ public class KeyMatch
 
    public void DisplayMessage(string message)
    {
-      Maybe<string> getPrefix() => keys switch
-      {
-         Keys.Control => "c",
-         Keys.Shift => "s",
-         Keys.Alt => "a",
-         _ => nil
-      };
-
       if (message.IsNotEmpty())
       {
          var fullMessage = getPrefix().Map(p => $"{p} {message}");
@@ -90,6 +82,15 @@ public class KeyMatch
       }
 
       uiAction.Refresh();
+      return;
+
+      Maybe<string> getPrefix() => keys switch
+      {
+         Keys.Control => "c",
+         Keys.Shift => "s",
+         Keys.Alt => "a",
+         _ => nil
+      };
    }
 
    public void DisplayDown() => DisplayMessage(downMessage);

@@ -61,7 +61,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
       return newFolder;
    }
 
-   public static FolderName CreateRootOnly(string root) => new(root, (string[]) []);
+   public static FolderName CreateRootOnly(string root) => new(root, []);
 
    protected static FolderName specialFolder(Environment.SpecialFolder folder) => Environment.GetFolderPath(folder);
 
@@ -328,7 +328,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
             var copy = new string[subfolders.Length];
             subfolders.CopyTo(copy, 0);
 
-            return [.. copy.Reverse()];
+            return [.. copy.Reversed()];
          }
          else
          {
