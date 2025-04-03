@@ -230,6 +230,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       Interval = 100,
       Enabled = false
    };
+   protected Timer captionTimer = new()
+   {
+      Interval = 500,
+      Enabled = false
+   };
    protected Maybe<BusyTextProcessor> _statusBusyProcessor = nil;
    protected Fader fader;
    protected Maybe<PieProgressProcessor> _pieProgressProcessor = nil;
@@ -522,6 +527,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          if (status is not StatusType.None)
          {
             this.Do(Refresh);
+         }
+      };
+
+      captionTimer.Tick += (_, _) =>
+      {
+         if (KeyDownCaption is not KeyDownCapture.None)
+         {
+            Invalidate();
          }
       };
 
@@ -1722,6 +1735,9 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
                   _ => text
                };
             }
+            else
+            {
+            }
 
             writer.Write(e.Graphics, caption, false);
             break;
@@ -2408,7 +2424,23 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       Button(text);
    }
 
-   public KeyDownCapture KeyDownCaption { get; set; } = new KeyDownCapture.None();
+   public KeyDownCapture KeyDownCaption
+   {
+      get;
+      set
+      {
+         RemoveSubText(field.SubText);
+         field = value;
+         var enabled = field is not KeyDownCapture.None;
+         if (enabled)
+         {
+            field.SubText = SubText(field.Representation).Set.Alignment(CardinalAlignment.NorthEast).Italic().FontSize(8f).ForeColor(Color.Black)
+               .BackColor(Color.BlanchedAlmond).SubText;
+         }
+
+         captionTimer.Enabled = enabled;
+      }
+   } = new KeyDownCapture.None();
 
    public void StartAutomatic()
    {
