@@ -245,6 +245,9 @@ public static class GraphicsExtensions
 
    public static Color WithAlpha(this Color color, int alpha) => Color.FromArgb(alpha, color);
 
+   public static Color OffSet(this Color color, int red, int green, int blue) =>
+      Color.FromArgb(color.A, color.R + red, color.G + green, color.B + blue);
+
    public static Rectangle RightOf(this Rectangle rectangle, Size size, int offset = 0)
    {
       return rectangle with { X = rectangle.X + rectangle.Width + offset, Size = size };

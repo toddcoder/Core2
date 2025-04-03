@@ -2434,8 +2434,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          var enabled = field is not KeyDownCapture.None;
          if (enabled)
          {
-            field.SubText = SubText(field.Representation).Set.Alignment(CardinalAlignment.NorthEast).Italic().FontSize(8f).ForeColor(Color.Black)
-               .BackColor(Color.BlanchedAlmond).SubText;
+            var foreColor = getForeColor(UiActionType.Button);
+            var backColor = getBackColor(UiActionType.Button).WithAlpha(50).OffSet(10, 10, 10);
+            field.SubText = SubText(field.Representation).Set.Alignment(CardinalAlignment.NorthEast).Italic().FontSize(8f)
+               .ForeColor(foreColor)
+               .BackColor(backColor)
+               .IncludeCeiling(false)
+               .IncludeFloor(false)
+               .SubText;
          }
 
          captionTimer.Enabled = enabled;

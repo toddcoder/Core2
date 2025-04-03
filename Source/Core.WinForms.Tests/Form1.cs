@@ -134,8 +134,9 @@ public partial class Form1 : Form
       uiWorking.NoStatus("working action");
 
       var uiButton3 = new UiAction { AutoSizeText = true };
-      uiButton3.KeyMatch("progress", "busy");
-      uiButton3.Button("Working");
+      //uiButton3.KeyMatch("progress", "busy");
+      uiButton3.KeyDownCaption = new KeyDownCapture.ControlKey("Progress Working");
+      uiButton3.Button("Busy Working");
       (builder + uiButton3).Row();
       uiButton3.Click += (_, _) =>
       {
@@ -282,7 +283,6 @@ public partial class Form1 : Form
       var chooser = uiButton9.Choose("Update").AutoClose(false).Choices(choices).Chooser();
       uiButton9.Click += (_, _) => chooser.Open();
       uiButton9.ClickText = "Update choices";
-      //uiButton9.KeyMatch("clear", "open");
       uiButton9.KeyDownCaption = new KeyDownCapture.ControlKey("Clear Choices");
       uiButton9.ChosenItemSelected += (_, _) =>
       {
