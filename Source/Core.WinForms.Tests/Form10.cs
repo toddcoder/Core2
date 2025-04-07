@@ -1,6 +1,7 @@
 ﻿using Core.DataStructures;
 using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Tests;
 
@@ -24,7 +25,7 @@ public partial class Form10 : Form
       uiDirection.Success("Reading");
       uiDirection.Click += (_, _) =>
       {
-         var _chosen = uiDirection.Choose("Direction").Choices("Reading", "Horizontal", "Vertical")
+         var _chosen = uiDirection.Choose("Direction").Choices("Reading", "Horizontal", "Vertical", "Fixed")
             .ModifyTitle(false).Choose();
          if (_chosen is (true, var chosen))
          {
@@ -34,8 +35,19 @@ public partial class Form10 : Form
                "Reading" => ControlDirection.Reading,
                "Horizontal" => ControlDirection.Horizontal,
                "Vertical" => ControlDirection.Vertical,
+               "Fixed" => ControlDirection.Reading,
                _ => container.Direction
             };
+            if (chosen.Value == "Fixed")
+            {
+               container.ControlWidth = 200;
+               container.ControlHeight = 60;
+            }
+            else
+            {
+               container.ControlWidth = nil;
+               container.ControlHeight = nil;
+            }
             uiDirection.Success(chosen.Value);
          }
       };

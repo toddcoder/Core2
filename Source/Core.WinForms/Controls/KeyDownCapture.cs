@@ -5,10 +5,6 @@ namespace Core.WinForms.Controls;
 
 public abstract record KeyDownCapture
 {
-   public const string SYMBOL_CONTROL = "Ⓒ";
-   public const string SYMBOL_SHIFT = "Ⓢ";
-   public const string SYMBOL_ALT = "Ⓐ";
-
    public sealed record None : KeyDownCapture
    {
       public override bool IsDown => false;

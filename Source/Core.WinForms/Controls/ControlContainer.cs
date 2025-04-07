@@ -88,6 +88,10 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    public Maybe<long> RemoveLast() => stack.Pop().Map(Remove);
 
+   public Maybe<int> ControlHeight { get; set; } = nil;
+
+   public Maybe<int> ControlWidth { get; set; } = nil;
+
    public void Rearrange()
    {
       setWidth();
@@ -116,9 +120,12 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       _width = direction switch
       {
          ControlDirection.Horizontal when count == 0 => nil,
+         ControlDirection.Horizontal when ControlWidth is (true, var width) => width,
          ControlDirection.Horizontal => (clientWidth() - (count + 1) * padding) / count,
+         ControlDirection.Vertical when ControlWidth is (true, var width) => width,
          ControlDirection.Vertical => clientWidth() - 2 * padding,
          ControlDirection.Reading when count == 0 => nil,
+         ControlDirection.Reading when ControlWidth is (true, var width) => width,
          ControlDirection.Reading => (clientWidth() - (horizontalCount + 1) * padding) / horizontalCount,
          _ => nil
       };
@@ -130,10 +137,13 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
       _height = direction switch
       {
+         ControlDirection.Horizontal when ControlHeight is (true, var height) => height,
          ControlDirection.Horizontal => clientHeight() - 2 * padding,
          ControlDirection.Vertical when count == 0 => nil,
+         ControlDirection.Vertical when ControlHeight is (true, var height) => height,
          ControlDirection.Vertical => (clientHeight() - (count + 1) * padding) / count,
          ControlDirection.Reading when count == 0 => nil,
+         ControlDirection.Reading when ControlHeight is (true, var height) => height,
          ControlDirection.Reading => (clientHeight() - (verticalCount + 1) * padding) / verticalCount,
          _ => nil
       };
