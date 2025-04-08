@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Drawing.Drawing2D;
+using Core.Applications.Messaging;
 using Core.DataStructures;
 using Core.Monads;
 using Core.Numbers;
@@ -28,7 +29,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    protected int verticalCount = 2;
    protected MaybeStack<TControl> stack = [];
 
-   public new event EventHandler<ControlFocusArgs<TControl>>? GotFocus;
+   public MessageEvent<ControlFocusArgs<TControl>> AfterFocus = new();
 
    protected (long id, bool firstTime) setControl(TControl control) => objectHash.GetIdWithFirstTime(control);
 
@@ -47,7 +48,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
          {
             _lastIdFocus = id;
             Invalidate();
-            GotFocus?.Invoke(this, new ControlFocusArgs<TControl>(control, id));
+            AfterFocus.Invoke(new ControlFocusArgs<TControl>(control, id));
          };
       }
 
@@ -247,7 +248,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
             {
                _lastIdFocus = id;
                Invalidate();
-               GotFocus?.Invoke(this, new ControlFocusArgs<TControl>(control, id));
+               AfterFocus.Invoke(new ControlFocusArgs<TControl>(control, id));
             };
             Controls.Add(control);
          }

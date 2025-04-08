@@ -1,4 +1,5 @@
-﻿using Core.Applications.Messaging;
+﻿
+using Core.Applications.Messaging;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
@@ -12,7 +13,9 @@ public class SingletonForm<T>(Func<T> initializer) where T : Form
    public Maybe<T> Reference => _reference;
 
    public readonly MessageEvent Created = new();
-   public readonly MessageEvent WasReset = new();
+   public readonly MessageEvent AfterReset = new();
+   public readonly MessageEvent AfterShow = new();
+   public readonly MessageEvent AfterFocus = new();
 
    public void Show()
    {
@@ -27,23 +30,26 @@ public class SingletonForm<T>(Func<T> initializer) where T : Form
       if (reference.Visible)
       {
          reference.Focus();
+         AfterFocus.Invoke();
       }
       else if (!reference.IsDisposed)
       {
          reference.Show();
+         AfterShow.Invoke();
       }
       else
       {
          reference = initializer();
          _reference = reference;
          reference.Show();
+         AfterShow.Invoke();
       }
    }
 
    public void Reset()
    {
       _reference = nil;
-      WasReset.Invoke();
+      AfterReset.Invoke();
    }
 
    public bool Available => _reference is (true, { IsDisposed: false, Visible: true });
