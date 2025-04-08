@@ -1,4 +1,5 @@
-﻿using Core.Collections;
+﻿using Core.Applications.Messaging;
+using Core.Collections;
 
 namespace Core.WinForms.Controls;
 
@@ -6,7 +7,7 @@ public class Enabler(Control control) : IHash<string, Control>
 {
    protected StringHash<Control> controls = [];
 
-   public event EventHandler<EnableArgs>? Enable;
+   public readonly MessageEvent<EnableArgs> Enable = new();
 
    public HookStatus HookTextChanged()
    {
@@ -58,12 +59,12 @@ public class Enabler(Control control) : IHash<string, Control>
 
    protected void Evaluate(Control hookedControl, EventTriggered eventTriggered)
    {
-      if (Enable is not null)
+      if (Enable.HandlerSet)
       {
          foreach (var (key, involvedControl) in controls)
          {
             var args = new EnableArgs(involvedControl, key, eventTriggered);
-            Enable.Invoke(hookedControl, args);
+            Enable.Invoke(args);
             if (args.Cancel)
             {
                break;

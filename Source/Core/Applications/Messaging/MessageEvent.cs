@@ -17,6 +17,8 @@ public class MessageEvent<TPayload> : IList<Action<TPayload>> where TPayload : n
       set => _handler = value;
    }
 
+   public bool HandlerSet => _handler;
+
    public void Invoke(TPayload payload)
    {
       if (_handler is (true, var handler))
@@ -90,6 +92,8 @@ public class MessageEvent : IList<Action>
    {
       set => _handler = value;
    }
+
+   public bool HandlerSet => _handler;
 
    public void Invoke()
    {

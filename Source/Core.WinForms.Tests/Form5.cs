@@ -19,7 +19,7 @@ public partial class Form5 : Form
    {
       uiAction1.Message("Starts with digits");
 
-      uiAction2.Message("Two digits separated by color");
+      uiAction2.Message("Two digits separated by colon");
 
       uiAction3.NoStatus("Digits only");
 
@@ -34,17 +34,17 @@ public partial class Form5 : Form
       };
 
       enabler.HookTextChanged();
-      enabler.Enable += (_, e) =>
+      enabler.Enable.Handler = p =>
       {
-         if (e.EventTriggered is EventTriggered.TextChanged textChanged)
+         if (p.EventTriggered is EventTriggered.TextChanged textChanged)
          {
-            e.Enabled = e.Key switch
+            p.Enabled = p.Key switch
             {
                "u1" => textChanged.Text.IsMatch("^ /d+; f"),
                "u2" => textChanged.Text.IsMatch("^ /d+ ':' /d+; f"),
                "u3" => textChanged.Text.IsMatch("^ /d+ $; f"),
                "u4" => textChanged.Text.IsMatch("^ -/d+ $; f"),
-               _ => e.Enabled
+               _ => p.Enabled
             };
          }
       };
