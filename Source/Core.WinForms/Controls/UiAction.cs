@@ -1863,8 +1863,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       }
    }
 
-   public CardinalAlignment DividerAlignment { get; set; } = CardinalAlignment.East;
-
    protected void drawDivider(PaintEventArgs e, Rectangle clientRectangle)
    {
       var rectangle = getDividerRectangle();
@@ -1887,7 +1885,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
       if (_dividerText is (true, var dividerText))
       {
-         var dividerWriter = new RectangleWriter(dividerText, rectangle, DividerAlignment)
+         var dividerWriter = new RectangleWriter(dividerText, rectangle, CardinalAlignment.West)
             { FontSize = 8f, ForeColor = dividerForeColor, UseEmojis = UseEmojis, AutoSizeText = AutoSizeText };
          dividerWriter.Write(e.Graphics);
       }
