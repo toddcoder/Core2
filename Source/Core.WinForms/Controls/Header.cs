@@ -1,4 +1,5 @@
 ﻿using System.Drawing.Drawing2D;
+using Core.Applications.Messaging;
 using Core.Collections;
 using Core.Monads;
 using Core.WinForms.TableLayoutPanels;
@@ -13,7 +14,7 @@ public partial class Header : UserControl
    protected HeaderColumns headerColumns = [];
    protected StringHash<UiAction> headers = [];
 
-   public event EventHandler<HeaderClickArgs>? HeaderClick;
+   public readonly MessageEvent<HeaderClickArgs> HeaderClick = new();
 
    public Header()
    {
@@ -35,7 +36,7 @@ public partial class Header : UserControl
          headers[name] = uiAction;
          needsStripe = DashStyle.Dash;
 
-         uiAction.Click += (_, _) => HeaderClick?.Invoke(this, new HeaderClickArgs(name, uiAction));
+         uiAction.Click += (_, _) => HeaderClick.Invoke(new HeaderClickArgs(name, uiAction));
       }
 
       _ = builder.Row + 100f;

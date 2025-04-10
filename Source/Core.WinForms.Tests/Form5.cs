@@ -54,7 +54,7 @@ public partial class Form5 : Form
       (header + "b" + "bravo" + columnSize).HeaderColumn();
       (header + "c" + "charlie" + columnSize).HeaderColumn();
       header.Arrange();
-      header.HeaderClick += (_, e) => Text = e.Name;
+      header.HeaderClick.Handler = p => Text = $"{p.Name}: {p.UiAction.Text}";
 
       textBoxContainer.BeginUpdate();
       textBoxContainer.ShowLastFocus = false;
