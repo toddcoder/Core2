@@ -28,7 +28,9 @@
       /// </summary>
       private void InitializeComponent()
       {
+         components = new System.ComponentModel.Container();
          tableLayoutPanel = new TableLayoutPanel();
+         timer1 = new System.Windows.Forms.Timer(components);
          SuspendLayout();
          // 
          // tableLayoutPanel
@@ -45,6 +47,11 @@
          tableLayoutPanel.Size = new Size(800, 450);
          tableLayoutPanel.TabIndex = 0;
          // 
+         // timer1
+         // 
+         timer1.Enabled = true;
+         timer1.Tick += timer1_Tick;
+         // 
          // Form10
          // 
          AutoScaleDimensions = new SizeF(7F, 15F);
@@ -59,5 +66,6 @@
       #endregion
 
       private TableLayoutPanel tableLayoutPanel;
+      private System.Windows.Forms.Timer timer1;
    }
 }

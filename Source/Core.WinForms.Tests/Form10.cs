@@ -1,4 +1,5 @@
-﻿using Core.DataStructures;
+﻿using Core.Applications;
+using Core.DataStructures;
 using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
 using static Core.Monads.MonadFunctions;
@@ -12,15 +13,19 @@ public partial class Form10 : Form
    protected UiAction uiRemove = new();
    protected UiAction uiAdd = new();
    protected MaybeStack<UiAction> stack = [];
+   protected Idle idle = new(10);
+   protected UiAction uiIdle = new();
 
    public Form10()
    {
       InitializeComponent();
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
-      _ = builder.Col + 100f + 200 + 100 + 100;
+      _ = builder.Col + 100f + 200 + 200 + 100 + 100;
       _ = builder.Row + 100f + 40;
       builder.SetUp();
+
+      uiIdle.NoStatus("idle");
 
       uiDirection.Success("Reading");
       uiDirection.Click += (_, _) =>
@@ -48,6 +53,7 @@ public partial class Form10 : Form
                container.ControlWidth = nil;
                container.ControlHeight = nil;
             }
+
             uiDirection.Success(chosen.Value);
          }
       };
@@ -74,9 +80,18 @@ public partial class Form10 : Form
       };
       uiAdd.ClickText = "Add item";
 
-      (builder + container).SpanCol(4).Row();
-      (builder.SkipCol() + uiDirection).Next();
+      (builder + container).SpanCol(5).Row();
+      (builder.SkipCol() + uiIdle).Next();
+      (builder + uiDirection).Next();
       (builder + uiRemove).Next();
       (builder + uiAdd).Row();
+
+      idle.UserIdle.Handler = p => uiIdle.Success($"Idle for {p}");
+      idle.InputResumed.Handler = () => uiIdle.Message("Resumed");
+   }
+
+   protected void timer1_Tick(object sender, EventArgs e)
+   {
+      idle.CheckIdleTime();
    }
 }
