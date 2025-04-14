@@ -6,6 +6,8 @@ public class StringAppender(string source)
 {
    public static implicit operator string(StringAppender appender) => appender.Source;
 
+   public static string operator |(StringAppender appender, string defaultValue) => appender.isNotEmpty ? appender : defaultValue;
+
    protected bool isNotEmpty = source.IsNotEmpty();
 
    public string Source => source;
