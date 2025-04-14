@@ -29,6 +29,6 @@ public class StringAppender(string source)
 
    public StringAppender Replace(string replacement)
    {
-      return isNotEmpty ? new StringAppender(this) : this;
+      return isNotEmpty ? new StringAppender(this) : new StringAppender(replacement);
    }
 }
