@@ -32,4 +32,18 @@ public class MarkdownTests
       writer.WriteTextLine("Word", ".fp");
       Console.WriteLine(writer);
    }
+
+   [TestMethod]
+   public void MarkdownBuilderTest()
+   {
+      var builder = new MarkdownBuilder();
+      builder
+         .Header("Job 1", 1)
+         .CheckList("Alpha", true)
+         .CheckList("Bravo", false)
+         .CheckList("Charlie", true)
+         .Quote("note 1")
+         .Quote("note 2");
+      Console.WriteLine(builder);
+   }
 }
