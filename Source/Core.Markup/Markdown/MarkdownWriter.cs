@@ -238,5 +238,9 @@ public class MarkdownWriter
 
    public void WriteLink(string url) => WriteLink(url, url);
 
+   public void WriteRaw(string text) => writer.Write(text);
+
+   public void WriteRawLine(string text) => writer.WriteLine(text);
+
    public override string ToString() => writer.ToString();
 }
