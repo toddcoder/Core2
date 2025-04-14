@@ -797,7 +797,7 @@ public static class StringExtensions
       }
    }
 
-   public static string Reverse(this string source) => source.Map(new string([.. source.Select(c => c).Reverse()]));
+   public static string Reverse(this string source) => source.Replace(new string([.. source.Select(c => c).Reverse()]));
 
    public static string Succ(this string source)
    {
@@ -1842,13 +1842,6 @@ public static class StringExtensions
 
    public static string DropKeep(this string source, Slice slice) => source.Drop(slice.Index).Keep(slice.Length);
 
-   public static string Map(this string source, Func<string, string> func)
-   {
-      return source.IsNotEmpty() ? func(source) : "";
-   }
-
-   public static string Map(this string source, Func<string> func) => source.IsNotEmpty() ? func() : "";
-
    public static string Map(this string source, string replacement) => source.IsNotEmpty() ? replacement : "";
 
    public static string If(this string source, Predicate<string> predicate)
@@ -2421,4 +2414,12 @@ public static class StringExtensions
          }
       }
    }
+
+   public static StringAppender Prefix(this string source, string prefix) => new StringAppender(source).Prefix(prefix);
+
+   public static StringAppender Suffix(this string source, string suffix) => new StringAppender(source).Suffix(suffix);
+
+   public static StringAppender Map(this string source, Func<string, string> mappingFunc) => new StringAppender(source).Map(mappingFunc);
+
+   public static StringAppender Replace(this string source, string replacement) => new StringAppender(source).Replace(replacement);
 }
