@@ -29,7 +29,7 @@ public class MarkdownTests
    public void ClassRefTest()
    {
       var writer = new MarkdownWriter();
-      writer.WriteTextLine("Word", ".fp");
+      writer.TextLine("Word", ".fp");
       Console.WriteLine(writer);
    }
 

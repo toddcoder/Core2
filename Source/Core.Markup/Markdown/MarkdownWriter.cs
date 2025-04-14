@@ -76,7 +76,7 @@ public class MarkdownWriter
       }
    }
 
-   public void WriteLineBreak() => writer.Write("<br/>");
+   public void LineBreak() => writer.Write("<br/>");
 
    protected static string getClassRef(string classRef) => classRef.Map(s => $"{{{s}}}") | "";
 
@@ -85,15 +85,15 @@ public class MarkdownWriter
       writer.WriteLine(FixString(text) + getClassRef(classRef));
    }
 
-   public void WriteTextLine(string text, string classRef = "")
+   public void TextLine(string text, string classRef = "")
    {
       writeMarkdownLine(text, classRef);
       writer.WriteLine("<br/>");
    }
 
-   public void WriteHeader(string text, int level, string classRef = "") => writeMarkdownLine($"{"#".Repeat(level)} {text}", classRef);
+   public void Header(string text, int level, string classRef = "") => writeMarkdownLine($"{"#".Repeat(level)} {text}", classRef);
 
-   public void WriteTableBegin(params string[] text)
+   public void TableBegin(params string[] text)
    {
       var columnHeaders = text.Select(i => $"|{FixString(i)}").ToString("");
       writer.WriteLine();
@@ -101,7 +101,7 @@ public class MarkdownWriter
       writer.WriteLine("|");
    }
 
-   public void WriteTableRow(params string[] text)
+   public void TableRow(params string[] text)
    {
       if (text.Length > 1 && text[1].IsNotEmpty())
       {
@@ -109,7 +109,7 @@ public class MarkdownWriter
       }
    }
 
-   public void WriteTableColumn(string text, bool end = false, string classRef = "")
+   public void TableColumn(string text, bool end = false, string classRef = "")
    {
       writer.Write($"| {FixString(text)}" + getClassRef(classRef));
       if (end)
@@ -118,51 +118,51 @@ public class MarkdownWriter
       }
    }
 
-   public void WriteTableColumn(string text, string link, bool end = false, bool isImage = false, string classRef = "")
+   public void TableColumn(string text, string link, bool end = false, bool isImage = false, string classRef = "")
    {
-      WriteTableColumn(isImage ? ImageLink(text, link) : Link(text, link), end, classRef);
+      TableColumn(isImage ? ImageLink(text, link) : Link(text, link), end, classRef);
    }
 
-   public void WriteTableColumnAs(string text, string @class, bool end = false) => WriteTableColumn($"<span class='{@class}'>{text}</span>", end);
+   public void TableColumnAs(string text, string @class, bool end = false) => TableColumn($"<span class='{@class}'>{text}</span>", end);
 
-   public void WriteTableMultilineRow(string column1, string[] lines)
+   public void TableMultilineRow(string column1, string[] lines)
    {
       switch (lines.Length)
       {
          case 0:
             break;
          case 1 when lines[0].IsNotEmpty():
-            WriteTableRow(column1, lines[0]);
+            TableRow(column1, lines[0]);
             break;
          default:
-            WriteTableRow(column1, lines[0]);
+            TableRow(column1, lines[0]);
             foreach (var line in lines.Skip(1))
             {
-               WriteTableRow("", line);
+               TableRow("", line);
             }
 
             break;
       }
    }
 
-   public void WriteTableEnd() => writer.WriteLine();
+   public void TableEnd() => writer.WriteLine();
 
-   public void WriteLine(string line, string classRef = "") => writeMarkdownLine(line, classRef);
+   public void Line(string line, string classRef = "") => writeMarkdownLine(line, classRef);
 
-   public void WriteLine(string text, string link, bool isImage = false, string classRef = "") =>
+   public void Line(string text, string link, bool isImage = false, string classRef = "") =>
       writeMarkdownLine(isImage ? ImageLink(text, link) : Link(text, link), classRef);
 
-   public void WriteLineAs(string text, string @class) => writeMarkdownLine($"<p class='{@class}'>{text}</p>", "");
+   public void LineAs(string text, string @class) => writeMarkdownLine($"<p class='{@class}'>{text}</p>", "");
 
-   public void WriteLine() => writeMarkdownLine("", "");
+   public void Line() => writeMarkdownLine("", "");
 
-   public void WriteHtml(string html) => writer.WriteLine(html);
+   public void Html(string html) => writer.WriteLine(html);
 
    public static string Link(string text, string link) => $"[{text}]({link})";
 
    public static string ImageLink(string text, string link) => $"![{text}]({link})";
 
-   public void WriteRuler()
+   public void Ruler()
    {
       writer.WriteLine();
       writeMarkdownLine("---", "");
@@ -201,65 +201,58 @@ public class MarkdownWriter
       return stringWriter.ToString();
    }
 
-   public void WriteList(string text, int indent = 0) => writer.WriteLine($"{"    ".Repeat(indent)}- {FixString(text)}");
+   public void List(string text, int indent = 0) => writer.WriteLine($"{"    ".Repeat(indent)}- {FixString(text)}");
 
-   public void WriteList(string text, string link, int indent = 0, bool isImage = false)
+   public void List(string text, string link, int indent = 0, bool isImage = false)
    {
-      WriteList(isImage ? ImageLink(text, link) : Link(text, link), indent);
+      List(isImage ? ImageLink(text, link) : Link(text, link), indent);
    }
 
-   public void WriteOrderedList(string text, string prefix, int indent = 0) =>
+   public void OrderedList(string text, string prefix, int indent = 0) =>
       writer.WriteLine($"{"    ".Repeat(indent)}{prefix} {FixString(text)}");
 
-   public void WriteOrderedList(string text, string link, string prefix, int indent = 0, bool isImage = false)
+   public void OrderedList(string text, string link, string prefix, int indent = 0, bool isImage = false)
    {
-      WriteOrderedList(isImage ? ImageLink(text, link) : Link(text, link), prefix, indent);
+      OrderedList(isImage ? ImageLink(text, link) : Link(text, link), prefix, indent);
    }
 
    protected static string getCheckListPrefix(bool isChecked) => isChecked ? "[x]" : "[ ]";
 
-   public void WriteCheckList(string text, bool isChecked, int indent = 0)
+   public void CheckList(string text, bool isChecked, int indent = 0)
    {
       writer.WriteLine($"{"    ".Repeat(indent)}- {getCheckListPrefix(isChecked)} {FixString(text)}");
    }
 
-   public void WriteCheckList(string text, string link, bool isChecked, int indent = 0, bool isImage = false)
+   public void CheckList(string text, string link, bool isChecked, int indent = 0, bool isImage = false)
    {
-      WriteCheckList(isImage ? ImageLink(text, link) : Link(text, link), isChecked, indent);
+      CheckList(isImage ? ImageLink(text, link) : Link(text, link), isChecked, indent);
    }
 
-   public void WriteQuote(string text) => writer.WriteLine($"> {FixString(text)}");
+   public void Quote(string text) => writer.WriteLine($"> {FixString(text)}");
 
-   public void WriteQuote(string text, string link, bool isImage = false) =>
+   public void Quote(string text, string link, bool isImage = false) =>
       writer.WriteLine($"> {(isImage ? Link(text, link) : ImageLink(text, link))}");
 
-   public void WritePageBreak()
+   public void PageBreak()
    {
       writer.WriteLine("<div style='page-break-after: always'></div>");
       writer.WriteLine();
    }
 
-   public void WriteListItem() => writer.Write("- ");
+   public void ListItem() => writer.Write("- ");
 
-   public void WriteCheckItem(bool isChecked)
+   public void CheckItem(bool isChecked)
    {
       writer.Write("[");
       writer.Write(isChecked ? "X" : " ");
       writer.Write("] ");
    }
 
-   public void WriteLink(string description, string url)
-   {
-      writer.Write($"[{description}]({url})");
-   }
+   public void Raw(string text) => writer.Write(text);
 
-   public void WriteLink(string url) => WriteLink(url, url);
+   public void RawLine(string text) => writer.WriteLine(text);
 
-   public void WriteRaw(string text) => writer.Write(text);
-
-   public void WriteRawLine(string text) => writer.WriteLine(text);
-
-   public void WriteRawLine() => writer.WriteLine();
+   public void RawLine() => writer.WriteLine();
 
    public override string ToString() => writer.ToString();
 }
