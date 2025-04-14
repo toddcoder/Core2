@@ -242,5 +242,7 @@ public class MarkdownWriter
 
    public void WriteRawLine(string text) => writer.WriteLine(text);
 
+   public void WriteRawLine() => writer.WriteLine();
+
    public override string ToString() => writer.ToString();
 }
