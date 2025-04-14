@@ -101,7 +101,7 @@ public class MarkdownWriter
       writer.WriteLine("|");
    }
 
-   public void WriteRow(params string[] text)
+   public void WriteTableRow(params string[] text)
    {
       if (text.Length > 1 && text[1].IsNotEmpty())
       {
@@ -109,7 +109,7 @@ public class MarkdownWriter
       }
    }
 
-   public void WriteColumn(string text, bool end = false, string classRef = "")
+   public void WriteTableColumn(string text, bool end = false, string classRef = "")
    {
       writer.Write($"| {FixString(text)}" + getClassRef(classRef));
       if (end)
@@ -118,27 +118,27 @@ public class MarkdownWriter
       }
    }
 
-   public void WriteColumn(string text, string link, bool end = false, bool isImage = false, string classRef = "")
+   public void WriteTableColumn(string text, string link, bool end = false, bool isImage = false, string classRef = "")
    {
-      WriteColumn(isImage ? ImageLink(text, link) : Link(text, link), end);
+      WriteTableColumn(isImage ? ImageLink(text, link) : Link(text, link), end, classRef);
    }
 
-   public void WriteColumnAs(string text, string @class, bool end = false) => WriteColumn($"<span class='{@class}'>{text}</span>", end);
+   public void WriteTableColumnAs(string text, string @class, bool end = false) => WriteTableColumn($"<span class='{@class}'>{text}</span>", end);
 
-   public void WriteMultilineRow(string column1, string[] lines)
+   public void WriteTableMultilineRow(string column1, string[] lines)
    {
       switch (lines.Length)
       {
          case 0:
             break;
          case 1 when lines[0].IsNotEmpty():
-            WriteRow(column1, lines[0]);
+            WriteTableRow(column1, lines[0]);
             break;
          default:
-            WriteRow(column1, lines[0]);
+            WriteTableRow(column1, lines[0]);
             foreach (var line in lines.Skip(1))
             {
-               WriteRow("", line);
+               WriteTableRow("", line);
             }
 
             break;
