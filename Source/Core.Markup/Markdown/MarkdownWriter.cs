@@ -78,7 +78,7 @@ public class MarkdownWriter
 
    public void WriteLineBreak() => writer.Write("<br/>");
 
-   protected static string getClassRef(string classRef) => classRef.IsNotEmpty() ? "{" + classRef + "}" : "";
+   protected static string getClassRef(string classRef) => classRef.Map(s => $"{{{s}}}") | "";
 
    protected void writeMarkdownLine(string text, string classRef)
    {
@@ -216,7 +216,7 @@ public class MarkdownWriter
       WriteOrderedList(isImage ? ImageLink(text, link) : Link(text, link), prefix, indent);
    }
 
-   protected string getCheckListPrefix(bool isChecked) => isChecked ? "[x]" : "[ ]";
+   protected static string getCheckListPrefix(bool isChecked) => isChecked ? "[x]" : "[ ]";
 
    public void WriteCheckList(string text, bool isChecked, int indent = 0)
    {
