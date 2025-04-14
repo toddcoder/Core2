@@ -216,6 +216,18 @@ public class MarkdownWriter
       WriteOrderedList(isImage ? ImageLink(text, link) : Link(text, link), prefix, indent);
    }
 
+   protected string getCheckListPrefix(bool isChecked) => isChecked ? "[x]" : "[ ]";
+
+   public void WriteCheckList(string text, bool isChecked, int indent = 0)
+   {
+      writer.WriteLine($"{"    ".Repeat(indent)}{getCheckListPrefix(isChecked)} {FixString(text)}");
+   }
+
+   public void WriteCheckList(string text, string link, bool isChecked, int indent = 0, bool isImage = false)
+   {
+      WriteCheckList(isImage ? ImageLink(text, link) : Link(text, link), isChecked, indent);
+   }
+
    public void WriteQuote(string text) => writer.WriteLine($"> {FixString(text)}");
 
    public void WriteQuote(string text, string link, bool isImage = false) =>
