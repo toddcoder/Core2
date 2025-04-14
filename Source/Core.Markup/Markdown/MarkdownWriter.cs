@@ -220,7 +220,7 @@ public class MarkdownWriter
 
    public void WriteCheckList(string text, bool isChecked, int indent = 0)
    {
-      writer.WriteLine($"{"    ".Repeat(indent)}{getCheckListPrefix(isChecked)} {FixString(text)}");
+      writer.WriteLine($"{"    ".Repeat(indent)}- {getCheckListPrefix(isChecked)} {FixString(text)}");
    }
 
    public void WriteCheckList(string text, string link, bool isChecked, int indent = 0, bool isImage = false)
