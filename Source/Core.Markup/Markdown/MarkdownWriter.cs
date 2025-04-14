@@ -222,5 +222,21 @@ public class MarkdownWriter
       writer.WriteLine();
    }
 
+   public void WriteListItem() => writer.Write("- ");
+
+   public void WriteCheckItem(bool isChecked)
+   {
+      writer.Write("[");
+      writer.Write(isChecked ? "X" : " ");
+      writer.Write("] ");
+   }
+
+   public void WriteLink(string description, string url)
+   {
+      writer.Write($"[{description}]({url})");
+   }
+
+   public void WriteLink(string url) => WriteLink(url, url);
+
    public override string ToString() => writer.ToString();
 }
