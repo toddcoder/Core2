@@ -19,6 +19,7 @@ public class Idle(int idleThreshold = 60)
 
    public readonly MessageEvent<int> UserIdle = new();
    public readonly MessageEvent InputResumed = new();
+   public readonly MessageEvent<int> IsIdle = new();
    protected bool invoked;
 
    protected static int getIdleTimeInSeconds()
@@ -50,6 +51,9 @@ public class Idle(int idleThreshold = 60)
          case > 0 when idleTimeInSeconds % idleThreshold == 0:
             UserIdle.Invoke(idleTimeInSeconds);
             invoked = true;
+            break;
+         default:
+            IsIdle.Invoke(idleTimeInSeconds);
             break;
       }
    }
