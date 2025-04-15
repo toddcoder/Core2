@@ -2,6 +2,8 @@
 using Core.Applications.Messaging;
 using System.Runtime.InteropServices;
 using Core.Assertions;
+using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications;
 
@@ -49,12 +51,21 @@ public class Idle(int idleThreshold = 60)
             invoked = false;
             break;
          case > 0 when idleTimeInSeconds % idleThreshold == 0:
-            UserIdle.Invoke(idleTimeInSeconds);
+         {
+            var maximumSeconds = MaximumSeconds | 0;
+            if (maximumSeconds == 0 || idleTimeInSeconds < maximumSeconds)
+            {
+               UserIdle.Invoke(idleTimeInSeconds);
+            }
+
             invoked = true;
             break;
+         }
          default:
             IsIdle.Invoke(idleTimeInSeconds);
             break;
       }
    }
+
+   public Maybe<int> MaximumSeconds { get; set; } = nil;
 }
