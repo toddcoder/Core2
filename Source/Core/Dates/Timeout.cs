@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using Core.Applications.Messaging;
 using Core.Dates.DateIncrements;
 using Core.Dates.Now;
 using Core.Monads;
@@ -18,6 +19,8 @@ public class Timeout
    protected bool wasCancelled;
    protected bool expired;
 
+   public readonly MessageEvent<TimeSpan> Pending = new();
+
    protected Timeout(TimeSpan timeoutPeriod)
    {
       this.timeoutPeriod = timeoutPeriod;
@@ -35,18 +38,23 @@ public class Timeout
          return false;
       }
 
+      var now = NowServer.Now;
       if (!_targetDateTime)
       {
-         _targetDateTime = NowServer.Now + timeoutPeriod;
+         _targetDateTime = now + timeoutPeriod;
       }
 
       if (_targetDateTime is (true, var targetDateTime))
       {
-         var stillWorking = NowServer.Now <= targetDateTime;
+         var stillWorking = now <= targetDateTime;
          expired = !stillWorking;
          if (expired)
          {
             _targetDateTime = nil;
+         }
+         else
+         {
+            Pending.Invoke(targetDateTime - now);
          }
 
          return stillWorking;
@@ -72,6 +80,6 @@ public class Timeout
    public void Cancel() => cancelled = true;
 
    public bool WasCancelled => wasCancelled;
-   
+
    public bool Expired => expired;
 }

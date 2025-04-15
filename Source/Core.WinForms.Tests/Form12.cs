@@ -1,8 +1,6 @@
 ﻿using Core.Applications.Messaging;
-using Core.Dates.DateIncrements;
 using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
-using Timeout = Core.Dates.Timeout;
 
 namespace Core.WinForms.Tests;
 
@@ -25,7 +23,11 @@ public partial class Form12 : Form
       {
          Waiting =
          {
-            Handler = Application.DoEvents
+            Handler = p =>
+            {
+               Application.DoEvents();
+               uiSend.Do(() => uiSend.Count = (int)p.TotalSeconds);
+            }
          }
       };
 
@@ -62,16 +64,11 @@ public partial class Form12 : Form
       uiReceive.Click += (_, _) =>
       {
          var messageQueue = new MessageQueue<(long, long), long>();
-         Timeout timeout = 5.Minutes();
-         while (timeout.IsPending())
+         while (messageQueue.Receive() is (true, var messageEnvelope))
          {
-            Application.DoEvents();
-            while (messageQueue.Receive() is (true, var messageEnvelope))
-            {
-               var (id, (left, right)) = messageEnvelope;
-               var result = left + right;
-               messageQueue.SendBack(id, result);
-            }
+            var (id, (left, right)) = messageEnvelope;
+            var result = left + right;
+            messageQueue.SendBack(id, result);
          }
       };
       uiReceive.ClickText = "Receive";

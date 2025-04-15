@@ -22,7 +22,7 @@ public class MessageQueue<TArgument, TResult> where TArgument : notnull where TR
       string getName(Type type) => type.Namespace ?? type.Name;
    }
 
-   public readonly MessageEvent Waiting = new();
+   public readonly MessageEvent<TimeSpan> Waiting = new();
 
    public Optional<TResult> Send(TArgument argument, TimeSpan timeoutSpan)
    {
@@ -42,10 +42,10 @@ public class MessageQueue<TArgument, TResult> where TArgument : notnull where TR
          incomingQueue.Enqueue(new MessageEnvelope(id, argument));
 
          Dates.Timeout timeout = timeoutSpan;
+         timeout.Pending.Handler = Waiting.Invoke;
          var sleepSpan = 100.Milliseconds();
          while (!_result && timeout.IsPending())
          {
-            Waiting.Invoke();
             Thread.Sleep(sleepSpan);
          }
 
@@ -74,6 +74,6 @@ public class MessageQueue<TArgument, TResult> where TArgument : notnull where TR
 
    public void SendBack(string id, TResult result)
    {
-      Publisher<Either<TArgument, TResult>>.Publish(MessageQueueName(), id, result);
+      Publisher<TResult>.Publish(MessageQueueName(), id, result);
    }
 }
