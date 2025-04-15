@@ -12,19 +12,15 @@ public class Timeout
    public static implicit operator Timeout(TimeSpan timeoutPeriod) => new(timeoutPeriod);
 
    protected TimeSpan timeoutPeriod;
-   protected Maybe<DateTime> _targetDateTime;
-   protected TimeSpan sleepPeriod;
+   protected Maybe<DateTime> _targetDateTime = nil;
+   protected TimeSpan sleepPeriod = 500.Milliseconds();
    protected bool cancelled;
    protected bool wasCancelled;
+   protected bool expired;
 
    protected Timeout(TimeSpan timeoutPeriod)
    {
       this.timeoutPeriod = timeoutPeriod;
-
-      _targetDateTime = nil;
-      sleepPeriod = 500.Milliseconds();
-      cancelled = false;
-      wasCancelled = false;
    }
 
    public bool IsPending()
@@ -47,7 +43,8 @@ public class Timeout
       if (_targetDateTime is (true, var targetDateTime))
       {
          var stillWorking = NowServer.Now <= targetDateTime;
-         if (!stillWorking)
+         expired = !stillWorking;
+         if (expired)
          {
             _targetDateTime = nil;
          }
@@ -75,4 +72,6 @@ public class Timeout
    public void Cancel() => cancelled = true;
 
    public bool WasCancelled => wasCancelled;
+   
+   public bool Expired => expired;
 }

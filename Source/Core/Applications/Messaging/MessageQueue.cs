@@ -1,117 +1,79 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Core.Collections;
+using System.Threading;
 using Core.DataStructures;
+using Core.Dates.DateIncrements;
+using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Applications.Messaging;
 
-public static class MessageQueue
+public class MessageQueue<TArgument, TResult> where TArgument : notnull where TResult : notnull
 {
-   private static AutoStringHash<List<IMessageQueueListener>> listeners;
-   private static AutoStringHash<List<IMessageQueueSyncListener>> syncListeners;
-   private static MaybeQueue<Message> syncMessages;
-   private static object locker;
+   public record MessageEnvelope(string Id, TArgument Argument);
 
-   static MessageQueue()
+   protected const string MESSAGE_QUEUE_NAME = "__$message-queue";
+
+   protected static MaybeQueue<MessageEnvelope> incomingQueue = [];
+
+   public static string MessageQueueName()
    {
-      listeners = new AutoStringHash<List<IMessageQueueListener>>(_ => [], true);
-      syncListeners = new AutoStringHash<List<IMessageQueueSyncListener>>(_ => [], true);
-      syncMessages = [];
-      locker = new object();
+      return $"{MESSAGE_QUEUE_NAME}+{getName(typeof(TArgument))}+{getName(typeof(TResult))}";
+
+      string getName(Type type) => type.Namespace ?? type.Name;
    }
 
-   public static void Send(string sender, Message message)
-   {
-      var (subject, cargo) = message;
-      foreach (var messageListener in listeners[sender])
-      {
-         Task.Run(() => messageListener.MessageFrom(sender, subject, cargo));
-      }
-   }
+   public readonly MessageEvent Waiting = new();
 
-   public static void SendSync(string sender, Message message)
+   public Optional<TResult> Send(TArgument argument, TimeSpan timeoutSpan)
    {
-      lock (locker)
+      var id = Guid.NewGuid().ToString();
+      Optional<TResult> _result = nil;
+
+      var subscriber = new Subscriber<TResult>(MessageQueueName());
+      subscriber.Received.Handler = p =>
       {
-         syncMessages.Enqueue(message);
-         while (syncMessages.Dequeue() is (true, var (subject, cargo)))
+         if (p.Topic == id)
          {
-            foreach (var syncListener in syncListeners[sender])
-            {
-               syncListener.SyncMessageFrom(sender, subject, cargo);
-            }
+            _result = p.Payload;
+         }
+      };
+      try
+      {
+         incomingQueue.Enqueue(new MessageEnvelope(id, argument));
+
+         Dates.Timeout timeout = timeoutSpan;
+         var sleepSpan = 100.Milliseconds();
+         while (!_result && timeout.IsPending())
+         {
+            Waiting.Invoke();
+            Thread.Sleep(sleepSpan);
+         }
+
+         if (timeout.Expired)
+         {
+            return new TimeoutException($"Timeout expired after {timeoutSpan}");
+         }
+         else
+         {
+            return _result;
          }
       }
-   }
-
-   public static void Send(string sender, string subject, object cargo) => Send(sender, new Message(subject, cargo));
-
-   public static void SendSync(string sender, string subject, object cargo) => SendSync(sender, new Message(subject, cargo));
-
-   public static void Send(string sender, string subject) => Send(sender, subject, unit);
-
-   public static void SendSync(string sender, string subject) => SendSync(sender, subject, unit);
-
-   [Obsolete("Use RegisterListener(listener, senders)")]
-   public static void RegisterListener(string sender, IMessageQueueListener messageQueueListener)
-   {
-      listeners[sender].Add(messageQueueListener);
-   }
-
-   [Obsolete("Use RegisterSyncListener(listener, senders)")]
-   public static void RegisterSyncListener(string sender, IMessageQueueSyncListener messageQueueSyncListener)
-   {
-      syncListeners[sender].Add(messageQueueSyncListener);
-   }
-
-   public static void RegisterListener(IMessageQueueListener messageQueueListener, params string[] senders)
-   {
-      foreach (var sender in senders)
+      catch (Exception exception)
       {
-         listeners[sender].Add(messageQueueListener);
+         return exception;
+      }
+      finally
+      {
+         subscriber.Unsubscribe();
       }
    }
 
-   public static void RegisterSyncListener(IMessageQueueSyncListener messageQueueSyncListener, params string[] senders)
-   {
-      foreach (var sender in senders)
-      {
-         syncListeners[sender].Add(messageQueueSyncListener);
-      }
-   }
+   public Optional<TResult> Send(TArgument argument) => Send(argument, 5.Seconds());
 
-   [Obsolete("Use UnregisterListener(listener, senders)")]
-   public static void UnregisterListener(string sender, IMessageQueueListener messageQueueListener)
-   {
-      listeners[sender].Remove(messageQueueListener);
-   }
+   public Maybe<MessageEnvelope> Receive() => incomingQueue.Dequeue();
 
-   public static void UnregisterSyncListener(string sender, IMessageQueueSyncListener messageQueueSyncListener)
+   public void SendBack(string id, TResult result)
    {
-      syncListeners[sender].Remove(messageQueueSyncListener);
-   }
-
-   public static void UnregisterListener(IMessageQueueListener messageQueueListener, params string[] senders)
-   {
-      lock (locker)
-      {
-         foreach (var sender in senders)
-         {
-            listeners[sender].Remove(messageQueueListener);
-         }
-      }
-   }
-
-   public static void UnregisterSyncListener(IMessageQueueSyncListener messageQueueSyncListener, params string[] senders)
-   {
-      lock (locker)
-      {
-         foreach (var sender in senders)
-         {
-            syncListeners[sender].Remove(messageQueueSyncListener);
-         }
-      }
+      Publisher<Either<TArgument, TResult>>.Publish(MessageQueueName(), id, result);
    }
 }
