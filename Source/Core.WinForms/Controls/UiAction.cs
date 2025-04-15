@@ -1830,6 +1830,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          e.Graphics.DrawLine(stripePen, 0, 0, 0, Height);
       }
 
+      drawCount();
+
       Painting?.Invoke(this, e);
       return;
 
@@ -1859,6 +1861,26 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
                using var pen = new Pen(foreColor);
                e.Graphics.DrawRectangle(pen, rectangle);
             }
+         }
+      }
+
+      void drawCount()
+      {
+         if (Count is (true, var count))
+         {
+            var clickGlyphWidth = ClickGlyph? 4 : 0;
+            var chooserGlyphWidth = ChooserGlyph ? 4 : 0;
+            var xMargin = clickGlyphWidth + chooserGlyphWidth + 4;
+            var writer = new RectangleWriter(count.ToString(), clientRectangle)
+            {
+               FontSize = 8f,
+               ForeColor = CountForeColor,
+               BackColor = CountBackColor,
+               UseEmojis = UseEmojis,
+               AutoSizeText = AutoSizeText,
+               BackgroundRestriction = new BackgroundRestriction.Restricted(CardinalAlignment.SouthEast, xMargin, 4)
+            };
+            writer.Write(e.Graphics);
          }
       }
    }
@@ -4224,4 +4246,18 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          background.RunWorkerAsync();
       }
    }
+
+   public Maybe<int> Count
+   {
+      get;
+      set
+      {
+         field = value;
+         refresh();
+      }
+   } = nil;
+
+   public Color CountForeColor { get; set; } = Color.White;
+
+   public Color CountBackColor { get; set; } = Color.Blue;
 }

@@ -114,6 +114,7 @@ public partial class Form1 : Form
       uiButton1.DefaultButton("alternates");
       (builder + uiButton1).Row();
       AcceptButton = uiButton1;
+      uiButton1.Count = 3;
       uiButton1.Click += (_, _) =>
       {
          uiAlternates.Alternate("alpha", "bravo", "charlie");
