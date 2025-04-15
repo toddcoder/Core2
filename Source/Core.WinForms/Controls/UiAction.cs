@@ -2023,7 +2023,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       var backColor = new Lazy<Color>(getBackColor);
 
       var _legend = legends.Peek();
-      if (_legend is (true, { Visible: true } legend))
+      if (_legend is (true, { Visible: true } legend) && type is not UiActionType.Button)
       {
          legend.Transparency = transparency;
          legend.Draw(graphics, foreColor.Value, backColor.Value);
