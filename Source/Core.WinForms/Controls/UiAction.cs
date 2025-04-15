@@ -1868,16 +1868,17 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       {
          if (Count is (true, var count))
          {
-            var foreColor = getBackColor();
-            var backColor = getForeColor();
-            var writer = new RectangleWriter(count.ToString(), clientRectangle, CardinalAlignment.SouthEast)
+            var clickGlyphWidth = ClickGlyph? 4 : 0;
+            var chooserGlyphWidth = ChooserGlyph ? 4 : 0;
+            var xMargin = clickGlyphWidth + chooserGlyphWidth + 4;
+            var writer = new RectangleWriter(count.ToString(), clientRectangle)
             {
                FontSize = 8f,
-               ForeColor = foreColor,
-               BackColor = backColor,
+               ForeColor = CountForeColor,
+               BackColor = CountBackColor,
                UseEmojis = UseEmojis,
                AutoSizeText = AutoSizeText,
-               BackgroundRestriction = new BackgroundRestriction.Restricted(CardinalAlignment.SouthEast, 4, 8)
+               BackgroundRestriction = new BackgroundRestriction.Restricted(CardinalAlignment.SouthEast, xMargin, 4)
             };
             writer.Write(e.Graphics);
          }
@@ -4255,4 +4256,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          refresh();
       }
    } = nil;
+
+   public Color CountForeColor { get; set; } = Color.White;
+
+   public Color CountBackColor { get; set; } = Color.Blue;
 }
