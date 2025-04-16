@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Core.Collections;
 
 namespace Core.Applications.Messaging;
 
@@ -6,8 +8,9 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 {
    protected string name;
    protected Guid id = Guid.NewGuid();
+   protected StringHash<MessageEvent<Publication<TPayload>>> events = [];
 
-   public readonly MessageEvent<Publication<TPayload>> Received = [];
+   public readonly MessageEvent<Publication<TPayload>> Received = new();
 
    public Subscriber(string name, bool autoSubscribe = true)
    {
@@ -15,6 +18,35 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
       if (autoSubscribe)
       {
          Subscribe();
+      }
+   }
+
+   public Action<Publication<TPayload>> this[string topic]
+   {
+      set => events[topic] = new MessageEvent<Publication<TPayload>> { Handler = value };
+   }
+
+   public void InvokeTopic(Publication<TPayload> payload)
+   {
+      if (events.Maybe[payload.Topic] is (true, var handler))
+      {
+         handler.Invoke(payload);
+      }
+      else
+      {
+         Received.Invoke(payload);
+      }
+   }
+
+   public async Task InvokeTopicAsync(Publication<TPayload> payload)
+   {
+      if (events.Maybe[payload.Topic] is (true, var handler))
+      {
+         await handler.InvokeAsync(payload);
+      }
+      else
+      {
+         await Received.InvokeAsync(payload);
       }
    }
 
@@ -39,8 +71,9 @@ public class Subscriber : IDisposable
 {
    protected string name;
    protected Guid id = Guid.NewGuid();
+   protected StringHash<MessageEvent<Publication>> events = [];
 
-   public readonly MessageEvent<Publication> Received = [];
+   public readonly MessageEvent<Publication> Received = new();
 
    public Subscriber(string name, bool autoSubscribe = true)
    {
@@ -48,6 +81,35 @@ public class Subscriber : IDisposable
       if (autoSubscribe)
       {
          Subscribe();
+      }
+   }
+
+   public Action<Publication> this[string topic]
+   {
+      set => events[topic] = new MessageEvent<Publication> { Handler = value };
+   }
+
+   public void InvokeTopic(Publication payload)
+   {
+      if (events.Maybe[payload.Topic] is (true, var handler))
+      {
+         handler.Invoke(payload);
+      }
+      else
+      {
+         Received.Invoke(payload);
+      }
+   }
+
+   public async Task InvokeTopicAsync(Publication payload)
+   {
+      if (events.Maybe[payload.Topic] is (true, var handler))
+      {
+         await handler.InvokeAsync(payload);
+      }
+      else
+      {
+         await Received.InvokeAsync(payload);
       }
    }
 

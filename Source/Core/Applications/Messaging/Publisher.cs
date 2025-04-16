@@ -57,7 +57,7 @@ public class Publisher<TPayload> where TPayload : notnull
             {
                foreach (var (_, subscriber) in hash)
                {
-                  Task.Run(() => subscriber.Received.Invoke(new Publication<TPayload>(topic, payload)));
+                  Task.Run(() => subscriber.InvokeTopic(new Publication<TPayload>(topic, payload)));
                }
             }
          }
@@ -80,7 +80,7 @@ public class Publisher<TPayload> where TPayload : notnull
          {
             foreach (var (_, subscriber) in hash)
             {
-               subscriber.Received.Invoke(new Publication<TPayload>(topic, payload));
+               subscriber.InvokeTopic(new Publication<TPayload>(topic, payload));
             }
          }
       }
@@ -102,7 +102,7 @@ public class Publisher<TPayload> where TPayload : notnull
          {
             foreach (var (_, subscriber) in hash)
             {
-               await subscriber.Received.InvokeAsync(new Publication<TPayload>(topic, payload));
+               await subscriber.InvokeTopicAsync(new Publication<TPayload>(topic, payload));
             }
          }
       }
@@ -168,7 +168,7 @@ public class Publisher
             {
                foreach (var (_, subscriber) in hash)
                {
-                  Task.Run(() => subscriber.Received.Invoke(new Publication(topic)));
+                  Task.Run(() => subscriber.InvokeTopic(new Publication(topic)));
                }
             }
          }
@@ -191,7 +191,7 @@ public class Publisher
          {
             foreach (var (_, subscriber) in hash)
             {
-               subscriber.Received.Invoke(new Publication(topic));
+               subscriber.InvokeTopic(new Publication(topic));
             }
          }
       }
@@ -213,7 +213,7 @@ public class Publisher
          {
             foreach (var (_, subscriber) in hash)
             {
-               await subscriber.Received.InvokeAsync(new Publication(topic));
+               await subscriber.InvokeTopicAsync(new Publication(topic));
             }
          }
       }

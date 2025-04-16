@@ -30,12 +30,16 @@ public partial class Form11 : Form
 
       uiUserInfoSubscribe.Message("waiting");
 
-      userInfoSubscriber.Received.Handler = p =>
+      /*userInfoSubscriber.Received.Handler = p =>
       {
          if (p.Topic == TOPIC_USER)
          {
             uiUserInfoSubscribe.Do(() => uiUserInfoSubscribe.Success(p.Payload));
          }
+      };*/
+      userInfoSubscriber[TOPIC_USER] = p =>
+      {
+         uiUserInfoSubscribe.Do(() => uiUserInfoSubscribe.Success(p.Payload));
       };
       userInfoSubscriber.UnsubscribeOnClose(this);
 
@@ -43,7 +47,15 @@ public partial class Form11 : Form
       uiStatePublish.Click += (_, _) => statePublisher.Publish(TOPIC_STATE, ltStateSubscribe.Text);
       uiStatePublish.ClickText = "Publish";
 
-      stateSubscriber.Received.Handler = p =>
+      stateSubscriber[TOPIC_STATE] = p =>
+      {
+         listBox1.Do(() =>
+         {
+            listBox1.Items.Add(p.Payload);
+            ltStateSubscribe.Text = "";
+         });
+      };
+      /*stateSubscriber.Received.Handler = p =>
       {
          if (p.Topic == TOPIC_STATE)
          {
@@ -53,7 +65,7 @@ public partial class Form11 : Form
                ltStateSubscribe.Text = "";
             });
          }
-      };
+      };*/
       stateSubscriber.UnsubscribeOnClose(this);
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
