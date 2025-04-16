@@ -27,7 +27,6 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    protected bool isUpdating = true;
    protected int horizontalCount = 4;
    protected int verticalCount = 2;
-   protected MaybeStack<TControl> stack = [];
 
    public readonly MessageEvent<ControlFocusArgs<TControl>> AfterFocus = new();
 
@@ -61,8 +60,6 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
          hasObjectId.ObjectId = id;
       }
 
-      stack.Push(control);
-
       return id;
    }
 
@@ -87,7 +84,29 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       return id;
    }
 
-   public Maybe<long> RemoveLast() => stack.Pop().Map(Remove);
+   public Maybe<long> RemoveLast()
+   {
+      if (Controls.Count > 0)
+      {
+         return Remove((TControl)Controls[^1]);
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public Maybe<TControl> LastControl()
+   {
+      if (Controls.Count > 0)
+      {
+         return (TControl)Controls[^1];
+      }
+      else
+      {
+         return nil;
+      }
+   }
 
    public Maybe<int> ControlHeight { get; set; } = nil;
 
