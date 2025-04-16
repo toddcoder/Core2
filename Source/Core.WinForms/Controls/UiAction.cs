@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing.Drawing2D;
+using Core.Applications.Messaging;
 using Core.Arrays;
 using Core.Collections;
 using Core.Computers;
@@ -273,6 +274,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    public event EventHandler<EventArgs>? ChooserClosed;
    public event EventHandler<EventArgs>? StatusFaded;
    public event EventHandler<UiActionMessageArgs>? MessageReceived;
+   public readonly MessageEvent Clicked = new();
 
    public UiAction()
    {
@@ -427,6 +429,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
             }
          }
       };
+
+      Click += (_, _) => Clicked.Invoke();
 
       MouseMove += (_, _) =>
       {
@@ -1868,7 +1872,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
       {
          if (Count is (true, var count))
          {
-            var clickGlyphWidth = ClickGlyph? 4 : 0;
+            var clickGlyphWidth = ClickGlyph ? 4 : 0;
             var chooserGlyphWidth = ChooserGlyph ? 4 : 0;
             var xMargin = clickGlyphWidth + chooserGlyphWidth + 4;
             var writer = new RectangleWriter(count.ToString(), clientRectangle)
