@@ -1,4 +1,4 @@
-﻿using Core.Enums;
+﻿﻿using Core.Enums;
 using Core.Matching;
 using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
@@ -55,12 +55,14 @@ public partial class Form5 : Form
       (header + "c" + "charlie" + columnSize).HeaderColumn();
       header.Arrange();
       header.HeaderClick.Handler = p => Text = $"{p.Name}: {p.UiAction.Text}";
+      header.ZeroOut();
 
       textBoxContainer.BeginUpdate();
       textBoxContainer.ShowLastFocus = false;
       foreach (var _ in Enumerable.Range(0, 3))
       {
          var control = new TextBox { Text = "" };
+         control.ZeroOut();
          textBoxContainer.Add(control);
       }
 

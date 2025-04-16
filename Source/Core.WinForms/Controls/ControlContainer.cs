@@ -11,7 +11,7 @@ namespace Core.WinForms.Controls;
 
 public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> where TControl : Control
 {
-   public static ControlContainer<TControl> HorizontalContainer() => [];
+   public static ControlContainer<TControl> HorizontalContainer() => new();
 
    public static ControlContainer<TControl> VerticalContainer() => new() { Direction = ControlDirection.Vertical };
 
@@ -29,7 +29,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    protected int verticalCount = 2;
    protected MaybeStack<TControl> stack = [];
 
-   public MessageEvent<ControlFocusArgs<TControl>> AfterFocus = new();
+   public readonly MessageEvent<ControlFocusArgs<TControl>> AfterFocus = new();
 
    protected (long id, bool firstTime) setControl(TControl control) => objectHash.GetIdWithFirstTime(control);
 
