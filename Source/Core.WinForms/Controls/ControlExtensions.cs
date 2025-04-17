@@ -126,6 +126,18 @@ public static class ControlExtensions
       control.ControlRemoved += (_, _) => subscriber.Unsubscribe();
    }
 
+   public static void UnsubscribeOnDisposed<TTopic, TPayload>(this Subscriber<TTopic, TPayload> subscriber, Control control) where TTopic : notnull
+      where TPayload : notnull
+   {
+      control.Disposed += (_, _) => subscriber.Unsubscribe();
+   }
+
+   public static void UnsubscribeOnRemoved<TTopic, TPayload>(this Subscriber<TTopic, TPayload> subscriber, Control control) where TTopic : notnull
+      where TPayload : notnull
+   {
+      control.ControlRemoved += (_, _) => subscriber.Unsubscribe();
+   }
+
    public static void UnsubscribeOnDisposed(this Subscriber subscriber, Control control)
    {
       control.Disposed += (_, _) => subscriber.Unsubscribe();

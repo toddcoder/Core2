@@ -62,6 +62,12 @@ public static class FormExtensions
       form.FormClosed += (_, _) => subscriber.Unsubscribe();
    }
 
+   public static void UnsubscribeOnClose<TTopic, TPayload>(this Subscriber<TTopic, TPayload> subscriber, Form form) where TTopic : notnull
+      where TPayload : notnull
+   {
+      form.FormClosed += (_, _) => subscriber.Unsubscribe();
+   }
+
    public static void UnsubscribeOnClose(this Subscriber subscriber, Form form)
    {
       form.FormClosed += (_, _) => subscriber.Unsubscribe();
