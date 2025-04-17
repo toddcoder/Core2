@@ -415,4 +415,30 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       var scroller = new Scroller(Handle, maximum, page);
       scroller.Set();
    }
+
+   public Maybe<TControl> Find(Func<TControl, bool> predicate)
+   {
+      foreach (Control control in Controls)
+      {
+         var castControl = (TControl)control;
+         if (predicate(castControl))
+         {
+            return castControl;
+         }
+      }
+
+      return nil;
+   }
+
+   public IEnumerable<TControl> FindAll(Func<TControl, bool> predicate)
+   {
+      foreach (Control control in Controls)
+      {
+         var castControl = (TControl)control;
+         if (predicate(castControl))
+         {
+            yield return castControl;
+         }
+      }
+   }
 }
