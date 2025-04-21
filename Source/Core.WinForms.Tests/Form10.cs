@@ -13,7 +13,7 @@ public partial class Form10 : Form
    protected UiAction uiRemove = new();
    protected UiAction uiAdd = new();
    protected MaybeStack<UiAction> stack = [];
-   protected Idle idle = new(10);
+   protected Idle idle = new(10) { MaximumSeconds = 50 };
    protected UiAction uiIdle = new();
 
    public Form10()
@@ -86,8 +86,21 @@ public partial class Form10 : Form
       (builder + uiRemove).Next();
       (builder + uiAdd).Row();
 
-      idle.UserIdle.Handler = p => uiIdle.Success($"Idle for {p}");
-      idle.InputResumed.Handler = () => uiIdle.Message("Resumed");
+      idle.UserIdle.Handler = p =>
+      {
+         uiIdle.Success("Idle");
+         uiIdle.Count = p;
+      };
+      idle.InputResumed.Handler = () =>
+      {
+         uiIdle.Message("Resumed");
+         uiIdle.Count = nil;
+      };
+      idle.MaximumExceeded.Handler=p =>
+      {
+         uiIdle.Failure("maximum exceeded");
+         uiIdle.Count = p;
+      };
    }
 
    protected void timer1_Tick(object sender, EventArgs e)

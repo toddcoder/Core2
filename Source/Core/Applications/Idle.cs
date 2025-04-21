@@ -22,7 +22,8 @@ public class Idle(int idleThreshold = 60)
    public readonly MessageEvent<int> UserIdle = new();
    public readonly MessageEvent InputResumed = new();
    public readonly MessageEvent<int> IsIdle = new();
-   protected bool invoked;
+   public readonly MessageEvent<int> MaximumExceeded = new();
+   protected bool exceeded;
 
    protected static int getIdleTimeInSeconds()
    {
@@ -46,19 +47,22 @@ public class Idle(int idleThreshold = 60)
       var idleTimeInSeconds = getIdleTimeInSeconds();
       switch (idleTimeInSeconds)
       {
-         case 0 when invoked:
+         case 0 when exceeded:
             InputResumed.Invoke();
-            invoked = false;
+            exceeded = false;
             break;
-         case > 0 when idleTimeInSeconds % idleThreshold == 0:
+         case > 0 when idleTimeInSeconds % idleThreshold == 0 && !exceeded:
          {
-            var maximumSeconds = MaximumSeconds | 0;
-            if (maximumSeconds == 0 || idleTimeInSeconds < maximumSeconds)
+            if (MaximumSeconds is (true, var maximumSeconds) && idleTimeInSeconds >= maximumSeconds)
+            {
+               MaximumExceeded.Invoke(idleTimeInSeconds);
+               exceeded = true;
+            }
+            else
             {
                UserIdle.Invoke(idleTimeInSeconds);
             }
 
-            invoked = true;
             break;
          }
          default:
