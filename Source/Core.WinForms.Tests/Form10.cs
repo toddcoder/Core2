@@ -86,7 +86,7 @@ public partial class Form10 : Form
       (builder + uiRemove).Next();
       (builder + uiAdd).Row();
 
-      idle.UserIdle.Handler = p =>
+      idle.Triggered.Handler = p =>
       {
          uiIdle.Success("Idle");
          uiIdle.Count = p;
@@ -101,6 +101,7 @@ public partial class Form10 : Form
          uiIdle.Failure("maximum exceeded");
          uiIdle.Count = p;
       };
+      idle.NoInput.Handler = p => uiIdle.Count = p;
    }
 
    protected void timer1_Tick(object sender, EventArgs e)

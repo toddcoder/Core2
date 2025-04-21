@@ -12,7 +12,7 @@ public class IdlePublisher
       publisher = new Publisher<int>(name);
       idle = new Idle(idleThreshold)
       {
-         UserIdle =
+         Triggered =
          {
             Handler = p => publisher.Publish(topic, p)
          }

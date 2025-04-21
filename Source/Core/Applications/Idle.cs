@@ -19,9 +19,9 @@ public class Idle(int idleThreshold = 60)
    [DllImport("user32.dll")]
    protected static extern bool GetLastInputInfo(ref LastInputInfo lastInputInfo);
 
-   public readonly MessageEvent<int> UserIdle = new();
+   public readonly MessageEvent<int> Triggered = new();
    public readonly MessageEvent InputResumed = new();
-   public readonly MessageEvent<int> IsIdle = new();
+   public readonly MessageEvent<int> NoInput = new();
    public readonly MessageEvent<int> MaximumExceeded = new();
    protected bool exceeded;
 
@@ -48,25 +48,22 @@ public class Idle(int idleThreshold = 60)
       switch (idleTimeInSeconds)
       {
          case 0 when exceeded:
-            InputResumed.Invoke();
             exceeded = false;
+            InputResumed.Invoke();
             break;
-         case > 0 when idleTimeInSeconds % idleThreshold == 0 && !exceeded:
+         case > 0 when !exceeded && idleTimeInSeconds % idleThreshold == 0:
          {
+            Triggered.Invoke(idleTimeInSeconds);
             if (MaximumSeconds is (true, var maximumSeconds) && idleTimeInSeconds >= maximumSeconds)
             {
                MaximumExceeded.Invoke(idleTimeInSeconds);
                exceeded = true;
             }
-            else
-            {
-               UserIdle.Invoke(idleTimeInSeconds);
-            }
 
             break;
          }
          default:
-            IsIdle.Invoke(idleTimeInSeconds);
+            NoInput.Invoke(idleTimeInSeconds);
             break;
       }
    }
