@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Applications.Messaging;
 using Core.Arrays;
 using Core.Assertions;
 using Core.Dates.Now;
@@ -119,7 +120,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
    protected string[] subfolders;
    protected string fullPath;
 
-   public event EventHandler<FileArgs>? FileSuccess;
+   public readonly MessageEvent<FileArgs> FileSuccess = new();
 
    public FolderName(string folder) : this()
    {
@@ -510,7 +511,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
          if (overwrite)
          {
             file.CopyTo(targetFolder, true);
-            FileSuccess?.Invoke(this, new FileArgs(file, file, "Copied"));
+            FileSuccess.Invoke(new FileArgs(file, file, "Copied"));
          }
          else
          {
@@ -518,7 +519,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
             if (_candidateFile is (true, var candidateFile))
             {
                file.CopyTo(candidateFile, true);
-               FileSuccess?.Invoke(this, new FileArgs(file, candidateFile, "Copied"));
+               FileSuccess.Invoke(new FileArgs(file, candidateFile, "Copied"));
             }
          }
       }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Core.Applications.Messaging;
 using Core.Applications.Writers;
 using Core.Collections;
 using Core.Computers;
@@ -28,7 +29,8 @@ public abstract class CommandLineInterface : IDisposable
 
    protected Hash<string, string> aliases;
 
-   public event EventHandler<ConvertArgs>? Convert;
+   //public event EventHandler<ConvertArgs>? Convert;
+   public MessageEvent<ConvertArgs> Convert = new();
 
    public CommandLineInterface() : this(getStandardWriter())
    {
@@ -200,10 +202,11 @@ public abstract class CommandLineInterface : IDisposable
       }
       else
       {
-         if (Convert != null)
+         if (Convert.HandlerSet)
          {
             var args = new ConvertArgs(source);
-            Convert.Invoke(this, args);
+            Convert.Invoke(args);
+
             return args.Result | (object)source;
          }
          else

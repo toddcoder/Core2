@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Timers;
+using Core.Applications.Messaging;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
@@ -14,7 +15,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue> where TKey : notn
    protected object locker;
    protected Func<ExpirationPolicy<TValue>> newPolicy;
 
-   public event EventHandler<ExpirationArgs<TKey, TValue>>? Expired;
+   public readonly MessageEvent<ExpirationArgs<TKey, TValue>> Expired = new();
 
    public ExpiringCache(TimeSpan activeMonitoringInterval)
    {
@@ -30,7 +31,7 @@ public class ExpiringCache<TKey, TValue> : IHash<TKey, TValue> where TKey : notn
             foreach (var key in expiredKeys)
             {
                var args = new ExpirationArgs<TKey, TValue>(key, cache[key]);
-               Expired?.Invoke(this, args);
+               Expired.Invoke(args);
                if (!args.CancelEviction)
                {
                   cache.Remove(key);

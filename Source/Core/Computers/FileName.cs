@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using Core.Applications.Messaging;
 using Core.Assertions;
 using Core.Enumerables;
 using Core.Matching;
@@ -177,8 +178,9 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
    protected StringBuilder buffer;
    protected bool useBuffer;
 
-   public event EventHandler<FileCopyProgressArgs>? Percentage;
-   public event EventHandler<FileCopyFinishedArgs>? Finished;
+   public readonly MessageEvent<FileCopyProgressArgs> Percentage = new();
+   public readonly MessageEvent<FileCopyFinishedArgs> Finished = new();
+
    public FileName(FolderName folder, string name, string extension) : this()
    {
       initialize(folder, name, extension);
@@ -1202,12 +1204,12 @@ public class FileName : IComparable, IComparable<FileName>, IEquatable<FileName>
       {
          if (reason == CopyProgressCallbackReason.CallbackChunkFinished)
          {
-            Percentage?.Invoke(this, new FileCopyProgressArgs(transferred / (double)total * 100));
+            Percentage.Invoke(new FileCopyProgressArgs(transferred / (double)total * 100));
          }
 
          if (transferred >= total)
          {
-            Finished?.Invoke(this, new FileCopyFinishedArgs(total, stopwatch.Elapsed));
+            Finished.Invoke(new FileCopyFinishedArgs(total, stopwatch.Elapsed));
          }
 
          return CopyProgressResult.ProgressContinue;

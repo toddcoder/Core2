@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Core.Applications.Messaging;
 using Core.Applications.Writers;
 using Core.Assertions;
 using Core.Collections;
@@ -34,7 +35,7 @@ public abstract class CommandProcessor : IDisposable
    protected string application;
    protected Configuration configuration;
 
-   public event ConsoleCancelEventHandler? CancelKeyPress;
+   public MessageEvent<ConsoleCancelEventArgs> CancelKeyPress = new();
 
    public CommandProcessor(string application)
    {
@@ -54,7 +55,7 @@ public abstract class CommandProcessor : IDisposable
       Suffix = " ";
       Arguments = string.Empty;
 
-      Console.CancelKeyPress += CancelKeyPress;
+      Console.CancelKeyPress += (_, e) => CancelKeyPress.Invoke(e);
 
       Command = string.Empty;
    }

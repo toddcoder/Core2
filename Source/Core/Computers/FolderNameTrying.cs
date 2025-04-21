@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Core.Applications.Messaging;
 using Core.Assertions;
 using Core.Monads;
 using static Core.Monads.AttemptFunctions;
@@ -9,7 +9,7 @@ public class FolderNameTrying
 {
    protected FolderName folderName;
 
-   public event EventHandler<FileArgs>? FileSuccess;
+   public readonly MessageEvent<FileArgs> FileSuccess = new();
 
    public FolderNameTrying(FolderName folderName) => this.folderName = folderName;
 
@@ -25,11 +25,11 @@ public class FolderNameTrying
    {
       return tryTo(() =>
       {
-         folderName.FileSuccess += FileSuccess;
+         folderName.FileSuccess.Handler = FileSuccess.Invoke;
          folderName.CopyTo(targetFolder, includePattern, excludePattern, overwrite);
 
          return targetFolder;
-      }).OnFailure(_ => folderName.FileSuccess -= FileSuccess);
+      }).OnFailure(_ => folderName.FileSuccess.ClearHandler());
    }
 
    public Result<FolderName> Delete() => tryTo(() =>

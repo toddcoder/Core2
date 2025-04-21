@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Core.Applications.Messaging;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
@@ -16,8 +17,8 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
 
    protected ReaderWriterLockSlim locker = new(LockRecursionPolicy.SupportsRecursion);
 
-   public event EventHandler<HashArgs<TKey, TValue>>? Updated;
-   public event EventHandler<HashArgs<TKey, TValue>>? Removed;
+   public MessageEvent<HashArgs<TKey, TValue>> Updated = new();
+   public MessageEvent<HashArgs<TKey, TValue>> Removed = new();
 
    public Hash()
    {
@@ -54,7 +55,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
    public new void Add(TKey key, TValue value)
    {
       base.Add(key, value);
-      Updated?.Invoke(this, new HashArgs<TKey, TValue>(key, value));
+      Updated.Invoke(new HashArgs<TKey, TValue>(key, value));
    }
 
    public void Add((TKey key, TValue value) item) => Add(item.key, item.value);
@@ -67,7 +68,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
       {
          var value = this[key];
          var result = base.Remove(key);
-         Removed?.Invoke(this, new HashArgs<TKey, TValue>(key, value));
+         Removed.Invoke(new HashArgs<TKey, TValue>(key, value));
 
          return result;
       }
@@ -106,7 +107,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
             if (ContainsKey(key))
             {
                base[key] = value;
-               Updated?.Invoke(this, new HashArgs<TKey, TValue>(key, value));
+               Updated.Invoke(new HashArgs<TKey, TValue>(key, value));
             }
             else
             {
