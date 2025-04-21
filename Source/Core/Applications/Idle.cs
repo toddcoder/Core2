@@ -63,7 +63,11 @@ public class Idle(int idleThreshold = 60)
             break;
          }
          default:
-            NoInput.Invoke(idleTimeInSeconds);
+            if (!exceeded)
+            {
+               NoInput.Invoke(idleTimeInSeconds);
+            }
+
             break;
       }
    }
