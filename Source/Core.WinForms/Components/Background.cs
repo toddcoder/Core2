@@ -8,7 +8,7 @@ public abstract class Background
    protected bool cancel = false;
 
    public readonly MessageEvent Canceled = new();
-   public readonly MessageEvent Completed = new();
+   public readonly MessageEvent Finalized = new();
 
    public Background()
    {
@@ -25,7 +25,7 @@ public abstract class Background
       worker.RunWorkerCompleted += (_, _) =>
       {
          RunWorkerCompleted();
-         Completed.Invoke();
+         Finalized.Invoke();
       };
    }
 
