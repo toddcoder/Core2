@@ -28,6 +28,24 @@ public class HashTest
       }
    }
 
+   protected static void test(Hash<string, int> hash, string message, int defaultValue, Func<string, int> newLambda1, bool add)
+   {
+      string[] keys = ["alpha", "bravo", "charlie"];
+
+      Console.WriteLine("-".Repeat(80));
+      Console.WriteLine(message.LeftJustify(80, '-'));
+      foreach (var key in keys)
+      {
+         Console.WriteLine($"{key}: {hash.Find(key, defaultValue, add)}");
+      }
+
+      Console.WriteLine("-".Repeat(80));
+      foreach (var key in keys)
+      {
+         Console.WriteLine($"{key}: {hash.Find(key, newLambda1, add)}");
+      }
+   }
+
    [TestMethod]
    public void AutoHashTest()
    {
@@ -111,5 +129,27 @@ public class HashTest
       {
          Console.WriteLine(value2);
       }
+   }
+
+   [TestMethod]
+   public void MemoizationTest()
+   {
+      Func<string, int> memoizationFunc = key =>
+      {
+         Console.WriteLine($"key:{key}");
+         return key.Length;
+      };
+
+      var hash = new Hash<string, int>();
+      write(hash.Memoize("alpha", memoizationFunc));
+      write(hash.Memoize("zulu", memoizationFunc));
+      write(hash.Memoize("charlie", memoizationFunc));
+      write(hash.Memoize("alpha", memoizationFunc));
+      write(hash.Memoize("zulu", memoizationFunc));
+      write(hash.Memoize("romeo", memoizationFunc));
+
+      return;
+
+      void write(int value) => Console.WriteLine(value);
    }
 }

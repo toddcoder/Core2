@@ -166,9 +166,43 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
       }
    }
 
+   public TValue Find(TKey key, TValue value, bool addIfNotFound = false)
+   {
+      var _result = Maybe[key];
+      if (_result is (true, var result))
+      {
+         return result;
+      }
+      else
+      {
+         if (addIfNotFound)
+         {
+            try
+            {
+               locker.EnterWriteLock();
+               Add(key, value);
+            }
+            catch
+            {
+            }
+            finally
+            {
+               locker.ExitWriteLock();
+            }
+         }
+
+         return value;
+      }
+   }
+
    public TValue Memoize(TKey key, Func<TKey, TValue> defaultValue, bool alwaysUseDefaultValue = false)
    {
       return alwaysUseDefaultValue ? defaultValue(key) : Find(key, defaultValue, true);
+   }
+
+   public TValue Memoize(TKey key, TValue value, bool alwaysUseDefaultValue = false)
+   {
+      return alwaysUseDefaultValue ? value : Find(key, value, true);
    }
 
    public TKey[] KeyArray()
