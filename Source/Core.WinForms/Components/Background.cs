@@ -1,9 +1,14 @@
-﻿namespace Core.WinForms.Components;
+﻿using Core.Applications.Messaging;
+
+namespace Core.WinForms.Components;
 
 public abstract class Background
 {
    protected CoreBackgroundWorker worker = new();
    protected bool cancel = false;
+
+   public readonly MessageEvent Canceled = new();
+   public readonly MessageEvent Completed = new();
 
    public Background()
    {
@@ -13,10 +18,15 @@ public abstract class Background
          if (cancel)
          {
             e.Cancel = true;
+            Canceled.Invoke();
          }
       };
       worker.DoWork += (_, _) => DoWork();
-      worker.RunWorkerCompleted += (_, _) => RunWorkerCompleted();
+      worker.RunWorkerCompleted += (_, _) =>
+      {
+         RunWorkerCompleted();
+         Completed.Invoke();
+      };
    }
 
    public virtual void Initialize()
