@@ -315,6 +315,8 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
 
    public HashMaybe<TKey, TValue> Maybe => new(this);
 
+   public HashAuto<TKey, TValue> Auto => new(this);
+
    public void AddKeys(IEnumerable<TKey> keys, TValue value)
    {
       foreach (var key in keys)

@@ -131,25 +131,38 @@ public class HashTest
       }
    }
 
+   protected static int memoizationFunc(string key)
+   {
+      Console.WriteLine($"key:{key}");
+      return key.Length;
+   }
+
+   protected static void write(int value) => Console.WriteLine(value);
+
    [TestMethod]
    public void MemoizationTest()
    {
-      Func<string, int> memoizationFunc = key =>
-      {
-         Console.WriteLine($"key:{key}");
-         return key.Length;
-      };
+      StringHash<int> hash = [];
+      write(hash.Auto["alpha"].Memo(memoizationFunc));
+      write(hash.Auto["zulu"].Memo(memoizationFunc));
+      write(hash.Auto["charlie"].Memo(memoizationFunc));
+      write(hash.Auto["alpha"].Memo(memoizationFunc));
+      write(hash.Auto["zulu"].Memo(memoizationFunc));
+      write(hash.Auto["romeo"].Memo(memoizationFunc));
+   }
 
-      var hash = new Hash<string, int>();
-      write(hash.Memoize("alpha", memoizationFunc));
-      write(hash.Memoize("zulu", memoizationFunc));
-      write(hash.Memoize("charlie", memoizationFunc));
-      write(hash.Memoize("alpha", memoizationFunc));
-      write(hash.Memoize("zulu", memoizationFunc));
-      write(hash.Memoize("romeo", memoizationFunc));
+   [TestMethod]
+   public void FindTest()
+   {
+      StringHash<int> hash = [];
+      hash["alpha"] = -1;
+      hash["romeo"] = -1;
 
-      return;
-
-      void write(int value) => Console.WriteLine(value);
+      write(hash.Auto["alpha"].Find(memoizationFunc));
+      write(hash.Auto["zulu"].Find(memoizationFunc));
+      write(hash.Auto["charlie"].Find(memoizationFunc));
+      write(hash.Auto["alpha"].Find(memoizationFunc));
+      write(hash.Auto["zulu"].Find(memoizationFunc));
+      write(hash.Auto["romeo"].Find(memoizationFunc));
    }
 }
