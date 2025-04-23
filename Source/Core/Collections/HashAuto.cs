@@ -36,6 +36,8 @@ public class HashMemoFunction<TKey, TValue> where TKey : notnull where TValue : 
    }
 
    public HashMemoKeyFunction<TKey, TValue> this[TKey key] => new(hash, key, defaultValue);
+
+   public Hash<TKey, TValue> Hash => hash;
 }
 
 public class HashMemoKeyFunction<TKey, TValue> where TKey : notnull where TValue : notnull
@@ -56,6 +58,8 @@ public class HashMemoKeyFunction<TKey, TValue> where TKey : notnull where TValue
       get => hash.Memoize(key, defaultValue);
       set => hash[key] = value;
    }
+
+   public Hash<TKey, TValue> Hash => hash;
 }
 
 public class HashMemoValue<TKey, TValue> where TKey : notnull where TValue : notnull
@@ -70,6 +74,8 @@ public class HashMemoValue<TKey, TValue> where TKey : notnull where TValue : not
    }
 
    public HashMemoKeyValue<TKey, TValue> this[TKey key] => new(hash, key, defaultValue);
+
+   public Hash<TKey, TValue> Hash => hash;
 }
 
 public class HashMemoKeyValue<TKey, TValue> where TKey : notnull where TValue : notnull
@@ -90,4 +96,6 @@ public class HashMemoKeyValue<TKey, TValue> where TKey : notnull where TValue : 
       get => hash.Memoize(key, defaultValue);
       set => hash[key] = value;
    }
+
+   public Hash<TKey, TValue> Hash => hash;
 }

@@ -170,17 +170,13 @@ public class HashTest
    [TestMethod]
    public void MemoizeListTest()
    {
-      StringHash<List<string>> hash = [];
+      var hashMemo = StringHash<List<string>>.AsMemo(_ => []);
 
-      var stringList = hash.Memo([])["alpha"];
-      stringList.Value.AddRange(["able", "apple"]);
+      hashMemo["alpha"].Value.AddRange(["able", "apple"]);
+      hashMemo["bravo"].Value.Add("baker");
+      _ = hashMemo["charlie"].Value;
 
-      stringList = hash.Memo([])["bravo"];
-      stringList.Value.Add("baker");
-
-      _ = hash.Memo([])["charlie"].Value;
-
-      foreach (var (key, list) in hash)
+      foreach (var (key, list) in hashMemo.Hash)
       {
          writeList(key, list);
       }
@@ -193,14 +189,14 @@ public class HashTest
    [TestMethod]
    public void MemoizeCountTest()
    {
-      StringHash<int> hash = [];
+      var hashMemo = StringHash<int>.AsMemo(0);
       string[] keys = ["alpha", "bravo", "charlie", "bravo", "alpha", "alpha", "delta", "delta"];
       foreach (var key in keys)
       {
-         hash.Memo(0)[key].Value++;
+         hashMemo[key].Value++;
       }
 
-      foreach (var (key, count) in hash)
+      foreach (var (key, count) in hashMemo.Hash)
       {
          writeList(key, count);
       }

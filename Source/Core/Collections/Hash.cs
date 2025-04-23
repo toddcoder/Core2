@@ -15,6 +15,18 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
       return hash;
    }
 
+   public static HashMemoFunction<TKey, TValue> AsMemo(Func<TKey, TValue> defaultValue)
+   {
+      Hash<TKey, TValue> hash = [];
+      return hash.Memo(defaultValue);
+   }
+
+   public static HashMemoValue<TKey, TValue> AsMemo(TValue defaultValue)
+   {
+      Hash<TKey, TValue> hash = [];
+      return hash.Memo(defaultValue);
+   }
+
    protected ReaderWriterLockSlim locker = new(LockRecursionPolicy.SupportsRecursion);
 
    public MessageEvent<HashArgs<TKey, TValue>> Updated = new();
