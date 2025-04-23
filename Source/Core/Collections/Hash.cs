@@ -317,6 +317,10 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
 
    public HashAuto<TKey, TValue> Auto => new(this);
 
+   public HashMemoFunction<TKey, TValue> Memo(Func<TKey, TValue> defaultValue) => new(this, defaultValue);
+
+   public HashMemoValue<TKey, TValue> Memo(TValue defaultValue) => new(this, defaultValue);
+
    public void AddKeys(IEnumerable<TKey> keys, TValue value)
    {
       foreach (var key in keys)

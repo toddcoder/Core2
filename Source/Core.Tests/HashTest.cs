@@ -1,5 +1,6 @@
 ﻿using Core.Assertions;
 using Core.Collections;
+using Core.Enumerables;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -164,5 +165,48 @@ public class HashTest
       write(hash.Auto["alpha"].Find(memoizationFunc));
       write(hash.Auto["zulu"].Find(memoizationFunc));
       write(hash.Auto["romeo"].Find(memoizationFunc));
+   }
+
+   [TestMethod]
+   public void MemoizeListTest()
+   {
+      StringHash<List<string>> hash = [];
+
+      var stringList = hash.Memo([])["alpha"];
+      stringList.Value.AddRange(["able", "apple"]);
+
+      stringList = hash.Memo([])["bravo"];
+      stringList.Value.Add("baker");
+
+      _ = hash.Memo([])["charlie"].Value;
+
+      foreach (var (key, list) in hash)
+      {
+         writeList(key, list);
+      }
+
+      return;
+
+      void writeList(string key, List<string> list) => Console.WriteLine($"{key}: ({list.Select(i => $"'{i}'").ToString(", ")})");
+   }
+
+   [TestMethod]
+   public void MemoizeCountTest()
+   {
+      StringHash<int> hash = [];
+      string[] keys = ["alpha", "bravo", "charlie", "bravo", "alpha", "alpha", "delta", "delta"];
+      foreach (var key in keys)
+      {
+         hash.Memo(0)[key].Value++;
+      }
+
+      foreach (var (key, count) in hash)
+      {
+         writeList(key, count);
+      }
+
+      return;
+
+      void writeList(string key, int count) => Console.WriteLine($"{key}: ({count})");
    }
 }
