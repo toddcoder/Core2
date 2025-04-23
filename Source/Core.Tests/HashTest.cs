@@ -143,40 +143,25 @@ public class HashTest
    [TestMethod]
    public void MemoizationTest()
    {
-      StringHash<int> hash = [];
-      write(hash.Auto["alpha"].Memo(memoizationFunc));
-      write(hash.Auto["zulu"].Memo(memoizationFunc));
-      write(hash.Auto["charlie"].Memo(memoizationFunc));
-      write(hash.Auto["alpha"].Memo(memoizationFunc));
-      write(hash.Auto["zulu"].Memo(memoizationFunc));
-      write(hash.Auto["romeo"].Memo(memoizationFunc));
-   }
-
-   [TestMethod]
-   public void FindTest()
-   {
-      StringHash<int> hash = [];
-      hash["alpha"] = -1;
-      hash["romeo"] = -1;
-
-      write(hash.Auto["alpha"].Find(memoizationFunc));
-      write(hash.Auto["zulu"].Find(memoizationFunc));
-      write(hash.Auto["charlie"].Find(memoizationFunc));
-      write(hash.Auto["alpha"].Find(memoizationFunc));
-      write(hash.Auto["zulu"].Find(memoizationFunc));
-      write(hash.Auto["romeo"].Find(memoizationFunc));
+      var memo = StringHash<int>.AsMemo(memoizationFunc);
+      write(memo["alpha"]);
+      write(memo["zulu"]);
+      write(memo["charlie"]);
+      write(memo["alpha"]);
+      write(memo["zulu"]);
+      write(memo["romeo"]);
    }
 
    [TestMethod]
    public void MemoizeListTest()
    {
-      var hashMemo = StringHash<List<string>>.AsMemo(_ => []);
+      var memo = StringHash<List<string>>.AsMemo(_ => []);
 
-      hashMemo["alpha"].Value.AddRange(["able", "apple"]);
-      hashMemo["bravo"].Value.Add("baker");
-      _ = hashMemo["charlie"].Value;
+      memo["alpha"].AddRange(["able", "apple"]);
+      memo["bravo"].Add("baker");
+      _ = memo["charlie"];
 
-      foreach (var (key, list) in hashMemo.Hash)
+      foreach (var (key, list) in memo.Hash)
       {
          writeList(key, list);
       }
@@ -189,20 +174,34 @@ public class HashTest
    [TestMethod]
    public void MemoizeCountTest()
    {
-      var hashMemo = StringHash<int>.AsMemo(0);
+      var memo = StringHash<int>.AsMemo(0);
       string[] keys = ["alpha", "bravo", "charlie", "bravo", "alpha", "alpha", "delta", "delta"];
       foreach (var key in keys)
       {
-         hashMemo[key].Value++;
+         memo[key]++;
       }
 
-      foreach (var (key, count) in hashMemo.Hash)
+      foreach (var (key, count) in memo.Hash)
       {
-         writeList(key, count);
+         writeCount(key, count);
       }
 
       return;
 
-      void writeList(string key, int count) => Console.WriteLine($"{key}: ({count})");
+      void writeCount(string key, int count) => Console.WriteLine($"{key}: ({count})");
+   }
+
+   [TestMethod]
+   public void MemoInitializationTest()
+   {
+      var memo = StringHash.AsMemo(k => k.Reverse(), ("alpha", "A"));
+      writeValue("alpha", memo["alpha"]);
+      writeValue("bravo", memo["bravo"]);
+      memo["charlie"] = "C";
+      writeValue("charlie", memo["charlie"]);
+
+      return;
+
+      void writeValue(string key, string value) => Console.WriteLine($"{key}: ({value})");
    }
 }

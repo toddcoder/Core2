@@ -797,7 +797,7 @@ public static class StringExtensions
       }
    }
 
-   public static string Reverse(this string source) => source.Replace(new string([.. source.Select(c => c).Reverse()]));
+   public static string Reverse(this string source) => new([.. source.Select(c => c).Reverse()]);
 
    public static string Succ(this string source)
    {

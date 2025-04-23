@@ -15,15 +15,25 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
       return hash;
    }
 
-   public static HashMemoFunction<TKey, TValue> AsMemo(Func<TKey, TValue> defaultValue)
+   public static MemoFunction<TKey, TValue> AsMemo(Func<TKey, TValue> defaultValue, params IEnumerable<(TKey, TValue)> initializer)
    {
       Hash<TKey, TValue> hash = [];
+      foreach (var (key, value) in initializer)
+      {
+         hash[key] = value;
+      }
+
       return hash.Memo(defaultValue);
    }
 
-   public static HashMemoValue<TKey, TValue> AsMemo(TValue defaultValue)
+   public static MemoValue<TKey, TValue> AsMemo(TValue defaultValue, params IEnumerable<(TKey, TValue)> initializer)
    {
       Hash<TKey, TValue> hash = [];
+      foreach (var (key, value) in initializer)
+      {
+         hash[key] = value;
+      }
+
       return hash.Memo(defaultValue);
    }
 
@@ -327,11 +337,9 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
 
    public HashMaybe<TKey, TValue> Maybe => new(this);
 
-   public HashAuto<TKey, TValue> Auto => new(this);
+   public MemoFunction<TKey, TValue> Memo(Func<TKey, TValue> defaultValue) => new(this, defaultValue);
 
-   public HashMemoFunction<TKey, TValue> Memo(Func<TKey, TValue> defaultValue) => new(this, defaultValue);
-
-   public HashMemoValue<TKey, TValue> Memo(TValue defaultValue) => new(this, defaultValue);
+   public MemoValue<TKey, TValue> Memo(TValue defaultValue) => new(this, defaultValue);
 
    public void AddKeys(IEnumerable<TKey> keys, TValue value)
    {

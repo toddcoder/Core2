@@ -24,36 +24,18 @@ public class HashAutoKey<TKey, TValue>(Hash<TKey, TValue> hash, TKey key) where 
    }
 }
 
-public class HashMemoFunction<TKey, TValue> where TKey : notnull where TValue : notnull
+public class MemoFunction<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    protected Hash<TKey, TValue> hash;
    protected Func<TKey, TValue> defaultValue;
 
-   public HashMemoFunction(Hash<TKey, TValue> hash, Func<TKey, TValue> defaultValue)
+   public MemoFunction(Hash<TKey, TValue> hash, Func<TKey, TValue> defaultValue)
    {
       this.hash = hash;
       this.defaultValue = defaultValue;
    }
 
-   public HashMemoKeyFunction<TKey, TValue> this[TKey key] => new(hash, key, defaultValue);
-
-   public Hash<TKey, TValue> Hash => hash;
-}
-
-public class HashMemoKeyFunction<TKey, TValue> where TKey : notnull where TValue : notnull
-{
-   protected Hash<TKey, TValue> hash;
-   protected TKey key;
-   protected Func<TKey, TValue> defaultValue;
-
-   public HashMemoKeyFunction(Hash<TKey, TValue> hash, TKey key, Func<TKey, TValue> defaultValue)
-   {
-      this.hash = hash;
-      this.key = key;
-      this.defaultValue = defaultValue;
-   }
-
-   public TValue Value
+   public TValue this[TKey key]
    {
       get => hash.Memoize(key, defaultValue);
       set => hash[key] = value;
@@ -62,36 +44,18 @@ public class HashMemoKeyFunction<TKey, TValue> where TKey : notnull where TValue
    public Hash<TKey, TValue> Hash => hash;
 }
 
-public class HashMemoValue<TKey, TValue> where TKey : notnull where TValue : notnull
+public class MemoValue<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    protected Hash<TKey, TValue> hash;
    protected TValue defaultValue;
 
-   public HashMemoValue(Hash<TKey, TValue> hash, TValue defaultValue)
+   public MemoValue(Hash<TKey, TValue> hash, TValue defaultValue)
    {
       this.hash = hash;
       this.defaultValue = defaultValue;
    }
 
-   public HashMemoKeyValue<TKey, TValue> this[TKey key] => new(hash, key, defaultValue);
-
-   public Hash<TKey, TValue> Hash => hash;
-}
-
-public class HashMemoKeyValue<TKey, TValue> where TKey : notnull where TValue : notnull
-{
-   protected Hash<TKey, TValue> hash;
-   protected TKey key;
-   protected TValue defaultValue;
-
-   public HashMemoKeyValue(Hash<TKey, TValue> hash, TKey key, TValue defaultValue)
-   {
-      this.hash = hash;
-      this.key = key;
-      this.defaultValue = defaultValue;
-   }
-
-   public TValue Value
+   public TValue this[TKey key]
    {
       get => hash.Memoize(key, defaultValue);
       set => hash[key] = value;
