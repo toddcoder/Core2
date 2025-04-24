@@ -10,7 +10,7 @@ namespace Core.WinForms.Tests;
 public partial class Form5 : Form
 {
    protected ExTextBox textBox1 = new() { BorderStyle = BorderStyle.None };
-   protected ExTextBox textBox2 = new() { BorderStyle = BorderStyle.None };
+   protected ExTextBox textBox2 = new() { BorderStyle = BorderStyle.None, RefreshOnTextChange = true };
    protected UiAction uiAction1 = new();
    protected UiAction uiAction2 = new();
    protected UiAction uiAction3 = new();
@@ -20,23 +20,25 @@ public partial class Form5 : Form
 
    public Form5()
    {
+      textBox2.ReassignHandle();
       textBox2.Text = "Smith, John; Doe, Jane; Johnson, Emily";
       textBox2.Triggered.Handler = _ =>
       {
          var text = textBox2.Text;
          List<string> names = [];
+         var anyToResolve = false;
          foreach (var fullName in text.Unjoin("/s* ';' /s*; f"))
          {
             var strippedName = fullName;
             if (strippedName.StartsWith('['))
             {
-               strippedName = strippedName.Drop(1);
+               strippedName = strippedName.Drop(1).Drop(-1);
+            }
+            else
+            {
+               anyToResolve = true;
             }
 
-            if (strippedName.EndsWith(']'))
-            {
-               strippedName = strippedName.Drop(-1);
-            }
             var trimmedName = strippedName.Trim().NormalizeWhitespace();
             if (trimmedName.Matches("^/(-[',']+) ',' /(.+)$; f") is (true, var result))
             {
@@ -49,21 +51,37 @@ public partial class Form5 : Form
             }
          }
 
-         textBox2.Text = names.ToString("; ");
+         if (anyToResolve)
+         {
+            textBox2.Text = names.ToString("; ");
+         }
 
          return;
 
          string fixedText(string source) => source.Trim().NormalizeWhitespace().ToTitleCase();
       };
-      /*textBox2.Paint += (_, e) =>
+      textBox2.Paint += (_, e) =>
       {
-         //using var brush = new SolidBrush(Color.Cyan);
-         using var pen = new Pen(Color.Red);
-         foreach (var (rectangle, _) in textBox2.RectangleWords(e.Graphics))
+         using var brush = new SolidBrush(Color.Cyan.WithAlpha(64));
+         using var pen = new Pen(Color.Black);
+         foreach (var rectangle in getRectangles())
          {
+            e.Graphics.FillRectangle(brush, rectangle);
             e.Graphics.DrawRectangle(pen, rectangle);
          }
-      };*/
+
+         return;
+
+         IEnumerable<Rectangle> getRectangles()
+         {
+            foreach (var match in textBox2.Text.AllMatches("'[' /(-[']']+) ']'; f"))
+            {
+               var index = match.Groups[1].Index;
+               var length = match.Groups[1].Length;
+               yield return textBox2.RectangleFrom(e.Graphics, index, length);
+            }
+         }
+      };
       textBox2.Idle = 2;
 
       uiAction1.Message("Starts with digits");

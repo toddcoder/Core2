@@ -174,7 +174,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
       {
          Triggered =
          {
-            Handler = i=>
+            Handler = i =>
             {
                idleTimer.Value.Enabled = false;
                Triggered.Invoke(i);
@@ -464,7 +464,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
       set
       {
          cueBanner = value;
-         User32.SendMessage(Handle, User32.Messages.SetCueBanner, true, cueBanner);
+         _ = User32.SendMessage(Handle, User32.Messages.SetCueBanner, true, cueBanner);
       }
    }
 
@@ -548,11 +548,11 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
       {
          return new Size(0, 0);
       }
-      else if (text.Contains(' '))
+      /*else if (text.Contains(' '))
       {
          var size = graphics.MeasureString(text, font).ToSize();
          return size with { Width = size.Width + 8 };
-      }
+      }*/
       else
       {
          var size = graphics.MeasureString(text, font);
