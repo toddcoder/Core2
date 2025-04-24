@@ -19,11 +19,18 @@ public class Idle(int idleThreshold = 60)
    [DllImport("user32.dll")]
    protected static extern bool GetLastInputInfo(ref LastInputInfo lastInputInfo);
 
+   protected int idleThreshold = idleThreshold;
+   protected bool exceeded;
    public readonly MessageEvent<int> Triggered = new();
    public readonly MessageEvent InputResumed = new();
    public readonly MessageEvent<int> NoInput = new();
    public readonly MessageEvent<int> MaximumExceeded = new();
-   protected bool exceeded;
+
+   public int IdleThreshold
+   {
+      get => idleThreshold;
+      set => idleThreshold = value;
+   }
 
    protected static int getIdleTimeInSeconds()
    {

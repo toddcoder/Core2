@@ -1,5 +1,7 @@
-﻿﻿using Core.Enums;
+﻿using Core.Enumerables;
+using Core.Enums;
 using Core.Matching;
+using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
 
@@ -7,7 +9,8 @@ namespace Core.WinForms.Tests;
 
 public partial class Form5 : Form
 {
-   protected ExTextBox textBox = new() { BorderStyle = BorderStyle.None };
+   protected ExTextBox textBox1 = new() { BorderStyle = BorderStyle.None };
+   protected ExTextBox textBox2 = new() { BorderStyle = BorderStyle.None };
    protected UiAction uiAction1 = new();
    protected UiAction uiAction2 = new();
    protected UiAction uiAction3 = new();
@@ -17,6 +20,52 @@ public partial class Form5 : Form
 
    public Form5()
    {
+      textBox2.Text = "Smith, John; Doe, Jane; Johnson, Emily";
+      textBox2.Triggered.Handler = _ =>
+      {
+         var text = textBox2.Text;
+         List<string> names = [];
+         foreach (var fullName in text.Unjoin("/s* ';' /s*; f"))
+         {
+            var strippedName = fullName;
+            if (strippedName.StartsWith('['))
+            {
+               strippedName = strippedName.Drop(1);
+            }
+
+            if (strippedName.EndsWith(']'))
+            {
+               strippedName = strippedName.Drop(-1);
+            }
+            var trimmedName = strippedName.Trim().NormalizeWhitespace();
+            if (trimmedName.Matches("^/(-[',']+) ',' /(.+)$; f") is (true, var result))
+            {
+               var reorganizedName = $"[{fixedText(result.SecondGroup)} {fixedText(result.FirstGroup)}]";
+               names.Add(reorganizedName);
+            }
+            else
+            {
+               names.Add($"[{trimmedName}]");
+            }
+         }
+
+         textBox2.Text = names.ToString("; ");
+
+         return;
+
+         string fixedText(string source) => source.Trim().NormalizeWhitespace().ToTitleCase();
+      };
+      /*textBox2.Paint += (_, e) =>
+      {
+         //using var brush = new SolidBrush(Color.Cyan);
+         using var pen = new Pen(Color.Red);
+         foreach (var (rectangle, _) in textBox2.RectangleWords(e.Graphics))
+         {
+            e.Graphics.DrawRectangle(pen, rectangle);
+         }
+      };*/
+      textBox2.Idle = 2;
+
       uiAction1.Message("Starts with digits");
 
       uiAction2.Message("Two digits separated by colon");
@@ -25,7 +74,7 @@ public partial class Form5 : Form
 
       uiAction4.Message("No digits");
 
-      var enabler = new Enabler(textBox)
+      var enabler = new Enabler(textBox1)
       {
          ["u1"] = uiAction1,
          ["u2"] = uiAction2,
@@ -75,7 +124,8 @@ public partial class Form5 : Form
       _ = builder.Row + 40 + 60 + 60 + 30 + 60 + 100f;
       builder.SetUp();
 
-      (builder + textBox).Row();
+      (builder + textBox1).Next();
+      (builder + textBox2).Row();
 
       (builder + uiAction1).Next();
       (builder + uiAction2).Row();

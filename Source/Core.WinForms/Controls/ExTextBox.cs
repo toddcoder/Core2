@@ -1,12 +1,14 @@
 ﻿using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using Core.Applications;
+using Core.Applications.Messaging;
 using Core.Collections;
 using Core.DataStructures;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
+using Message = System.Windows.Forms.Message;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Core.WinForms.Controls;
@@ -98,15 +100,19 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
    protected Maybe<SubText> _validateSubText = nil;
    protected bool validatesMessages;
    protected Hash<Keys, Action<KeyEventArgs>> shortcuts = [];
-   protected Lazy<Timer> timer;
+   protected Lazy<Timer> busyTimer;
+   protected Lazy<Timer> idleTimer;
    protected Maybe<BusyTextProcessor> _busyTextProcessor = nil;
    protected bool waiting;
+   protected Lazy<Idle> idle;
 
    public new event EventHandler<PaintEventArgs>? Paint;
    public new event EventHandler<ValidatingArgs>? Validating;
    public event EventHandler<AllowArgs>? Allowing;
    public event EventHandler<DenyArgs>? Denying;
    public event EventHandler<TrendArgs>? Trending;
+   public readonly MessageEvent<int> Triggered = new();
+   public readonly MessageEvent InputResumed = new();
 
    public ExTextBox(Control control) : this()
    {
@@ -134,12 +140,14 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
          }
       };
 
-      timer = new Lazy<Timer>(getTimer);
+      busyTimer = new Lazy<Timer>(getBusyTimer);
+      idleTimer = new Lazy<Timer>(getIdleTimer);
+      idle = new Lazy<Idle>(getIdle);
    }
 
    protected BusyTextProcessor getBusyTextProcessor() => new(Color.Gray, ClientRectangle, false);
 
-   protected Timer getTimer()
+   protected Timer getBusyTimer()
    {
       var newTimer = new Timer { Enabled = false, Interval = 500 };
       newTimer.Tick += (_, _) =>
@@ -152,13 +160,43 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
       return newTimer;
    }
 
+   protected Timer getIdleTimer()
+   {
+      var newTimer = new Timer { Enabled = false, Interval = 500 };
+      newTimer.Tick += (_, _) => idle.Value.CheckIdleTime();
+
+      return newTimer;
+   }
+
+   protected Idle getIdle()
+   {
+      var newIdle = new Idle(10)
+      {
+         Triggered =
+         {
+            Handler = i=>
+            {
+               idleTimer.Value.Enabled = false;
+               Triggered.Invoke(i);
+               idleTimer.Value.Enabled = true;
+            }
+         },
+         InputResumed =
+         {
+            Handler = InputResumed.Invoke
+         }
+      };
+
+      return newIdle;
+   }
+
    public bool Waiting
    {
       get => waiting;
       set
       {
          waiting = value;
-         timer.Value.Enabled = waiting;
+         busyTimer.Value.Enabled = waiting;
          if (!waiting)
          {
             _busyTextProcessor = nil;
@@ -754,7 +792,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
             yield break;
          }
 
-         if (text.Contains("\n"))
+         if (text.Contains('\n'))
          {
             var offset = 0;
 
@@ -842,4 +880,22 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
       shortcuts[keys] = action;
       return this;
    }
+
+   public Maybe<int> Idle
+   {
+      get;
+      set
+      {
+         field = value;
+         if (field is (true, var idleTime))
+         {
+            idle.Value.IdleThreshold = idleTime;
+            idleTimer.Value.Enabled = true;
+         }
+         else
+         {
+            idleTimer.Value.Enabled = false;
+         }
+      }
+   } = nil;
 }
