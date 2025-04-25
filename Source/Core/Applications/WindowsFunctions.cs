@@ -14,7 +14,6 @@ public static class WindowsFunctions
 
    private static bool getKeyboardState(byte[] keyStates)
    {
-      keyStates.Must().Not.BeNull().OrThrow();
       keyStates.Must().HaveLengthOf(256).OrThrow();
 
       return GetKeyboardState(keyStates);

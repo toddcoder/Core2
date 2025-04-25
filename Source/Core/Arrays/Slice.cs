@@ -4,7 +4,7 @@ using Core.Assertions;
 
 namespace Core.Arrays;
 
-public class Slice<T> : IEnumerable<T>
+public class Slice<T> : IEnumerable<T> where T : notnull
 {
    public static implicit operator T[](Slice<T> slice) => slice.Array;
 

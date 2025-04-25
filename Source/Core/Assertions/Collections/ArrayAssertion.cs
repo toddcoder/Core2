@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Core.Enumerables;
 using Core.Monads;
 using static Core.Assertions.AssertionFunctions;
 
 namespace Core.Assertions.Collections;
 
-public class ArrayAssertion<T> : IAssertion<T[]>
+public class ArrayAssertion<T> : IAssertion<T[]> where T : notnull
 {
    public static implicit operator bool(ArrayAssertion<T> assertion) => assertion.BeEquivalentToTrue();
 
@@ -15,22 +16,22 @@ public class ArrayAssertion<T> : IAssertion<T[]>
 
    public static bool operator |(ArrayAssertion<T> x, ICanBeTrue y) => or(x, y);
 
-   protected T[]? array;
+   protected T[] array;
    protected List<Constraint> constraints;
    protected bool not;
    protected string name;
    protected string image;
 
-   public ArrayAssertion(T[]? array)
+   public ArrayAssertion(T[] array)
    {
       this.array = array;
       constraints = [];
       not = false;
       name = "Array";
-      image = array is not null ? enumerableImage(array) : "";
+      image = enumerableImage(array);
    }
 
-   public T[] Array => array!;
+   public T[] Array => array;
 
    public ArrayAssertion<T> Not
    {
@@ -51,40 +52,35 @@ public class ArrayAssertion<T> : IAssertion<T[]>
 
    public ArrayAssertion<T> Equal(T[] otherArray)
    {
-      return add(() => array!.Equals(otherArray), $"$name must $not equal {enumerableImage(otherArray)}");
-   }
-
-   public ArrayAssertion<T> BeNull()
-   {
-      return add(() => array is null, "$name must $not be null");
+      return add(() => array.Equals(otherArray), $"$name must $not equal {enumerableImage(otherArray)}");
    }
 
    public ArrayAssertion<T> BeEmpty()
    {
-      return add(() => array!.Length == 0, "$name must $not be empty");
-   }
-
-   public ArrayAssertion<T> BeNullOrEmpty()
-   {
-      return add(() => array is null || array.Length == 0, "$name must $not be null or empty");
+      return add(() => array.Length == 0, "$name must $not be empty");
    }
 
    public ArrayAssertion<T> HaveIndexOf(int index)
    {
-      return add(() => index > 0 && index < array!.Length, $"$name must $not have an index of {index}");
+      return add(() => index > 0 && index < array.Length, $"$name must $not have an index of {index}");
    }
 
    public ArrayAssertion<T> HaveLengthOf(int minimumLength)
    {
-      return add(() => array!.Length >= minimumLength, $"$name must $not have a length of at least {minimumLength}");
+      return add(() => array.Length >= minimumLength, $"$name must $not have a length of at least {minimumLength}");
    }
 
    public ArrayAssertion<T> HaveLengthOfExactly(int length)
    {
-      return add(() => array!.Length == length, $"$name must $not have a length of exactly {length}");
+      return add(() => array.Length == length, $"$name must $not have a length of exactly {length}");
    }
 
-   public T[] Value => array!;
+   public ArrayAssertion<T> AtLeastOne(Func<T, bool> predicate)
+   {
+      return add(() => array.AtLeastOne(predicate), "$name must $not have at least one element that matches the predicate");
+   }
+
+   public T[] Value => array;
 
    public IEnumerable<Constraint> Constraints => constraints;
 

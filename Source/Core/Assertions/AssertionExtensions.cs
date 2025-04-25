@@ -127,9 +127,9 @@ public static class AssertionExtensions
       return (StringAssertion)assertion.Named($"String {name}");
    }
 
-   public static ArrayAssertion<T> Must<T>(this T[] value) => new(value);
+   public static ArrayAssertion<T> Must<T>(this T[] value) where T : notnull => new(value);
 
-   public static ArrayAssertion<T> Must<T>(this (T[], string) tuple)
+   public static ArrayAssertion<T> Must<T>(this (T[], string) tuple) where T : notnull
    {
       var (value, name) = tuple;
       var assertion = value.Must();

@@ -4,7 +4,6 @@ using System.Linq;
 using Core.Arrays;
 using Core.Assertions;
 using Core.Collections;
-using Core.Configurations;
 using Core.Monads;
 using Core.Numbers;
 using Core.Objects;

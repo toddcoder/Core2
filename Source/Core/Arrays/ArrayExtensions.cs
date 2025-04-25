@@ -111,7 +111,7 @@ public static class ArrayExtensions
       return result;
    }
 
-   public static Slice<T> From<T>(this T[] array, int startIndex) => new(array, startIndex);
+   public static Slice<T> From<T>(this T[] array, int startIndex) where T : notnull => new(array, startIndex);
 
    public static T[] Pick<T>(this T[] array, string columnIndexes)
    {
@@ -183,13 +183,9 @@ public static class ArrayExtensions
 
    public static T[] AllButLast<T>(this T[] array) => array.IsEmpty() ? [] : [.. array.Take(array.Length - 1)];
 
-   public static Maybe<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition, Predicate<T> stopCondition, int startIndex = 0)
+   public static Maybe<Slice<T>> Balanced<T>(this T[] array, Predicate<T> startCondition, Predicate<T> stopCondition, int startIndex = 0) where T : notnull
    {
-      if (array.IsEmpty())
-      {
-         return nil;
-      }
-      else if (startIndex >= array.Length)
+      if (array.IsEmpty() || startIndex >= array.Length)
       {
          return nil;
       }
