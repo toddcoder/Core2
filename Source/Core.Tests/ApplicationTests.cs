@@ -541,4 +541,22 @@ public class ApplicationTests
          return exception;
       }
    }
+
+   [TestMethod]
+   public void DeferenceTest()
+   {
+      using var deference = new Deference();
+      deference.Defer(() => Console.WriteLine("alfa"));
+      deference.Defer(() => Console.WriteLine("bravo"));
+      deference.Defer(() => Console.WriteLine("charlie"));
+   }
+
+   [TestMethod]
+   public void DeferenceAsyncTest()
+   {
+      using var deference = new Deference();
+      deference.DeferAsync(() => Console.WriteLine("alfa"));
+      deference.DeferAsync(() => Console.WriteLine("bravo"));
+      deference.DeferAsync(() => Console.WriteLine("charlie"));
+   }
 }
