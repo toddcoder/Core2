@@ -199,4 +199,15 @@ public abstract class Memo<TKey, TValue> : IDictionary<TKey, TValue>, IHash<TKey
          return nil;
       }
    }
+
+   public IEnumerable<(TKey, TValue)> Tuples()
+   {
+      foreach (var key in Keys)
+      {
+         if (Find(key) is (true, var value))
+         {
+            yield return (key, value);
+         }
+      }
+   }
 }
