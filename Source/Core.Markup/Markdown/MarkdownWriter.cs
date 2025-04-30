@@ -10,7 +10,7 @@ public class MarkdownWriter
 {
    protected StringWriter writer = new();
    // ReSharper disable once CollectionNeverUpdated.Global
-   protected AutoStringHash<StringHash> styles = new(_ => [], true);
+   protected Memo<string, StringHash> styles = new Memo<string, StringHash>.Function(_ => []);
 
    protected static string flattenString(string text) => text.ToNonNullString().Substitute("'/r/n' | '/r' | '/n'; f", " ");
 

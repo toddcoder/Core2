@@ -245,7 +245,7 @@ public class HtmlParser(string source, bool tidy)
       }
    }
 
-   protected Optional<string> Render(AutoStringHash<Set<StyleKeyValue>> styles, StringBuilder body)
+   protected Optional<string> Render(Hash<string, Set<StyleKeyValue>> styles, StringBuilder body)
    {
       try
       {

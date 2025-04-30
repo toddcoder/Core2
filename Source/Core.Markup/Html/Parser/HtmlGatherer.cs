@@ -8,7 +8,7 @@ namespace Core.Markup.Html.Parser;
 
 public class HtmlGatherer
 {
-   protected AutoStringHash<Set<StyleKeyValue>> styles = new(_ => [], true);
+   protected Memo<string, Set<StyleKeyValue>> styles = new Memo<string, Set<StyleKeyValue>>.Function(_ => []);
    protected StringBuilder body = new();
    protected StringBuilder gathering = new();
    protected ParsingStage stage = ParsingStage.Name;
@@ -40,7 +40,7 @@ public class HtmlGatherer
 
    public bool Escaped { get; set; }
 
-   public AutoStringHash<Set<StyleKeyValue>> Styles => styles;
+   public Memo<string, Set<StyleKeyValue>> Styles => styles;
 
    public StringBuilder Body => body;
 

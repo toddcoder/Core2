@@ -9,55 +9,6 @@ namespace Core.Tests;
 [TestClass]
 public class HashTest
 {
-   protected static void test(AutoHash<string, int> autoHash, string message, Func<string, int> newLambda)
-   {
-      string[] keys = ["alpha", "bravo", "charlie"];
-
-      Console.WriteLine("-".Repeat(80));
-      Console.WriteLine(message.LeftJustify(80, '-'));
-      foreach (var key in keys)
-      {
-         Console.WriteLine($"{key}: {autoHash[key]}");
-      }
-
-      autoHash.DefaultLambda = newLambda;
-
-      Console.WriteLine("-".Repeat(80));
-      foreach (var key in keys)
-      {
-         Console.WriteLine($"{key}: {autoHash[key]}");
-      }
-   }
-
-   protected static void test(Hash<string, int> hash, string message, int defaultValue, Func<string, int> newLambda1, bool add)
-   {
-      string[] keys = ["alpha", "bravo", "charlie"];
-
-      Console.WriteLine("-".Repeat(80));
-      Console.WriteLine(message.LeftJustify(80, '-'));
-      foreach (var key in keys)
-      {
-         Console.WriteLine($"{key}: {hash.Find(key, defaultValue, add)}");
-      }
-
-      Console.WriteLine("-".Repeat(80));
-      foreach (var key in keys)
-      {
-         Console.WriteLine($"{key}: {hash.Find(key, newLambda1, add)}");
-      }
-   }
-
-   [TestMethod]
-   public void AutoHashTest()
-   {
-      test(new AutoHash<string, int>(_ => -1), "No auto-add", _ => -2);
-      test(new AutoHash<string, int>(_ => -1, true), "Auto-add", _ => -2);
-
-      var autoHash = new AutoHash<string, int>(k => k.Length);
-      autoHash.AddKeys(["alpha", "bravo"]);
-      test(autoHash, "AddKeys", k => -k.Length);
-   }
-
    [TestMethod]
    public void StringHashTest()
    {
@@ -141,9 +92,9 @@ public class HashTest
    protected static void write(int value) => Console.WriteLine(value);
 
    [TestMethod]
-   public void MemoizationTest()
+   public void MemoTest()
    {
-      var memo = StringHash<int>.AsMemo(memoizationFunc);
+      var memo = new Memo<string, int>.Function(memoizationFunc);
       write(memo["alpha"]);
       write(memo["zulu"]);
       write(memo["charlie"]);
@@ -153,15 +104,15 @@ public class HashTest
    }
 
    [TestMethod]
-   public void MemoizeListTest()
+   public void MemoListTest()
    {
-      var memo = StringHash<List<string>>.AsMemo(_ => []);
+      var memo = new Memo<string, List<string>>.Function(_ => []);
 
       memo["alpha"].AddRange(["able", "apple"]);
       memo["bravo"].Add("baker");
       _ = memo["charlie"];
 
-      foreach (var (key, list) in memo.Hash)
+      foreach (var (key, list) in memo)
       {
          writeList(key, list);
       }
@@ -172,16 +123,16 @@ public class HashTest
    }
 
    [TestMethod]
-   public void MemoizeCountTest()
+   public void MemoCountTest()
    {
-      var memo = StringHash<int>.AsMemo(0);
+      var memo = new Memo<string, int>.Value(0);
       string[] keys = ["alpha", "bravo", "charlie", "bravo", "alpha", "alpha", "delta", "delta"];
       foreach (var key in keys)
       {
          memo[key]++;
       }
 
-      foreach (var (key, count) in memo.Hash)
+      foreach (var (key, count) in memo)
       {
          writeCount(key, count);
       }
@@ -194,7 +145,10 @@ public class HashTest
    [TestMethod]
    public void MemoInitializationTest()
    {
-      var memo = StringHash.AsMemo(k => k.Reverse(), ("alpha", "A"));
+      var memo = new Memo<string, string>.Function(k => k.Reverse())
+      {
+         ["alpha"] = "A"
+      };
       writeValue("alpha", memo["alpha"]);
       writeValue("bravo", memo["bravo"]);
       memo["charlie"] = "C";
@@ -203,5 +157,16 @@ public class HashTest
       return;
 
       void writeValue(string key, string value) => Console.WriteLine($"{key}: ({value})");
+   }
+
+   [TestMethod]
+   public void MemoFunction2Test()
+   {
+      var memo = new Memo<string, int>.Function<int>((k, i) => k.Length * i, 10);
+      Console.WriteLine(memo["alfa"]);
+      Console.WriteLine(memo["bravo"]);
+      Console.WriteLine(memo["charlie"]);
+      memo.Argument = 20;
+      Console.WriteLine(memo["delta"]);
    }
 }

@@ -12,8 +12,8 @@ public class Document : BlockList
    protected Lcid lcid;
    protected HeaderFooter header;
    protected HeaderFooter footer;
-   protected StringHash<int> fontTable;
-   protected Hash<Color, int> colorTable;
+   protected Memo<string, int> fontTable;
+   protected Memo<Color, int> colorTable;
 
    public Document(PaperSize paperSize = PaperSize.Letter, PaperOrientation paperOrientation = PaperOrientation.Portrait, Lcid lcid = Lcid.English)
    {
@@ -40,8 +40,10 @@ public class Document : BlockList
       header = new HeaderFooter(HeaderFooterType.Header);
       footer = new HeaderFooter(HeaderFooterType.Footer);
 
-      fontTable = new StringHash<int>() + (DefaultValue.FONT, 0);
-      colorTable = new Hash<Color, int>() + (new Color(), 0);
+      fontTable = new Memo<string, int>.Function(_ => fontTable!.Count);
+      fontTable[DefaultValue.FONT] = 0;
+      colorTable = new Memo<Color, int>.Function(_ => colorTable!.Count);
+      colorTable[new Color()] = 0;
       _ = Color("blue");
    }
 
@@ -63,13 +65,13 @@ public class Document : BlockList
 
    public FontDescriptor Font(string fontName)
    {
-      var index = fontTable.Memoize(fontName, _ => fontTable.Count);
+      var index = fontTable[fontName];
       return new FontDescriptor(index);
    }
 
    public ColorDescriptor Color(Color color)
    {
-      var index = colorTable.Memoize(color, _ => colorTable.Count);
+      var index = colorTable[color];
       return new ColorDescriptor(index);
    }
 

@@ -17,11 +17,16 @@ namespace Core.Assertions;
 
 public static class AssertionFunctions
 {
-   private static readonly AutoHash<string, string> nameCache;
+   private static readonly Memo<string, string> nameCache;
    private static readonly Hash<string, object> valueCache;
 
    static AssertionFunctions()
    {
+      nameCache = new Memo<string, string>.Function(getName);
+      valueCache = [];
+
+      return;
+
       static string getName(string expressionText)
       {
          var name = expressionText;
@@ -33,9 +38,6 @@ public static class AssertionFunctions
 
          return name;
       }
-
-      nameCache = new AutoHash<string, string>(getName, true);
-      valueCache = [];
    }
 
    public static TException getException<TException>(params object[] args) where TException : Exception

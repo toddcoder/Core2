@@ -1364,7 +1364,7 @@ public static class EnumerableExtensions
    {
       var comparer = Comparer<T>.Create((x, y) => compareFunc(x, y));
       StringSet keySet = [.. keys];
-      var matching = new AutoStringHash<SortedSet<T>>(_ => new SortedSet<T>(comparer), true);
+      Memo<string, SortedSet<T>> matching = new Memo<string, SortedSet<T>>.Function(_ => []);
       var remainder = new SortedSet<T>(comparer);
 
       foreach (var item in enumerable)
@@ -1380,9 +1380,10 @@ public static class EnumerableExtensions
          }
       }
 
+      Hash<string, SortedSet<T>> matchingHash = matching;
       foreach (var key in keySet)
       {
-         if (matching.Maybe[key] is (true, var list))
+         if (matchingHash.Maybe[key] is (true, var list))
          {
             foreach (var item in list)
             {
@@ -1403,9 +1404,9 @@ public static class EnumerableExtensions
       return enumerable.SortByList(keyMap, compareFunc, [.. keys]);
    }
 
-   private static AutoHash<T, int> getPaired<T>(IEnumerable<T> orderItems, int defaultValue) where T : notnull
+   private static Memo<T, int> getPaired<T>(IEnumerable<T> orderItems, int defaultValue) where T : notnull
    {
-      return orderItems.Select((v, i) => (value: v, index: i)).ToHash(i => i.value, i => i.index).ToAutoHash(defaultValue);
+      return orderItems.Select((v, i) => (value: v, index: i)).ToHash(i => i.value, i => i.index).Memo(defaultValue);
    }
 
    public static IOrderedEnumerable<T> OrderBy<T>(this IEnumerable<T> enumerable, IEnumerable<T> orderItems) where T : notnull

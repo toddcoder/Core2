@@ -8,15 +8,12 @@ namespace Core.Json;
 public class JsonLogger : Logger
 {
    protected JsonWriter jsonWriter;
-   // ReSharper disable once CollectionNeverUpdated.Global
-   protected AutoStringHash<int> counts;
+   protected Memo<string, int> counts = new Memo<string, int>.Value(0);
 
    public JsonLogger()
    {
       jsonWriter = new JsonWriter();
       jsonWriter.BeginObject();
-
-      counts = new AutoStringHash<int>(_ => 0, true);
    }
 
    public override void WriteRaw(char prefix, string message)

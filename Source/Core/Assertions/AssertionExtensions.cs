@@ -276,12 +276,14 @@ public static class AssertionExtensions
       return (DictionaryAssertion<TKey, TValue>)assertion.Named($"Dictionary {name}");
    }
 
+   [Obsolete("Must IHash DictionaryAssertion")]
    public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this AutoHash<TKey, TValue> value) where TKey : notnull where TValue : notnull
    {
       Dictionary<TKey, TValue> hash = value.GetHash();
       return hash.Must();
    }
 
+   [Obsolete("Must IHash DictionaryAssertion")]
    public static DictionaryAssertion<TKey, TValue> Must<TKey, TValue>(this (AutoHash<TKey, TValue>, string) tuple) where TKey : notnull
       where TValue : notnull
    {

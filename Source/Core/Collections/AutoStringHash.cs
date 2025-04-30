@@ -4,6 +4,7 @@ using static Core.Collections.CollectionFunctions;
 
 namespace Core.Collections;
 
+[Obsolete("Use memos")]
 public class AutoStringHash<TValue> : AutoHash<string, TValue> where TValue : notnull
 {
    public static implicit operator StringHash<TValue>(AutoStringHash<TValue> autoStringHash)
@@ -91,6 +92,7 @@ public class AutoStringHash<TValue> : AutoHash<string, TValue> where TValue : no
    }
 }
 
+[Obsolete("Use memo")]
 public class AutoStringHash : AutoStringHash<string>
 {
    public static implicit operator StringHash(AutoStringHash autoStringHash)

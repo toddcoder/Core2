@@ -8,25 +8,24 @@ namespace Core.Applications.Messaging;
 
 public class Publisher<TPayload> where TPayload : notnull
 {
-   protected static StringHash<Hash<Guid, Subscriber<TPayload>>> subscribers = [];
+   protected static Memo<string, Hash<Guid, Subscriber<TPayload>>> subscribers = new Memo<string, Hash<Guid, Subscriber<TPayload>>>.Function(_ => []);
    protected static MaybeQueue<(string name, Subscriber<TPayload>subscriber)> pendingSubscribers = [];
 
    public static void AddSubscriber(string name, Subscriber<TPayload> subscriber)
    {
-      var hash = subscribers.Memoize(name, _ => new Hash<Guid, Subscriber<TPayload>>());
-      hash[subscriber.Id] = subscriber;
+      subscribers[name][subscriber.Id] = subscriber;
    }
 
    public static void QueueSubscriber(string name, Subscriber<TPayload> subscriber) => pendingSubscribers.Enqueue((name, subscriber));
 
    public static void RemoveSubscriber(string name, Subscriber<TPayload> subscriber)
    {
-      if (subscribers.Maybe[name] is (true, var hash))
+      if (subscribers.Find(name) is (true, var hash))
       {
          hash.Maybe[subscriber.Id] = nil;
          if (hash.Count == 0)
          {
-            subscribers.Maybe[name] = nil;
+            subscribers.Remove(name);
          }
       }
    }
@@ -119,25 +118,25 @@ public class Publisher<TPayload> where TPayload : notnull
 
 public class Publisher<TTopic, TPayload> where TTopic : notnull where TPayload : notnull
 {
-   protected static StringHash<Hash<Guid, Subscriber<TTopic, TPayload>>> subscribers = [];
+   protected static Memo<string, Hash<Guid, Subscriber<TTopic, TPayload>>> subscribers =
+      new Memo<string, Hash<Guid, Subscriber<TTopic, TPayload>>>.Function(_ => []);
    protected static MaybeQueue<(string name, Subscriber<TTopic, TPayload> subscriber)> pendingSubscribers = [];
 
    public static void AddSubscriber(string name, Subscriber<TTopic, TPayload> subscriber)
    {
-      var hash = subscribers.Memoize(name, _ => new Hash<Guid, Subscriber<TTopic, TPayload>>());
-      hash[subscriber.Id] = subscriber;
+      subscribers[name][subscriber.Id] = subscriber;
    }
 
    public static void QueueSubscriber(string name, Subscriber<TTopic, TPayload> subscriber) => pendingSubscribers.Enqueue((name, subscriber));
 
    public static void RemoveSubscriber(string name, Subscriber<TTopic, TPayload> subscriber)
    {
-      if (subscribers.Maybe[name] is (true, var hash))
+      if (subscribers.Find(name) is (true, var hash))
       {
          hash.Maybe[subscriber.Id] = nil;
          if (hash.Count == 0)
          {
-            subscribers.Maybe[name] = nil;
+            subscribers.Remove(name);
          }
       }
    }
@@ -230,25 +229,24 @@ public class Publisher<TTopic, TPayload> where TTopic : notnull where TPayload :
 
 public class Publisher
 {
-   protected static StringHash<Hash<Guid, Subscriber>> subscribers = [];
+   protected static Memo<string, Hash<Guid, Subscriber>> subscribers = new Memo<string, Hash<Guid, Subscriber>>.Function(_ => []);
    protected static MaybeQueue<(string name, Subscriber subscriber)> pendingSubscribers = [];
 
    public static void AddSubscriber(string name, Subscriber subscriber)
    {
-      var hash = subscribers.Memoize(name, _ => new Hash<Guid, Subscriber>());
-      hash[subscriber.Id] = subscriber;
+      subscribers[name][subscriber.Id] = subscriber;
    }
 
    public static void QueueSubscriber(string name, Subscriber subscriber) => pendingSubscribers.Enqueue((name, subscriber));
 
    public static void RemoveSubscriber(string name, Subscriber subscriber)
    {
-      if (subscribers.Maybe[name] is (true, var hash))
+      if (subscribers.Find(name) is (true, var hash))
       {
          hash.Maybe[subscriber.Id] = nil;
          if (hash.Count == 0)
          {
-            subscribers.Maybe[name] = nil;
+            subscribers.Remove(name);
          }
       }
    }

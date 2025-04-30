@@ -62,11 +62,6 @@ public class HashMaybe<TKey, TValue> where TKey : notnull where TValue : notnull
       }
    }
 
-   public Maybe<TValue> Memoize(TKey key, Func<TKey, Maybe<TValue>> defaultValue, bool alwaysUseDefaultValue = false)
-   {
-      return alwaysUseDefaultValue ? defaultValue(key) : Find(key, defaultValue, true);
-   }
-
    public Maybe<TValue> GetValue(TKey key) => hash.ContainsKey(key) ? this[key] : nil;
 
    public Maybe<(TValue, TValue)> ValueOf(TKey key1, TKey key2)

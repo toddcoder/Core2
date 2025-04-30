@@ -9,14 +9,14 @@ namespace Core.Applications.Loggers;
 public class MultiLogger
 {
    // ReSharper disable once CollectionNeverUpdated.Global
-   protected AutoStringHash<Logger> loggers;
+   protected Memo<string, Logger> loggers;
    protected StringSet keys;
    protected Maybe<string> _key;
 
    public MultiLogger(int indentation = 2)
    {
       keys = [];
-      loggers = new AutoStringHash<Logger>(key =>
+      loggers = new Memo<string, Logger>.Function(key =>
       {
          keys.Add(key);
          return new Logger(indentation) { Key = key };
@@ -36,8 +36,7 @@ public class MultiLogger
    public override string ToString()
    {
       using var writer = new StringWriter();
-      var loggersMaybe = loggers.Maybe;
-      foreach (var logger in keys.Select(key => loggersMaybe[key]).OnlyTrue())
+      foreach (var logger in keys.Select(key => loggers[key]))
       {
          var key = logger.Key | "";
          var minDateTime = logger.MinDateTime.Map(dt => $"{dt:O} ") | "";

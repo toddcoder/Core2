@@ -35,6 +35,13 @@ public class PatternTests
       matcherTest("/('sql'); f");
    }
 
+   [TestMethod]
+   public void DualMatcherTest()
+   {
+      matcherTest("(sql); u");
+      matcherTest("/('sql'); f");
+   }
+
    protected static void matchOnlySubstitutions(Pattern pattern)
    {
       var result = "This is the full sentence with sql1 in it".Substitute(pattern, "sql-$1");

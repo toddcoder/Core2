@@ -5,6 +5,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
 
+[Obsolete("Use memos")]
 public class AutoHash<TKey, TValue> : Hash<TKey, TValue> where TKey : notnull where TValue : notnull
 {
    public static AutoHash<TKey, TValue> operator +(AutoHash<TKey, TValue> hash, (TKey key, TValue value) tuple)

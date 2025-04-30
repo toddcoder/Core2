@@ -15,7 +15,7 @@ public class UiActionScroller
    protected int currentLine;
    protected int lastLine;
    protected string[] lines;
-   protected StringHash<Size> sizes;
+   protected Memo<string, Size> sizes;
 
    public UiActionScroller(Font font, Rectangle clientRectangle, Color foreColor, Color backColor)
    {
@@ -30,10 +30,10 @@ public class UiActionScroller
       lastLine = lineCount - 1;
       currentLine = 0;
       lines = [.. 0.Until(lineCount).Select(_ => "")];
-      sizes = [];
+      sizes = new Memo<string, Size>.Function(t => TextRenderer.MeasureText(t, this.font));
    }
 
-   protected Size lineSize(string text) => sizes.Memoize(text, t => TextRenderer.MeasureText(t, font));
+   protected Size lineSize(string text) => sizes[text];
 
    protected void advance()
    {

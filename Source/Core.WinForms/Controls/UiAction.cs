@@ -148,9 +148,9 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    protected Font italicFont = new("Consolas", 12, FontStyle.Italic);
    protected Font boldFont = new("Consolas", 12, FontStyle.Bold);
    protected Font italicBoldFont = new("Consolas", 12, FontStyle.Italic | FontStyle.Bold);
-   protected AutoHash<UiActionType, Color> foreColors = new(mlt => globalForeColors[mlt]);
-   protected AutoHash<UiActionType, Color> backColors = new(mlt => globalBackColors[mlt]);
-   protected AutoHash<UiActionType, MessageStyle> styles = new(mlt => globalStyles[mlt]);
+   protected Memo<UiActionType, Color> foreColors = new Memo<UiActionType, Color>.Function(mlt => globalForeColors[mlt]);
+   protected Memo<UiActionType, Color> backColors = new Memo<UiActionType, Color>.Function(mlt => globalBackColors[mlt]);
+   protected Memo<UiActionType, MessageStyle> styles = new Memo<UiActionType, MessageStyle>.Function(mlt => globalStyles[mlt]);
    protected string text = string.Empty;
    protected UiActionType type = UiActionType.Uninitialized;
    protected int value;
@@ -934,11 +934,11 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
 
    public bool Is3D { get; set; }
 
-   public AutoHash<UiActionType, Color> ForeColors => foreColors;
+   public Memo<UiActionType, Color> ForeColors => foreColors;
 
-   public AutoHash<UiActionType, Color> BackColors => backColors;
+   public Memo<UiActionType, Color> BackColors => backColors;
 
-   public AutoHash<UiActionType, MessageStyle> Styles => styles;
+   public Memo<UiActionType, MessageStyle> Styles => styles;
 
    public Image Image
    {
@@ -1958,8 +1958,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
          DividerValidation.Error error => error.Exception.Message,
          DividerValidation.Failure failure => failure.Message,
          DividerValidation.Invalid invalid => invalid.Message,
-         DividerValidation.None => nil,
-         DividerValidation.Valid => nil,
          _ => nil
       };
    }
@@ -2143,7 +2141,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
                CardinalAlignment.South => new Point(x.Value, bottom.Value),
                CardinalAlignment.SouthWest => new Point(2, bottom.Value),
                CardinalAlignment.West => new Point(2, y.Value),
-               CardinalAlignment.NorthWest => new Point(2, 2),
                _ => new Point(2, 2)
             };
             pevent.Graphics.DrawImage(image, location);

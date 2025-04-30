@@ -79,11 +79,17 @@ public class Formatter : IHash<string, string>
       }
    }
 
-   protected AutoStringHash names;
+   protected Memo<string, string> names;
 
-   public Formatter() => names = new AutoStringHash(_ => string.Empty);
+   public Formatter()
+   {
+      names = new Memo<string, string>.Function(_ => "");
+   }
 
-   public Formatter(Dictionary<string, string> initializers) => names = new AutoStringHash(initializers);
+   public Formatter(Dictionary<string, string> initializers)
+   {
+      names = new Memo<string, string>.Function(_ => "", initializers);
+   }
 
    public Formatter(Formatter formatter) : this()
    {
@@ -101,7 +107,7 @@ public class Formatter : IHash<string, string>
 
    public bool ContainsKey(string key) => names.ContainsKey(key);
 
-   public Hash<string, string> GetHash() => names;
+   public Hash<string, string> GetHash() => names.GetHash();
 
    public HashInterfaceMaybe<string, string> Items => new(this);
 
@@ -109,7 +115,7 @@ public class Formatter : IHash<string, string>
 
    public string[] Values => [.. names.Select(item => item.Value)];
 
-   public AutoStringHash Replacements => names;
+   public Memo<string, string> Replacements => names;
 
    public virtual string Format(string source)
    {
@@ -152,24 +158,17 @@ public class Formatter : IHash<string, string>
 
    protected virtual string getText(string name, string format)
    {
-      var _text = names.Maybe[name];
-      if (_text is (true, var text))
+      var text = names[name];
+      if (format.IsNotEmpty())
       {
-         if (format.IsNotEmpty())
+         var _object = text.ToObject();
+         if (_object is (true, var @object))
          {
-            var _object = text.ToObject();
-            if (_object is (true, var @object))
-            {
-               text = string.Format($"{{0{format}}}", @object);
-            }
+            text = string.Format($"{{0{format}}}", @object);
          }
+      }
 
-         return text;
-      }
-      else
-      {
-         return string.Empty;
-      }
+      return text;
    }
 
    public void Merge(Formatter formatter, bool overwriteOriginalValues)

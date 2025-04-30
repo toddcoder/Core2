@@ -15,28 +15,6 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
       return hash;
    }
 
-   public static MemoFunction<TKey, TValue> AsMemo(Func<TKey, TValue> defaultValue, params IEnumerable<(TKey, TValue)> initializer)
-   {
-      Hash<TKey, TValue> hash = [];
-      foreach (var (key, value) in initializer)
-      {
-         hash[key] = value;
-      }
-
-      return hash.Memo(defaultValue);
-   }
-
-   public static MemoValue<TKey, TValue> AsMemo(TValue defaultValue, params IEnumerable<(TKey, TValue)> initializer)
-   {
-      Hash<TKey, TValue> hash = [];
-      foreach (var (key, value) in initializer)
-      {
-         hash[key] = value;
-      }
-
-      return hash.Memo(defaultValue);
-   }
-
    protected ReaderWriterLockSlim locker = new(LockRecursionPolicy.SupportsRecursion);
 
    public MessageEvent<HashArgs<TKey, TValue>> Updated = new();
@@ -217,11 +195,13 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
       }
    }
 
+   [Obsolete("Use Memo instead.")]
    public TValue Memoize(TKey key, Func<TKey, TValue> defaultValue, bool alwaysUseDefaultValue = false)
    {
       return alwaysUseDefaultValue ? defaultValue(key) : Find(key, defaultValue, true);
    }
 
+   [Obsolete("Use Memo instead.")]
    public TValue Memoize(TKey key, TValue value, bool alwaysUseDefaultValue = false)
    {
       return alwaysUseDefaultValue ? value : Find(key, value, true);
@@ -337,9 +317,9 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
 
    public HashMaybe<TKey, TValue> Maybe => new(this);
 
-   public MemoFunction<TKey, TValue> Memo(Func<TKey, TValue> defaultValue) => new(this, defaultValue);
+   public Memo<TKey, TValue> Memo(Func<TKey, TValue> defaultValue) => new Memo<TKey, TValue>.Function(this, defaultValue);
 
-   public MemoValue<TKey, TValue> Memo(TValue defaultValue) => new(this, defaultValue);
+   public Memo<TKey, TValue> Memo(TValue defaultValue) => new Memo<TKey, TValue>.Value(this, defaultValue);
 
    public void AddKeys(IEnumerable<TKey> keys, TValue value)
    {

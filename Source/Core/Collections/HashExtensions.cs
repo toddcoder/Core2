@@ -49,34 +49,40 @@ public static class HashExtensions
       }
    }
 
+   [Obsolete("Use memos")]
    public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Hash<TKey, TValue> hash, TValue defaultValue) where TKey : notnull
       where TValue : notnull
    {
       return new AutoHash<TKey, TValue>(hash, hash.Comparer) { DefaultValue = defaultValue };
    }
 
+   [Obsolete("Use memos")]
    public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this StringHash<TValue> hash, TValue defaultValue) where TValue : notnull
    {
       return new AutoStringHash<TValue>(hash) { DefaultValue = defaultValue };
    }
 
+   [Obsolete("Use memos")]
    public static AutoStringHash ToAutoStringHash(this StringHash hash, string defaultValue)
    {
       return new AutoStringHash(hash) { DefaultValue = defaultValue };
    }
 
+   [Obsolete("Use memos")]
    public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Hash<TKey, TValue> hash,
       Func<TKey, TValue> defaultLambda) where TKey : notnull where TValue : notnull
    {
       return new AutoHash<TKey, TValue>(hash, hash.Comparer) { DefaultLambda = defaultLambda };
    }
 
+   [Obsolete("Use memos")]
    public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this StringHash<TValue> hash, Func<string, TValue> defaultLambda)
       where TValue : notnull
    {
       return new AutoStringHash<TValue>(hash) { DefaultLambda = defaultLambda };
    }
 
+   [Obsolete("Use memos")]
    public static AutoStringHash ToAutoStringHash(this StringHash hash, Func<string, string> defaultLambda)
    {
       return new AutoStringHash(hash) { DefaultLambda = defaultLambda };
@@ -396,6 +402,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this IEnumerable<(TKey, TValue)> enumerable, Func<TKey, TValue> defaultLambda,
       bool autoAddDefault = false) where TKey : notnull where TValue : notnull
    {
@@ -408,6 +415,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Span<(TKey, TValue)> span, Func<TKey, TValue> defaultLambda,
       bool autoAddDefault = false) where TKey : notnull where TValue : notnull
    {
@@ -420,6 +428,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this ReadOnlySpan<(TKey, TValue)> span, Func<TKey, TValue> defaultLambda,
       bool autoAddDefault = false) where TKey : notnull where TValue : notnull
    {
@@ -432,6 +441,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this IEnumerable<(TKey, TValue)> enumerable, TValue defaultValue,
       bool autoAddDefault = false) where TKey : notnull where TValue : notnull
    {
@@ -444,6 +454,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this Span<(TKey, TValue)> span, TValue defaultValue,
       bool autoAddDefault = false) where TKey : notnull where TValue : notnull
    {
@@ -456,6 +467,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static AutoHash<TKey, TValue> ToAutoHash<TKey, TValue>(this ReadOnlySpan<(TKey, TValue)> span, TValue defaultValue,
       bool autoAddDefault = false) where TKey : notnull where TValue : notnull
    {
@@ -501,6 +513,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static StringHash ToAutoStringHash(this IEnumerable<(string, string)> enumerable, Func<string, string> defaultLambda,
       bool autoAddDefault = false)
    {
@@ -513,6 +526,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static StringHash ToAutoStringHash(this Span<(string, string)> span, Func<string, string> defaultLambda,
       bool autoAddDefault = false)
    {
@@ -525,6 +539,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static StringHash ToAutoStringHash(this ReadOnlySpan<(string, string)> span, Func<string, string> defaultLambda,
       bool autoAddDefault = false)
    {
@@ -537,6 +552,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static StringHash ToAutoStringHash(this IEnumerable<(string, string)> enumerable, string defaultValue, bool autoAddDefault = false)
    {
       var result = new AutoStringHash(defaultValue, autoAddDefault);
@@ -548,6 +564,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static StringHash ToAutoStringHash(this Span<(string, string)> span, string defaultValue, bool autoAddDefault = false)
    {
       var result = new AutoStringHash(defaultValue, autoAddDefault);
@@ -559,6 +576,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static StringHash ToAutoStringHash(this ReadOnlySpan<(string, string)> span, string defaultValue, bool autoAddDefault = false)
    {
       var result = new AutoStringHash(defaultValue, autoAddDefault);
@@ -603,6 +621,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this IEnumerable<(string, TValue)> enumerable, Func<string, TValue> defaultLambda,
       bool autoAddDefault = false) where TValue : notnull
    {
@@ -615,6 +634,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this Span<(string, TValue)> span, Func<string, TValue> defaultLambda,
       bool autoAddDefault = false) where TValue : notnull
    {
@@ -627,6 +647,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this ReadOnlySpan<(string, TValue)> span, Func<string, TValue> defaultLambda,
       bool autoAddDefault = false) where TValue : notnull
    {
@@ -639,6 +660,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this IEnumerable<(string, TValue)> enumerable, TValue defaultValue,
       bool autoAddDefault = false) where TValue : notnull
    {
@@ -651,6 +673,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this Span<(string, TValue)> span, TValue defaultValue,
       bool autoAddDefault = false) where TValue : notnull
    {
@@ -663,6 +686,7 @@ public static class HashExtensions
       return result;
    }
 
+   [Obsolete("Use memos")]
    public static AutoStringHash<TValue> ToAutoStringHash<TValue>(this ReadOnlySpan<(string, TValue)> span, TValue defaultValue,
       bool autoAddDefault = false) where TValue : notnull
    {
@@ -1303,16 +1327,16 @@ public static class HashExtensions
    {
       try
       {
-         var hash = new AutoHash<TKey, List<TValue>>(_ => [], true);
+         Memo<TKey, List<TValue>> memo = new Memo<TKey, List<TValue>>.Function(_ => []);
          foreach (var item in enumerable)
          {
             var key = keyFunc(item);
             var value = valueFunc(item);
-            hash[key].Add(value);
+            memo[key].Add(value);
          }
 
          Hash<TKey, TValue[]> result = [];
-         foreach (var (key, value) in hash)
+         foreach (var (key, value) in memo)
          {
             result[key] = [.. value];
          }
@@ -1330,16 +1354,16 @@ public static class HashExtensions
    {
       try
       {
-         var hash = new AutoHash<TKey, List<TValue>>(_ => [], true);
+         var memo = new Memo<TKey, List<TValue>>.Function(_ => []);
          foreach (var item in span)
          {
             var key = keyFunc(item);
             var value = valueFunc(item);
-            hash[key].Add(value);
+            memo[key].Add(value);
          }
 
          Hash<TKey, TValue[]> result = [];
-         foreach (var (key, value) in hash)
+         foreach (var (key, value) in memo)
          {
             result[key] = [.. value];
          }
@@ -1357,16 +1381,16 @@ public static class HashExtensions
    {
       try
       {
-         var hash = new AutoHash<TKey, List<TValue>>(_ => [], true);
+         var memo = new Memo<TKey, List<TValue>>.Function(_ => []);
          foreach (var item in span)
          {
             var key = keyFunc(item);
             var value = valueFunc(item);
-            hash[key].Add(value);
+            memo[key].Add(value);
          }
 
          Hash<TKey, TValue[]> result = [];
-         foreach (var (key, value) in hash)
+         foreach (var (key, value) in memo)
          {
             result[key] = [.. value];
          }
@@ -1383,15 +1407,15 @@ public static class HashExtensions
    {
       try
       {
-         var hash = new AutoHash<TKey, List<T>>(_ => [], true);
+         var memo = new Memo<TKey, List<T>>.Function(_ => []);
          foreach (var item in enumerable)
          {
             var key = keyFunc(item);
-            hash[key].Add(item);
+            memo[key].Add(item);
          }
 
          Hash<TKey, T[]> result = [];
-         foreach (var (key, value) in hash)
+         foreach (var (key, value) in memo)
          {
             result[key] = [.. value];
          }
@@ -1408,15 +1432,15 @@ public static class HashExtensions
    {
       try
       {
-         var hash = new AutoHash<TKey, List<T>>(_ => [], true);
+         var memo = new Memo<TKey, List<T>>.Function(_ => []);
          foreach (var item in span)
          {
             var key = keyFunc(item);
-            hash[key].Add(item);
+            memo[key].Add(item);
          }
 
          Hash<TKey, T[]> result = [];
-         foreach (var (key, value) in hash)
+         foreach (var (key, value) in memo)
          {
             result[key] = [.. value];
          }
@@ -1433,15 +1457,15 @@ public static class HashExtensions
    {
       try
       {
-         var hash = new AutoHash<TKey, List<T>>(_ => [], true);
+         var memo = new Memo<TKey, List<T>>.Function(_ => []);
          foreach (var item in span)
          {
             var key = keyFunc(item);
-            hash[key].Add(item);
+            memo[key].Add(item);
          }
 
          Hash<TKey, T[]> result = [];
-         foreach (var (key, value) in hash)
+         foreach (var (key, value) in memo)
          {
             result[key] = [.. value];
          }

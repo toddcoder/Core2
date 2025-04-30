@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Core.Collections;
 using Core.Matching.Parsers;
 using Core.Monads;
 using Core.Numbers;
-using Core.Objects;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 using static Core.Objects.GetHashCodeGenerator;
@@ -86,18 +84,18 @@ public partial class Pattern : IEquatable<Pattern>
 
    public static Maybe<MatchResult> operator &(Pattern pattern, string input) => input.Matches(pattern);
 
-   protected static StringHash<string> friendlyPatterns;
-   protected static StringHash<RRegex> compiledRegex;
+   protected static Memo<string, string> friendlyPatterns;
+   protected static Memo<string, RRegex>.Function<RegexOptions> compiledRegex;
 
    static Pattern()
    {
-      friendlyPatterns = [];
-      compiledRegex = [];
-      compiledRegex = compiledRegex.CaseAware();
+      friendlyPatterns = new Memo<string, string>.Function(s => new Parser().Parse(s));
+      compiledRegex = new Memo<string, RRegex>.Function<RegexOptions>((regex, options) => new RRegex(regex, options), RegexOptions.None);
+      //compiledRegex = compiledRegex.CaseAware();
       isFriendly = true;
    }
 
-   internal static string getRegex(string source) => friendlyPatterns.Find(source, _ => new Parser().Parse(source), true);
+   internal static string getRegex(string source) => friendlyPatterns[source];
 
    public static bool IsFriendly
    {
@@ -126,7 +124,11 @@ public partial class Pattern : IEquatable<Pattern>
 
    public Pattern Unfriend() => new(regex, options, false);
 
-   protected RRegex getRegex() => compiledRegex.Memoize(regex, r => new RRegex(r, options | RegexOptions.Compiled));
+   protected RRegex getRegex()
+   {
+      compiledRegex.Argument = options | RegexOptions.Compiled;
+      return compiledRegex[regex];
+   }
 
    public Optional<MatchResult> MatchedBy(string input)
    {
