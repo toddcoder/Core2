@@ -51,5 +51,6 @@ public enum Emoji
    Down,
    Shift,
    Bug,
-   Feature
+   Feature,
+   Open
 }
