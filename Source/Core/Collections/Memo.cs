@@ -200,13 +200,16 @@ public abstract class Memo<TKey, TValue> : IDictionary<TKey, TValue>, IHash<TKey
       }
    }
 
-   public IEnumerable<(TKey, TValue)> Tuples()
+   public IEnumerable<(TKey key, TValue value)> Tuples
    {
-      foreach (var key in Keys)
+      get
       {
-         if (Find(key) is (true, var value))
+         foreach (var key in Keys)
          {
-            yield return (key, value);
+            if (Find(key) is (true, var value))
+            {
+               yield return (key, value);
+            }
          }
       }
    }
