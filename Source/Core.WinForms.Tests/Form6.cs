@@ -116,6 +116,7 @@ public partial class Form6 : Form
 
       uiApplication.StretchImage = true;
       uiApplication.Image = image;
+      uiApplication.Message("application");
       uiApplication.Refresh();
 
       pictureBox.Image = image;

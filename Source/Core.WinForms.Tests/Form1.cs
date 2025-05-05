@@ -90,6 +90,11 @@ public partial class Form1 : Form
          var form12 = new Form12();
          form12.Show();
       }) + Keys.F12).Menu();
+      (menus + "Form13" + (() =>
+      {
+         var form13 = new Form13();
+         form13.Show();
+      })).Menu();
       (menus + "JSON" + retrieveJson + Keys.Control + Keys.J).Menu();
       (menus + "Start Flashing" + startFlashing + Keys.Control + Keys.F).Menu();
       (menus + "Stop Flashing" + stopFlashing + Keys.Control + Keys.Alt + Keys.F).Menu();
