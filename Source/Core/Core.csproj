@@ -66,10 +66,7 @@
     <None Include="Core.snk" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MSTest.TestFramework" Version="3.7.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.8.3" />
     <PackageReference Include="System.Data.SqlClient" Version="4.9.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="9.0.1" />
-    <PackageReference Include="System.Data.OleDb" Version="9.0.1" />
-    <PackageReference Include="System.Resources.Extensions" Version="9.0.1" />
   </ItemGroup>
 </Project>

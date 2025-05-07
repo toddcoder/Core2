@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Core.Monads;
+using Core.Numbers;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
 using RRegex = System.Text.RegularExpressions.Regex;
@@ -245,6 +246,18 @@ public static class MatchingExtensions
          {
             yield return new Slice(remainder, index, remainder.Length);
          }
+      }
+   }
+
+   public static Maybe<string> ExtractGroup(this string input, Pattern pattern, int groupIndex = 1)
+   {
+      if (input.Matches(pattern) is (true, var result) && groupIndex.Between(0).Until(result.GroupCount(0)))
+      {
+         return result.Groups(0)[groupIndex];
+      }
+      else
+      {
+         return nil;
       }
    }
 }

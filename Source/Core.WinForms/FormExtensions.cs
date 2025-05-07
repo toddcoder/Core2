@@ -72,4 +72,9 @@ public static class FormExtensions
    {
       form.FormClosed += (_, _) => subscriber.Unsubscribe();
    }
+
+   public static void StopListeningOnClose(this XSubscriber subscriber, Form form)
+   {
+      form.FormClosed += (_, _) => subscriber.StopListening();
+   }
 }

@@ -6,7 +6,8 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Data.Odbc" Version="9.0.1" />
+    <PackageReference Include="System.Data.Odbc" Version="9.0.4" />
+    <PackageReference Include="System.Data.OleDb" Version="9.0.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj" />

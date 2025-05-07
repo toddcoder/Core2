@@ -209,10 +209,7 @@ public class EnumerableTests
    {
       LazyList<int> list =
       [
-         .. (int[]) [1, 2, 3, 4, 5],
-         111,
-         153,
-         .. (int[]) [555, 111, 222]
+         1, 2, 3, 4, 5, 111, 153, 555, 111, 222
       ];
       foreach (var item in list)
       {
@@ -229,6 +226,29 @@ public class EnumerableTests
       foreach (var paired in left.Merge(right, (l, r) => l + r))
       {
          Console.WriteLine(paired);
+      }
+   }
+
+   [TestMethod]
+   public void MaybeEnumerableTest()
+   {
+      var enumerable = new MaybeEnumerable<int>([1, 2, 3, 4, 5]);
+      while (enumerable.Next() is (true, var item1))
+      {
+         Console.WriteLine(item1);
+      }
+
+      Console.WriteLine("---");
+
+      enumerable.Reset();
+      if (enumerable.Next() is (true, var item2))
+      {
+         Console.WriteLine(item2);
+      }
+
+      foreach (var number in enumerable.Rest())
+      {
+         Console.WriteLine(number);
       }
    }
 }

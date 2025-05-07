@@ -1,5 +1,7 @@
 ﻿using Core.Applications.Messaging;
+using Core.Configurations;
 using Core.WinForms.Controls;
+using Core.WinForms.Forms;
 using Core.WinForms.TableLayoutPanels;
 
 namespace Core.WinForms.Tests;
@@ -18,11 +20,14 @@ public partial class Form11 : Form
    protected UiAction uiUserInfoPublish = new();
    protected UiAction uiUserInfoSubscribe = new();
    protected UiAction uiStatePublish = new();
+   protected UiAction uiXPublish = new();
    protected LabelText ltStateSubscribe = new(STATE_INFO);
    protected Subscriber<Topic, string> userInfoSubscriber = new(USER_INFO);
    protected Subscriber<Topic, string> stateSubscriber = new(STATE_INFO);
    protected Publisher<Topic, string> userInfoPublisher = new(USER_INFO);
    protected Publisher<Topic, string> statePublisher = new(STATE_INFO);
+   protected XPublisher xPublisher = new("state-info");
+   protected SingletonForm<XSubscribing> xSubscribing = new(() => new XSubscribing());
 
    public Form11()
    {
@@ -40,6 +45,16 @@ public partial class Form11 : Form
       uiStatePublish.Button("Publish");
       uiStatePublish.Click += (_, _) => statePublisher.Publish(Topic.State, ltStateSubscribe.Text);
       uiStatePublish.ClickText = "Publish";
+
+      uiXPublish.Button("X-Publish");
+      uiXPublish.Click += async (_, _) =>
+      {
+         xSubscribing.Show();
+         var setting = new Setting();
+         setting.Set("payload").String = ltStateSubscribe.Text;
+         await xPublisher.PublishAsync("state", setting);
+      };
+      uiXPublish.ClickText = "X-Publish";
 
       stateSubscriber[Topic.State] = p =>
       {
@@ -62,5 +77,7 @@ public partial class Form11 : Form
       (builder + uiStatePublish).Next();
       (builder + ltStateSubscribe).Next();
       (builder + listBox1).SpanCol(2).SpanRow(2).Row();
+
+      (builder + uiXPublish).Next();
    }
 }

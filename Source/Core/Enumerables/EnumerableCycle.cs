@@ -22,12 +22,14 @@ public class EnumerableCycle<T> : IEnumerable<T>
       {
          var next = list[index];
          index++;
+
          return next;
       }
       else
       {
          index = 0;
          cycle++;
+
          return list[index];
       }
    }
