@@ -98,10 +98,19 @@ public class ReadOnlyAlternateWriter(UiAction uiAction, string[] alternates, boo
             ForeColor = GetAlternateForeColor(i),
             BackColor = GetAlternateBackColor(i),
             BackgroundRestriction = new BackgroundRestriction.Fill(),
-            Font = uiAction.NonNullFont,
             AutoSizeText = autoSizeText,
             UseEmojis = useEmojis
          };
+         if (autoSizeText)
+         {
+            writer.FontName = uiAction.NonNullFont.Name;
+            writer.FontSize = uiAction.NonNullFont.Size;
+         }
+         else
+         {
+            writer.Font = uiAction.NonNullFont;
+         }
+
          writer.Write(g);
 
          if (i > 0)
