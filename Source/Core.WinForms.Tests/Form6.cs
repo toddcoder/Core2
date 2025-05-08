@@ -13,7 +13,7 @@ public partial class Form6 : Form
    protected LabelText ltText = new("text") { CanDirty = false };
    protected CoreDateTimePicker picker = new();
    protected UiAction uiAlternates = new();
-   protected UiAction uiReadOnlyAlternates = new();
+   protected UiAction uiReadOnlyAlternates = new() { AutoSizeText = true, UseEmojis = false };
    protected UiAction uiApplication = new();
    protected UiAction uiDivider = new();
 

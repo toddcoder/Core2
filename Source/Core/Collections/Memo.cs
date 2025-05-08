@@ -49,8 +49,8 @@ public abstract class Memo<TKey, TValue> : IDictionary<TKey, TValue>, IHash<TKey
       {
       }
 
-      public Function(Func<TKey, TArgument, TValue> defaultValue, TArgument argument, IDictionary<TKey, TValue> dictionary) : this(defaultValue,
-         argument)
+      public Function(Func<TKey, TArgument, TValue> defaultValue, TArgument argument, IDictionary<TKey, TValue> dictionary) :
+         this(defaultValue, argument)
       {
          foreach (var item in dictionary)
          {
@@ -157,7 +157,7 @@ public abstract class Memo<TKey, TValue> : IDictionary<TKey, TValue>, IHash<TKey
 
    public bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
    {
-      value = hash[key];
+      value = this[key];
       return true;
    }
 

@@ -3,6 +3,7 @@ using Core.Collections;
 using Core.Enumerables;
 using Core.Strings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Strings.StringFunctions;
 
 namespace Core.Tests;
 
@@ -168,5 +169,32 @@ public class HashTest
       Console.WriteLine(memo["charlie"]);
       memo.Argument = 20;
       Console.WriteLine(memo["delta"]);
+   }
+
+   protected class State
+   {
+      public Guid Id { get; set; } = Guid.NewGuid();
+
+      public string Name { get; set; } = uniqueIDFromTime();
+
+      public override string ToString() => $"{Id}: {Name}";
+   }
+
+   [TestMethod]
+   public void StateMemoTest()
+   {
+      var memo = new StateMemo<State, Guid, string>(s => s.Id, _ => uniqueIDFromTime());
+
+      var state = new State();
+      memo[state] = state.Name;
+      Console.WriteLine(state);
+
+      state = new State();
+      Console.WriteLine(memo[state]);
+
+      foreach (var item in memo)
+      {
+         Console.WriteLine($"{item.Key}: {item.Value}");
+      }
    }
 }
