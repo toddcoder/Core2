@@ -163,12 +163,12 @@ public class HashTest
    [TestMethod]
    public void MemoFunction2Test()
    {
-      var memo = new Memo<string, int>.Function<int>((k, i) => k.Length * i, 10);
-      Console.WriteLine(memo["alfa"]);
-      Console.WriteLine(memo["bravo"]);
-      Console.WriteLine(memo["charlie"]);
-      memo.Argument = 20;
-      Console.WriteLine(memo["delta"]);
+      var memo = new StateMemo<(string text, int multiplier), string, int>(s => s.text, s => s.text.Length * s.multiplier);
+
+      Console.WriteLine(memo[("alfa", 10)]);
+      Console.WriteLine(memo[("bravo", 10)]);
+      Console.WriteLine(memo[("charlie", 20)]);
+      Console.WriteLine(memo[("delta", 20)]);
    }
 
    protected class State

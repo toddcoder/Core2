@@ -51,16 +51,6 @@ public class MatchingTests
    [TestMethod]
    public void ScraperTest()
    {
-      static string getVariables(Hash<string, string> hash, string prefix)
-      {
-         var keys = hash.Keys
-            .Where(k => k.StartsWith(prefix))
-            .Select(k => (key: k, index: k.DropUntil(":") + 1))
-            .OrderBy(t => t.index)
-            .Select(t => t.key);
-         return hash.ValuesFromKeys(keys).ToString(", ");
-      }
-
       var scraper = new Scraper("foo(a, b, c)\r\nbar(x,y , z); f");
       var index1 = 0;
       var index2 = 0;
@@ -90,6 +80,18 @@ public class MatchingTests
       else
       {
          Console.WriteLine("Not matched");
+      }
+
+      return;
+
+      static string getVariables(Hash<string, string> hash, string prefix)
+      {
+         var keys = hash.Keys
+            .Where(k => k.StartsWith(prefix))
+            .Select(k => (key: k, index: k.DropUntil(":") + 1))
+            .OrderBy(t => t.index)
+            .Select(t => t.key);
+         return hash.ValuesFromKeys(keys).ToString(", ");
       }
    }
 
@@ -244,6 +246,20 @@ public class MatchingTests
       else
       {
          Console.WriteLine("Not matched");
+      }
+   }
+
+   [TestMethod]
+   public void RegexMemoTest()
+   {
+      string[] list = ["alfa", "beta", "gamma", "delta"];
+      foreach (var item in list)
+      {
+         var _extract = item.ExtractGroup("/(/w ['aeiou']); f");
+         if (_extract is (true, var extract))
+         {
+            Console.WriteLine($"{item}: {extract}");
+         }
       }
    }
 }

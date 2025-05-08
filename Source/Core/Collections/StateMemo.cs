@@ -1,13 +1,17 @@
-﻿using System;
+﻿using Core.Monads;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Collections;
 
 public class StateMemo<TState, TKey, TValue> : IDictionary<TKey, TValue>, IHash<TKey, TValue> where TState : notnull where TKey : notnull
    where TValue : notnull
 {
+   public static implicit operator Hash<TKey, TValue>(StateMemo<TState, TKey, TValue> memo) => memo.hash;
+
    protected Hash<TKey, TValue> hash = [];
    protected Func<TState, TKey> keyFunc;
    protected Func<TState, TValue> defaultFunc;
@@ -109,4 +113,30 @@ public class StateMemo<TState, TKey, TValue> : IDictionary<TKey, TValue>, IHash<
    public ICollection<TKey> Keys => hash.Keys;
 
    public ICollection<TValue> Values => hash.Values;
+
+   public Maybe<TValue> Find(TKey key)
+   {
+      if (hash.TryGetValue(key, out var value))
+      {
+         return value;
+      }
+      else
+      {
+         return nil;
+      }
+   }
+
+   public IEnumerable<(TKey key, TValue value)> Tuples
+   {
+      get
+      {
+         foreach (var key in Keys)
+         {
+            if (Find(key) is (true, var value))
+            {
+               yield return (key, value);
+            }
+         }
+      }
+   }
 }

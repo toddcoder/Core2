@@ -34,6 +34,7 @@ public abstract class Memo<TKey, TValue> : IDictionary<TKey, TValue>, IHash<TKey
       public override TValue GetValue(TKey key) => defaultValue(key);
    }
 
+   [Obsolete("Use StateMemo")]
    public class Function<TArgument> : Memo<TKey, TValue> where TArgument : notnull
    {
       protected Func<TKey, TArgument, TValue> defaultValue;
@@ -63,6 +64,7 @@ public abstract class Memo<TKey, TValue> : IDictionary<TKey, TValue>, IHash<TKey
       public override TValue GetValue(TKey key) => defaultValue(key, Argument);
    }
 
+   [Obsolete("Use StateMemo")]
    public class Function<TArgument1, TArgument2> : Memo<TKey, TValue> where TArgument1 : notnull where TArgument2 : notnull
    {
       protected Func<TKey, TArgument1, TArgument2, TValue> defaultValue;
