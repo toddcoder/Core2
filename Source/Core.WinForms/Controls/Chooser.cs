@@ -32,6 +32,7 @@ public partial class Chooser : Form
    {
       UpdateZOrder();
       ShowDialog();
+
       return Choice;
    }
 
@@ -319,22 +320,20 @@ public partial class Chooser : Form
 
    protected void locate()
    {
-      var screenArea = Screen.GetWorkingArea(this);
+      var screenArea = Screen.GetWorkingArea(uiAction);
       var location = Cursor.Position;
       if (!FlyUp)
       {
          Height = screenArea.Height - location.Y - 32;
       }
 
-      var xPlusWidth = location.X + Width;
-      var amount = xPlusWidth > screenArea.Width ? xPlusWidth - screenArea.Width : 0;
       if (FlyUp)
       {
-         Location = location with { X = location.X - amount, Y = location.Y - Height };
+         Location = location with { X = location.X, Y = location.Y - Height };
       }
       else
       {
-         Location = location with { X = location.X - amount };
+         Location = location with { X = location.X };
       }
    }
 
