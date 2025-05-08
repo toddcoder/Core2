@@ -9,7 +9,7 @@ namespace Core.WinForms.Controls;
 public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
 {
    protected UiAction uiLabel = new();
-   protected UiAction uiUrl = new() { UseEmojis = false, AutoSizeText = true };
+   protected UiAction uiUrl = new() { UseEmojis = false, AutoSizeText = true, AllowDrop = true };
    protected TableLayoutPanel textLayoutPanel = new() { Visible = false };
    protected ExTextBox textBox = new() { TextAlign = HorizontalAlignment.Center, ForeColor = Color.Blue };
    protected UiAction uiCopy = new() { ClickGlyph = false };
@@ -117,6 +117,46 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
             catch (Exception exception)
             {
                uiLabel.ExceptionStatus(exception);
+            }
+         }
+      };
+      uiUrl.DragOver += (_, e) =>
+      {
+         if (e.Data is not null)
+         {
+            if (e.Data.GetDataPresent(DataFormats.Text) || e.Data.GetDataPresent(DataFormats.UnicodeText))
+            {
+               e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+               e.Effect = DragDropEffects.None;
+            }
+         }
+         else
+         {
+            e.Effect = DragDropEffects.None;
+         }
+      };
+      uiUrl.DragDrop += (_, e) =>
+      {
+         if (e.Data is not null)
+         {
+            if (e.Data.GetDataPresent(DataFormats.Text))
+            {
+               var url = e.Data.GetData(DataFormats.Text)?.ToString() ?? "";
+               if (url.IsNotEmpty())
+               {
+                  Url = url;
+               }
+            }
+            else if (e.Data.GetDataPresent(DataFormats.UnicodeText))
+            {
+               var url = e.Data.GetData(DataFormats.UnicodeText)?.ToString() ?? "";
+               if (url.IsNotEmpty())
+               {
+                  Url = url;
+               }
             }
          }
       };
