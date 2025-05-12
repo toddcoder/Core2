@@ -99,7 +99,7 @@ public static class MatchingExtensions
       };
    }
 
-   public static (string group1, string group2) Group2(this string input, Pattern pattern)
+   public static (string group1, string group2) MatchGroup2(this string input, Pattern pattern)
    {
       var _result = pattern.MatchedBy(input);
       if (_result is (true, var (group1, group2)))
@@ -112,7 +112,7 @@ public static class MatchingExtensions
       }
    }
 
-   public static (string group1, string group2, string group3) Group3(this string input, Pattern pattern)
+   public static (string group1, string group2, string group3) MatchGroup3(this string input, Pattern pattern)
    {
       var _result = pattern.MatchedBy(input);
       if (_result is (true, var (group1, group2, group3)))
@@ -125,7 +125,7 @@ public static class MatchingExtensions
       }
    }
 
-   public static (string group1, string group2, string group3, string group4) Group4(this string input, Pattern pattern)
+   public static (string group1, string group2, string group3, string group4) MatchGroup4(this string input, Pattern pattern)
    {
       var _result = pattern.MatchedBy(input);
       if (_result is (true, var (group1, group2, group3, group4)))
