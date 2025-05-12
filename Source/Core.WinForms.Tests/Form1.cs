@@ -218,7 +218,8 @@ public partial class Form1 : Form
 
       string[] choices =
       [
-         "alfa", "bravo", "charlie", "delta", "echo", "foxtrot", "-", "golf", "hotel", "india", "juliett", "kilo", "lima", "mike", "november", "oscar",
+         "alfa", "bravo", "charlie", "delta", "echo", "foxtrot", "-", "golf", "hotel", "india", "juliett", "kilo", "lima", "mike", "november",
+         "oscar",
          "papa", "quebec", "romeo", "sierra", "tango", "uniform", "victor", "whiskey", "xray", "yankee", "zulu"
       ];
 
@@ -330,6 +331,12 @@ public partial class Form1 : Form
       richTextBoxMenu.ContextMenuSeparator();
       richTextBoxMenu.StandardContextEdit();
       richTextBoxMenu.CreateContextMenu();
+
+      var dragDrop = new DragDrop<ExRichTextBox>(richTextBox) + DataFormats.Text + DataFormats.UnicodeText + "System.String";
+      dragDrop.DraggedOver.Handler = p => textBox.Text = p.dataFormat;
+      dragDrop.DragDropped.Handler = p => p.control.Text = p.presentData.Text;
+      dragDrop.NotDraggedOver.Handler = p => textBox.Text = p.dataFormats.ToString(", ");
+      dragDrop.Wire();
    }
 
    protected void retrieveJson()

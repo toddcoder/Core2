@@ -147,4 +147,6 @@ public static class ControlExtensions
    {
       control.ControlRemoved += (_, _) => subscriber.Unsubscribe();
    }
+
+   public static DragDrop<TabControl> DragDrop(this TabControl tabControl) => new(tabControl);
 }
