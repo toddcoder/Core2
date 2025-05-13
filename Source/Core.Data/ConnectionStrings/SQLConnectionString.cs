@@ -15,7 +15,7 @@ public class SqlConnectionString : IConnectionString
       var connectionString = $"Data Source={server};Initial Catalog={database};Application Name={application};";
       if (integratedSecurity)
       {
-         connectionString = $"{connectionString}Integrated Security=SSPI;";
+         connectionString = $"{connectionString}Integrated Security=SSPI;Trusted_Connection=True";
       }
 
       if (readOnly)
