@@ -79,7 +79,7 @@ public class HeaderColumnBuilder(string name, HeaderColumns headerColumns)
 
    public HeaderColumn HeaderColumn()
    {
-      var headerColumn = new HeaderColumn(text)
+      var headerColumn = new HeaderColumn(name, text)
       {
          Alignment = alignment,
          AutoSizeText = autoSizeText,

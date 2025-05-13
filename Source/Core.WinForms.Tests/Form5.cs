@@ -124,6 +124,9 @@ public partial class Form5 : Form
       header.HeaderClick.Handler = p => Text = $"{p.Name}: {p.UiAction.Text}";
       header.ZeroOut();
 
+      header.HeaderColumns["a"].Text = "alfa";
+      header.Arrange();
+
       textBoxContainer.BeginUpdate();
       textBoxContainer.ShowLastFocus = false;
       foreach (var _ in Enumerable.Range(0, 3))

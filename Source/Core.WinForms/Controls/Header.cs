@@ -24,6 +24,7 @@ public partial class Header : UserControl, IHash<string, UiAction>
    public void Arrange()
    {
       headers.Clear();
+      tableLayoutPanel.Controls.Clear();
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       var setup = builder.Col;

@@ -1,7 +1,8 @@
 ﻿namespace Core.WinForms.Controls;
 
-public class HeaderColumn(string text)
+public class HeaderColumn(string name, string text) : IEquatable<HeaderColumn>
 {
+   protected string name = name;
    protected string text = text;
 
    public string Text
@@ -44,4 +45,14 @@ public class HeaderColumn(string text)
       uiAction.ZeroOut();
       return uiAction;
    }
+
+   public bool Equals(HeaderColumn? other) => other is not null && other.name == name;
+
+   public override bool Equals(object? obj) => obj is HeaderColumn other && Equals(other);
+
+   public override int GetHashCode() => HashCode.Combine(name);
+
+   public static bool operator ==(HeaderColumn? left, HeaderColumn? right) => Equals(left, right);
+
+   public static bool operator !=(HeaderColumn? left, HeaderColumn? right) => !Equals(left, right);
 }

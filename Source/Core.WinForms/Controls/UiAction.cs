@@ -23,7 +23,7 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace Core.WinForms.Controls;
 
-public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
+public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId, IEquatable<UiAction>
 {
    protected const float START_AMOUNT = .9f;
 
@@ -4261,4 +4261,14 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId
    public Color CountForeColor { get; set; } = Color.White;
 
    public Color CountBackColor { get; set; } = Color.Blue;
+
+   public bool Equals(UiAction? other) => other is not null && id.Equals(other.id);
+
+   public override bool Equals(object? obj) => obj is UiAction other && Equals(other);
+
+   public override int GetHashCode() => id.GetHashCode();
+
+   public static bool operator ==(UiAction? left, UiAction? right) => Equals(left, right);
+
+   public static bool operator !=(UiAction? left, UiAction? right) => !Equals(left, right);
 }
