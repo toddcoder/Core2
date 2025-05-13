@@ -7,7 +7,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public partial class Header : UserControl
+public partial class Header : UserControl, IHash<string, UiAction>
 {
    public static HeaderColumnBuilder operator +(Header header, string name) => new(name, header.headerColumns);
 
@@ -47,4 +47,14 @@ public partial class Header : UserControl
          (builder + headers[name]).Next();
       }
    }
+
+   public UiAction this[string key] => headers[key];
+
+   public bool ContainsKey(string key) => headers.ContainsKey(key);
+
+   public Hash<string, UiAction> GetHash() => headers;
+
+   public HashInterfaceMaybe<string, UiAction> Items => new(headers);
+
+   public HashMaybe<string, UiAction> Maybe => new(headers);
 }
