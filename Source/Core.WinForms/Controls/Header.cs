@@ -57,4 +57,6 @@ public partial class Header : UserControl, IHash<string, UiAction>
    public HashInterfaceMaybe<string, UiAction> Items => new(headers);
 
    public HashMaybe<string, UiAction> Maybe => new(headers);
+
+   public HeaderColumns HeaderColumns => headerColumns;
 }
