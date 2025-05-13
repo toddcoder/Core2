@@ -1,5 +1,5 @@
 ﻿using System.Data;
-using System.Data.SqlClient;
+using Core.Applications.Messaging;
 using Core.Assertions;
 using Core.Collections;
 using Core.Computers;
@@ -7,6 +7,7 @@ using Core.Matching;
 using Core.Monads;
 using Core.Objects;
 using Core.Strings;
+using Microsoft.Data.SqlClient;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Data.DataSources;
@@ -33,7 +34,7 @@ public abstract class DataSource(string connectionString, TimeSpan commandTimeou
    protected Fields.Fields fields = [];
    protected Maybe<IActive> _activeObject = nil;
 
-   public event EventHandler<CancelEventArgs>? NextRow;
+   public readonly MessageEvent<CancelEventArgs> NextRow = new();
 
    public bool Deallocated { get; set; }
 
@@ -135,8 +136,9 @@ public abstract class DataSource(string connectionString, TimeSpan commandTimeou
             {
                HasRows = true;
                fill(entity, reader);
-               NextRow?.Invoke(this, new CancelEventArgs());
-               cancel = new CancelEventArgs().Cancel;
+               var args = new CancelEventArgs();
+               NextRow.Invoke(args);
+               cancel = args.Cancel;
             }
 
             if (_activeObject is (true, var activeObject2))
