@@ -30,5 +30,6 @@ public enum UiActionType
    ReadOnlyAlternate,
    CheckBox,
    Divider,
-   Done
+   Done,
+   Ghost
 }

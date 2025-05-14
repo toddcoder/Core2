@@ -89,7 +89,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       [UiActionType.Busy] = Color.White,
       [UiActionType.MuteProgress] = Color.White,
       [UiActionType.Divider] = Color.Black,
-      [UiActionType.ReadOnlyAlternate] = Color.White
+      [UiActionType.ReadOnlyAlternate] = Color.White,
+      [UiActionType.Ghost] = Color.DarkGray
    };
    protected static Hash<UiActionType, Color> globalBackColors = new()
    {
@@ -113,7 +114,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       [UiActionType.ProgressIndefinite] = Color.CadetBlue,
       [UiActionType.MuteProgress] = Color.CadetBlue,
       [UiActionType.Divider] = Color.White,
-      [UiActionType.ReadOnlyAlternate] = Color.CadetBlue
+      [UiActionType.ReadOnlyAlternate] = Color.CadetBlue,
+      [UiActionType.Ghost] = Color.WhiteSmoke
    };
    protected static Hash<UiActionType, MessageStyle> globalStyles = new()
    {
@@ -126,7 +128,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       [UiActionType.BusyText] = MessageStyle.ItalicBold,
       [UiActionType.Caution] = MessageStyle.Bold,
       [UiActionType.ControlLabel] = MessageStyle.Bold,
-      [UiActionType.Http] = MessageStyle.Bold
+      [UiActionType.Http] = MessageStyle.Bold,
+      [UiActionType.Ghost] = MessageStyle.Italic
    };
    protected static BusyStyle busyStyle = BusyStyle.Default;
 
@@ -4261,6 +4264,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
    public Color CountForeColor { get; set; } = Color.White;
 
    public Color CountBackColor { get; set; } = Color.Blue;
+
+   public void Ghost(string message) => ShowMessage(message, UiActionType.Ghost);
 
    public bool Equals(UiAction? other) => other is not null && id.Equals(other.id);
 
