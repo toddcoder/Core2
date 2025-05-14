@@ -16,7 +16,8 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    public static ControlContainer<TControl> ReadingContainer() => new() { Direction = ControlDirection.Reading };
 
-   protected Hash<TControl, int> controls = [];
+   protected Hash<TControl, int> controlToIndex = [];
+   protected Hash<int, TControl> indexToControl = [];
    protected Maybe<int> _width = nil;
    protected Maybe<int> _height = nil;
    protected int padding = 3;
@@ -51,7 +52,8 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
 
       Controls.Add(control);
-      controls[control] = index;
+      controlToIndex[control] = index;
+      indexToControl[index] = control;
 
       resize();
 
@@ -63,7 +65,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       return index;
    }
 
-   protected Maybe<int> getControlIndex(TControl control) => controls.Maybe[control];
+   protected Maybe<int> getControlIndex(TControl control) => controlToIndex.Maybe[control];
 
    public Maybe<int> Remove(TControl control)
    {
@@ -77,7 +79,14 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       if (_index is (true, var index))
       {
          Controls.Remove(control);
-         controls.Maybe[control] = nil;
+         controlToIndex.Clear();
+         indexToControl.Clear();
+
+         for (var i = 0; i < Controls.Count; i++)
+         {
+            controlToIndex[(TControl)Controls[i]] = i;
+            indexToControl[i] = (TControl)Controls[i];
+         }
 
          resize();
 
@@ -271,7 +280,27 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
-   public Maybe<TControl> this[int index] => getControl(index);
+   public Maybe<TControl> this[int index]
+   {
+      get => getControl(index);
+      set
+      {
+         if (indexToControl.ContainsKey(index))
+         {
+            Controls.Remove(indexToControl[index]);
+            controlToIndex.Clear();
+            indexToControl.Clear();
+
+            for (var i = 0; i < Controls.Count; i++)
+            {
+               controlToIndex[(TControl)Controls[i]] = i;
+               indexToControl[i] = (TControl)Controls[i];
+            }
+
+            resize();
+         }
+      }
+   }
 
    public new int Padding
    {
@@ -379,13 +408,13 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    public void Clear()
    {
-      controls.Clear();
+      controlToIndex.Clear();
       Controls.Clear();
    }
 
    public IEnumerator<TControl> GetEnumerator()
    {
-      foreach (var control in controls.OrderBy(i => i.Value).Select(i => i.Key))
+      foreach (var control in controlToIndex.OrderBy(i => i.Value).Select(i => i.Key))
       {
          yield return control;
       }
