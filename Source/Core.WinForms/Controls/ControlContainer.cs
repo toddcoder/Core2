@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Drawing.Drawing2D;
 using Core.Applications.Messaging;
+using Core.Collections;
 using Core.Monads;
 using Core.Numbers;
-using Core.Objects;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -16,74 +16,80 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    public static ControlContainer<TControl> ReadingContainer() => new() { Direction = ControlDirection.Reading };
 
-   protected ObjectHash<TControl> objectHash = new();
+   protected Hash<TControl, int> controls = [];
    protected Maybe<int> _width = nil;
    protected Maybe<int> _height = nil;
    protected int padding = 3;
    protected ControlDirection direction = ControlDirection.Horizontal;
    protected bool showLastFocus = true;
-   protected Maybe<long> _lastIdFocus = nil;
+   protected Maybe<int> _lastIndexFocus = nil;
    protected bool isUpdating = true;
    protected int horizontalCount = 4;
    protected int verticalCount = 2;
 
    public readonly MessageEvent<ControlFocusArgs<TControl>> AfterFocus = new();
+   public readonly MessageEvent<ControlArrangingArgs<TControl>> AfterArranged = new();
+   public readonly MessageEvent NextRow = new();
 
-   protected (long id, bool firstTime) setControl(TControl control) => objectHash.GetIdWithFirstTime(control);
-
-   public long Add(TControl control)
+   public int Add(TControl control)
    {
+      var index = Controls.Count;
+
       if (!isUpdating)
       {
          control.Visible = false;
       }
 
-      var (id, firstTime) = setControl(control);
-
-      if (firstTime && showLastFocus)
+      if (showLastFocus)
       {
          control.GotFocus += (_, _) =>
          {
-            _lastIdFocus = id;
+            _lastIndexFocus = index;
             Invalidate();
-            AfterFocus.Invoke(new ControlFocusArgs<TControl>(control, id));
+            AfterFocus.Invoke(new ControlFocusArgs<TControl>(control, index));
          };
       }
 
       Controls.Add(control);
+      controls[control] = index;
 
       resize();
 
       if (control is IHasObjectId hasObjectId)
       {
-         hasObjectId.ObjectId = id;
+         hasObjectId.ObjectId = index;
       }
 
-      return id;
+      return index;
    }
 
-   public Maybe<long> Remove(TControl control)
+   protected Maybe<int> getControlIndex(TControl control) => controls.Maybe[control];
+
+   public Maybe<int> Remove(TControl control)
    {
       if (Controls.Count == 0)
       {
          return nil;
       }
 
-      var id = -1L;
+      var _index = getControlIndex(control);
 
-      Controls.Remove(control);
-      if (control is IHasObjectId hasObjectId)
+      if (_index is (true, var index))
       {
-         remove(hasObjectId.ObjectId);
-         id = hasObjectId.ObjectId;
+         Controls.Remove(control);
+         controls.Maybe[control] = nil;
+
+         resize();
+
+         return index;
       }
-
-      resize();
-
-      return id;
+      else
+      {
+         return nil;
+      }
    }
 
-   public Maybe<long> RemoveLast()
+   public Maybe<int> RemoveLast()
    {
       if (Controls.Count > 0)
       {
@@ -134,7 +140,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    protected void setWidth()
    {
-      var count = objectHash.Count;
+      var count = Controls.Count;
 
       _width = direction switch
       {
@@ -152,7 +158,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    protected void setHeight()
    {
-      var count = objectHash.Count;
+      var count = Controls.Count;
 
       _height = direction switch
       {
@@ -168,7 +174,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       };
    }
 
-   protected Maybe<TControl> getControl(long id) => objectHash.IdToObjectMaybe[id];
+   protected Maybe<TControl> getControl(int index) => maybe<TControl>() & index.Between(0).Until(Controls.Count) & (() => (TControl)Controls[index]);
 
    protected void arrangeHorizontal(int width)
    {
@@ -177,13 +183,16 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       var height = _height | (() => clientHeight() - 2 * padding);
       var size = new Size(width, height);
 
-      foreach (var control in objectHash.Objects())
+      var index = 0;
+      foreach (var control in this)
       {
          control.Location = new Point(left, top);
          control.Size = size;
          left += width + padding;
          control.Visible = true;
          control.Refresh();
+
+         AfterArranged.Invoke(new ControlArrangingArgs<TControl>(control, size, index++));
       }
    }
 
@@ -194,13 +203,16 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       var width = _width | (() => clientWidth() - 2 * padding);
       var size = new Size(width, height);
 
-      foreach (var control in objectHash.Objects())
+      var index = 0;
+      foreach (var control in this)
       {
          control.Location = new Point(left, top);
          control.Size = size;
          top += height + padding;
          control.Visible = true;
          control.Refresh();
+
+         AfterArranged.Invoke(new ControlArrangingArgs<TControl>(control, size, index++));
       }
    }
 
@@ -212,12 +224,14 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       var maxWidth = clientWidth();
       var maxHeight = clientHeight();
 
-      foreach (var control in objectHash.Objects())
+      var index = 0;
+      foreach (var control in this)
       {
          if (left + width > maxWidth)
          {
             left = padding;
             top += height;
+            NextRow.Invoke();
          }
 
          if (top + height > maxHeight)
@@ -226,9 +240,12 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
          }
 
          control.Location = new Point(left, top);
-         control.Size = new Size(width, height);
+         var size = new Size(width, height);
+         control.Size = size;
          control.Visible = true;
          left += width + padding;
+
+         AfterArranged.Invoke(new ControlArrangingArgs<TControl>(control, size, index++));
       }
    }
 
@@ -254,29 +271,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
-   public Maybe<TControl> this[long id]
-   {
-      get => objectHash.IdToObjectMaybe[id];
-      set
-      {
-         if (value is (true, var control))
-         {
-            objectHash.IdToObject[id] = control;
-            control.GotFocus += (_, _) =>
-            {
-               _lastIdFocus = id;
-               Invalidate();
-               AfterFocus.Invoke(new ControlFocusArgs<TControl>(control, id));
-            };
-            Controls.Add(control);
-         }
-         else if (objectHash.IdToObjectMaybe[id] is (true, var oldControl))
-         {
-            Controls.Remove(oldControl);
-            objectHash.Remove(id);
-         }
-      }
-   }
+   public Maybe<TControl> this[int index] => getControl(index);
 
    public new int Padding
    {
@@ -318,7 +313,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
-   public int Count => objectHash.Count;
+   public int Count => Controls.Count;
 
    public int HorizontalCount
    {
@@ -342,7 +337,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    protected Maybe<TControl> getLastControlWithFocus()
    {
       return
-         from lastId in _lastIdFocus
+         from lastId in _lastIndexFocus
          from control in getControl(lastId)
          select control;
    }
@@ -362,15 +357,13 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
-   protected Maybe<TControl> remove(long id) => objectHash.Remove(id);
-
    protected override void OnVisibleChanged(EventArgs e)
    {
       base.OnVisibleChanged(e);
 
-      foreach (var uiAction in objectHash.Objects())
+      foreach (var control in this)
       {
-         uiAction.Visible = Visible;
+         control.Visible = Visible;
       }
    }
 
@@ -378,21 +371,21 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    {
       base.OnEnabledChanged(e);
 
-      foreach (var uiAction in objectHash.Objects())
+      foreach (var control in this)
       {
-         uiAction.Enabled = Enabled;
+         control.Enabled = Enabled;
       }
    }
 
    public void Clear()
    {
-      objectHash.Clear();
+      controls.Clear();
       Controls.Clear();
    }
 
    public IEnumerator<TControl> GetEnumerator()
    {
-      foreach (var control in objectHash.Objects())
+      foreach (var control in controls.OrderBy(i => i.Value).Select(i => i.Key))
       {
          yield return control;
       }
@@ -417,12 +410,11 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    public Maybe<TControl> Find(Func<TControl, bool> predicate)
    {
-      foreach (Control control in Controls)
+      foreach (var control in this)
       {
-         var castControl = (TControl)control;
-         if (predicate(castControl))
+         if (predicate(control))
          {
-            return castControl;
+            return control;
          }
       }
 
@@ -431,12 +423,11 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    public IEnumerable<TControl> FindAll(Func<TControl, bool> predicate)
    {
-      foreach (Control control in Controls)
+      foreach (var control in this)
       {
-         var castControl = (TControl)control;
-         if (predicate(castControl))
+         if (predicate(control))
          {
-            yield return castControl;
+            yield return control;
          }
       }
    }
