@@ -285,16 +285,17 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       get => getControl(index);
       set
       {
-         if (indexToControl.ContainsKey(index))
+         if (value is (true, var newControl) && indexToControl.Maybe[index] is (true, var oldControl))
          {
-            Controls.Remove(indexToControl[index]);
-            controlToIndex.Clear();
-            indexToControl.Clear();
+            indexToControl.Maybe[index] = nil;
+            controlToIndex.Maybe[oldControl] = nil;
+            indexToControl[index] = newControl;
+            controlToIndex[newControl] = index;
 
-            for (var i = 0; i < Controls.Count; i++)
+            Controls.Clear();
+            foreach (var control in this)
             {
-               controlToIndex[(TControl)Controls[i]] = i;
-               indexToControl[i] = (TControl)Controls[i];
+               Controls.Add(control);
             }
 
             resize();
