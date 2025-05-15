@@ -438,6 +438,8 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       scroller.Set();
    }
 
+   public Maybe<int> IndexOf(TControl control) => controlToIndex.Maybe[control];
+
    public Maybe<TControl> Find(Func<TControl, bool> predicate)
    {
       foreach (var control in this)
