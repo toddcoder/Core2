@@ -434,12 +434,14 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    public void Clear()
    {
       idToIndex.Clear();
+      idToControl.Clear();
+      indexToId.Clear();
       Controls.Clear();
    }
 
    public IEnumerator<TControl> GetEnumerator()
    {
-      foreach (var id in idToIndex.OrderBy(i=>i.Value).Select(i=>i.Key))
+      foreach (var id in idToIndex.OrderBy(i => i.Value).Select(i => i.Key))
       {
          if (idToControl.Maybe[id] is (true, var control))
          {
