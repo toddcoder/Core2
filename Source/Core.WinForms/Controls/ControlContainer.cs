@@ -16,8 +16,9 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    public static ControlContainer<TControl> ReadingContainer() => new() { Direction = ControlDirection.Reading };
 
-   protected Hash<TControl, int> controlToIndex = [];
-   protected Hash<int, TControl> indexToControl = [];
+   protected Hash<Guid, int> idToIndex = [];
+   protected Hash<int, Guid> indexToId = [];
+   protected Hash<Guid, TControl> idToControl = [];
    protected Maybe<int> _width = nil;
    protected Maybe<int> _height = nil;
    protected int padding = 3;
@@ -32,8 +33,25 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
    public readonly MessageEvent<ControlArrangingArgs<TControl>> AfterArranged = new();
    public readonly MessageEvent NextRow = new();
 
+   protected Guid getControlId(TControl control)
+   {
+      Guid id;
+      if (control.Tag is null)
+      {
+         id = Guid.NewGuid();
+         control.Tag = id;
+      }
+      else
+      {
+         id = (Guid)control.Tag;
+      }
+
+      return id;
+   }
+
    public int Add(TControl control)
    {
+      var id = getControlId(control);
       var index = Controls.Count;
 
       if (!isUpdating)
@@ -52,8 +70,9 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
 
       Controls.Add(control);
-      controlToIndex[control] = index;
-      indexToControl[index] = control;
+      idToIndex[id] = index;
+      indexToId[index] = id;
+      idToControl[id] = control;
 
       resize();
 
@@ -65,7 +84,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       return index;
    }
 
-   protected Maybe<int> getControlIndex(TControl control) => controlToIndex.Maybe[control];
+   protected Maybe<int> getControlIndex(TControl control) => idToIndex.Maybe[getControlId(control)];
 
    public Maybe<int> Remove(TControl control)
    {
@@ -79,13 +98,15 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       if (_index is (true, var index))
       {
          Controls.Remove(control);
-         controlToIndex.Clear();
-         indexToControl.Clear();
+         idToIndex.Clear();
+         indexToId.Clear();
+         idToControl.Clear();
 
          for (var i = 0; i < Controls.Count; i++)
          {
-            controlToIndex[(TControl)Controls[i]] = i;
-            indexToControl[i] = (TControl)Controls[i];
+            var id = getControlId((TControl)Controls[i]);
+            idToIndex[id] = i;
+            indexToId[i] = id;
          }
 
          resize();
@@ -285,12 +306,15 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       get => getControl(index);
       set
       {
-         if (value is (true, var newControl) && indexToControl.Maybe[index] is (true, var oldControl))
+         if (value is (true, var newControl) && indexToId.Maybe[index] is (true, var oldId))
          {
-            indexToControl.Maybe[index] = nil;
-            controlToIndex.Maybe[oldControl] = nil;
-            indexToControl[index] = newControl;
-            controlToIndex[newControl] = index;
+            indexToId.Maybe[index] = nil;
+            idToIndex.Maybe[oldId] = nil;
+            idToControl.Maybe[oldId] = nil;
+            var newId = getControlId(newControl);
+            indexToId[index] = newId;
+            idToIndex[newId] = index;
+            idToControl[newId] = newControl;
 
             Controls.Clear();
             foreach (var control in this)
@@ -409,15 +433,18 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    public void Clear()
    {
-      controlToIndex.Clear();
+      idToIndex.Clear();
       Controls.Clear();
    }
 
    public IEnumerator<TControl> GetEnumerator()
    {
-      foreach (var control in controlToIndex.OrderBy(i => i.Value).Select(i => i.Key))
+      foreach (var id in idToIndex.OrderBy(i=>i.Value).Select(i=>i.Key))
       {
-         yield return control;
+         if (idToControl.Maybe[id] is (true, var control))
+         {
+            yield return control;
+         }
       }
    }
 
@@ -438,7 +465,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       scroller.Set();
    }
 
-   public Maybe<int> IndexOf(TControl control) => controlToIndex.Maybe[control];
+   public Maybe<int> IndexOf(TControl control) => idToIndex.Maybe[getControlId(control)];
 
    public Maybe<TControl> Find(Func<TControl, bool> predicate)
    {
