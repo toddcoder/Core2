@@ -25,6 +25,8 @@ public abstract class Maybe<T> where T : notnull
       }
    }
 
+   public Maybe<T> Nil => new None<T>();
+
    public static Maybe<T> operator |(Maybe<T> left, Maybe<T> right)
    {
       if (left)

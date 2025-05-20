@@ -45,6 +45,8 @@ public abstract class Optional<T> where T : notnull
       }
    }
 
+   public Optional<T> Nil => new Empty<T>();
+
    public static Optional<T> operator |(Optional<T> left, Optional<T> right)
    {
       if (left)

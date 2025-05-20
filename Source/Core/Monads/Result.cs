@@ -45,6 +45,8 @@ public abstract class Result<T> where T : notnull
       public Maybe<Exception> Exception => _exception;
    }
 
+   public static Result<T> Nil => new Failure<T>(fail("Result not initialized"));
+
    public static Result<T> operator |(Result<T> left, Result<T> right)
    {
       if (left)
@@ -117,7 +119,6 @@ public abstract class Result<T> where T : notnull
 
    public static implicit operator bool(Result<T> value) => value is Success<T> || value is Lazy.LazyResult<T> lazyResult && lazyResult;
 
-   public static Result<T> Nil(string message) => new Failure<T>(new Exception(message));
 
    public static implicit operator T(Result<T> result) => result switch
    {

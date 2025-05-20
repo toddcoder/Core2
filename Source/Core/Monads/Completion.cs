@@ -54,6 +54,8 @@ public abstract class Completion<T> where T : notnull
       return completion;
    }
 
+   public static Completion<T> Nil => new Cancelled<T>();
+
    public abstract Completion<TResult> Map<TResult>(Func<T, Completion<TResult>> ifCompleted) where TResult : notnull;
 
    public abstract Completion<TResult> Map<TResult>(Func<T, TResult> ifCompleted) where TResult : notnull;
