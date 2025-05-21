@@ -122,7 +122,7 @@ public partial class Pattern : IEquatable<Pattern>
 
    public Pattern Unfriend() => new(regex, options, false);
 
-   protected RRegex getRegex() => compiledRegexes[new PatternKey(regex, options | RegexOptions.Compiled)];
+   protected RRegex getRegex() => compiledRegexes[new PatternKey(regex, options)];
 
    public Optional<MatchResult> MatchedBy(string input)
    {

@@ -8,6 +8,9 @@ using RRegex = System.Text.RegularExpressions.Regex;
 
 namespace Core.Matching.Parsers;
 
+using MMatch = System.Text.RegularExpressions.Match;
+using GGroup = System.Text.RegularExpressions.Group;
+
 public abstract class BaseParser
 {
    public const string REGEX_IDENTIFIER = "[a-zA-Z_][a-zA-Z_0-9]*";
@@ -26,9 +29,9 @@ public abstract class BaseParser
 
    public Maybe<string> Scan(string source, ref int index)
    {
-      static IEnumerable<System.Text.RegularExpressions.Group> getGroups(System.Text.RegularExpressions.Match match)
+      static IEnumerable<GGroup> getGroups(MMatch match)
       {
-         foreach (System.Text.RegularExpressions.Group group in match.Groups)
+         foreach (GGroup group in match.Groups)
          {
             yield return group;
          }
@@ -46,15 +49,12 @@ public abstract class BaseParser
          index += matches[0].Length;
          tokens = [.. getGroups(matches[0]).Select(group => group.Value)];
          var _result = Parse(source, ref index);
-         if (_result)
-         {
-            return _result;
-         }
-         else
+         if (!_result)
          {
             index = oldIndex;
-            return _result;
          }
+
+         return _result;
       }
       else
       {

@@ -37,7 +37,7 @@ public class ClassParser : BaseParser
             var _result = parser.Scan(source, ref index);
             if (_result is (true, var result))
             {
-               if (_result == "]")
+               if (result == "]")
                {
                   var value = (negative ? "[^" : "[") + content + "]";
                   if (enclose)
