@@ -2,4 +2,4 @@
 
 namespace Core.Matching;
 
-public record PatternKey(string Regex, RegexOptions Options);
+public readonly record struct PatternKey(string Regex, RegexOptions Options);
