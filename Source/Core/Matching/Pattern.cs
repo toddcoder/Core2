@@ -178,7 +178,7 @@ public partial class Pattern : IEquatable<Pattern>
       Bits32<RegexOptions> newOptions = options;
       newOptions[RegexOptions.IgnoreCase] = ignoreCase;
 
-      return new Pattern(regex, newOptions, friendly);
+      return new Pattern(regex, newOptions, false);
    }
 
    public Pattern WithMultiline(bool multiline)
@@ -186,7 +186,7 @@ public partial class Pattern : IEquatable<Pattern>
       Bits32<RegexOptions> newOptions = options;
       newOptions[RegexOptions.Multiline] = multiline;
 
-      return new Pattern(regex, newOptions, friendly);
+      return new Pattern(regex, newOptions, false);
    }
 
    public Pattern WithPattern(Func<string, string> patternFunc) => new(patternFunc(regex), options, false);

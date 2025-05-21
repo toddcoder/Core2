@@ -62,45 +62,6 @@ public class PatternTests
       matchOnlySubstitutions("'sql' /(/d+); f");
    }
 
-   /*protected static void matchPatternsTest(Pattern pattern1, Pattern pattern2, Pattern pattern3)
-   {
-      var _result = "foobar(foo,baz)".Matches(pattern1);
-      if (_result is (true, var result))
-      {
-         Console.Write(result.FirstMatch);
-         var lastResult = result;
-         var _result2 = result.MatchedBy(pattern2);
-         while (_result2 is (true, var result2))
-         {
-            Console.Write(result2.FirstMatch);
-            lastResult = result2;
-         }
-
-         if (_result2.AnyException is (true, var exception))
-         {
-            Console.WriteLine($"Exception: {exception.Message}");
-         }
-
-         var _lastResult = lastResult.MatchedBy(pattern3);
-         if (_lastResult is (true, var result3))
-         {
-            Console.WriteLine(result3.FirstMatch);
-         }
-      }
-   }
-
-   [TestMethod]
-   public void UMatchPatternsTest()
-   {
-      matchPatternsTest(@"^\w+\(; u", @"\w+,; u", @"\w+\)l; u");
-   }
-
-   [TestMethod]
-   public void FMatchPatternsTest()
-   {
-      matchPatternsTest("^ /w+ '('; f", "/w+ ','; f", "/w+ ')'; f");
-   }*/
-
    [TestMethod]
    public void FQuoteTest()
    {
@@ -167,5 +128,20 @@ public class PatternTests
       Pattern pattern = "('foo' | 'calc'); f";
       var regex = pattern.Regex;
       Console.WriteLine(regex);
+   }
+
+   [TestMethod]
+   public void WithOptionsTest()
+   {
+      Pattern pattern = "/('foo' | 'bar'); f";
+      pattern = pattern.WithIgnoreCase(true);
+      if (pattern.MatchedBy("Foo"))
+      {
+         Console.WriteLine("matches");
+      }
+      else
+      {
+         Console.WriteLine("not matches");
+      }
    }
 }
