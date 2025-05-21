@@ -85,15 +85,11 @@ public partial class Pattern : IEquatable<Pattern>
    public static Maybe<MatchResult> operator &(Pattern pattern, string input) => input.Matches(pattern);
 
    protected static Memo<string, string> friendlyPatterns;
-   //protected static Memo<string, RRegex>.Function<RegexOptions> compiledRegex;
-   protected static StateMemo<(string regex, RegexOptions options), string, RRegex> compiledRegexes = new(t => t.regex,
-      t => new RRegex(t.regex, t.options));
+   protected static Memo<PatternKey, RRegex> compiledRegexes = new Memo<PatternKey, RRegex>.Function(pk => new RRegex(pk.Regex, pk.Options));
 
    static Pattern()
    {
       friendlyPatterns = new Memo<string, string>.Function(s => new Parser().Parse(s));
-      //compiledRegex = new Memo<string, RRegex>.Function<RegexOptions>((regex, options) => new RRegex(regex, options), RegexOptions.None);
-      //compiledRegex = compiledRegex.CaseAware();
       isFriendly = true;
    }
 
@@ -126,7 +122,7 @@ public partial class Pattern : IEquatable<Pattern>
 
    public Pattern Unfriend() => new(regex, options, false);
 
-   protected RRegex getRegex() => compiledRegexes[(regex, options | RegexOptions.Compiled)];
+   protected RRegex getRegex() => compiledRegexes[new PatternKey(regex, options | RegexOptions.Compiled)];
 
    public Optional<MatchResult> MatchedBy(string input)
    {
