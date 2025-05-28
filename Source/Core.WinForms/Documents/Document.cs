@@ -187,6 +187,8 @@ public class Document
 
    public bool IsDirty => isDirty;
 
+   public bool DirtySymbolIsCircle { get; set; } = true;
+
    public void Dirty()
    {
       isDirty = true;
@@ -273,7 +275,8 @@ public class Document
             title.Append(formName);
             if (IsDirty)
             {
-               title.Append(" *");
+               var character = DirtySymbolIsCircle ? "●" : "*";
+               title.Append($" {character}");
             }
 
             form.Text = title.ToString();
