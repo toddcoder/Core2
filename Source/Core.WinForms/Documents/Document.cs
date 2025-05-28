@@ -274,7 +274,7 @@ public class Document
          var title = new StringBuilder();
          if (_file is (true, var file))
          {
-            title.Append(file);
+            title.Append(file.FullPath);
             title.Append(" - ");
             title.Append(formName);
             if (IsDirty)
