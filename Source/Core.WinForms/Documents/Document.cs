@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Core.Applications.Messaging;
 using Core.Computers;
 using Core.Enumerables;
 using Core.Matching;
@@ -26,7 +27,7 @@ public class Document
    protected string extension;
    protected string documentName;
    protected string formName;
-   protected Maybe<FileName> _file;
+   protected Maybe<FileName> _file = nil;
    protected bool isDirty;
    protected OpenFileDialog openFileDialog;
    protected SaveFileDialog saveFileDialog;
@@ -34,14 +35,14 @@ public class Document
    protected string fontName;
    protected float fontSize;
    protected bool displayFileName;
-   protected Maybe<Colorizer> _colorizer;
+   protected Maybe<Colorizer> _colorizer = nil;
    protected string filter;
    protected bool keepClean;
 
-   public event EventHandler? OKButtonClicked;
-   public event EventHandler? CancelButtonClicked;
-   public event EventHandler? YesButtonClicked;
-   public event EventHandler? NoButtonClicked;
+   public MessageEvent OKButtonClicked = new();
+   public MessageEvent CancelButtonClicked = new();
+   public MessageEvent YesButtonClicked = new();
+   public MessageEvent NoButtonClicked = new();
 
    public Document(Form form, RichTextBox textBox, string extension, string documentName, string fontName = "Consolas",
       float fontSize = 12f, bool displayFileName = true, string filter = "")
@@ -55,11 +56,7 @@ public class Document
       this.displayFileName = displayFileName;
       this.filter = filter.IsEmpty() ? $"{documentName} files (*.{this.extension})|*.{this.extension}|All files (*.*)|*.*" : filter;
 
-      isDirty = false;
       formName = this.form.Text;
-      _file = nil;
-      _colorizer = nil;
-      keepClean = false;
 
       this.textBox.TextChanged += (_, _) =>
       {
@@ -210,11 +207,11 @@ public class Document
          switch (result)
          {
             case DialogResult.Yes:
-               YesButtonClicked?.Invoke(this, EventArgs.Empty);
+               YesButtonClicked.Invoke();
                Save();
                break;
             case DialogResult.No:
-               NoButtonClicked?.Invoke(this, EventArgs.Empty);
+               NoButtonClicked.Invoke();
                textBox.Clear();
                Clean();
                break;
@@ -242,13 +239,13 @@ public class Document
       dialogResult = openFileDialog.ShowDialog();
       if (dialogResult == DialogResult.OK)
       {
-         OKButtonClicked?.Invoke(this, EventArgs.Empty);
+         OKButtonClicked.Invoke();
          Open(openFileDialog.FileName);
          return true;
       }
       else
       {
-         CancelButtonClicked?.Invoke(this, EventArgs.Empty);
+         CancelButtonClicked.Invoke();
          return false;
       }
    }
@@ -327,13 +324,13 @@ public class Document
    {
       if (saveFileDialog.ShowDialog() == DialogResult.OK)
       {
-         OKButtonClicked?.Invoke(this, EventArgs.Empty);
+         OKButtonClicked.Invoke();
          _file = (FileName)saveFileDialog.FileName;
          save();
       }
       else
       {
-         CancelButtonClicked?.Invoke(this, EventArgs.Empty);
+         CancelButtonClicked.Invoke();
       }
    }
 
@@ -345,11 +342,11 @@ public class Document
          switch (result)
          {
             case DialogResult.Yes:
-               YesButtonClicked?.Invoke(this, EventArgs.Empty);
+               YesButtonClicked.Invoke();
                Save();
                break;
             case DialogResult.Cancel:
-               CancelButtonClicked?.Invoke(this, EventArgs.Empty);
+               CancelButtonClicked.Invoke();
                e.Cancel = true;
                break;
          }
@@ -414,24 +411,14 @@ public class Document
       otherTextBox.Font = new Font(textBox.Font, FontStyle.Regular);
       otherTextBox.HideSelection = textBox.HideSelection;
       otherTextBox.WordWrap = textBox.WordWrap;
-      switch (textBox.ScrollBars)
+      otherTextBox.ScrollBars = textBox.ScrollBars switch
       {
-         case RichTextBoxScrollBars.None:
-            otherTextBox.ScrollBars = ScrollBars.None;
-            break;
-         case RichTextBoxScrollBars.Horizontal:
-         case RichTextBoxScrollBars.ForcedHorizontal:
-            otherTextBox.ScrollBars = ScrollBars.Horizontal;
-            break;
-         case RichTextBoxScrollBars.Vertical:
-         case RichTextBoxScrollBars.ForcedVertical:
-            otherTextBox.ScrollBars = ScrollBars.Vertical;
-            break;
-         case RichTextBoxScrollBars.Both:
-         case RichTextBoxScrollBars.ForcedBoth:
-            otherTextBox.ScrollBars = ScrollBars.Both;
-            break;
-      }
+         RichTextBoxScrollBars.None => ScrollBars.None,
+         RichTextBoxScrollBars.Horizontal or RichTextBoxScrollBars.ForcedHorizontal => ScrollBars.Horizontal,
+         RichTextBoxScrollBars.Vertical or RichTextBoxScrollBars.ForcedVertical => ScrollBars.Vertical,
+         RichTextBoxScrollBars.Both or RichTextBoxScrollBars.ForcedBoth => ScrollBars.Both,
+         _ => otherTextBox.ScrollBars
+      };
    }
 
    public string Text
