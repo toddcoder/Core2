@@ -43,6 +43,7 @@ public class Document
    public MessageEvent CancelButtonClicked = new();
    public MessageEvent YesButtonClicked = new();
    public MessageEvent NoButtonClicked = new();
+   public MessageEvent<DisplayFileNameInfo> AboutToDisplayFile = new();
 
    public Document(Form form, RichTextBox textBox, string extension, string documentName, string fontName = "Consolas",
       float fontSize = 12f, bool displayFileName = true, string filter = "")
@@ -267,6 +268,9 @@ public class Document
    {
       if (displayFileName)
       {
+         var character = DirtySymbolIsCircle ? "●" : "*";
+         var info = new DisplayFileNameInfo(_file, formName, IsDirty, character);
+         AboutToDisplayFile.Invoke(info);
          var title = new StringBuilder();
          if (_file is (true, var file))
          {
@@ -275,7 +279,6 @@ public class Document
             title.Append(formName);
             if (IsDirty)
             {
-               var character = DirtySymbolIsCircle ? "●" : "*";
                title.Append($" {character}");
             }
 
