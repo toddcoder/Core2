@@ -300,16 +300,13 @@ public class Document
 
    public virtual void Save()
    {
-      if (IsDirty)
+      if (_file)
       {
-         if (_file)
-         {
-            save();
-         }
-         else
-         {
-            SaveAs();
-         }
+         save();
+      }
+      else
+      {
+         SaveAs();
       }
    }
 
