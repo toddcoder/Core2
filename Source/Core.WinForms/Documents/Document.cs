@@ -46,7 +46,7 @@ public class Document
    public MessageEvent<DisplayFileNameInfo> AboutToDisplayFile = new();
 
    public Document(Form form, RichTextBox textBox, string extension, string documentName, string fontName = "Consolas",
-      float fontSize = 12f, bool displayFileName = true, string filter = "")
+      float fontSize = 12f, bool displayFileName = true, string filter = "", bool autoDirty = true)
    {
       this.form = form;
       this.textBox = textBox;
@@ -59,18 +59,21 @@ public class Document
 
       formName = this.form.Text;
 
-      this.textBox.TextChanged += (_, _) =>
+      if (autoDirty)
       {
-         if (!keepClean)
+         this.textBox.TextChanged += (_, _) =>
          {
-            Dirty();
-         }
+            if (!keepClean)
+            {
+               Dirty();
+            }
 
-         if (_colorizer is (true, var colorizer))
-         {
-            colorizer.Colorize(this.textBox);
-         }
-      };
+            if (_colorizer is (true, var colorizer))
+            {
+               colorizer.Colorize(this.textBox);
+            }
+         };
+      }
 
       this.form.FormClosing += (_, e) => Close(e);
 
