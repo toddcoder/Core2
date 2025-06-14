@@ -170,6 +170,19 @@ public static class EnumerableExtensions
       return nil;
    }
 
+   public static Maybe<int> LastIndexOf<T>(this IEnumerable<T> enumerable, T needle) where T : notnull
+   {
+      foreach (var (index, item) in enumerable.Indexed().Reversed())
+      {
+         if (needle.Equals(item))
+         {
+            return index;
+         }
+      }
+
+      return nil;
+   }
+
    public static Maybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable) where T : notnull
    {
       var first = enumerable.FirstOrDefault();
