@@ -235,6 +235,21 @@ public static class EnumerableExtensions
       }
    }
 
+   public static Maybe<T> AnyOrNone<T>(this IEnumerable<T> enumerable, Func<T, T, bool> predicate, params T[] needles) where T : notnull
+   {
+      T[] array = [.. enumerable];
+      foreach (var needle in needles)
+      {
+         var _result = array.FirstOrNone(i => predicate(needle, i));
+         if (_result is (true, var result))
+         {
+            return result;
+         }
+      }
+
+      return nil;
+   }
+
    public static Result<T> FirstOrFailure<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value") where T : notnull
    {
       try
