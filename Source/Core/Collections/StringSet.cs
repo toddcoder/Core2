@@ -79,3 +79,18 @@ public class StringSet : Set<string>
 
    public StringSet CaseIgnore(bool ignoreCase) => new(ignoreCase, this);
 }
+
+public class IgnoreStringSet : StringSet
+{
+   public IgnoreStringSet() : base(true)
+   {
+   }
+
+   public IgnoreStringSet(IEnumerable<string> strings) : base(true, strings)
+   {
+   }
+
+   public IgnoreStringSet(params string[] strings) : base(true, strings)
+   {
+   }
+}
