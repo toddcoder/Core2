@@ -171,6 +171,20 @@ public class HashTest
       Console.WriteLine(memo[("delta", 20)]);
    }
 
+   [TestMethod]
+   public void LazyMemoTest()
+   {
+      var memo = new LazyMemo<string, int>
+      {
+         DefaultValue = key => key.Length
+      };
+
+      Console.WriteLine(memo["alfa"]);
+      Console.WriteLine(memo["bravo"]);
+      Console.WriteLine(memo["charlie"]);
+      Console.WriteLine(memo["delta"]);
+   }
+
    protected class State
    {
       public Guid Id { get; set; } = Guid.NewGuid();
