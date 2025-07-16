@@ -118,6 +118,10 @@ public partial class Pattern : IEquatable<Pattern>
 
    public bool Friendly => friendly;
 
+   public bool IgnoreCase => (options & RegexOptions.IgnoreCase) != 0;
+
+   public bool Multiline => (options & RegexOptions.Multiline) != 0;
+
    public Pattern Befriend() => new(regex, options, true);
 
    public Pattern Unfriend() => new(regex, options, false);
