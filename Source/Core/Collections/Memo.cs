@@ -151,4 +151,12 @@ public abstract class Memo<TKey, TValue> : IDictionary<TKey, TValue>, IHash<TKey
          }
       }
    }
+
+   public IEnumerable<TValue> UpdateFromKeys(params TKey[] keys)
+   {
+      foreach (var key in keys)
+      {
+         yield return this[key];
+      }
+   }
 }
