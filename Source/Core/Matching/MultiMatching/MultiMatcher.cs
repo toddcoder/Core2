@@ -7,17 +7,14 @@ namespace Core.Matching.MultiMatching;
 
 public class MultiMatcher<T> where T : notnull
 {
-   public class PatternAction
+   public class PatternAction(Pattern pattern, Func<MatchResult, T> func)
    {
-      public PatternAction(Pattern pattern, Func<MatchResult, T> func)
-      {
-         Pattern = pattern;
-         Func = func;
-      }
+      protected Pattern pattern = pattern;
+      protected Func<MatchResult, T> func = func;
 
-      public Pattern Pattern { get; }
+      public Pattern Pattern => pattern;
 
-      public Func<MatchResult, T> Func { get; }
+      public Func<MatchResult, T> Func => func;
 
       public void Deconstruct(out Pattern pattern, out Func<MatchResult, T> func)
       {
@@ -26,19 +23,13 @@ public class MultiMatcher<T> where T : notnull
       }
    }
 
-   public class Case
+   public class Case(MultiMatcher<T> multiMatcher, Pattern pattern)
    {
       public static MultiMatcher<T> operator &(Case @case, Func<MatchResult, T> func) => @case.Then(func);
 
-      protected MultiMatcher<T> multiMatcher;
+      protected MultiMatcher<T> multiMatcher = multiMatcher;
 
-      public Case(MultiMatcher<T> multiMatcher, Pattern pattern)
-      {
-         this.multiMatcher = multiMatcher;
-         Pattern = pattern;
-      }
-
-      public Pattern Pattern { get; }
+      public Pattern Pattern => pattern;
 
       public MultiMatcher<T> Then(Func<MatchResult, T> func)
       {
@@ -51,14 +42,8 @@ public class MultiMatcher<T> where T : notnull
 
    public static MultiMatcher<T> operator &(MultiMatcher<T> multiMatcher, Func<string, T> func) => multiMatcher.Else(func);
 
-   protected List<PatternAction> patternActions;
-   protected Maybe<Func<string, T>> _defaultResult;
-
-   internal MultiMatcher()
-   {
-      patternActions = [];
-      _defaultResult = nil;
-   }
+   protected List<PatternAction> patternActions = [];
+   protected Maybe<Func<string, T>> _defaultResult = nil;
 
    public Case When(Pattern pattern) => new(this, pattern);
 
@@ -79,11 +64,11 @@ public class MultiMatcher<T> where T : notnull
       foreach (var (pattern, func) in patternActions)
       {
          var _result = input.Matches(pattern);
-         if (_result)
+         if (_result is (true, var result))
          {
             try
             {
-               return func(_result);
+               return func(result);
             }
             catch (Exception exception)
             {
@@ -110,17 +95,14 @@ public class MultiMatcher<T> where T : notnull
 
 public class MultiMatcher
 {
-   public class PatternAction
+   public class PatternAction(Pattern pattern, Action<MatchResult> action)
    {
-      public PatternAction(Pattern pattern, Action<MatchResult> action)
-      {
-         Pattern = pattern;
-         Action = action;
-      }
+      protected Pattern pattern = pattern;
+      protected Action<MatchResult> action = action;
 
-      public Pattern Pattern { get; }
+      public Pattern Pattern => pattern;
 
-      public Action<MatchResult> Action { get; }
+      public Action<MatchResult> Action => action;
 
       public void Deconstruct(out Pattern pattern, out Action<MatchResult> action)
       {
@@ -129,19 +111,13 @@ public class MultiMatcher
       }
    }
 
-   public class Case
+   public class Case(MultiMatcher multiMatcher, Pattern pattern)
    {
       public static MultiMatcher operator &(Case @case, Action<MatchResult> func) => @case.Then(func);
 
-      protected MultiMatcher multiMatcher;
+      protected MultiMatcher multiMatcher = multiMatcher;
 
-      public Case(MultiMatcher multiMatcher, Pattern pattern)
-      {
-         this.multiMatcher = multiMatcher;
-         Pattern = pattern;
-      }
-
-      public Pattern Pattern { get; }
+      public Pattern Pattern => pattern;
 
       public MultiMatcher Then(Action<MatchResult> action)
       {
@@ -154,14 +130,8 @@ public class MultiMatcher
 
    public static MultiMatcher operator &(MultiMatcher multiMatcher, Action<string> action) => multiMatcher.Else(action);
 
-   protected List<PatternAction> patternActions;
-   protected Maybe<Action<string>> _defaultAction;
-
-   internal MultiMatcher()
-   {
-      patternActions = [];
-      _defaultAction = nil;
-   }
+   protected List<PatternAction> patternActions = [];
+   protected Maybe<Action<string>> _defaultAction = nil;
 
    public Case When(Pattern pattern) => new(this, pattern);
 
@@ -182,11 +152,11 @@ public class MultiMatcher
       foreach (var (pattern, action) in patternActions)
       {
          var _result = input.Matches(pattern);
-         if (_result)
+         if (_result is (true, var result))
          {
             try
             {
-               action(_result);
+               action(result);
                return unit;
             }
             catch (Exception exception)

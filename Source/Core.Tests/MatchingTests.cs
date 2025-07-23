@@ -122,9 +122,9 @@ public class MatchingTests
       foreach (var input in list)
       {
          var _text = match.Matches(input);
-         if (_text)
+         if (_text is (true, var text))
          {
-            Console.WriteLine($"This was the match result: {_text}");
+            Console.WriteLine($"This was the match result: {text}");
          }
          else if (_text.Exception is (true, var exception))
          {
