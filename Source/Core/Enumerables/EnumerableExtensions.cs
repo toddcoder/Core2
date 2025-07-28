@@ -250,7 +250,8 @@ public static class EnumerableExtensions
       return nil;
    }
 
-   public static Maybe<T> AnyOrNone<T>(this IEnumerable<T> enumerable, Func<T, T, bool> predicate, Func<T, T, T> returnFunc, params T[] needles) where T : notnull
+   public static Maybe<T> AnyOrNone<T>(this IEnumerable<T> enumerable, Func<T, T, bool> predicate, Func<T, T, T> returnFunc, params T[] needles)
+      where T : notnull
    {
       T[] array = [.. enumerable];
       foreach (var needle in needles)
@@ -1604,6 +1605,26 @@ public static class EnumerableExtensions
          {
             yield return i;
          }
+      }
+   }
+
+   public static (Maybe<T> head, IEnumerable<T> tail) HeadAndTail<T>(this IEnumerable<T> enumerable) where T : notnull
+   {
+      using var enumerator = enumerable.GetEnumerator();
+      if (enumerator.MoveNext())
+      {
+         var head = enumerator.Current;
+         List<T> tail = [];
+         while (enumerator.MoveNext())
+         {
+            tail.Add(enumerator.Current);
+         }
+
+         return (head, tail);
+      }
+      else
+      {
+         return (nil, []);
       }
    }
 }
