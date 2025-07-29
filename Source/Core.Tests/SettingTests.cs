@@ -1061,4 +1061,43 @@ public class SettingTests
          Console.WriteLine(_json.Exception.Message);
       }
    }
+
+   [TestMethod]
+   public void IniSerializationTest()
+   {
+      var setting = new Setting();
+      var settingA = new Setting("A");
+      settingA.Set("alpha").String = "a";
+      settingA.Set("beta").String = "b";
+      settingA.Set("gamma").String = "c";
+      setting.Set("A").Setting = settingA;
+
+      var _source = IniSerializer.Serialize(setting);
+      if (_source is (true, var source))
+      {
+         Console.WriteLine(source);
+      }
+      else
+      {
+         Console.WriteLine($"Exception: {_source.Exception.Message}");
+         return;
+      }
+
+      var _setting = IniDeserializer.Deserialize(source);
+      if (_setting is (true, var deserialized))
+      {
+         foreach (var (key, innerSetting) in deserialized.Settings())
+         {
+            Console.WriteLine($"[{key}]");
+            foreach (var (itemKey, item) in innerSetting.ConfigurationItems())
+            {
+               Console.WriteLine($"{itemKey}={item.Text}");
+            }
+         }
+      }
+      else
+      {
+         Console.WriteLine($"Exception: {_setting.Exception.Message}");
+      }
+   }
 }
