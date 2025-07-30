@@ -1100,4 +1100,47 @@ public class SettingTests
          Console.WriteLine($"Exception: {_setting.Exception.Message}");
       }
    }
+
+   [TestMethod]
+   public void HashSerializationTest()
+   {
+      using var writer = new StringWriter();
+      writer.WriteLine("[A]");
+      writer.WriteLine("alpha=a");
+      writer.WriteLine("beta=b");
+      writer.WriteLine("gamma=c");
+      writer.WriteLine("[B]");
+      writer.WriteLine("alfa=a");
+      writer.WriteLine("bravo=b");
+      writer.WriteLine("charlie=c");
+      writer.WriteLine("delta=d");
+      writer.WriteLine("echo=e");
+      writer.WriteLine("foxtrot=f");
+
+      var source = writer.ToString();
+
+      var _hash = IniDeserializer.DeserializeToHash(source);
+      if (_hash is (true, var hash))
+      {
+         foreach (var (key, value) in hash)
+         {
+            Console.WriteLine($"{key}={value}");
+         }
+      }
+      else
+      {
+         Console.WriteLine($"Exception: {_hash.Exception.Message}");
+         return;
+      }
+
+      var _source = IniSerializer.FromHash(hash);
+      if (_source is (true, var serialized))
+      {
+         Console.WriteLine(serialized);
+      }
+      else
+      {
+         Console.WriteLine($"Exception: {_source.Exception.Message}");
+      }
+   }
 }
