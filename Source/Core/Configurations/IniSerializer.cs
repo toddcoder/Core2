@@ -3,6 +3,7 @@ using Core.Computers;
 using Core.Monads;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using static Core.Monads.MonadFunctions;
 
@@ -49,20 +50,15 @@ public class IniSerializer(Setting setting)
    {
       try
       {
+         StringSet sections = [.. hash.Keys.Select(k => k.section).Distinct()];
          using var writer = new StringWriter();
-         var currentSection = "";
-         foreach (var ((section, key), value) in hash)
+         foreach (var thisSection in sections)
          {
-            if (currentSection != section)
+            writer.WriteLine($"[{thisSection}]");
+            foreach (var ((_, key), value) in hash.Where(i => i.Key.section == thisSection))
             {
-               currentSection = section;
-               if (currentSection != "")
-               {
-                  writer.WriteLine($"[{section}]");
-               }
+               writer.WriteLine($"{key}={value}");
             }
-
-            writer.WriteLine($"{key}={value}");
          }
 
          return writer.ToString();
