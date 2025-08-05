@@ -249,6 +249,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
    protected Maybe<Color> _divMessageForeColor = nil;
    protected Maybe<Color> _divMessageBackColor = nil;
    protected StringSet messages = [];
+   protected UiActionSymbol actionSymbol = UiActionSymbol.Plus;
 
    public event EventHandler<AutomaticMessageArgs>? AutomaticMessage;
    public event EventHandler<PaintEventArgs>? Painting;
@@ -4276,4 +4277,104 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
    public static bool operator ==(UiAction? left, UiAction? right) => Equals(left, right);
 
    public static bool operator !=(UiAction? left, UiAction? right) => !Equals(left, right);
+
+   protected UIActionState getState() => type switch
+   {
+      UiActionType.Exception => new UIActionState.Error(fail(text)),
+      UiActionType.Tape => new UIActionState.Tape(),
+      UiActionType.Button => new UIActionState.Button(text, buttonType),
+      UiActionType.Symbol => new UIActionState.SymbolType(actionSymbol, ForeColor, BackColor),
+      UiActionType.Alternate => new UIActionState.Alternate(Alternates),
+      UiActionType.ReadOnlyAlternate => new UIActionState.AlternateReadOnly(Alternates),
+      UiActionType.CheckBox => new UIActionState.CheckBox(text, BoxChecked),
+      _ => new UIActionState.Standard(text, type)
+   };
+
+   protected void loadState(UIActionState state)
+   {
+      switch (state)
+      {
+         case UIActionState.Standard standard:
+            switch (standard.Type)
+            {
+               case UiActionType.Uninitialized:
+                  Uninitialized(standard.Message);
+                  break;
+               case UiActionType.Message:
+                  Message(standard.Message);
+                  break;
+               case UiActionType.Success:
+                  Success(standard.Message);
+                  break;
+               case UiActionType.Failure:
+                  Failure(standard.Message);
+                  break;
+               case UiActionType.NoStatus:
+                  NoStatus(standard.Message);
+                  break;
+               case UiActionType.Selected:
+                  Selected(standard.Message);
+                  break;
+               case UiActionType.Unselected:
+                  Unselected(standard.Message);
+                  break;
+               case UiActionType.Caution:
+                  Caution(standard.Message);
+                  break;
+               case UiActionType.Http:
+                  Http(standard.Message);
+                  break;
+               case UiActionType.Divider:
+                  Divider(standard.Message);
+                  break;
+               case UiActionType.Ghost:
+                  Ghost(standard.Message);
+                  break;
+            }
+
+            break;
+         case UIActionState.Display display:
+            Display(display.Message, display.ForeColor, display.BackColor);
+            break;
+         case UIActionState.Error error:
+            Exception(error.Exception);
+            break;
+         case UIActionState.Tape:
+            Tape();
+            break;
+         case UIActionState.Button button:
+            switch (button.ButtonType)
+            {
+               case UiActionButtonType.Normal:
+                  Button(button.Message);
+                  break;
+               case UiActionButtonType.Default:
+                  DefaultButton(button.Message);
+                  break;
+               case UiActionButtonType.Cancel:
+                  CancelButton(button.Message);
+                  break;
+            }
+
+            break;
+         case UIActionState.SymbolType symbol:
+            Symbol(symbol.Symbol, symbol.ForeColor, symbol.BackColor);
+            break;
+         case UIActionState.Alternate alternate:
+            Alternate(alternate.Alternates);
+            break;
+         case UIActionState.AlternateReadOnly alternateReadOnly:
+            AlternateReadOnly(alternateReadOnly.Alternates);
+            break;
+         case UIActionState.CheckBox checkBox:
+            CheckBox(checkBox.Message, checkBox.IsChecked);
+            break;
+      }
+   }
+
+   public UIActionState State
+   {
+      get => getState();
+      set => loadState(value);
+   }
 }
