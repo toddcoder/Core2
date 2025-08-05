@@ -16,9 +16,12 @@ public partial class Form6 : Form
    protected UiAction uiReadOnlyAlternates = new() { AutoSizeText = true, UseEmojis = false };
    protected UiAction uiApplication = new();
    protected UiAction uiDivider = new();
+   protected bool isBusy = false;
+   protected UIActionState state = new UIActionState.None();
 
    public Form6()
    {
+      UiAction.BusyStyle = BusyStyle.BarberPole;
       var resources = new Resources<Form6>();
       using var stream = resources.Stream("Application.png");
       image = Image.FromStream(stream);
@@ -54,6 +57,19 @@ public partial class Form6 : Form
 
       uiDivider.Divider("Divider");
       uiDivider.DividerMessage("bad!", UiActionType.Failure);
+      uiDivider.Click += (_, _) =>
+      {
+         isBusy = !isBusy;
+         if (isBusy)
+         {
+            state = uiDivider.State;
+            uiDivider.Busy(true);
+         }
+         else
+         {
+            uiDivider.State = state;
+         }
+      };
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 32 + 100f;
