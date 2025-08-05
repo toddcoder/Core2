@@ -4294,6 +4294,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
    {
       switch (state)
       {
+         case UIActionState.None:
+            throw fail("State not initialized");
          case UIActionState.Standard standard:
             switch (standard.Type)
             {

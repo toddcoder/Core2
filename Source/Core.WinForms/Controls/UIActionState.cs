@@ -2,6 +2,8 @@
 
 public abstract record UIActionState(UiActionType Type)
 {
+   public sealed record None() : UIActionState(UiActionType.Uninitialized);
+
    public sealed record Standard(string Message, UiActionType Type) : UIActionState(Type);
 
    public sealed record Display(string Message, Color ForeColor, Color BackColor) : UIActionState(UiActionType.Display);
