@@ -62,6 +62,8 @@ public class LateLazy<T> where T : notnull
       }
    }
 
+   public Maybe<TResult> Map<TResult>(Func<T, TResult> mappingFunc) where TResult : notnull => _value.Map(mappingFunc);
+
    public bool IsActivated => _value;
 
    public Maybe<T> AnyValue => _value;
