@@ -187,17 +187,13 @@ public static class EnumerableExtensions
    {
       var first = enumerable.FirstOrDefault();
 
-      if (first is null)
+      if (first is not null)
       {
-         return nil;
-      }
-      else if (first.Equals(default))
-      {
-         return nil;
+         return first;
       }
       else
       {
-         return first;
+         return nil;
       }
    }
 
@@ -221,17 +217,13 @@ public static class EnumerableExtensions
    {
       var last = enumerable.LastOrDefault();
 
-      if (last is null)
+      if (last is not null)
       {
-         return nil;
-      }
-      else if (last.Equals(default))
-      {
-         return nil;
+         return last;
       }
       else
       {
-         return last;
+         return nil;
       }
    }
 
@@ -603,17 +595,13 @@ public static class EnumerableExtensions
    {
       var first = enumerable.FirstOrDefault(predicate);
 
-      if (first is null)
+      if (first is not null)
       {
-         return nil;
-      }
-      else if (first.Equals(default))
-      {
-         return nil;
+         return first;
       }
       else
       {
-         return first;
+         return nil;
       }
    }
 
@@ -621,11 +609,7 @@ public static class EnumerableExtensions
    {
       var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2));
 
-      if (first.AnyNull())
-      {
-         return nil;
-      }
-      else if (first.Equals(default))
+      if (first.AnyNull() || first.Equals(default))
       {
          return nil;
       }
@@ -640,11 +624,7 @@ public static class EnumerableExtensions
    {
       var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2, i.Item3));
 
-      if (first.AnyNull())
-      {
-         return nil;
-      }
-      else if (first.Equals(default))
+      if (first.AnyNull() || first.Equals(default))
       {
          return nil;
       }
@@ -659,11 +639,7 @@ public static class EnumerableExtensions
    {
       var first = enumerable.FirstOrDefault(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
 
-      if (first.AnyNull())
-      {
-         return nil;
-      }
-      else if (first.Equals(default))
+      if (first.AnyNull() || first.Equals(default))
       {
          return nil;
       }
@@ -677,17 +653,13 @@ public static class EnumerableExtensions
    {
       var last = enumerable.LastOrDefault(predicate);
 
-      if (last is null)
+      if (last is not null)
       {
-         return nil;
-      }
-      else if (last.Equals(default))
-      {
-         return nil;
+         return last;
       }
       else
       {
-         return last;
+         return nil;
       }
    }
 
@@ -695,11 +667,7 @@ public static class EnumerableExtensions
    {
       var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2));
 
-      if (last.AnyNull())
-      {
-         return nil;
-      }
-      else if (last.Equals(default))
+      if (last.AnyNull() || last.Equals(default))
       {
          return nil;
       }
@@ -714,11 +682,7 @@ public static class EnumerableExtensions
    {
       var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2, i.Item3));
 
-      if (last.AnyNull())
-      {
-         return nil;
-      }
-      else if (last.Equals(default))
+      if (last.AnyNull() || last.Equals(default))
       {
          return nil;
       }
@@ -733,11 +697,7 @@ public static class EnumerableExtensions
    {
       var last = enumerable.LastOrDefault(i => predicate(i.Item1, i.Item2, i.Item3, i.Item4));
 
-      if (last.AnyNull())
-      {
-         return nil;
-      }
-      else if (last.Equals(default))
+      if (last.AnyNull() || last.Equals(default))
       {
          return nil;
       }
@@ -1627,4 +1587,6 @@ public static class EnumerableExtensions
          return (nil, []);
       }
    }
+
+   public static IEnumerable<int> Range(this int count) => Enumerable.Range(0, count);
 }
