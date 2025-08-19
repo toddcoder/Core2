@@ -16,9 +16,6 @@ public static class EnumerableExtensions
 {
    public static string ToString<T>(this IEnumerable<T> enumerable, string connector)
    {
-      enumerable.Must().Not.BeNull().OrThrow();
-      connector.Must().Not.BeNull().OrThrow();
-
       return string.Join(connector, enumerable.Select(i => i!.ToNonNullString()));
    }
 

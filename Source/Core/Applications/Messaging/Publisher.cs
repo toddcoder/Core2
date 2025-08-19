@@ -9,7 +9,7 @@ namespace Core.Applications.Messaging;
 public class Publisher<TPayload> where TPayload : notnull
 {
    protected static Memo<string, Hash<Guid, Subscriber<TPayload>>> subscribers = new Memo<string, Hash<Guid, Subscriber<TPayload>>>.Function(_ => []);
-   protected static MaybeQueue<(string name, Subscriber<TPayload>subscriber)> pendingSubscribers = [];
+   protected static MaybeQueue<(string name, Subscriber<TPayload> subscriber)> pendingSubscribers = [];
 
    public static void AddSubscriber(string name, Subscriber<TPayload> subscriber)
    {
