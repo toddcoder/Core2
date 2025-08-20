@@ -4278,25 +4278,25 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
 
    public static bool operator !=(UiAction? left, UiAction? right) => !Equals(left, right);
 
-   protected UIActionState getState() => type switch
+   protected UiActionState getState() => type switch
    {
-      UiActionType.Exception => new UIActionState.Error(fail(text)),
-      UiActionType.Tape => new UIActionState.Tape(),
-      UiActionType.Button => new UIActionState.Button(text, buttonType),
-      UiActionType.Symbol => new UIActionState.SymbolType(actionSymbol, ForeColor, BackColor),
-      UiActionType.Alternate => new UIActionState.Alternate(Alternates),
-      UiActionType.ReadOnlyAlternate => new UIActionState.AlternateReadOnly(Alternates),
-      UiActionType.CheckBox => new UIActionState.CheckBox(text, BoxChecked),
-      _ => new UIActionState.Standard(text, type)
+      UiActionType.Exception => new UiActionState.Error(fail(text)),
+      UiActionType.Tape => new UiActionState.Tape(),
+      UiActionType.Button => new UiActionState.Button(text, buttonType),
+      UiActionType.Symbol => new UiActionState.SymbolType(actionSymbol, ForeColor, BackColor),
+      UiActionType.Alternate => new UiActionState.Alternate(Alternates),
+      UiActionType.ReadOnlyAlternate => new UiActionState.AlternateReadOnly(Alternates),
+      UiActionType.CheckBox => new UiActionState.CheckBox(text, BoxChecked),
+      _ => new UiActionState.Standard(text, type)
    };
 
-   protected void loadState(UIActionState state)
+   protected void loadState(UiActionState state)
    {
       switch (state)
       {
-         case UIActionState.None:
+         case UiActionState.None:
             throw fail("State not initialized");
-         case UIActionState.Standard standard:
+         case UiActionState.Standard standard:
             switch (standard.Type)
             {
                case UiActionType.Uninitialized:
@@ -4335,16 +4335,16 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
             }
 
             break;
-         case UIActionState.Display display:
+         case UiActionState.Display display:
             Display(display.Message, display.ForeColor, display.BackColor);
             break;
-         case UIActionState.Error error:
+         case UiActionState.Error error:
             Exception(error.Exception);
             break;
-         case UIActionState.Tape:
+         case UiActionState.Tape:
             Tape();
             break;
-         case UIActionState.Button button:
+         case UiActionState.Button button:
             switch (button.ButtonType)
             {
                case UiActionButtonType.Normal:
@@ -4359,22 +4359,22 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
             }
 
             break;
-         case UIActionState.SymbolType symbol:
+         case UiActionState.SymbolType symbol:
             Symbol(symbol.Symbol, symbol.ForeColor, symbol.BackColor);
             break;
-         case UIActionState.Alternate alternate:
+         case UiActionState.Alternate alternate:
             Alternate(alternate.Alternates);
             break;
-         case UIActionState.AlternateReadOnly alternateReadOnly:
+         case UiActionState.AlternateReadOnly alternateReadOnly:
             AlternateReadOnly(alternateReadOnly.Alternates);
             break;
-         case UIActionState.CheckBox checkBox:
+         case UiActionState.CheckBox checkBox:
             CheckBox(checkBox.Message, checkBox.IsChecked);
             break;
       }
    }
 
-   public UIActionState State
+   public UiActionState State
    {
       get => getState();
       set => loadState(value);

@@ -17,7 +17,7 @@ public partial class Form6 : Form
    protected UiAction uiApplication = new();
    protected UiAction uiDivider = new();
    protected bool isBusy = false;
-   protected UIActionState state = new UIActionState.None();
+   protected UiActionState state = new UiActionState.None();
 
    public Form6()
    {
