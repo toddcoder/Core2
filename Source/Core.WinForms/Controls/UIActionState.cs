@@ -21,4 +21,6 @@ public abstract record UiActionState(UiActionType Type)
    public sealed record AlternateReadOnly(string[] Alternates) : UiActionState(UiActionType.ReadOnlyAlternate);
 
    public sealed record CheckBox(string Message, bool IsChecked) : UiActionState(UiActionType.CheckBox);
+
+   public sealed record Busy(bool BusyState) : UiActionState(UiActionType.Busy);
 }

@@ -4287,6 +4287,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       UiActionType.Alternate => new UiActionState.Alternate(Alternates),
       UiActionType.ReadOnlyAlternate => new UiActionState.AlternateReadOnly(Alternates),
       UiActionType.CheckBox => new UiActionState.CheckBox(text, BoxChecked),
+      UiActionType.Busy => new UiActionState.Busy(IsBusy),
       _ => new UiActionState.Standard(text, type)
    };
 
@@ -4332,6 +4333,9 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
                case UiActionType.Ghost:
                   Ghost(standard.Message);
                   break;
+               case UiActionType.BusyText:
+                  Busy(standard.Message);
+                  break;
             }
 
             break;
@@ -4370,6 +4374,9 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
             break;
          case UiActionState.CheckBox checkBox:
             CheckBox(checkBox.Message, checkBox.IsChecked);
+            break;
+         case UiActionState.Busy busy:
+            Busy(busy.BusyState);
             break;
       }
    }
