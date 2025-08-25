@@ -141,6 +141,8 @@ public class Set<T> : IEnumerable<T>, IEquatable<Set<T>>
 
    public bool Overlaps(IEnumerable<T> set) => content.Overlaps(set);
 
+   public bool IsDisjointWith(IEnumerable<T> set) => !content.Overlaps(set);
+
    public bool IsSubsetOf(IEnumerable<T> set) => content.IsSubsetOf(set);
 
    public bool IsProperSubsetOf(IEnumerable<T> set) => content.IsProperSubsetOf(set);
