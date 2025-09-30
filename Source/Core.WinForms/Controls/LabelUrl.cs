@@ -281,6 +281,8 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
 
    public UiAction Label => uiLabel;
 
+   public ExTextBox TextBox => textBox;
+
    public string LabelString
    {
       get => uiLabel.NonNullText;
