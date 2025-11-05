@@ -63,4 +63,6 @@ public class Bits32<TEnum> : IEnumerable<TEnum> where TEnum : struct, IConvertib
    public IEnumerable<TEnum> Enumerable() => Enum.GetValues(typeof(TEnum)).Cast<TEnum>().Where(item => GetBit(bits, item));
 
    public override string ToString() => Enumerable().ToString(" | ");
+
+   public Bits32<TEnum> Clone() => new(bits);
 }
