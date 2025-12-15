@@ -87,9 +87,10 @@ public class UiActionWriter
    protected Result<Color> _color = fail("Color not set");
    protected UiActionButtonType buttonType;
    protected bool useEmojis;
+   protected bool drawNot;
 
    public UiActionWriter(CardinalAlignment messageAlignment, bool autoSizeText, Maybe<int> _floor, Maybe<int> _ceiling, UiActionButtonType buttonType,
-      bool useEmojis)
+      bool useEmojis, bool drawNot)
    {
       Align(messageAlignment);
       this.autoSizeText = autoSizeText;
@@ -97,10 +98,11 @@ public class UiActionWriter
       this._ceiling = _ceiling;
       this.buttonType = buttonType;
       this.useEmojis = useEmojis;
+      this.drawNot = drawNot;
    }
 
    public UiActionWriter(Rectangle rectangle, Font font, Color color, CardinalAlignment messageAlignment = CardinalAlignment.Center,
-      bool autoSizeText = true) : this(messageAlignment, autoSizeText, nil, nil, UiActionButtonType.Normal, true)
+      bool autoSizeText = true, bool drawNot = true) : this(messageAlignment, autoSizeText, nil, nil, UiActionButtonType.Normal, true, drawNot)
    {
       _rectangle = rectangle;
       _font = font;
@@ -252,13 +254,17 @@ public class UiActionWriter
    public virtual Result<Unit> Write(Graphics g, string text, bool lower)
    {
       var not = false;
-      if (text.StartsWith('!'))
+      if (drawNot)
       {
-         not = true;
-         text = text[1..];
+         if (text.StartsWith('!'))
+         {
+            not = true;
+            text = text[1..];
+         }
+
+         text = text.Replace("/!", "!");
       }
 
-      text = text.Replace("/!", "!");
       text = withEmojis(text);
       if (lower)
       {

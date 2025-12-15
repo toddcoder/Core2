@@ -18,7 +18,7 @@ public class DisabledWriter : UiActionWriter
       };
    }
    public DisabledWriter(CardinalAlignment messageAlignment, bool autoSizeText, bool useEmojis)
-      : base(messageAlignment, autoSizeText, nil, nil, UiActionButtonType.Normal, useEmojis)
+      : base(messageAlignment, autoSizeText, nil, nil, UiActionButtonType.Normal, useEmojis, false)
    {
    }
 

@@ -1616,7 +1616,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
 
       determineFloorAndCeiling();
 
-      var writer = new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, buttonType, UseEmojis)
+      var writer = new UiActionWriter(MessageAlignment, AutoSizeText, _floor, _ceiling, buttonType, UseEmojis, DrawNot)
       {
          Rectangle = glyphAdjustedClientRectangle(),
          Font = getFont(),
@@ -4386,4 +4386,6 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       get => getState();
       set => loadState(value);
    }
+
+   public bool DrawNot { get; set; } = true;
 }

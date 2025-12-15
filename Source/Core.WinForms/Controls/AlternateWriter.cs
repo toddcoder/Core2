@@ -232,7 +232,7 @@ public class AlternateWriter(UiAction uiAction, string[] alternates, bool autoSi
 
    public void OnPaint(Graphics g)
    {
-      var writer = new UiActionWriter(CardinalAlignment.Center, autoSizeText, _floor, _ceiling, UiActionButtonType.Normal, useEmojis);
+      var writer = new UiActionWriter(CardinalAlignment.Center, autoSizeText, _floor, _ceiling, UiActionButtonType.Normal, useEmojis, false);
       foreach (var (index, rectangle) in uiAction.Rectangles.Indexed())
       {
          onPaint(g, index, rectangle, writer, alternates[index]);

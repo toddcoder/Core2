@@ -55,7 +55,7 @@ public class LabelProcessor
    public void OnPaint(Graphics graphics)
    {
       using var labelFont = new Font(font, FontStyle.Bold);
-      var writer = new UiActionWriter(CardinalAlignment.West, false, nil, nil, UiActionButtonType.Normal, useEmojis)
+      var writer = new UiActionWriter(CardinalAlignment.West, false, nil, nil, UiActionButtonType.Normal, useEmojis, false)
       {
          Rectangle = labelRectangle,
          Font = labelFont,
