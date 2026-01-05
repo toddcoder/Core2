@@ -1,8 +1,28 @@
-﻿namespace Core.Markup.Quirk.Parser;
+﻿using System.Text;
+using Core.DataStructures;
+using Core.Monads;
 
-public class ParseState
+namespace Core.Markup.Quirk.Parser;
+
+public class ParseState(string input)
 {
-   public string CurrentSource => "";
+   protected static string[] getLines(string input) => input.Split(["\r\n", "\r", "\n"], StringSplitOptions.TrimEntries);
 
-   public int Index => 0;
+   protected string[] lines = getLines(input);
+   protected MaybeStack<string> tags = [];
+   protected StringBuilder builder = new();
+
+   public string Line => lines[Index];
+
+   public int Index { get; set; }
+
+   public void Advance(int amount = 1) => Index += amount;
+
+   public void PushTag(string tag) => tags.Push(tag);
+
+   public Maybe<string> PopTag() => tags.Pop();
+
+   public bool More => Index < lines.Length;
+
+   public void Append(string text) => builder.Append(text);
 }
