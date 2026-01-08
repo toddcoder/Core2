@@ -162,9 +162,7 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId
       get => !textBox.ReadOnly;
       set
       {
-         textBox.ReadOnly = !value;
-         textBox.TabStop = value;
-         textBox.Cursor = value ? Cursors.IBeam : Cursors.Default;
+         setTextBoxStatus(value);
          if (value)
          {
             textBox.ForeColor = SystemColors.ControlText;
@@ -176,5 +174,26 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId
             textBox.BackColor = Color.Blue;
          }
       }
+   }
+
+   protected void setTextBoxStatus(bool value)
+   {
+      textBox.ReadOnly = !value;
+      textBox.TabStop = value;
+      textBox.Cursor = value ? Cursors.IBeam : Cursors.Default;
+   }
+
+   public void SetColor(Color foreColor, Color backColor)
+   {
+      setTextBoxStatus(false);
+      textBox.ForeColor = foreColor;
+      textBox.BackColor = backColor;
+   }
+
+   public void ResetColor()
+   {
+      setTextBoxStatus(true);
+      textBox.ForeColor = SystemColors.ControlText;
+      textBox.BackColor = SystemColors.Control;
    }
 }
