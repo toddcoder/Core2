@@ -156,4 +156,25 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId
    }
 
    public long ObjectId { get; set; }
+
+   public bool TextEnabled
+   {
+      get => !textBox.ReadOnly;
+      set
+      {
+         textBox.ReadOnly = !value;
+         textBox.TabStop = value;
+         textBox.Cursor = value ? Cursors.IBeam : Cursors.Default;
+         if (value)
+         {
+            textBox.ForeColor = SystemColors.ControlText;
+            textBox.BackColor = SystemColors.Control;
+         }
+         else
+         {
+            textBox.ForeColor = Color.White;
+            textBox.BackColor = Color.Blue;
+         }
+      }
+   }
 }

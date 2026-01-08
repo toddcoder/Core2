@@ -16,7 +16,7 @@ public partial class Form6 : Form
    protected UiAction uiReadOnlyAlternates = new() { AutoSizeText = true, UseEmojis = false };
    protected UiAction uiApplication = new();
    protected UiAction uiDivider = new();
-   protected bool isBusy = false;
+   protected bool isBusy;
    protected UiActionState state = new UiActionState.None();
 
    public Form6()
@@ -42,6 +42,7 @@ public partial class Form6 : Form
             _ = ltText.Label & (text.IsNotEmpty(), "text is empty") & (text is "alfa" or "bravo", "Expected alfa or bravo");
          }
       };
+      ltText.Label.Click += (_, _) => ltText.TextEnabled = !ltText.TextEnabled;
 
       var uiAlfa = new UiAction();
       uiAlfa.Button("alfa");
