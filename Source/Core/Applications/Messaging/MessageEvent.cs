@@ -27,7 +27,8 @@ public class MessageEvent<TPayload> : IList<Action<TPayload>> where TPayload : n
       }
       else
       {
-         foreach (var handlerItem in handlers)
+         Action<TPayload>[] snapshot = [.. handlers];
+         foreach (var handlerItem in snapshot)
          {
             handlerItem(payload);
             System.Threading.Thread.Sleep(500);
@@ -43,9 +44,10 @@ public class MessageEvent<TPayload> : IList<Action<TPayload>> where TPayload : n
       }
       else
       {
-         foreach (var asyncHandlerItem in handlers)
+         Action<TPayload>[] snapshot = [.. handlers];
+         foreach (var asyncHandlerItem in snapshot)
          {
-            await Task.Run(() => asyncHandlerItem);
+            await Task.Run(() => asyncHandlerItem(payload));
          }
       }
    }
@@ -103,7 +105,8 @@ public class MessageEvent : IList<Action>
       }
       else
       {
-         foreach (var handlerItem in handlers)
+         Action[] snapshot = [.. handlers];
+         foreach (var handlerItem in snapshot)
          {
             handlerItem();
             System.Threading.Thread.Sleep(500);
@@ -119,9 +122,10 @@ public class MessageEvent : IList<Action>
       }
       else
       {
-         foreach (var asyncHandlerItem in handlers)
+         Action[] snapshot = [.. handlers];
+         foreach (var asyncHandlerItem in snapshot)
          {
-            await Task.Run(() => asyncHandlerItem);
+            await Task.Run(() => asyncHandlerItem());
          }
       }
    }
