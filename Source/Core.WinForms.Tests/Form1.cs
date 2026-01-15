@@ -105,6 +105,11 @@ public partial class Form1 : Form
          var form15 = new Form15();
          form15.Show();
       })).Menu();
+      (menus + "Long Messaging" + (() =>
+      {
+         var longMessaging = new LongMessaging();
+         longMessaging.Show();
+      })).Menu();
       (menus + "JSON" + retrieveJson + Keys.Control + Keys.J).Menu();
       (menus + "Start Flashing" + startFlashing + Keys.Control + Keys.F).Menu();
       (menus + "Stop Flashing" + stopFlashing + Keys.Control + Keys.Alt + Keys.F).Menu();
