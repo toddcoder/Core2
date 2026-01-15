@@ -1,19 +1,22 @@
 ﻿using Core.Applications.LongMessaging;
+using Core.Applications.Messaging;
 using Core.Monads;
 using Core.WinForms.Components;
-using Core.WinForms.Controls;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Messaging;
 
-public class NamedPipeServerBackground(UiAction uiMessage, string pipeName) : Background
+public class NamedPipeServerBackground(string pipeName) : Background
 {
    protected Maybe<CancellationTokenSource> _cts = nil;
 
+   public readonly MessageEvent Initialized = new();
+   public readonly MessageEvent<string> MessageSent = new();
+   public readonly MessageEvent Cancelled = new();
+
    public override void Initialize()
    {
-      uiMessage.Status = StatusType.Busy;
-      uiMessage.Message("IPC server starting");
+      Initialized.Invoke();
       _cts = new CancellationTokenSource();
    }
 
@@ -21,7 +24,7 @@ public class NamedPipeServerBackground(UiAction uiMessage, string pipeName) : Ba
    {
       if (_cts is (true, var cts))
       {
-         NamedPipeIpc.StartServerAsync(pipeName, msg => uiMessage.Do(() => uiMessage.Message(msg)), cts.Token).GetAwaiter().GetResult();
+         NamedPipeIpc.StartServerAsync(pipeName, msg => MessageSent.Invoke(msg), cts.Token).GetAwaiter().GetResult();
       }
    }
 
@@ -33,7 +36,6 @@ public class NamedPipeServerBackground(UiAction uiMessage, string pipeName) : Ba
          _cts = nil;
       }
 
-      uiMessage.Do(() => uiMessage.Success("IPC stopped"));
       Finalized.Invoke();
    }
 
@@ -42,6 +44,7 @@ public class NamedPipeServerBackground(UiAction uiMessage, string pipeName) : Ba
       if (_cts is (true, var cts))
       {
          cts.Cancel();
+         Cancelled.Invoke();
       }
    }
 }

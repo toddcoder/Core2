@@ -13,7 +13,22 @@ public partial class LongMessaging : Form
 
    public LongMessaging()
    {
-      background = new NamedPipeServerBackground(uiMessage, "test153");
+      background = new NamedPipeServerBackground("test153")
+      {
+         Initialized =
+         {
+            Handler = () => uiMessage.Busy(true)
+         },
+         MessageSent =
+         {
+            Handler = msg => uiMessage.Message(msg)
+         },
+         Finalized =
+         {
+            Handler = () => uiMessage.Busy(false)
+         }
+      };
+
       InitializeComponent();
 
       Controls.Add(uiMessage);
