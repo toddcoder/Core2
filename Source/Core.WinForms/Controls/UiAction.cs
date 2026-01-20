@@ -396,7 +396,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
 
          switch (type)
          {
-            case UiActionType.Alternate:
+            case UiActionType.Alternate or UiActionType.ReadOnlyAlternate:
             {
                for (var i = 0; i < rectangles.Length; i++)
                {
