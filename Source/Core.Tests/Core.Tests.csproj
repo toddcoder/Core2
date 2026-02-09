@@ -12,15 +12,16 @@
     <EmbeddedResource Include="TestData\test.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.8.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.1.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.1.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.Data\Core.Data.csproj" />
     <ProjectReference Include="..\Core.Internet\Core.Internet.csproj" />
     <ProjectReference Include="..\Core.Io\Core.Io.csproj" />
     <ProjectReference Include="..\Core.Json\Core.Json.csproj" />
+    <ProjectReference Include="..\Core.Markdown\Core.Markdown.csproj" />
     <ProjectReference Include="..\Core.Markup\Core.Markup.csproj" />
     <ProjectReference Include="..\Core.WinForms\Core.WinForms.csproj" />
     <ProjectReference Include="..\Core.Zip\Core.Zip.csproj" />

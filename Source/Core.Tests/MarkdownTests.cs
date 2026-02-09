@@ -1,5 +1,4 @@
 ﻿using Core.Markup.Markdown;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests;
 
@@ -45,5 +44,10 @@ public class MarkdownTests
          .Quote("note 1")
          .Quote("note 2");
       Console.WriteLine(builder);
+   }
+
+   public void MarkdownFrameTest()
+   {
+
    }
 }

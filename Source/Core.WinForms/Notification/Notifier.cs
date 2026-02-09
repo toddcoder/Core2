@@ -43,28 +43,28 @@ public class Notifier : Component
       base.Dispose(disposing);
    }
 
-   [Description("Left side color"), Category("Appearance"), DefaultValue(typeof(ColorDialog), null), Browsable(true)]
+   [System.ComponentModel.Description("Left side color"), Category("Appearance"), DefaultValue(typeof(ColorDialog), null), Browsable(true)]
    public Color LeftColor { get; set; }
 
-   [Description("Right side color"), Category("Appearance"), DefaultValue(typeof(ColorDialog), null), Browsable(true)]
+   [System.ComponentModel.Description("Right side color"), Category("Appearance"), DefaultValue(typeof(ColorDialog), null), Browsable(true)]
    public Color RightColor { get; set; }
 
-   [Description("Duration to display"), Category("Appearance"), DefaultValue(typeof(NumericUpDown), null), Browsable(true)]
+   [System.ComponentModel.Description("Duration to display"), Category("Appearance"), DefaultValue(typeof(NumericUpDown), null), Browsable(true)]
    public int Duration { get; set; }
 
-   [Description("Icon on left side"), Category("Appearance"), DefaultValue(typeof(PictureBox), null), Browsable(true)]
+   [System.ComponentModel.Description("Icon on left side"), Category("Appearance"), DefaultValue(typeof(PictureBox), null), Browsable(true)]
    public Image? Icon { get; set; }
 
-   [Description("Text"), Category("Appearance"), DefaultValue(typeof(TextBox), null), Browsable(true)]
+   [System.ComponentModel.Description("Text"), Category("Appearance"), DefaultValue(typeof(TextBox), null), Browsable(true)]
    public string Text { get; set; }
 
-   [Description("Color of text"), Category("Appearance"), DefaultValue(typeof(ColorDialog), null), Browsable(true)]
+   [System.ComponentModel.Description("Color of text"), Category("Appearance"), DefaultValue(typeof(ColorDialog), null), Browsable(true)]
    public Color TextColor { get; set; }
 
-   [Description("Title"), Category("Appearance"), DefaultValue(typeof(TextBox), null), Browsable(true)]
+   [System.ComponentModel.Description("Title"), Category("Appearance"), DefaultValue(typeof(TextBox), null), Browsable(true)]
    public string Title { get; set; }
 
-   [Description("Color of title"), Category("Appearance"), DefaultValue(typeof(ColorDialog), null), Browsable(true)]
+   [System.ComponentModel.Description("Color of title"), Category("Appearance"), DefaultValue(typeof(ColorDialog), null), Browsable(true)]
    public Color TitleColor { get; set; }
 
    public static void ShowNotifier(string title, string text, int duration = 3000)

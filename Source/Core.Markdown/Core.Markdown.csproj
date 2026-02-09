@@ -1,16 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
+    <OutputType>Library</OutputType>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <LangVersion>preview</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <LangVersion>preview</LangVersion>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="System.Diagnostics.EventLog" Version="10.0.2" />
+    <PackageReference Include="Markdig" Version="0.44.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\Core.Internet\Core.Internet.csproj" />
     <ProjectReference Include="..\Core.Markup\Core.Markup.csproj" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
+
 </Project>

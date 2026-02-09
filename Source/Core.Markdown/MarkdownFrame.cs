@@ -1,0 +1,93 @@
+﻿using Core.Enumerables;
+using Core.Markup.Html.Parser;
+using Core.Matching;
+using Core.Monads;
+using Core.Strings;
+using Markdig;
+using static Core.Monads.MonadFunctions;
+
+namespace Core.Markdown;
+
+public class MarkdownFrame(string styles, string markdown)
+{
+   public static Optional<MarkdownFrame> FromSource(string source)
+   {
+      try
+      {
+         List<string> styles = [];
+         List<string> lines = [];
+         var inStyle = true;
+         Maybe<string> _continuing = nil;
+
+         foreach (var line in source.Lines())
+         {
+            if (inStyle)
+            {
+               if (_continuing is (true, var continuing))
+               {
+                  if (line.IsMatch("']' $; f"))
+                  {
+                     styles.Add(continuing + line);
+                     _continuing = nil;
+                  }
+                  else
+                  {
+                     _continuing = continuing + line;
+                  }
+               }
+               else if (line.IsMatch("^ /s* -['[']+ '[' -[']']+ ']' $; f"))
+               {
+                  styles.Add(line.Trim());
+               }
+               else if (line.IsMatch("^ /s* -['[']+ '[' -[']']+ $; f"))
+               {
+                  _continuing = line.Trim();
+               }
+               else if (line.IsEmpty())
+               {
+               }
+               else
+               {
+                  lines.Add(line);
+                  inStyle = false;
+               }
+            }
+            else
+            {
+               lines.Add(line);
+            }
+         }
+
+         return new MarkdownFrame(styles.ToString("\r\n"), lines.ToString("\r\n"));
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+
+   public Optional<string> ToHtml()
+   {
+      try
+      {
+         var parser = new HtmlParser(styles, true);
+         var _html = parser.Parse();
+         if (_html is (true, var html))
+         {
+            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            var document = Markdig.Markdown.Parse(markdown, pipeline);
+            var rawHtml = document.ToHtml(pipeline);
+
+            return html.Replace("<body />", $"<body>{rawHtml}</body>");
+         }
+         else
+         {
+            return _html.Exception;
+         }
+      }
+      catch (Exception exception)
+      {
+         return exception;
+      }
+   }
+}

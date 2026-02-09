@@ -2,7 +2,6 @@
 using Core.Markup.Html.Parser;
 using Core.Markup.Xml;
 using Core.Strings;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests;
 

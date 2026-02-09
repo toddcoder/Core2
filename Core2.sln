@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Tests", "Source\Core.T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.WinForms.Tests", "Source\Core.WinForms.Tests\Core.WinForms.Tests.csproj", "{D38F95F0-62CE-4495-8FB6-E6B883ECB965}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Markdown", "Source\Core.Markdown\Core.Markdown.csproj", "{7FE39A8F-6A81-4B70-8CC0-8867FC629275}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -80,6 +82,10 @@ Global
 		{D38F95F0-62CE-4495-8FB6-E6B883ECB965}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D38F95F0-62CE-4495-8FB6-E6B883ECB965}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D38F95F0-62CE-4495-8FB6-E6B883ECB965}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FE39A8F-6A81-4B70-8CC0-8867FC629275}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FE39A8F-6A81-4B70-8CC0-8867FC629275}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FE39A8F-6A81-4B70-8CC0-8867FC629275}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FE39A8F-6A81-4B70-8CC0-8867FC629275}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
