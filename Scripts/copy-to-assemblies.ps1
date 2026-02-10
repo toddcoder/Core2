@@ -11,4 +11,5 @@ robocopy "Core.Json\bin\Debug\net8.0-windows" $target Core.Json.dll Newtonsoft.J
 robocopy "Core.Services\bin\Debug\net8.0-windows" $target Core.Services.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
 robocopy "Core.Zip\bin\Debug\net8.0-windows" $target Core.Zip.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
 robocopy "Core.Io\bin\Debug\net8.0-windows" $target Core.Io.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Markdown\bin\Debug\net8.0-windows" $target Core.Markdown.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
 Pop-Location
