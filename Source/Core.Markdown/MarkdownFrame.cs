@@ -38,11 +38,11 @@ public class MarkdownFrame(string styles, string markdown)
                }
                else if (line.IsMatch("^ /s* -['[']+ '[' -[']']+ ']' $; f"))
                {
-                  styles.Add(line.Trim());
+                  styles.Add(modifyStyleName(line));
                }
                else if (line.IsMatch("^ /s* -['[']+ '[' -[']']+ $; f"))
                {
-                  _continuing = line.Trim();
+                  _continuing = modifyStyleName(line);
                }
                else if (line.Matches("^ /s* '@' /(.+) $; f") is (true, var result))
                {
@@ -84,11 +84,11 @@ public class MarkdownFrame(string styles, string markdown)
                }
                else if (line.IsMatch("^ /s* -['[']+ '[' -[']']+ ']' $; f"))
                {
-                  styles.Add(line.Trim());
+                  styles.Add(modifyStyleName(line));
                }
                else if (line.IsMatch("^ /s* -['[']+ '[' -[']']+ $; f"))
                {
-                  _continuing = line.Trim();
+                  _continuing = modifyStyleName(line);
                }
                else if (line.IsEmpty())
                {
@@ -100,6 +100,33 @@ public class MarkdownFrame(string styles, string markdown)
       {
          return exception;
       }
+   }
+
+   protected static string modifyStyleName(string line)
+   {
+      if (line.Matches("^ /(-['[']+) /('[' .+) $; f") is (true, var result))
+      {
+         var name = result.FirstGroup;
+         var rest = result.SecondGroup;
+         if (name.Matches("^ 'header' /(/d+)") is (true, var result2))
+         {
+            return $"h{result2.FirstGroup}{rest}".Trim();
+         }
+
+         var cssName = name switch
+         {
+            "table-header" => "th",
+            "table-row" => "tr",
+            "column" => "td",
+            "ordered-list" => "ol",
+            "list" => "ul",
+            "para" => "p",
+            _ => name
+         };
+         return $"{cssName}{rest}".Trim();
+      }
+
+      return line.Trim();
    }
 
    public Optional<string> ToHtml()
