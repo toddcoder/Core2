@@ -1,4 +1,6 @@
-﻿using Core.Markup.Markdown;
+﻿using Core.Applications;
+using Core.Markdown;
+using Core.Markup.Markdown;
 
 namespace Core.Tests;
 
@@ -46,8 +48,22 @@ public class MarkdownTests
       Console.WriteLine(builder);
    }
 
+   [TestMethod]
    public void MarkdownFrameTest()
    {
-
+      var resources = new Resources<MarkdownTests>();
+      var markdownSource = resources.String(@"TestData.test.md");
+      var _html =
+         from frame in MarkdownFrame.FromSource(markdownSource)
+         from result in frame.ToHtml()
+         select result;
+      if (_html is (true, var html))
+      {
+         Console.WriteLine(html);
+      }
+      else if (_html.Exception is (true, var exception))
+      {
+         Console.WriteLine($"Error: {exception.Message}");
+      }
    }
 }

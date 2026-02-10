@@ -1,6 +1,5 @@
 ﻿using Core.Computers;
 using Core.Strings.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Core.Tests;
 

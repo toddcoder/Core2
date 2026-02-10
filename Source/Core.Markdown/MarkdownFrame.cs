@@ -1,4 +1,5 @@
-﻿using Core.Enumerables;
+﻿using Core.Computers;
+using Core.Enumerables;
 using Core.Markup.Html.Parser;
 using Core.Matching;
 using Core.Monads;
@@ -43,6 +44,11 @@ public class MarkdownFrame(string styles, string markdown)
                {
                   _continuing = line.Trim();
                }
+               else if (line.Matches("^ /s* '@' /(.+) $; f") is (true, var result))
+               {
+                  FileName file = result.FirstGroup;
+                  importStyles(file);
+               }
                else if (line.IsEmpty())
                {
                }
@@ -59,6 +65,36 @@ public class MarkdownFrame(string styles, string markdown)
          }
 
          return new MarkdownFrame(styles.ToString("\r\n"), lines.ToString("\r\n"));
+
+         void importStyles(FileName file)
+         {
+            foreach (var line in file.Lines)
+            {
+               if (_continuing is (true, var continuing))
+               {
+                  if (line.IsMatch("']' $; f"))
+                  {
+                     styles.Add(continuing + line);
+                     _continuing = nil;
+                  }
+                  else
+                  {
+                     _continuing = continuing + line;
+                  }
+               }
+               else if (line.IsMatch("^ /s* -['[']+ '[' -[']']+ ']' $; f"))
+               {
+                  styles.Add(line.Trim());
+               }
+               else if (line.IsMatch("^ /s* -['[']+ '[' -[']']+ $; f"))
+               {
+                  _continuing = line.Trim();
+               }
+               else if (line.IsEmpty())
+               {
+               }
+            }
+         }
       }
       catch (Exception exception)
       {
@@ -70,7 +106,8 @@ public class MarkdownFrame(string styles, string markdown)
    {
       try
       {
-         var parser = new HtmlParser(styles, true);
+         var stylesSource = $"style[{styles}]";
+         var parser = new HtmlParser(stylesSource, true);
          var _html = parser.Parse();
          if (_html is (true, var html))
          {
