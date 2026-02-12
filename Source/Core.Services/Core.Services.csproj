@@ -6,7 +6,7 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Diagnostics.EventLog" Version="10.0.2" />
+    <PackageReference Include="System.Diagnostics.EventLog" Version="10.0.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core.Internet\Core.Internet.csproj" />
