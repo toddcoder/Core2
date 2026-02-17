@@ -6,6 +6,7 @@ using Core.Monads;
 using Core.Strings;
 using Markdig;
 using static Core.Monads.MonadFunctions;
+using static Core.Strings.StringFunctions;
 
 namespace Core.Markdown;
 
@@ -54,13 +55,13 @@ public class MarkdownFrame(string styles, string markdown)
                }
                else
                {
-                  lines.Add(line);
+                  addLineAndPossibleStyle(line);
                   inStyle = false;
                }
             }
             else
             {
-               lines.Add(line);
+               addLineAndPossibleStyle(line);
             }
          }
 
@@ -93,6 +94,22 @@ public class MarkdownFrame(string styles, string markdown)
                else if (line.IsEmpty())
                {
                }
+            }
+         }
+
+         void addLineAndPossibleStyle(string line)
+         {
+            if (line.Matches("^ /(.+) -(< '\\') '%' /(.+) $; f") is (true, var result))
+            {
+               var linePortion = result.FirstGroup;
+               var style = result.SecondGroup;
+               var classId = uniqueID();
+               styles.Add($"{classId}[{style}]");
+               lines.Add($"{linePortion}{{.{classId}}}");
+            }
+            else
+            {
+               lines.Add(line);
             }
          }
       }
@@ -133,6 +150,15 @@ public class MarkdownFrame(string styles, string markdown)
    {
       try
       {
+         if (styles.IsEmpty())
+         {
+            var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            var document = Markdig.Markdown.Parse(markdown, pipeline);
+            var rawHtml = document.ToHtml(pipeline);
+
+            return $"<html><body>{rawHtml}</body></html>";
+         }
+
          var stylesSource = $"style[{styles}]";
          var parser = new HtmlParser(stylesSource, true);
          var _html = parser.Parse();
