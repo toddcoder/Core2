@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Core.Assertions;
@@ -57,6 +58,14 @@ public static class StringFunctions
       }
 
       return result.ToString();
+   }
+
+   public static string shortUniqueId()
+   {
+      var guid = Guid.NewGuid();
+      var base64 = Convert.ToBase64String(guid.ToByteArray());
+
+      return base64?.Replace("/", "_").Replace("+", "-").Keep(22) ?? "";
    }
 
    public static string splitLiteral(SplitType split) => split switch

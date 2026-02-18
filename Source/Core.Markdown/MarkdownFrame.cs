@@ -1,6 +1,7 @@
 ﻿using Core.Computers;
 using Core.Enumerables;
 using Core.Markup.Html.Parser;
+using Core.Markup.Xml;
 using Core.Matching;
 using Core.Monads;
 using Core.Strings;
@@ -10,9 +11,9 @@ using static Core.Strings.StringFunctions;
 
 namespace Core.Markdown;
 
-public class MarkdownFrame(string styles, string markdown)
+public class MarkdownFrame(string styles, string markdown, bool tidy = true)
 {
-   public static Optional<MarkdownFrame> FromSource(string source)
+   public static Optional<MarkdownFrame> FromSource(string source, bool tidy = true)
    {
       try
       {
@@ -65,7 +66,7 @@ public class MarkdownFrame(string styles, string markdown)
             }
          }
 
-         return new MarkdownFrame(styles.ToString("\r\n"), lines.ToString("\r\n"));
+         return new MarkdownFrame(styles.ToString("\r\n"), lines.ToString("\r\n"), tidy);
 
          void importStyles(FileName file)
          {
@@ -103,8 +104,8 @@ public class MarkdownFrame(string styles, string markdown)
             {
                var linePortion = result.FirstGroup;
                var style = result.SecondGroup;
-               var classId = uniqueID();
-               styles.Add($"{classId}[{style}]");
+               var classId = $"class-{shortUniqueId()}";
+               styles.Add($".{classId}[{style}]");
                lines.Add($"{linePortion}{{.{classId}}}");
             }
             else
@@ -156,11 +157,12 @@ public class MarkdownFrame(string styles, string markdown)
             var document = Markdig.Markdown.Parse(markdown, pipeline);
             var rawHtml = document.ToHtml(pipeline);
 
-            return $"<html><body>{rawHtml}</body></html>";
+            var newHtml = $"<html><body>{rawHtml}</body></html>";
+            return tidy ? newHtml.Tidy(true) : newHtml;
          }
 
          var stylesSource = $"style[{styles}]";
-         var parser = new HtmlParser(stylesSource, true);
+         var parser = new HtmlParser(stylesSource, tidy);
          var _html = parser.Parse();
          if (_html is (true, var html))
          {
@@ -168,7 +170,8 @@ public class MarkdownFrame(string styles, string markdown)
             var document = Markdig.Markdown.Parse(markdown, pipeline);
             var rawHtml = document.ToHtml(pipeline);
 
-            return html.Replace("<body />", $"<body>{rawHtml}</body>");
+            var newHtml = html.Replace("<body />", $"<body>{rawHtml}</body>");
+            return tidy ? newHtml.Tidy(true) : newHtml;
          }
          else
          {
