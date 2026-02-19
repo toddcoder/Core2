@@ -1,4 +1,5 @@
-﻿using Core.Computers;
+﻿using Core.Applications.Messaging;
+using Core.Computers;
 using Core.Enumerables;
 using Core.Markup.Html.Parser;
 using Core.Markup.Xml;
@@ -13,6 +14,10 @@ namespace Core.Markdown;
 
 public class MarkdownFrame(string styles, string markdown, bool tidy = true)
 {
+   public static readonly MessageEvent<ScalarReplacementArg> ScalarReplacement = new();
+
+   public static readonly MessageEvent<MultipleReplacementArg> MultipleReplacements = new();
+
    public string Styles => styles;
 
    public string Markdown => markdown;
@@ -41,7 +46,7 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
             }
             else
             {
-               addLineAndPossibleStyle(line);
+               addLineAndPossibleStyle(line, styles, lines);
             }
          }
 
@@ -79,7 +84,7 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
             }
             else
             {
-               addLineAndPossibleStyle(line);
+               addLineAndPossibleStyle(line, styles, lines);
                inStyle = false;
             }
          }
@@ -113,37 +118,79 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
                }
             }
          }
-
-         void addLineAndPossibleStyle(string line)
-         {
-            if (line.Matches("'[{' /(-['}']+) '}'/(-[']']+)']'; f") is (true, var result))
-            {
-               var linePortion = result.FirstGroup;
-               var style = result.SecondGroup;
-               if (style.Matches("/(-['(']+ '(' -[')']+ ')') /s*; f") is (true, var results))
-               {
-                  var classId = $"class-{shortUniqueId()}";
-                  var specifiers = results.Matches.Select(m => m.FirstGroup).ToString(" ");
-                  styles.Add($".{classId}[{specifiers}]");
-                  result.ZerothGroup = $"<span class=\"{classId}\">{linePortion}</span>";
-                  lines.Add(result.Text);
-               }
-               else
-               {
-                  var replacement = $"<span class=\"{style}\">{linePortion}</span>";
-                  result.ZerothGroup = replacement;
-                  lines.Add(result.Text);
-               }
-            }
-            else
-            {
-               lines.Add(line);
-            }
-         }
       }
       catch (Exception exception)
       {
          return exception;
+      }
+      finally
+      {
+         ScalarReplacement.Clear();
+         MultipleReplacements.Clear();
+      }
+   }
+
+   protected static void addLineAndPossibleStyle(string line, List<string> styleList, List<string> lines)
+   {
+      if (line.Matches("'[{' /(-['}']+) '}'/(-[']']+)']'; f") is (true, var result))
+      {
+         var linePortion = result.FirstGroup;
+         var style = result.SecondGroup;
+         if (style.Matches("/(-['(']+ '(' -[')']+ ')') /s*; f") is (true, var results))
+         {
+            var classId = $"class-{shortUniqueId()}";
+            var specifiers = results.Matches.Select(m => m.FirstGroup).ToString(" ");
+            styleList.Add($".{classId}[{specifiers}]");
+            result.ZerothGroup = $"<span class=\"{classId}\">{linePortion}</span>";
+            addLine(result.Text, lines);
+         }
+         else
+         {
+            var replacement = $"<span class=\"{style}\">{linePortion}</span>";
+            result.ZerothGroup = replacement;
+            addLine(result.Text, lines);
+         }
+      }
+      else
+      {
+         addLine(line, lines);
+      }
+   }
+
+   protected static void addLine(string line, List<string> lines)
+   {
+      if (line.Matches("/['(:'] ':' /(-[':']+) ':' /[':)']; f") is (true, var result))
+      {
+         var first = result.FirstGroup;
+         var key = result.SecondGroup;
+         var last = result.ThirdGroup;
+         switch (first)
+         {
+            case "::" when last == "::":
+            {
+               var arg = new ScalarReplacementArg(key);
+               ScalarReplacement.Invoke(arg);
+               result.ZerothGroup = arg.Value;
+               lines.Add(result.Text);
+               break;
+            }
+            case "(:" when last == ":)":
+            {
+               var arg = new MultipleReplacementArg(key);
+               MultipleReplacements.Invoke(arg);
+               foreach (var value in arg.Values)
+               {
+                  result.ZerothGroup = value;
+                  lines.Add(result.Text);
+               }
+
+               break;
+            }
+         }
+      }
+      else
+      {
+         lines.Add(line);
       }
    }
 
