@@ -30,6 +30,7 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
          List<string> lines = [];
          var inStyle = true;
          Maybe<string> _continuing = nil;
+         //Maybe<string> _inclusionKey = nil;
 
          var sourceLines = source.Lines();
          if (sourceLines[0].Matches("^ /(['+-']) /('tidy') $; f") is (true, var result))
@@ -161,27 +162,33 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
    {
       if (line.Matches("/['(:'] ':' /(-[':']+) ':' /[':)']; f") is (true, var result))
       {
-         var first = result.FirstGroup;
-         var key = result.SecondGroup;
-         var last = result.ThirdGroup;
-         switch (first)
+         switch (result)
          {
-            case "::" when last == "::":
+            case { FirstGroup: ":", ThirdGroup: ":" }:
             {
-               var arg = new ScalarReplacementArg(key);
-               ScalarReplacement.Invoke(arg);
-               result.ZerothGroup = arg.Value;
+               foreach (var match in result)
+               {
+                  var key = match.SecondGroup;
+                  var arg = new ScalarReplacementArg(key);
+                  ScalarReplacement.Invoke(arg);
+                  match.ZerothGroup = arg.Value;
+               }
+
                lines.Add(result.Text);
                break;
             }
-            case "(:" when last == ":)":
+            case { FirstGroup: "(", ThirdGroup: ")" }:
             {
+               var key = result.SecondGroup;
                var arg = new MultipleReplacementArg(key);
                MultipleReplacements.Invoke(arg);
+               var index = result.Index;
+               var length = result.Length;
                foreach (var value in arg.Values)
                {
-                  result.ZerothGroup = value;
-                  lines.Add(result.Text);
+                  Slicer slicer = value;
+                  slicer[index, length] = value;
+                  lines.Add(slicer.ToString());
                }
 
                break;
