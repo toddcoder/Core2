@@ -1,5 +1,4 @@
-﻿using Core.Applications.Messaging;
-using Core.Computers;
+﻿using Core.Computers;
 using Core.Enumerables;
 using Core.Markup.Html.Parser;
 using Core.Markup.Xml;
@@ -14,25 +13,22 @@ namespace Core.Markdown;
 
 public class MarkdownFrame(string styles, string markdown, bool tidy = true)
 {
-   public static readonly MessageEvent<ScalarReplacementArg> ScalarReplacement = new();
-
-   public static readonly MessageEvent<MultipleReplacementArg> MultipleReplacements = new();
-
    public string Styles => styles;
 
    public string Markdown => markdown;
 
-   public static Optional<MarkdownFrame> FromSource(string source, bool tidy = true)
+   public static Optional<MarkdownFrame> FromSource(IMarkdownFrameOptions options)
    {
+      var tidy = options.Tidy;
       try
       {
          List<string> styles = [];
          List<string> lines = [];
          var inStyle = true;
          Maybe<string> _continuing = nil;
-         //Maybe<string> _inclusionKey = nil;
+         Maybe<Inclusion> _inclusion = nil;
 
-         var sourceLines = source.Lines();
+         var sourceLines = options.Source.Lines();
          if (sourceLines[0].Matches("^ /(['+-']) /('tidy') $; f") is (true, var result))
          {
             tidy = result.FirstGroup == "+";
@@ -41,13 +37,26 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
 
          foreach (var line in sourceLines)
          {
+            if (line.Matches("'[:' /s* /(-[': ']+) /s* ':]'; f") is (true, var result2))
+            {
+               var key = result2.FirstGroup;
+               var inclusion = new Inclusion(key, options.Included.Contains(key));
+               _inclusion = inclusion;
+               continue;
+            }
+
+            if (_inclusion is (true, { Include: false }))
+            {
+               continue;
+            }
+
             if (inStyle)
             {
                importStyle(line);
             }
             else
             {
-               addLineAndPossibleStyle(line, styles, lines);
+               addLineAndPossibleStyle(line, styles, lines, options);
             }
          }
 
@@ -85,7 +94,7 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
             }
             else
             {
-               addLineAndPossibleStyle(line, styles, lines);
+               addLineAndPossibleStyle(line, styles, lines, options);
                inStyle = false;
             }
          }
@@ -124,14 +133,9 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
       {
          return exception;
       }
-      finally
-      {
-         ScalarReplacement.Clear();
-         MultipleReplacements.Clear();
-      }
    }
 
-   protected static void addLineAndPossibleStyle(string line, List<string> styleList, List<string> lines)
+   protected static void addLineAndPossibleStyle(string line, List<string> styleList, List<string> lines, IMarkdownFrameOptions options)
    {
       if (line.Matches("'[{' /(-['}']+) '}'/(-[']']+)']'; f") is (true, var result))
       {
@@ -143,22 +147,22 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
             var specifiers = results.Matches.Select(m => m.FirstGroup).ToString(" ");
             styleList.Add($".{classId}[{specifiers}]");
             result.ZerothGroup = $"<span class=\"{classId}\">{linePortion}</span>";
-            addLine(result.Text, lines);
+            addLine(result.Text, lines, options);
          }
          else
          {
             var replacement = $"<span class=\"{style}\">{linePortion}</span>";
             result.ZerothGroup = replacement;
-            addLine(result.Text, lines);
+            addLine(result.Text, lines, options);
          }
       }
       else
       {
-         addLine(line, lines);
+         addLine(line, lines, options);
       }
    }
 
-   protected static void addLine(string line, List<string> lines)
+   protected static void addLine(string line, List<string> lines, IMarkdownFrameOptions options)
    {
       if (line.Matches("/['(:'] ':' /(-[':']+) ':' /[':)']; f") is (true, var result))
       {
@@ -169,9 +173,7 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
                foreach (var match in result)
                {
                   var key = match.SecondGroup;
-                  var arg = new ScalarReplacementArg(key);
-                  ScalarReplacement.Invoke(arg);
-                  match.ZerothGroup = arg.Value;
+                  match.ZerothGroup = options.ScalarReplacements.Maybe[key] | "";
                }
 
                lines.Add(result.Text);
@@ -180,13 +182,12 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
             case { FirstGroup: "(", ThirdGroup: ")" }:
             {
                var key = result.SecondGroup;
-               var arg = new MultipleReplacementArg(key);
-               MultipleReplacements.Invoke(arg);
+               var enumerable = options.MultipleReplacements.Maybe[key] | [];
                var index = result.Index;
                var length = result.Length;
-               foreach (var value in arg.Values)
+               foreach (var value in enumerable)
                {
-                  Slicer slicer = value;
+                  Slicer slicer = line;
                   slicer[index, length] = value;
                   lines.Add(slicer.ToString());
                }
@@ -194,6 +195,10 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
                break;
             }
          }
+      }
+      else if (line == "!br")
+      {
+         lines.Add("<br/>");
       }
       else
       {
@@ -207,7 +212,7 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
       {
          var name = result.FirstGroup;
          var rest = result.SecondGroup;
-         if (name.Matches("^ 'header' /(/d+)") is (true, var result2))
+         if (name.Matches("^ 'header' /(/d+); f") is (true, var result2))
          {
             return $"h{result2.FirstGroup}{rest}".Trim();
          }
@@ -216,10 +221,11 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
          {
             "table-header" => "th",
             "table-row" => "tr",
-            "column" => "td",
-            "ordered-list" => "ol",
-            "list" => "ul",
+            "table-col" => "td",
+            "ordered" => "ol",
+            "unordered" => "ul",
             "para" => "p",
+            "link" => "a",
             _ => name
          };
          return $"{cssName}{rest}".Trim();

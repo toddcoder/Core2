@@ -48,12 +48,12 @@ public partial class MarkdownFrameTester : Form
       {
          StringHash scalarReplacements = [];
          StringHash<IEnumerable<string>> multipleReplacements = [];
-         MarkdownFrame.ScalarReplacement.Handler = arg => arg.Value = scalarReplacements.Maybe[arg.Key] | "";
-         MarkdownFrame.MultipleReplacements.Handler = arg => arg.Values = multipleReplacements.Maybe[arg.Key] | [];
-         updateReplacements(scalarReplacements, multipleReplacements);
+         StringSet included = [];
+         updateReplacements(scalarReplacements, multipleReplacements, included);
+         var options = new MarkdownFrameTestOptions(textSource.Text, true, scalarReplacements, multipleReplacements, included);
 
          var _html =
-            from frame in MarkdownFrame.FromSource(textSource.Text)
+            from frame in MarkdownFrame.FromSource(options)
             from result in frame.ToHtml()
             select (frame, result);
          if (_html is (true, var (markdownFrame, html)))
@@ -71,7 +71,7 @@ public partial class MarkdownFrameTester : Form
          }
       }
 
-      void updateReplacements(StringHash scalarReplacements, StringHash<IEnumerable<string>> multipleReplacements)
+      void updateReplacements(StringHash scalarReplacements, StringHash<IEnumerable<string>> multipleReplacements, StringSet included)
       {
          foreach (var line in textReplacements.Lines)
          {
@@ -87,6 +87,15 @@ public partial class MarkdownFrameTester : Form
                else
                {
                   scalarReplacements[key] = value;
+               }
+            }
+            else if (line.Matches("^ /(['a-z_'][/w '-']*) /['+-'] $") is (true, var result2))
+            {
+               var key = result2.FirstGroup;
+               var include = result2.SecondGroup == "+";
+               if (include)
+               {
+                  included.Add(key);
                }
             }
          }
