@@ -1,4 +1,6 @@
-﻿using Core.Collections;
+﻿using System.Text;
+using Core.Collections;
+using Core.Computers;
 using Core.Markdown;
 using Core.Matching;
 using Core.Strings;
@@ -9,12 +11,21 @@ namespace Core.WinForms.Tests;
 
 public partial class MarkdownFrameTester : Form
 {
+   protected const string REGEX_SCALAR = @"^([a-z_][\w-]*)\s*:\s*(.+)$; u";
+   protected const string REGEX_MULTI_BEGIN = @"^([a-z_][\w-]*)\s*\[$; u";
+   protected const string REGEX_MULTI_END = @"^\]$; u";
+   protected const string REGEX_INCLUDE = @"^([a-z_][\w-]*)([+-])$; u";
+
    protected ExRichTextBox textSource = new() { BorderStyle = BorderStyle.None };
    protected ExRichTextBox textModifiedMarkdown = new() { BorderStyle = BorderStyle.None };
    protected ExRichTextBox textHtml = new() { BorderStyle = BorderStyle.None };
    protected ExRichTextBox textReplacements = new() { BorderStyle = BorderStyle.None };
    protected UiAction uiRefresh = new();
    protected UiAction uiCopy = new();
+   protected UiAction uiOpen = new();
+   protected FileName codeFile = @"C:\Temp\code.md";
+   protected FileName replacementsFile = @"C:\Temp\replacements.txt";
+   protected FileName testFile = @"C:\Temp\test.html";
 
    public MarkdownFrameTester()
    {
@@ -27,20 +38,46 @@ public partial class MarkdownFrameTester : Form
       uiCopy.ClickText = "Refresh HTML from markdown";
 
       uiCopy.Button("Copy");
-      uiCopy.Click += (_, _) => Clipboard.SetText(textHtml.Text.IsNotEmpty() ? textHtml.Text : "");
+      uiCopy.Click += (_, _) =>
+      {
+         Clipboard.SetText(textHtml.Text.IsNotEmpty() ? textHtml.Text : "");
+         saveText();
+      };
       uiCopy.ClickText = "Copy HTML to clipboard";
 
+      uiOpen.Button("Open");
+      uiOpen.Click += (_, _) =>
+      {
+         var html = textHtml.Text;
+         if (html.IsNotEmpty())
+         {
+            testFile.TryTo.SetText(html, Encoding.UTF8);
+            testFile.Open();
+         }
+      };
+
       var builder = new TableLayoutBuilder(tableLayoutPanel);
-      _ = builder.Col + 50f + 50f;
+      _ = builder.Col + 50f + 25f + 25f;
       _ = builder.Row + 50f + 50f + 60;
       builder.SetUp();
 
       (builder + textSource).Next();
-      (builder + textModifiedMarkdown).Row();
+      (builder + textModifiedMarkdown).SpanCol(2).Row();
       (builder + textReplacements).Next();
-      (builder + textHtml).Row();
+      (builder + textHtml).SpanCol(2).Row();
       (builder + uiRefresh).Next();
-      (builder + uiCopy).Row();
+      (builder + uiCopy).Next();
+      (builder + uiOpen).Row();
+
+      if (codeFile)
+      {
+         textSource.Text = codeFile.TryTo.Text | "";
+      }
+
+      if (replacementsFile)
+      {
+         textReplacements.Text = replacementsFile.TryTo.Text | "";
+      }
 
       return;
 
@@ -73,32 +110,50 @@ public partial class MarkdownFrameTester : Form
 
       void updateReplacements(StringHash scalarReplacements, StringHash<IEnumerable<string>> multipleReplacements, StringSet included)
       {
+         var key = "";
+         List<string> values = [];
+
          foreach (var line in textReplacements.Lines)
          {
-            if (line.Matches("^ /(['a-z_'][/w '-']*) /s* '->' /s* /(.+) $; f") is (true, var result))
+            if (line.Matches(REGEX_SCALAR) is (true, var scalarResult))
             {
-               var key = result.FirstGroup;
-               var value = result.SecondGroup;
-               if (value.StartsWith('[') && value.EndsWith("]"))
-               {
-                  var values = value.Drop(1).Drop(-1).Unjoin("/s* ',' /s*; f");
-                  multipleReplacements[key] = values;
-               }
-               else
-               {
-                  scalarReplacements[key] = value;
-               }
+               key = scalarResult.FirstGroup;
+               var value = scalarResult.SecondGroup;
+               scalarReplacements[key] = value;
             }
-            else if (line.Matches("^ /(['a-z_'][/w '-']*) /['+-'] $") is (true, var result2))
+            else if (line.Matches(REGEX_MULTI_BEGIN) is (true, var beginResult))
             {
-               var key = result2.FirstGroup;
-               var include = result2.SecondGroup == "+";
+               key = beginResult.FirstGroup;
+               values.Clear();
+            }
+            else if (line.Matches(REGEX_MULTI_END))
+            {
+               multipleReplacements[key] = [.. values];
+            }
+            else if (line.Matches(REGEX_INCLUDE) is (true, var includeResult))
+            {
+               key = includeResult.FirstGroup;
+               var include = includeResult.SecondGroup == "+";
                if (include)
                {
                   included.Add(key);
                }
             }
+            else
+            {
+               var replacedLine = line.Replace(@"\t", "\t").Replace(@"\n", "\n").Replace(@"\r", "\r");
+               values.Add(replacedLine);
+            }
          }
       }
    }
+
+   protected void MarkdownFrameTester_FormClosing(object sender, FormClosingEventArgs e) => saveText();
+
+   protected void saveText()
+   {
+      codeFile.TryTo.SetText(textSource.Text, Encoding.UTF8);
+      replacementsFile.TryTo.SetText(textReplacements.Text, Encoding.UTF8);
+      testFile.TryTo.SetText(textHtml.Text, Encoding.UTF8);
+    }
 }

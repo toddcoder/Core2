@@ -53,6 +53,7 @@
             Controls.Add(tableLayoutPanel);
             Name = "MarkdownFrameTester";
             Text = "MarkdownFrameTester";
+            FormClosing += MarkdownFrameTester_FormClosing;
             ResumeLayout(false);
         }
 

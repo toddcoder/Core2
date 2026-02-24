@@ -6,6 +6,7 @@ using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using Markdig;
+using static Core.Markdown.ReplacementFunctions;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
 
@@ -135,7 +136,7 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
       }
    }
 
-   protected static void addLineAndPossibleStyle(string line, List<string> styleList, List<string> lines, IMarkdownFrameOptions options)
+   protected static string replaceMeta(string line, List<string> styleList)
    {
       if (line.Matches("'[{' /(-['}']+) '}'/(-[']']+)']'; f") is (true, var result))
       {
@@ -147,18 +148,58 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
             var specifiers = results.Matches.Select(m => m.FirstGroup).ToString(" ");
             styleList.Add($".{classId}[{specifiers}]");
             result.ZerothGroup = $"<span class=\"{classId}\">{linePortion}</span>";
-            addLine(result.Text, lines, options);
+
+            return result.Text;
          }
          else
          {
             var replacement = $"<span class=\"{style}\">{linePortion}</span>";
             result.ZerothGroup = replacement;
-            addLine(result.Text, lines, options);
+
+            return result.Text;
          }
       }
-      else
+
+      if (line.Matches("'::' /(-[':']+) '::'; f") is (true, var replacementResult))
       {
-         addLine(line, lines, options);
+         var linePortion = replacementResult.FirstGroup;
+         var style = replacementResult.SecondGroup;
+         var replacement = $"<span class=\"{style}\">{linePortion}</span>";
+         replacementResult.ZerothGroup = replacement;
+
+         return replacementResult.Text;
+      }
+
+      return line;
+   }
+
+   protected static void addLineAndPossibleStyle(string line, List<string> styleList, List<string> lines, IMarkdownFrameOptions options)
+   {
+      var result = forLine(line, options);
+      switch (result)
+      {
+         case ReplacementResult.LineAndStyles lineAndStyles:
+         {
+            lines.Add(lineAndStyles.Line);
+            styleList.AddRange(lineAndStyles.Styles);
+            break;
+         }
+         case ReplacementResult.LineOnly lineOnly:
+         {
+            lines.Add(lineOnly.Line);
+            break;
+         }
+         case ReplacementResult.LinesAndStyles linesAndStyles:
+         {
+            lines.AddRange(linesAndStyles.Lines);
+            styleList.AddRange(linesAndStyles.Styles);
+            break;
+         }
+         case ReplacementResult.LinesOnly linesOnly:
+         {
+            lines.AddRange(linesOnly.Lines);
+            break;
+         }
       }
    }
 
@@ -173,7 +214,11 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
                foreach (var match in result)
                {
                   var key = match.SecondGroup;
-                  match.ZerothGroup = options.ScalarReplacements.Maybe[key] | "";
+                  match.ZerothGroup = key switch
+                  {
+                     "br" => "<br/>",
+                     _ => options.ScalarReplacements.Maybe[key] | ""
+                  };
                }
 
                lines.Add(result.Text);
@@ -189,16 +234,12 @@ public class MarkdownFrame(string styles, string markdown, bool tidy = true)
                {
                   Slicer slicer = line;
                   slicer[index, length] = value;
-                  lines.Add(slicer.ToString());
+                  addLine(slicer.ToString(), lines, options);
                }
 
                break;
             }
          }
-      }
-      else if (line == "!br")
-      {
-         lines.Add("<br/>");
       }
       else
       {
