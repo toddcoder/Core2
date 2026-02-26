@@ -12,7 +12,7 @@ namespace Core.WinForms.Tests;
 public partial class MarkdownFrameTester : Form
 {
    protected const string REGEX_SCALAR = @"^([a-z_][\w-]*)\s*:\s*(.+)$; u";
-   protected const string REGEX_MULTI_BEGIN = @"^([a-z_][\w-]*)\s*\[$; u";
+   protected const string REGEX_MULTI_BEGIN = @"^([a-z_][\w-]*)\s*\[(.+)$; u";
    protected const string REGEX_MULTI_END = @"^\]$; u";
    protected const string REGEX_INCLUDE = @"^([a-z_][\w-]*)([+-])$; u";
 
@@ -108,9 +108,10 @@ public partial class MarkdownFrameTester : Form
          }
       }
 
-      void updateReplacements(StringHash scalarReplacements, StringHash<IEnumerable<string>> multipleReplacements, StringSet included)
+      void updateReplacements(StringHash scalarReplacements, StringHash<Replacement> multipleReplacements, StringSet included)
       {
          var key = "";
+         string[] keys = [];
          List<string> values = [];
 
          foreach (var line in textReplacements.Lines)
@@ -124,11 +125,12 @@ public partial class MarkdownFrameTester : Form
             else if (line.Matches(REGEX_MULTI_BEGIN) is (true, var beginResult))
             {
                key = beginResult.FirstGroup;
+               keys = [.. beginResult.SecondGroup.Split(',')];
                values.Clear();
             }
             else if (line.Matches(REGEX_MULTI_END))
             {
-               multipleReplacements[key] = [.. values];
+               multipleReplacements[key] = getReplacements(keys, line);
             }
             else if (line.Matches(REGEX_INCLUDE) is (true, var includeResult))
             {
@@ -146,6 +148,8 @@ public partial class MarkdownFrameTester : Form
             }
          }
       }
+
+      static Replacement getReplacements(string[] keys, string value) => new(keys.Zip(keys, value.Unjoin("/s* ',' /s*; f")).ToStringHash(t => t.First, t => t.Second));
    }
 
    protected void MarkdownFrameTester_FormClosing(object sender, FormClosingEventArgs e) => saveText();
@@ -155,5 +159,5 @@ public partial class MarkdownFrameTester : Form
       codeFile.TryTo.SetText(textSource.Text, Encoding.UTF8);
       replacementsFile.TryTo.SetText(textReplacements.Text, Encoding.UTF8);
       testFile.TryTo.SetText(textHtml.Text, Encoding.UTF8);
-    }
+   }
 }
