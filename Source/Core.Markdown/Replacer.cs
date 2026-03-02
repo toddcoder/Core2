@@ -13,7 +13,9 @@ public abstract record Replacer
 
    public sealed record MultiBegin(string Key) : Replacer;
 
-   public sealed record MultiEnd() : Replacer;
+   public sealed record Template(string Line) : Replacer;
+
+    public sealed record MultiEnd() : Replacer;
 
    public sealed record Inclusion(string Key) : Replacer;
 

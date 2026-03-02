@@ -36,21 +36,13 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
 
          List<string> lines = [];
          List<string> styles = [];
+         List<string> templateLines = [];
          Maybe<string> _key = nil;
 
          foreach (var replacer in includedReplacers)
          {
             switch (replacer)
             {
-               case Replacer.LineSpecifier lineSpecifier when _key is (true, var key):
-               {
-                  if (options.MultipleReplacements.Maybe[key] is (true, var replacements))
-                  {
-                     lines.AddRange(replacements.ReplacedLines());
-                  }
-
-                  break;
-               }
                case Replacer.LineSpecifier lineSpecifier:
                {
                   lines.Add(scalarReplacement(lineSpecifier.Line));
@@ -62,11 +54,27 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                   break;
                }
                case Replacer.MultiEnd:
+               {
+                  if (_key is (true, var key))
+                  {
+                     if (options.MultipleReplacements.Maybe[key] is (true, var replacements))
+                     {
+                        lines.AddRange(replacements.ReplacedLines(templateLines));
+                     }
+                  }
+
+                  templateLines.Clear();
                   _key = nil;
                   break;
+               }
                case Replacer.StyleSpecifier styleSpecifier:
                {
                   styles.Add(styleSpecifier.Style);
+                  break;
+               }
+               case Replacer.Template template:
+               {
+                  templateLines.Add(template.Line);
                   break;
                }
             }

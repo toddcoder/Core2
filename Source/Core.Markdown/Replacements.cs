@@ -4,35 +4,30 @@ namespace Core.Markdown;
 
 public class Replacements(string[] keys)
 {
-   protected List<string[]> replacements = [];
+   protected List<StringHash> replacements = [];
 
    public void FromDataLines(IEnumerable<string> dataLines)
    {
       foreach (var dataLine in dataLines)
       {
-         /*var hash = keys.Zip(dataLine.Split(',').Select(s => s.Trim())).ToStringHash(t => t.First, t => t.Second);
-         List<string> replacedLines = [];
-         foreach (var templateLine in templateLines)
-         {
-            var replacedLine = templateLine;
-            foreach (var (key, value) in hash)
-            {
-               replacedLine = replacedLine.Replace($"::{key}::", value);
-            }
-
-            replacedLines.Add(replacedLine);
-         }
-
-         replacements.Add([.. replacedLines]);*/
+         var hash = keys.Zip(dataLine.Split(',').Select(s => s.Trim())).ToStringHash(t => t.First, t => t.Second);
+         replacements.Add(hash);
       }
    }
 
-   public IEnumerable<string> ReplacedLines()
+   public IEnumerable<string> ReplacedLines(IEnumerable<string> templateLines)
    {
+      string[] lines = [.. templateLines];
       foreach (var replacement in replacements)
       {
-         foreach (var line in replacement)
+         foreach (var templateLine in lines)
          {
+            var line = templateLine;
+            foreach (var (key, value) in replacement)
+            {
+               line = line.Replace($"::{key}::", value);
+            }
+
             yield return line;
          }
       }

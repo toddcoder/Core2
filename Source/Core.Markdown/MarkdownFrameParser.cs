@@ -1,6 +1,7 @@
 ﻿using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
 
 namespace Core.Markdown;
@@ -21,6 +22,7 @@ public class MarkdownFrameParser(string[] sourceLines)
    public Optional<Replacer[]> Parse()
    {
       List<Replacer> replacers = [];
+      Maybe<string> _key = nil;
       foreach (var sourceLine in sourceLines)
       {
          var line = sourceLine.Trim();
@@ -71,9 +73,10 @@ public class MarkdownFrameParser(string[] sourceLines)
                      line = useStyleResult.Text;
                   }
 
-                  replacers.Add(new Replacer.LineSpecifier(line));
+                  //replacers.Add(new Replacer.LineSpecifier(line));
                }
-               else if (line.Matches(REGEX_INCLUSION) is (true, var inclusionResult))
+
+               if (line.Matches(REGEX_INCLUSION) is (true, var inclusionResult))
                {
                   var key = inclusionResult.FirstGroup;
                   replacers.Add(new Replacer.Inclusion(key));
@@ -82,10 +85,16 @@ public class MarkdownFrameParser(string[] sourceLines)
                {
                   var key = beginResult.FirstGroup;
                   replacers.Add(new Replacer.MultiBegin(key));
+                  _key = key;
                }
                else if (line.Matches(REGEX_END))
                {
                   replacers.Add(new Replacer.MultiEnd());
+                  _key = nil;
+               }
+               else if (_key)
+               {
+                  replacers.Add(new Replacer.Template(line));
                }
                else
                {

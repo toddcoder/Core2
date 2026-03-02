@@ -114,6 +114,7 @@ public partial class MarkdownFrameTester : Form
       {
          var key = "";
          Maybe<Replacements> _replacements = nil;
+         List<string> dataLines = [];
 
          foreach (var line in textReplacements.Lines)
          {
@@ -131,6 +132,12 @@ public partial class MarkdownFrameTester : Form
             }
             else if (line.Matches(REGEX_MULTI_END))
             {
+               if (_replacements is (true, var replacements))
+               {
+                  replacements.FromDataLines(dataLines);
+                  dataLines.Clear();
+               }
+
                multiLineReplacements.Maybe[key] = _replacements;
             }
             else if (line.Matches(REGEX_INCLUDE) is (true, var includeResult))
@@ -142,9 +149,9 @@ public partial class MarkdownFrameTester : Form
                   included.Add(key);
                }
             }
-            else if (_replacements is (true, var replacements))
+            else if (_replacements)
             {
-               //replacements.AddTemplateLine(line);
+               dataLines.Add(line);
             }
          }
       }
