@@ -10,7 +10,7 @@ public interface IMarkdownFrameOptions
 
    StringHash ScalarReplacements { get; }
 
-   StringHash<IEnumerable<string>> MultipleReplacements { get; }
+   StringHash<Replacements> MultipleReplacements { get; }
 
    StringSet Included { get; }
 }

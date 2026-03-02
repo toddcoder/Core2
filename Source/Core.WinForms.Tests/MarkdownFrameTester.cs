@@ -3,16 +3,18 @@ using Core.Collections;
 using Core.Computers;
 using Core.Markdown;
 using Core.Matching;
+using Core.Monads;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Tests;
 
 public partial class MarkdownFrameTester : Form
 {
    protected const string REGEX_SCALAR = @"^([a-z_][\w-]*)\s*:\s*(.+)$; u";
-   protected const string REGEX_MULTI_BEGIN = @"^([a-z_][\w-]*)\s*\[$; u";
+   protected const string REGEX_MULTI_BEGIN = @"^([a-z_][\w-]*)\s*\[(.+)$; u";
    protected const string REGEX_MULTI_END = @"^\]$; u";
    protected const string REGEX_INCLUDE = @"^([a-z_][\w-]*)([+-])$; u";
 
@@ -84,7 +86,7 @@ public partial class MarkdownFrameTester : Form
       void refresh()
       {
          StringHash scalarReplacements = [];
-         StringHash<IEnumerable<string>> multipleReplacements = [];
+         StringHash<Replacements> multipleReplacements = [];
          StringSet included = [];
          updateReplacements(scalarReplacements, multipleReplacements, included);
          var options = new MarkdownFrameTestOptions(textSource.Text, true, scalarReplacements, multipleReplacements, included);
@@ -108,10 +110,10 @@ public partial class MarkdownFrameTester : Form
          }
       }
 
-      void updateReplacements(StringHash scalarReplacements, StringHash<IEnumerable<string>> multipleReplacements, StringSet included)
+      void updateReplacements(StringHash scalarReplacements, StringHash<Replacements> multiLineReplacements, StringSet included)
       {
          var key = "";
-         List<string> values = [];
+         Maybe<Replacements> _replacements = nil;
 
          foreach (var line in textReplacements.Lines)
          {
@@ -124,11 +126,12 @@ public partial class MarkdownFrameTester : Form
             else if (line.Matches(REGEX_MULTI_BEGIN) is (true, var beginResult))
             {
                key = beginResult.FirstGroup;
-               values.Clear();
+               string[] keyNames = [.. beginResult.SecondGroup.Split(',').Select(s => s.Trim())];
+               _replacements = new Replacements(keyNames);
             }
             else if (line.Matches(REGEX_MULTI_END))
             {
-               multipleReplacements[key] = [.. values];
+               multiLineReplacements.Maybe[key] = _replacements;
             }
             else if (line.Matches(REGEX_INCLUDE) is (true, var includeResult))
             {
@@ -139,10 +142,9 @@ public partial class MarkdownFrameTester : Form
                   included.Add(key);
                }
             }
-            else
+            else if (_replacements is (true, var replacements))
             {
-               var replacedLine = line.Replace(@"\t", "\t").Replace(@"\n", "\n").Replace(@"\r", "\r");
-               values.Add(replacedLine);
+               //replacements.AddTemplateLine(line);
             }
          }
       }
@@ -155,5 +157,5 @@ public partial class MarkdownFrameTester : Form
       codeFile.TryTo.SetText(textSource.Text, Encoding.UTF8);
       replacementsFile.TryTo.SetText(textReplacements.Text, Encoding.UTF8);
       testFile.TryTo.SetText(textHtml.Text, Encoding.UTF8);
-    }
+   }
 }

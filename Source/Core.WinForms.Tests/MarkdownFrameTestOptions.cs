@@ -3,7 +3,7 @@ using Core.Markdown;
 
 namespace Core.WinForms.Tests;
 
-public class MarkdownFrameTestOptions(string source, bool tidy, StringHash scalarReplacements, StringHash<IEnumerable<string>> multipleReplacements,
+public class MarkdownFrameTestOptions(string source, bool tidy, StringHash scalarReplacements, StringHash<Replacements> multipleReplacements,
    StringSet included) : IMarkdownFrameOptions
 {
    public string Source => source;
@@ -12,7 +12,7 @@ public class MarkdownFrameTestOptions(string source, bool tidy, StringHash scala
 
    public StringHash ScalarReplacements => scalarReplacements;
 
-   public StringHash<IEnumerable<string>> MultipleReplacements => multipleReplacements;
+   public StringHash<Replacements> MultipleReplacements => multipleReplacements;
 
    public StringSet Included => included;
 }

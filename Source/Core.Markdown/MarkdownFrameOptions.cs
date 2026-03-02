@@ -10,7 +10,7 @@ public class MarkdownFrameOptions(string source) : IMarkdownFrameOptions
 
    public StringHash ScalarReplacements { get; set; } = [];
 
-   public StringHash<IEnumerable<string>> MultipleReplacements { get; set; } = [];
+   public StringHash<Replacements> MultipleReplacements { get; set; } = [];
 
    public StringSet Included { get; set; } = [];
 }
