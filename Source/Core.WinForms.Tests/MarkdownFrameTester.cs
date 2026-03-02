@@ -84,7 +84,7 @@ public partial class MarkdownFrameTester : Form
       void refresh()
       {
          StringHash scalarReplacements = [];
-         StringHash<IEnumerable<string>> multipleReplacements = [];
+         var multipleReplacements = new Replacements();
          StringSet included = [];
          updateReplacements(scalarReplacements, multipleReplacements, included);
          var options = new MarkdownFrameTestOptions(textSource.Text, true, scalarReplacements, multipleReplacements, included);
@@ -108,7 +108,7 @@ public partial class MarkdownFrameTester : Form
          }
       }
 
-      void updateReplacements(StringHash scalarReplacements, StringHash<Replacement> multipleReplacements, StringSet included)
+      void updateReplacements(StringHash scalarReplacements, Replacements multipleReplacements, StringSet included)
       {
          var key = "";
          string[] keys = [];
@@ -149,7 +149,8 @@ public partial class MarkdownFrameTester : Form
          }
       }
 
-      static Replacement getReplacements(string[] keys, string value) => new(keys.Zip(keys, value.Unjoin("/s* ',' /s*; f")).ToStringHash(t => t.First, t => t.Second));
+      static Replacement getReplacements(string[] keys, string value) =>
+         new(keys.Zip(keys, value.Unjoin("/s* ',' /s*; f")).ToStringHash(t => t.First, t => t.Second));
    }
 
    protected void MarkdownFrameTester_FormClosing(object sender, FormClosingEventArgs e) => saveText();
