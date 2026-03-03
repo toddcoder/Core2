@@ -1,6 +1,7 @@
 ﻿using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
+using Core.Strings;
 using static Core.Monads.MonadFunctions;
 using static Core.Strings.StringFunctions;
 
@@ -35,7 +36,7 @@ public class MarkdownFrameParser(string[] sourceLines)
 
                if (name.Matches("^ 'header' /(/d+); f") is (true, var result2))
                {
-                  replacers.Add(new Replacer.StyleSpecifier($"h{result2.FirstGroup}{rest}".Trim()));
+                  replacers.Add(new Replacer.StyleSpecifier($"h{result2.FirstGroup}[{rest}]".Trim()));
                   continue;
                }
 
@@ -50,30 +51,31 @@ public class MarkdownFrameParser(string[] sourceLines)
                   "link" => "a",
                   _ => name
                };
-               replacers.Add(new Replacer.StyleSpecifier($"{cssName}{rest}".Trim()));
+               replacers.Add(new Replacer.StyleSpecifier($"{cssName}[{rest}]".Trim()));
             }
             else
             {
                if (line.Matches(REGEX_USE_STYLE) is (true, var useStyleResult))
                {
-                  var linePortion = useStyleResult.FirstGroup;
-                  var style = useStyleResult.SecondGroup;
-                  if (line.Matches(REGEX_RAW_STYLE) is (true, var rawResult))
+                  Slicer slicer = line;
+                  foreach (var match in useStyleResult)
                   {
-                     var classId = $"class-{shortUniqueId()}";
-                     var specifiers = rawResult.Matches.Select(m => m.FirstGroup).ToString(" ");
-                     generatedStyles.Add($".{classId}[{specifiers}]");
-                     rawResult.ZerothGroup = $"<span class=\"{classId}\">{linePortion}</span>";
-                     line = rawResult.Text;
-                  }
-                  else
-                  {
-                     var replacement = $"<span class=\"{style}\">{linePortion}</span>";
-                     useStyleResult.ZerothGroup = replacement;
-                     line = useStyleResult.Text;
+                     var linePortion = match.FirstGroup;
+                     var style = match.SecondGroup;
+                     if (style.Matches(REGEX_RAW_STYLE) is (true, var rawResult))
+                     {
+                        var classId = $"class-{shortUniqueId()}";
+                        var specifiers = rawResult.Matches.Select(m => m.FirstGroup).ToString(" ");
+                        generatedStyles.Add($".{classId}[{specifiers}]");
+                        slicer[rawResult.Index, rawResult.Length] = $"<span class=\"{classId}\" {specifiers}>{linePortion}</span>";
+                     }
+                     else
+                     {
+                        slicer[match.Index, match.Length] = $"<span class=\"{style}\">{linePortion}</span>";
+                     }
                   }
 
-                  //replacers.Add(new Replacer.LineSpecifier(line));
+                  line = slicer.ToString();
                }
 
                if (line.Matches(REGEX_INCLUSION) is (true, var inclusionResult))

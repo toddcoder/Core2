@@ -1,6 +1,7 @@
 ﻿using Core.Enumerables;
 using Core.Matching;
 using Core.Monads;
+using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.Markdown;
@@ -28,7 +29,7 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                   includeLine = false;
                }
             }
-            else if (includeLine)
+            else if (replacer is Replacer.StyleSpecifier || includeLine)
             {
                includedReplacers.Add(replacer);
             }
@@ -59,7 +60,7 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                   {
                      if (options.MultipleReplacements.Maybe[key] is (true, var replacements))
                      {
-                        lines.AddRange(replacements.ReplacedLines(templateLines));
+                        lines.AddRange(replacements.ReplacedLines(templateLines).Select(scalarReplacement));
                      }
                   }
 
@@ -90,10 +91,17 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
 
    protected string scalarReplacement(string line)
    {
-      if (line.Matches("^ /s* '::' /(-[':']+) '::' /s* $") is (true, var result))
+      if (line.Matches("'::' /(-[':']+) '::'") is (true, var result))
       {
-         var key = result.FirstGroup;
-         return options.ScalarReplacements.Maybe[key] | line;
+         Slicer slicer = line;
+         foreach (var match in result)
+         {
+            var key = match.FirstGroup;
+            var replacement = options.ScalarReplacements.Maybe[key] | "";
+            slicer[match.Index, match.Length] = replacement;
+         }
+
+         return slicer.ToString();
       }
       else
       {
