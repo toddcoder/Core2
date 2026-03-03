@@ -2,9 +2,11 @@
 
 namespace Core.Markdown;
 
-public class Replacements(string[] keys)
+public class Replacements(params string[] keys)
 {
    protected List<StringHash> replacements = [];
+
+   public void Add(StringHash replacement) => replacements.Add(replacement);
 
    public void FromDataLines(IEnumerable<string> dataLines)
    {
