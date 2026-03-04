@@ -17,25 +17,29 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
          var includeLine = true;
          foreach (var replacer in replacers)
          {
-            if (replacer is Replacer.Inclusion inclusion)
+            switch (replacer)
             {
-               if (inclusions.Contains(inclusion.Key))
+               case Replacer.Inclusion inclusion when inclusions.Contains(inclusion.Key):
                {
                   includeLine = true;
                   includedReplacers.Add(replacer);
+                  break;
                }
-               else
-               {
+               case Replacer.Inclusion:
                   includeLine = false;
+                  break;
+               case Replacer.InclusionEnd:
+                  includeLine = true;
+                  break;
+               default:
+               {
+                  if (replacer is Replacer.StyleSpecifier || includeLine)
+                  {
+                     includedReplacers.Add(replacer);
+                  }
+
+                  break;
                }
-            }
-            else if (replacer is Replacer.InclusionEnd)
-            {
-               includeLine = true;
-            }
-            else if (replacer is Replacer.StyleSpecifier || includeLine)
-            {
-               includedReplacers.Add(replacer);
             }
          }
 
