@@ -13,6 +13,7 @@ public class MarkdownFrameParser(string[] sourceLines)
    protected const string REGEX_USE_STYLE = "'[{' /(-['}']+) '}'/(-[']']+)']'; f";
    protected const string REGEX_RAW_STYLE = "/(-['(']+ '(' -[')']+ ')') /s*; f";
    protected const string REGEX_INCLUSION = "^ /s* '[:' /(-[':']+) ':]' /s* $; f";
+   protected const string REGEX_INCLUSION_END = "^ /s* '[' [':']+ ']' /s* $; f";
    protected const string REGEX_BEGIN = "^ /s* '(:' /(-[':']+) ':)' /s* $; f";
    protected const string REGEX_END = "^ /s* '(' [':']+ ')' /s* $; f";
    protected const string REGEX_VARIABLE = "^ '//' /([/w '.-']+) /s* ':' /s* /(.+) $; f";
@@ -84,6 +85,10 @@ public class MarkdownFrameParser(string[] sourceLines)
                {
                   var key = inclusionResult.FirstGroup;
                   replacers.Add(new Replacer.Inclusion(key));
+               }
+               else if (line.Matches(REGEX_INCLUSION_END))
+               {
+                  replacers.Add(new Replacer.InclusionEnd());
                }
                else if (line.Matches(REGEX_BEGIN) is (true, var beginResult))
                {

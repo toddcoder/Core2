@@ -29,6 +29,10 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                   includeLine = false;
                }
             }
+            else if (replacer is Replacer.InclusionEnd)
+            {
+               includeLine = true;
+            }
             else if (replacer is Replacer.StyleSpecifier || includeLine)
             {
                includedReplacers.Add(replacer);

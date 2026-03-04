@@ -14,5 +14,5 @@ public abstract record Replacer
 
    public sealed record Inclusion(string Key) : Replacer;
 
-   public sealed record Variable(string Key, string Value) : Replacer;
+   public sealed record InclusionEnd : Replacer;
 }
