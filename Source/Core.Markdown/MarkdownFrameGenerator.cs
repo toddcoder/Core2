@@ -13,13 +13,13 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
       try
       {
          List<Replacer> includedReplacers = [];
-         var inclusions = options.Included;
+         var scalarReplacements = options.ScalarReplacements;
          var includeLine = true;
          foreach (var replacer in replacers)
          {
             switch (replacer)
             {
-               case Replacer.Inclusion inclusion when inclusions.Contains(inclusion.Key):
+               case Replacer.Inclusion inclusion when scalarReplacements.Maybe[inclusion.Key] is (true, var key) && key.IsNotEmpty():
                {
                   includeLine = true;
                   includedReplacers.Add(replacer);
@@ -81,6 +81,16 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                   styles.Add(styleSpecifier.Style);
                   break;
                }
+               case Replacer.RawMarkdown rawMarkdown:
+               {
+                  var rawMarkdownSource = rawScalarReplacement(rawMarkdown.Markdown);
+                  foreach (var line in rawMarkdownSource.Lines())
+                  {
+                     lines.Add(scalarReplacement(line));
+                  }
+
+                  break;
+               }
                case Replacer.Template template:
                {
                   templateLines.Add(template.Line);
@@ -121,4 +131,6 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
          return line;
       }
    }
+
+   public string rawScalarReplacement(string key) => options.ScalarReplacements.Maybe[key] | "";
 }

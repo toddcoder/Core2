@@ -14,7 +14,5 @@ public class MarkdownFrameTestOptions(string source, bool tidy, StringHash scala
 
    public StringHash<Replacements> MultipleReplacements => multipleReplacements;
 
-   public StringSet Included => included;
-
    public StringHash Variables => variables;
 }

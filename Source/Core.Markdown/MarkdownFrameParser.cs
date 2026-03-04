@@ -13,9 +13,10 @@ public class MarkdownFrameParser(string[] sourceLines)
    protected const string REGEX_USE_STYLE = "'[{' /(-['}']+) '}'/(-[']']+)']'; f";
    protected const string REGEX_RAW_STYLE = "/(-['(']+ '(' -[')']+ ')') /s*; f";
    protected const string REGEX_INCLUSION = "^ /s* '[:' /(-[':']+) ':]' /s* $; f";
-   protected const string REGEX_INCLUSION_END = "^ /s* '[' [':']+ ']' /s* $; f";
+   protected const string REGEX_INCLUSION_END = "^ '[end]' $; f";
    protected const string REGEX_BEGIN = "^ /s* '(:' /(-[':']+) ':)' /s* $; f";
-   protected const string REGEX_END = "^ /s* '(' [':']+ ')' /s* $; f";
+   protected const string REGEX_END = "^ '(end)' $; f";
+   protected const string REGEX_RAW_MARKDOWN = "^ '<:' /(-[':']+) ':>' $; f";
    protected const string REGEX_VARIABLE = "^ '//' /([/w '.-']+) /s* ':' /s* /(.+) $; f";
    protected const string REGEX_HEADER = "^ 'header' /(/d+); f";
 
@@ -100,6 +101,11 @@ public class MarkdownFrameParser(string[] sourceLines)
                {
                   replacers.Add(new Replacer.MultiEnd());
                   _key = nil;
+               }
+               else if (line.Matches(REGEX_RAW_MARKDOWN) is (true, var rawResult))
+               {
+                  var rawMarkdown = rawResult.FirstGroup;
+                  replacers.Add(new Replacer.RawMarkdown(rawMarkdown));
                }
                else if (line.Matches(REGEX_VARIABLE) is (true, var variableResult))
                {

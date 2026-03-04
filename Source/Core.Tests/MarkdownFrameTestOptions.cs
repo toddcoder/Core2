@@ -13,7 +13,5 @@ public class MarkdownFrameTestOptions(string source) : IMarkdownFrameOptions
 
    public StringHash<Replacements> MultipleReplacements { get; set; } = [];
 
-   public StringSet Included { get; set; } = [];
-
    public StringHash Variables { get; set; } = [];
 }

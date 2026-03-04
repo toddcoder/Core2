@@ -12,7 +12,5 @@ public interface IMarkdownFrameOptions
 
    StringHash<Replacements> MultipleReplacements { get; }
 
-   StringSet Included { get; }
-
    StringHash Variables { get; }
 }

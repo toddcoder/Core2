@@ -12,7 +12,5 @@ public struct MarkdownFrameOptions() : IMarkdownFrameOptions
 
    public StringHash<Replacements> MultipleReplacements { get; set; } = [];
 
-   public StringSet Included { get; set; } = [];
-
    public StringHash Variables { get; set; } = [];
 }

@@ -18,6 +18,8 @@ public partial class MarkdownFrameTester : Form
    protected const string REGEX_MULTI_BEGIN = @"^([a-z_][\w-]*)\s*\[(.+)$; u";
    protected const string REGEX_MULTI_END = @"^\]$; u";
    protected const string REGEX_INCLUDE = @"^([a-z_][\w-]*)([+-])$; u";
+   protected const string REGEX_RAW_MARKDOWN_BEGIN = "^([a-z_][\\w-]*)<$; u";
+   protected const string REGEX_RAW_MARKDOWN_END = "^>$; u";
 
    protected ExRichTextBox textSource = new() { BorderStyle = BorderStyle.None };
    protected ExRichTextBox textModifiedMarkdown = new() { BorderStyle = BorderStyle.None };
@@ -116,6 +118,7 @@ public partial class MarkdownFrameTester : Form
       {
          var key = "";
          Maybe<Replacements> _replacements = nil;
+         Maybe<string> _rawMarkdown = nil;
          List<string> dataLines = [];
 
          foreach (var line in textReplacements.Lines)
@@ -151,7 +154,20 @@ public partial class MarkdownFrameTester : Form
                   included.Add(key);
                }
             }
-            else if (_replacements)
+            else if (line.Matches(REGEX_RAW_MARKDOWN_BEGIN) is (true, var rawMarkdownBeginResult))
+            {
+               _rawMarkdown = rawMarkdownBeginResult.FirstGroup;
+               dataLines.Clear();
+            }
+            else if (line.Matches(REGEX_RAW_MARKDOWN_END))
+            {
+               if (_rawMarkdown is (true, var rawMarkdownKey))
+               {
+                  scalarReplacements[rawMarkdownKey] = dataLines.ToString(Environment.NewLine);
+                  dataLines.Clear();
+               }
+            }
+            else if (_replacements || _rawMarkdown)
             {
                dataLines.Add(line);
             }
