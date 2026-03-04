@@ -12,9 +12,9 @@ public class MarkdownFrameParser(string[] sourceLines)
    protected const string REGEX_STYLE = "^ /(-['[']+) '[' /(-[']']+) ']' $; f";
    protected const string REGEX_USE_STYLE = "'[{' /(-['}']+) '}'/(-[']']+)']'; f";
    protected const string REGEX_RAW_STYLE = "/(-['(']+ '(' -[')']+ ')') /s*; f";
-   protected const string REGEX_INCLUSION = "^ /s* '[:' /(-[':']+) ':]' /s* $";
-   protected const string REGEX_BEGIN = "^ /s* '(:' /(-[':']+) ':)' /s* $";
-   protected const string REGEX_END = "^ /s* '(' [':']+ ')' /s* $";
+   protected const string REGEX_INCLUSION = "^ /s* '[:' /(-[':']+) ':]' /s* $; f";
+   protected const string REGEX_BEGIN = "^ /s* '(:' /(-[':']+) ':)' /s* $; f";
+   protected const string REGEX_END = "^ /s* '(' [':']+ ')' /s* $; f";
 
    protected List<string> generatedStyles = [];
 
