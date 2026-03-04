@@ -81,6 +81,11 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
             }
          }
 
+         foreach (var (key, value) in options.Variables)
+         {
+            options.Variables[key] = scalarReplacement(value);
+         }
+
          return (lines.ToString(Environment.NewLine), styles.ToString(Environment.NewLine), options.Tidy);
       }
       catch (Exception exception)

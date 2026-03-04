@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Core.Collections;
 using Core.Computers;
+using Core.Enumerables;
 using Core.Markdown;
 using Core.Matching;
 using Core.Monads;
@@ -89,16 +90,17 @@ public partial class MarkdownFrameTester : Form
          StringHash<Replacements> multipleReplacements = [];
          StringSet included = [];
          updateReplacements(scalarReplacements, multipleReplacements, included);
-         var options = new MarkdownFrameTestOptions(textSource.Text, true, scalarReplacements, multipleReplacements, included);
+         var options = new MarkdownFrameTestOptions(textSource.Text, true, scalarReplacements, multipleReplacements, included, []);
 
          var _html =
             from frame in MarkdownFrame.Create(options)
             from result in frame.ToHtml()
-            select (frame, result);
-         if (_html is (true, var (markdownFrame, html)))
+            select (frame, result, frame.Variables);
+         if (_html is (true, var (markdownFrame, html, variables)))
          {
             textHtml.Text = html;
             textModifiedMarkdown.Text = markdownFrame.Markdown;
+            Text = variables.Select(i => $"{i.Key}: {i.Value}").ToString(", ");
          }
          else if (_html.Exception is (true, var exception))
          {

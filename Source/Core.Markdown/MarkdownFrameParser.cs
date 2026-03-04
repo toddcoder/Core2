@@ -15,13 +15,14 @@ public class MarkdownFrameParser(string[] sourceLines)
    protected const string REGEX_INCLUSION = "^ /s* '[:' /(-[':']+) ':]' /s* $; f";
    protected const string REGEX_BEGIN = "^ /s* '(:' /(-[':']+) ':)' /s* $; f";
    protected const string REGEX_END = "^ /s* '(' [':']+ ')' /s* $; f";
+   protected const string REGEX_VARIABLE = "^ '//' /([/w '.-']+) /s* ':' /s* /(.+) $";
    protected const string REGEX_HEADER = "^ 'header' /(/d+); f";
 
    protected List<string> generatedStyles = [];
 
    public IEnumerable<string> GeneratedStyles => generatedStyles;
 
-   public Optional<Replacer[]> Parse()
+   public Optional<Replacer[]> Parse(IMarkdownFrameOptions options)
    {
       List<Replacer> replacers = [];
       Maybe<string> _key = nil;
@@ -94,6 +95,10 @@ public class MarkdownFrameParser(string[] sourceLines)
                {
                   replacers.Add(new Replacer.MultiEnd());
                   _key = nil;
+               }
+               else if (line.Matches(REGEX_VARIABLE) is (true, var variableResult))
+               {
+                  options.Variables[variableResult.FirstGroup] = variableResult.SecondGroup;
                }
                else if (_key)
                {

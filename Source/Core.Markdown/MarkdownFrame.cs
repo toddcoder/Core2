@@ -1,15 +1,18 @@
-﻿using Core.Markup.Xml;
+﻿using Core.Collections;
+using Core.Markup.Xml;
 using Core.Monads;
 using Core.Strings;
 using Markdig;
 
 namespace Core.Markdown;
 
-public class MarkdownFrame(string styles, string markdown, bool tidy)
+public class MarkdownFrame(string styles, string markdown, bool tidy, StringHash variables)
 {
    public string Styles => styles;
 
    public string Markdown => markdown;
+
+   public StringHash Variables => variables;
 
    public static Optional<MarkdownFrame> Create(IMarkdownFrameOptions options)
    {
@@ -18,10 +21,10 @@ public class MarkdownFrame(string styles, string markdown, bool tidy)
          var sourceLines = options.Source.Lines();
          var parser = new MarkdownFrameParser(sourceLines);
          return
-            from replacers in parser.Parse()
+            from replacers in parser.Parse(options)
             let generator = new MarkdownFrameGenerator(replacers, options)
             from generated in generator.Generate()
-            select new MarkdownFrame(generated.styles, generated.source, generated.tidy);
+            select new MarkdownFrame(generated.styles, generated.source, generated.tidy, options.Variables);
       }
       catch (Exception exception)
       {
