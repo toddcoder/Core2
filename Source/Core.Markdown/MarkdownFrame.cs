@@ -1,5 +1,4 @@
-﻿using Core.Markup.Html.Parser;
-using Core.Markup.Xml;
+﻿using Core.Markup.Xml;
 using Core.Monads;
 using Core.Strings;
 using Markdig;

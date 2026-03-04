@@ -26,7 +26,7 @@ public class StylesParser(string styles)
 
                writer.WriteLine($"  {selector} {{");
 
-               if (specifiers.Matches("/(-['(']+) '(' /(-[')']+) ')'") is (true, var specifiersResult))
+               if (specifiers.Matches("/(-['(']+) '(' /(-[')']+) ')'; f") is (true, var specifiersResult))
                {
                   foreach (var match in specifiersResult)
                   {
