@@ -55,7 +55,7 @@ public class MarkdownTests
       var markdownSource = resources.String(@"TestData.test.md");
       var options = new MarkdownFrameTestOptions(markdownSource);
       var _html =
-         from frame in MarkdownFrame.FromSource(options)
+         from frame in MarkdownFrame.Create(options)
          from result in frame.ToHtml()
          select result;
       if (_html is (true, var html))

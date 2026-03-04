@@ -12,7 +12,7 @@ public class MarkdownFrame(string styles, string markdown, bool tidy)
 
    public string Markdown => markdown;
 
-   public static Optional<MarkdownFrame> FromSource(IMarkdownFrameOptions options)
+   public static Optional<MarkdownFrame> Create(IMarkdownFrameOptions options)
    {
       try
       {
@@ -44,8 +44,7 @@ public class MarkdownFrame(string styles, string markdown, bool tidy)
             return tidy ? newHtml.Tidy(true) : newHtml;
          }
 
-         var stylesSource = $"style[{styles}]";
-         var parser = new HtmlParser(stylesSource, tidy);
+         var parser = new StylesParser(styles);
          var _html = parser.Parse();
          if (_html is (true, var html))
          {

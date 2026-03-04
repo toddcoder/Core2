@@ -12,8 +12,8 @@ namespace Core.Markup.Html.Parser;
 
 public class HtmlParser(string source, bool tidy)
 {
-   private const string PATTERN_EMPTY_ELEMENT = "'<' /(-['//!'] -['>']+ -['//']) '><//' /(-['>']+) '>'; f";
-   private const string TEXT_EMPTY_ELEMENT = "<$1/>";
+   protected const string PATTERN_EMPTY_ELEMENT = "'<' /(-['//!'] -['>']+ -['//']) '><//' /(-['>']+) '>'; f";
+   protected const string TEXT_EMPTY_ELEMENT = "<$1/>";
 
    public static implicit operator HtmlParser(string source) => new(source, true);
 

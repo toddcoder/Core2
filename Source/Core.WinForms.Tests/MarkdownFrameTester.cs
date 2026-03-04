@@ -92,7 +92,7 @@ public partial class MarkdownFrameTester : Form
          var options = new MarkdownFrameTestOptions(textSource.Text, true, scalarReplacements, multipleReplacements, included);
 
          var _html =
-            from frame in MarkdownFrame.FromSource(options)
+            from frame in MarkdownFrame.Create(options)
             from result in frame.ToHtml()
             select (frame, result);
          if (_html is (true, var (markdownFrame, html)))

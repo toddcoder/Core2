@@ -15,13 +15,13 @@ public abstract record Replacer
 
    public sealed record Template(string Line) : Replacer;
 
-    public sealed record MultiEnd() : Replacer;
+    public sealed record MultiEnd : Replacer;
 
    public sealed record Inclusion(string Key) : Replacer;
 
    protected const string REGEX_USE_STYLE = "'[{' /(-['}']+) '}'/(-[']']+)']'; f";
-
    protected const string REGEX_REPLACEMENT_SPECIFIERS = "'::' /(-[':']+) '::'; f";
+   protected const string REGEX_STYLE_LITERAL = "/(-['(']+ '(' -[')']+ ')') /s*; f";
 
    protected static List<string> generatedStyles = [];
 
@@ -31,7 +31,7 @@ public abstract record Replacer
       {
          var linePortion = styleResult.FirstGroup;
          var style = styleResult.SecondGroup;
-         if (style.Matches("/(-['(']+ '(' -[')']+ ')') /s*; f") is (true, var styleLiteralResult))
+         if (style.Matches(REGEX_STYLE_LITERAL) is (true, var styleLiteralResult))
          {
             var classId = $"class-{shortUniqueId()}";
             var specifiers = styleLiteralResult.Matches.Select(m => m.FirstGroup).ToString(" ");

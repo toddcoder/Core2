@@ -15,6 +15,7 @@ public class MarkdownFrameParser(string[] sourceLines)
    protected const string REGEX_INCLUSION = "^ /s* '[:' /(-[':']+) ':]' /s* $; f";
    protected const string REGEX_BEGIN = "^ /s* '(:' /(-[':']+) ':)' /s* $; f";
    protected const string REGEX_END = "^ /s* '(' [':']+ ')' /s* $; f";
+   protected const string REGEX_HEADER = "^ 'header' /(/d+); f";
 
    protected List<string> generatedStyles = [];
 
@@ -34,7 +35,7 @@ public class MarkdownFrameParser(string[] sourceLines)
                var name = styleResult.FirstGroup;
                var rest = styleResult.SecondGroup;
 
-               if (name.Matches("^ 'header' /(/d+); f") is (true, var result2))
+               if (name.Matches(REGEX_HEADER) is (true, var result2))
                {
                   replacers.Add(new Replacer.StyleSpecifier($"h{result2.FirstGroup}[{rest}]".Trim()));
                   continue;

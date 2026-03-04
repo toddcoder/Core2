@@ -91,7 +91,7 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
 
    protected string scalarReplacement(string line)
    {
-      if (line.Matches("'::' /(-[':']+) '::'") is (true, var result))
+      if (line.Matches("'::' /(-[':']+) '::'; f") is (true, var result))
       {
          Slicer slicer = line;
          foreach (var match in result)
