@@ -19,7 +19,7 @@ public class MarkdownFrameParser(string[] sourceLines)
    protected const string REGEX_END = "^ '(end)' $; f";
    protected const string REGEX_RAW_MARKDOWN = "^ '<:' /(-[':']+) ':>' $; f";
    protected const string REGEX_VARIABLE = "^ '//' /([/w '.-']+) /s* ':' /s* /(.+) $; f";
-   protected const string REGEX_HEADER = @"^ '\header' /(/d+); f";
+   protected const string REGEX_HEADER = "^ 'header' /(/d+); f";
 
    protected List<string> generatedStyles = [];
 

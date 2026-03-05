@@ -14,12 +14,13 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
       {
          List<Replacer> includedReplacers = [];
          var scalarReplacements = options.ScalarReplacements;
+         var multiReplacements = options.MultipleReplacements;
          var includeLine = true;
          foreach (var replacer in replacers)
          {
             switch (replacer)
             {
-               case Replacer.Inclusion inclusion when scalarReplacements.Maybe[inclusion.Key] is (true, var key):
+               case Replacer.Inclusion inclusion when keyExists(inclusion.Key) is (true, var key):
                {
                   includeLine = key.IsNotEmpty();
                   break;
@@ -27,12 +28,12 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                case Replacer.Inclusion:
                   includeLine = false;
                   break;
-               case Replacer.InclusionNegative inclusionNegative when !scalarReplacements.Maybe[inclusionNegative.Key]:
+               case Replacer.InclusionNegative inclusionNegative when !keyExists(inclusionNegative.Key):
                {
                   includeLine = true;
                   break;
                }
-               case Replacer.InclusionNegative inclusionNegative when scalarReplacements.Maybe[inclusionNegative.Key] is (true, var key):
+               case Replacer.InclusionNegative inclusionNegative when keyExists(inclusionNegative.Key) is (true, var key):
                {
                   includeLine = key.IsEmpty();
                   break;
@@ -114,6 +115,18 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
          }
 
          return (lines.ToString(Environment.NewLine), styles.ToString(Environment.NewLine), options.Tidy);
+
+         Maybe<string> keyExists(string key)
+         {
+            if (scalarReplacements.Maybe[key] || multiReplacements.Maybe[key])
+            {
+               return key;
+            }
+            else
+            {
+               return nil;
+            }
+         }
       }
       catch (Exception exception)
       {
