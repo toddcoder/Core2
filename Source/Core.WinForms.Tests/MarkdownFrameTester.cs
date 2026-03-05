@@ -141,9 +141,10 @@ public partial class MarkdownFrameTester : Form
                {
                   replacements.FromDataLines(dataLines);
                   dataLines.Clear();
+                  multiLineReplacements[key] = replacements;
                }
 
-               multiLineReplacements.Maybe[key] = _replacements;
+               _replacements = nil;
             }
             else if (line.Matches(REGEX_INCLUDE) is (true, var includeResult))
             {
@@ -166,6 +167,8 @@ public partial class MarkdownFrameTester : Form
                   scalarReplacements[rawMarkdownKey] = dataLines.ToString(Environment.NewLine);
                   dataLines.Clear();
                }
+
+               _rawMarkdown = nil;
             }
             else if (_replacements || _rawMarkdown)
             {

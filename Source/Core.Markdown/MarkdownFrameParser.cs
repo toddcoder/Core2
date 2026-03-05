@@ -9,7 +9,7 @@ namespace Core.Markdown;
 
 public class MarkdownFrameParser(string[] sourceLines)
 {
-   protected const string REGEX_STYLE = "^ /(-['[']+) '[' /(-[']']+) ']' $; f";
+   protected const string REGEX_STYLE = @"^ '\' /(-['[']+) '[' /(-[']']+) ']' $; f";
    protected const string REGEX_USE_STYLE = "'[{' /(-['}']+) '}'/(-[']']+)']'; f";
    protected const string REGEX_RAW_STYLE = "/(-['(']+ '(' -[')']+ ')') /s*; f";
    protected const string REGEX_INCLUSION = "^ /s* '[:' /(-[':']+) ':]' /s* $; f";
