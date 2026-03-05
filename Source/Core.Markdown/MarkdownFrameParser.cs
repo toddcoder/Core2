@@ -21,10 +21,6 @@ public class MarkdownFrameParser(string[] sourceLines)
    protected const string REGEX_VARIABLE = "^ '//' /([/w '.-']+) /s* ':' /s* /(.+) $; f";
    protected const string REGEX_HEADER = "^ 'header' /(/d+); f";
 
-   protected List<string> generatedStyles = [];
-
-   public IEnumerable<string> GeneratedStyles => generatedStyles;
-
    public Optional<Replacer[]> Parse(IMarkdownFrameOptions options)
    {
       List<Replacer> replacers = [];
@@ -71,8 +67,8 @@ public class MarkdownFrameParser(string[] sourceLines)
                      {
                         var classId = $"class-{shortUniqueId()}";
                         var specifiers = rawResult.Matches.Select(m => m.FirstGroup).ToString(" ");
-                        generatedStyles.Add($".{classId}[{specifiers}]");
-                        slicer[rawResult.Index, rawResult.Length] = $"<span class=\"{classId}\" {specifiers}>{linePortion}</span>";
+                        replacers.Add(new Replacer.StyleSpecifier($".{classId}[{specifiers}]"));
+                        slicer[match.Index, match.Length] = $"<span class=\"{classId}\">{linePortion}</span>";
                      }
                      else
                      {
