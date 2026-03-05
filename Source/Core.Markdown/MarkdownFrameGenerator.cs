@@ -22,7 +22,7 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
             {
                case Replacer.Inclusion inclusion when keyExists(inclusion.Key) is (true, var key):
                {
-                  includeLine = key.IsNotEmpty();
+                  includeLine = valueExists(key);
                   break;
                }
                case Replacer.Inclusion:
@@ -35,7 +35,7 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                }
                case Replacer.InclusionNegative inclusionNegative when keyExists(inclusionNegative.Key) is (true, var key):
                {
-                  includeLine = key.IsEmpty();
+                  includeLine = valueExists(key);
                   break;
                }
                case Replacer.InclusionEnd:
@@ -125,6 +125,22 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
             else
             {
                return nil;
+            }
+         }
+
+         bool valueExists(string key)
+         {
+            if (scalarReplacements.Maybe[key] is (true, var scalarValue))
+            {
+               return scalarValue.IsNotEmpty();
+            }
+            else if (multiReplacements.Maybe[key])
+            {
+               return true;
+            }
+            else
+            {
+               return false;
             }
          }
       }
