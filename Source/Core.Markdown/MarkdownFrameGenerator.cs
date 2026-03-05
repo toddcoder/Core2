@@ -19,15 +19,24 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
          {
             switch (replacer)
             {
-               case Replacer.Inclusion inclusion when scalarReplacements.Maybe[inclusion.Key] is (true, var key) && key.IsNotEmpty():
+               case Replacer.Inclusion inclusion when scalarReplacements.Maybe[inclusion.Key] is (true, var key):
                {
-                  includeLine = true;
-                  includedReplacers.Add(replacer);
+                  includeLine = key.IsNotEmpty();
                   break;
                }
                case Replacer.Inclusion:
                   includeLine = false;
                   break;
+               case Replacer.InclusionNegative inclusionNegative when !scalarReplacements.Maybe[inclusionNegative.Key]:
+               {
+                  includeLine = true;
+                  break;
+               }
+               case Replacer.InclusionNegative inclusionNegative when scalarReplacements.Maybe[inclusionNegative.Key] is (true, var key):
+               {
+                  includeLine = key.IsEmpty();
+                  break;
+               }
                case Replacer.InclusionEnd:
                   includeLine = true;
                   break;

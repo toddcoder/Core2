@@ -12,13 +12,14 @@ public class MarkdownFrameParser(string[] sourceLines)
    protected const string REGEX_STYLE = @"^ '\' /(-['[']+) '[' /(-[']']+) ']' $; f";
    protected const string REGEX_USE_STYLE = "'[{' /(-['}']+) '}'/(-[']']+)']'; f";
    protected const string REGEX_RAW_STYLE = "/(-['(']+ '(' -[')']+ ')') /s*; f";
-   protected const string REGEX_INCLUSION = "^ /s* '[:' /(-[':']+) ':]' /s* $; f";
+   protected const string REGEX_INCLUSION = "^ '[:' /(-[':']+) ':]' $; f";
+   protected const string REGEX_INCLUSION_NEGATIVE = "^ '[:!' /(-[':']+) ':]' $; f";
    protected const string REGEX_INCLUSION_END = "^ '[end]' $; f";
    protected const string REGEX_BEGIN = "^ /s* '(:' /(-[':']+) ':)' /s* $; f";
    protected const string REGEX_END = "^ '(end)' $; f";
    protected const string REGEX_RAW_MARKDOWN = "^ '<:' /(-[':']+) ':>' $; f";
    protected const string REGEX_VARIABLE = "^ '//' /([/w '.-']+) /s* ':' /s* /(.+) $; f";
-   protected const string REGEX_HEADER = "^ 'header' /(/d+); f";
+   protected const string REGEX_HEADER = @"^ '\header' /(/d+); f";
 
    protected List<string> generatedStyles = [];
 
@@ -82,7 +83,12 @@ public class MarkdownFrameParser(string[] sourceLines)
                   line = slicer.ToString();
                }
 
-               if (line.Matches(REGEX_INCLUSION) is (true, var inclusionResult))
+               if (line.Matches(REGEX_INCLUSION_NEGATIVE) is (true, var inclusionNegativeResult))
+               {
+                  var key = inclusionNegativeResult.FirstGroup;
+                  replacers.Add(new Replacer.InclusionNegative(key));
+               }
+               else if (line.Matches(REGEX_INCLUSION) is (true, var inclusionResult))
                {
                   var key = inclusionResult.FirstGroup;
                   replacers.Add(new Replacer.Inclusion(key));
