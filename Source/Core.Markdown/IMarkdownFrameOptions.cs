@@ -8,9 +8,9 @@ public interface IMarkdownFrameOptions
 
    bool Tidy { get; }
 
-   StringHash ScalarReplacements { get; }
+   ScalarReplacements ScalarReplacements { get; }
 
-   StringHash<Replacements> MultipleReplacements { get; }
+   MultiReplacements MultipleReplacements { get; }
 
    StringHash Variables { get; }
 }

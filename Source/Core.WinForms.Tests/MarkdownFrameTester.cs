@@ -1,10 +1,10 @@
 ﻿using System.Text;
-using Core.Collections;
 using Core.Computers;
 using Core.Enumerables;
 using Core.Markdown;
 using Core.Matching;
 using Core.Monads;
+using Core.Objects;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
@@ -17,7 +17,6 @@ public partial class MarkdownFrameTester : Form
    protected const string REGEX_SCALAR = @"^([a-z_][\w-]*)\s*:\s*(.+)$; u";
    protected const string REGEX_MULTI_BEGIN = @"^([a-z_][\w-]*)\s*\[(.+)$; u";
    protected const string REGEX_MULTI_END = @"^\]$; u";
-   protected const string REGEX_INCLUDE = @"^([a-z_][\w-]*)([+-])$; u";
    protected const string REGEX_RAW_MARKDOWN_BEGIN = "^([a-z_][\\w-]*)<$; u";
    protected const string REGEX_RAW_MARKDOWN_END = "^>$; u";
 
@@ -88,11 +87,10 @@ public partial class MarkdownFrameTester : Form
 
       void refresh()
       {
-         StringHash scalarReplacements = [];
-         StringHash<Replacements> multipleReplacements = [];
-         StringSet included = [];
-         updateReplacements(scalarReplacements, multipleReplacements, included);
-         var options = new MarkdownFrameTestOptions(textSource.Text, true, scalarReplacements, multipleReplacements, included, []);
+         var scalarReplacements = new ScalarReplacements();
+         MultiReplacements multipleReplacements = new();
+         updateReplacements(scalarReplacements, multipleReplacements);
+         var options = new MarkdownFrameTestOptions(textSource.Text, true, scalarReplacements, multipleReplacements, []);
 
          var _html =
             from frame in MarkdownFrame.Create(options)
@@ -114,10 +112,8 @@ public partial class MarkdownFrameTester : Form
          }
       }
 
-      void updateReplacements(StringHash scalarReplacements, StringHash<Replacements> multiLineReplacements, StringSet included)
+      void updateReplacements(ScalarReplacements scalarReplacements, MultiReplacements multiLineReplacements)
       {
-         var key = "";
-         Maybe<Replacements> _replacements = nil;
          Maybe<string> _rawMarkdown = nil;
          List<string> dataLines = [];
 
@@ -125,35 +121,21 @@ public partial class MarkdownFrameTester : Form
          {
             if (line.Matches(REGEX_SCALAR) is (true, var scalarResult))
             {
-               key = scalarResult.FirstGroup;
+               var key = scalarResult.FirstGroup;
                var value = scalarResult.SecondGroup;
                scalarReplacements[key] = value;
             }
             else if (line.Matches(REGEX_MULTI_BEGIN) is (true, var beginResult))
             {
-               key = beginResult.FirstGroup;
+               var key = beginResult.FirstGroup;
                string[] keyNames = [.. beginResult.SecondGroup.Split(',').Select(s => s.Trim())];
-               _replacements = new Replacements(keyNames);
+               multiLineReplacements.Begin(key, keyNames);
             }
             else if (line.Matches(REGEX_MULTI_END))
             {
-               if (_replacements is (true, var replacements))
-               {
-                  replacements.FromDataLines(dataLines);
-                  dataLines.Clear();
-                  multiLineReplacements[key] = replacements;
-               }
-
-               _replacements = nil;
-            }
-            else if (line.Matches(REGEX_INCLUDE) is (true, var includeResult))
-            {
-               key = includeResult.FirstGroup;
-               var include = includeResult.SecondGroup == "+";
-               if (include)
-               {
-                  included.Add(key);
-               }
+               multiLineReplacements.CurrentReplacements.FromDataLines(dataLines);
+               dataLines.Clear();
+               multiLineReplacements.Commit();
             }
             else if (line.Matches(REGEX_RAW_MARKDOWN_BEGIN) is (true, var rawMarkdownBeginResult))
             {
@@ -170,7 +152,14 @@ public partial class MarkdownFrameTester : Form
 
                _rawMarkdown = nil;
             }
-            else if (_replacements || _rawMarkdown)
+            else if (multiLineReplacements.Transacting)
+            {
+               foreach (var VARIABLE in line)
+               {
+                  multiLineReplacements[]
+               }
+            }
+            else if (_rawMarkdown)
             {
                dataLines.Add(line);
             }

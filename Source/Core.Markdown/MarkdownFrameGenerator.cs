@@ -1,5 +1,4 @@
 ﻿using Core.Enumerables;
-using Core.Matching;
 using Core.Monads;
 using Core.Strings;
 using static Core.Monads.MonadFunctions;
@@ -64,7 +63,7 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
             {
                case Replacer.LineSpecifier lineSpecifier:
                {
-                  lines.Add(scalarReplacement(lineSpecifier.Line));
+                  lines.Add(scalarReplacements.Replace(lineSpecifier.Line));
                   break;
                }
                case Replacer.MultiBegin multiBegin:
@@ -78,7 +77,7 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                   {
                      if (options.MultipleReplacements.Maybe[key] is (true, var replacements))
                      {
-                        lines.AddRange(replacements.ReplacedLines(templateLines).Select(scalarReplacement));
+                        lines.AddRange(replacements.ReplacedLines(templateLines).Select(l => scalarReplacements.Replace(l)));
                      }
                   }
 
@@ -93,10 +92,10 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                }
                case Replacer.RawMarkdown rawMarkdown:
                {
-                  var rawMarkdownSource = rawScalarReplacement(rawMarkdown.Markdown);
+                  var rawMarkdownSource = scalarReplacements.RawReplace(rawMarkdown.Markdown);
                   foreach (var line in rawMarkdownSource.Lines())
                   {
-                     lines.Add(scalarReplacement(line));
+                     lines.Add(scalarReplacements.Replace(line));
                   }
 
                   break;
@@ -111,7 +110,7 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
 
          foreach (var (key, value) in options.Variables)
          {
-            options.Variables[key] = scalarReplacement(value);
+            options.Variables[key] = scalarReplacements.Replace(value);
          }
 
          return (lines.ToString(Environment.NewLine), styles.ToString(Environment.NewLine), options.Tidy);
@@ -149,26 +148,4 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
          return exception;
       }
    }
-
-   protected string scalarReplacement(string line)
-   {
-      if (line.Matches("'::' /(-[':']+) '::'; f") is (true, var result))
-      {
-         Slicer slicer = line;
-         foreach (var match in result)
-         {
-            var key = match.FirstGroup;
-            var replacement = options.ScalarReplacements.Maybe[key] | "";
-            slicer[match.Index, match.Length] = replacement;
-         }
-
-         return slicer.ToString();
-      }
-      else
-      {
-         return line;
-      }
-   }
-
-   public string rawScalarReplacement(string key) => options.ScalarReplacements.Maybe[key] | "";
 }
