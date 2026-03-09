@@ -4,7 +4,6 @@ using Core.Enumerables;
 using Core.Markdown;
 using Core.Matching;
 using Core.Monads;
-using Core.Objects;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
@@ -133,8 +132,6 @@ public partial class MarkdownFrameTester : Form
             }
             else if (line.Matches(REGEX_MULTI_END))
             {
-               multiLineReplacements.CurrentReplacements.FromDataLines(dataLines);
-               dataLines.Clear();
                multiLineReplacements.Commit();
             }
             else if (line.Matches(REGEX_RAW_MARKDOWN_BEGIN) is (true, var rawMarkdownBeginResult))
@@ -154,10 +151,12 @@ public partial class MarkdownFrameTester : Form
             }
             else if (multiLineReplacements.Transacting)
             {
-               foreach (var VARIABLE in line)
+               multiLineReplacements.CurrentReplacements.Begin();
+               foreach (var (key, value) in multiLineReplacements.CurrentReplacements.Keys.Zip(line.Split(',')))
                {
-                  multiLineReplacements[]
+                  multiLineReplacements.CurrentReplacements[key] = value;
                }
+               multiLineReplacements.CurrentReplacements.Commit();
             }
             else if (_rawMarkdown)
             {

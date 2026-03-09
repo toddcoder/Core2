@@ -9,11 +9,10 @@ public class MultiReplacements : IHash<string, Replacements>
    protected StringHash<Replacements> replacements = [];
    protected Maybe<Replacements> _currentReplacements = nil;
    protected Maybe<string> _replacementKey = nil;
-   protected StringHash hash = [];
 
-   public string this[string key]
+   public Replacements this[string key]
    {
-      set => hash[key] = value;
+      set => replacements[key] = value;
    }
 
    public bool ContainsKey(string key) => replacements.ContainsKey(key);
@@ -31,29 +30,25 @@ public class MultiReplacements : IHash<string, Replacements>
       var currentReplacements = new Replacements(keys);
       _currentReplacements = currentReplacements;
       _replacementKey = replacementKey;
-      hash = [];
 
       return currentReplacements;
    }
 
    public void Commit()
    {
-      if (_currentReplacements is (true, var currentReplacements) && _replacementKey is (true, var replacementKey) && hash.Count == currentReplacements.KeyCount)
+      if (_currentReplacements is (true, var currentReplacements) && _replacementKey is (true, var replacementKey))
       {
-         currentReplacements.Add(hash);
          replacements[replacementKey] = currentReplacements;
       }
 
       _currentReplacements = nil;
       _replacementKey = nil;
-      hash = [];
    }
 
    public void RollBack()
    {
       _currentReplacements = nil;
       _replacementKey = nil;
-      hash = [];
    }
 
    Replacements IHash<string, Replacements>.this[string key] => replacements[key];

@@ -5,19 +5,40 @@ namespace Core.Markdown;
 public class Replacements(params string[] keys)
 {
    protected List<StringHash> replacements = [];
+   protected StringHash hash = [];
+   protected bool transacting;
 
-   public int KeyCount => keys.Length;
+   public string[] Keys => keys;
 
-   public void Add(StringHash replacement) => replacements.Add(replacement);
+   public bool Transacting => transacting;
 
-   /*public void FromDataLines(IEnumerable<string> dataLines)
+   public void Begin()
    {
-      foreach (var dataLine in dataLines)
+      hash = [];
+      transacting = true;
+   }
+
+   public void Commit()
+   {
+      if (hash.Keys.Count == keys.Length)
       {
-         var hash = keys.Zip(dataLine.Split(',').Select(s => s.Trim())).ToStringHash(t => t.First, t => t.Second);
          replacements.Add(hash);
       }
-   }*/
+
+      hash = [];
+      transacting = false;
+   }
+
+   public void RollBack()
+   {
+      hash.Clear();
+      transacting = false;
+   }
+
+   public string this[string key]
+   {
+      set => hash[key] = value;
+   }
 
    public IEnumerable<string> ReplacedLines(IEnumerable<string> templateLines)
    {
