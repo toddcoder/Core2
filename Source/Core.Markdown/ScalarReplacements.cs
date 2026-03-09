@@ -43,4 +43,6 @@ public class ScalarReplacements : IHash<string, string>
    }
 
    public string RawReplace(string key) => replacements.Maybe[key] | "";
+
+   public void Merge(Hash<string, string> other) => replacements.Merge(other);
 }
