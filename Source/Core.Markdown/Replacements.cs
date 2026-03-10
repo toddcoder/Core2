@@ -1,4 +1,5 @@
 ﻿using Core.Collections;
+using static Core.Markdown.ReplacementFunctions;
 
 namespace Core.Markdown;
 
@@ -48,10 +49,7 @@ public class Replacements(params string[] keys)
          foreach (var templateLine in lines)
          {
             var line = templateLine;
-            foreach (var (key, value) in replacement)
-            {
-               line = line.Replace($"::{key}::", value);
-            }
+            line = replace(line, replacement);
 
             yield return line;
          }
