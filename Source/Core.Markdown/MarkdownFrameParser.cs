@@ -18,6 +18,7 @@ public class MarkdownFrameParser(string[] sourceLines)
    protected const string REGEX_BEGIN = "^ /s* '(:' /(-[':']+) ':)' /s* $; f";
    protected const string REGEX_END = "^ '(end)' $; f";
    protected const string REGEX_RAW_MARKDOWN = "^ '<:' /(-[':']+) ':>' $; f";
+   protected const string REGEX_BREAK = "^ '<!>' $; f";
    protected const string REGEX_VARIABLE = "^ '//' /([/w '.-']+) /s* ':' /s* /(.+) $; f";
    protected const string REGEX_HEADER = "^ 'header' /(/d+); f";
 
@@ -114,6 +115,10 @@ public class MarkdownFrameParser(string[] sourceLines)
                else if (line.Matches(REGEX_VARIABLE) is (true, var variableResult))
                {
                   options.Variables[variableResult.FirstGroup] = variableResult.SecondGroup;
+               }
+               else if (line.Matches(REGEX_BREAK))
+               {
+                  replacers.Add(new Replacer.Break());
                }
                else if (_key)
                {
