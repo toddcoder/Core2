@@ -34,7 +34,7 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                }
                case Replacer.InclusionNegative inclusionNegative when keyExists(inclusionNegative.Key) is (true, var key):
                {
-                  includeLine = valueExists(key);
+                  includeLine = !valueExists(key);
                   break;
                }
                case Replacer.InclusionEnd:
