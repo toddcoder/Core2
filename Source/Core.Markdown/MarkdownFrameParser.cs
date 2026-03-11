@@ -10,7 +10,7 @@ namespace Core.Markdown;
 public class MarkdownFrameParser(string[] sourceLines)
 {
    protected const string REGEX_STYLE = @"^ '\' /(-['[']+) '[' /(-[']']+) ']' $; f";
-   protected const string REGEX_USE_STYLE = "'[{' /(-['}']+) '}'/(-[']']+)']'; f";
+   protected const string REGEX_USE_STYLE = "'<!' /(-['!']+) /('!'1%2) /(-['>']+)'>'; f";
    protected const string REGEX_RAW_STYLE = "/(-['(']+ '(' -[')']+ ')') /s*; f";
    protected const string REGEX_INCLUSION = "^ '[:' /(-[':']+) ':]' $; f";
    protected const string REGEX_INCLUSION_NEGATIVE = "^ '[:!' /(-[':']+) ':]' $; f";
@@ -62,17 +62,19 @@ public class MarkdownFrameParser(string[] sourceLines)
                   foreach (var match in useStyleResult)
                   {
                      var linePortion = match.FirstGroup;
-                     var style = match.SecondGroup;
+                     var isSpan = match.SecondGroup == "!";
+                     var element = isSpan ? "span" : "div";
+                     var style = match.ThirdGroup;
                      if (style.Matches(REGEX_RAW_STYLE) is (true, var rawResult))
                      {
                         var classId = $"class-{shortUniqueId()}";
                         var specifiers = rawResult.Matches.Select(m => m.FirstGroup).ToString(" ");
                         replacers.Add(new Replacer.StyleSpecifier($".{classId}[{specifiers}]"));
-                        slicer[match.Index, match.Length] = $"<span class=\"{classId}\">{linePortion}</span>";
+                        slicer[match.Index, match.Length] = $"<{element} class=\"{classId}\">{linePortion}</{element}>";
                      }
                      else
                      {
-                        slicer[match.Index, match.Length] = $"<span class=\"{style}\">{linePortion}</span>";
+                        slicer[match.Index, match.Length] = $"<{element} class=\"{style}\">{linePortion}</{element}>";
                      }
                   }
 
