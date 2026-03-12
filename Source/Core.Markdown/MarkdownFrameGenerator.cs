@@ -67,7 +67,7 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                   break;
                }
                case Replacer.Break:
-                  lines.Add("<br />");
+                  lines.Add("<br></br>");
                   break;
                case Replacer.MultiBegin multiBegin:
                {

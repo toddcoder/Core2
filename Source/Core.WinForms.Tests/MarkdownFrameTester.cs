@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Core.Computers;
+using Core.Dates.DateIncrements;
 using Core.Enumerables;
 using Core.Markdown;
 using Core.Matching;
@@ -38,7 +39,8 @@ public partial class MarkdownFrameTester : Form
 
       uiRefresh.Button("Refresh");
       uiRefresh.Click += (_, _) => refresh();
-      uiCopy.ClickText = "Refresh HTML from markdown";
+      uiRefresh.ClickText = "Refresh HTML from markdown";
+      uiRefresh.Tick += (_, _) => uiRefresh.Button("Refresh");
 
       uiCopy.Button("Copy");
       uiCopy.Click += (_, _) =>
@@ -104,6 +106,7 @@ public partial class MarkdownFrameTester : Form
          else if (_html.Exception is (true, var exception))
          {
             uiRefresh.Exception(exception);
+            uiRefresh.StartTimer(10.Seconds(), true);
          }
          else
          {
@@ -156,6 +159,7 @@ public partial class MarkdownFrameTester : Form
                {
                   multiLineReplacements.CurrentReplacements[key] = value;
                }
+
                multiLineReplacements.CurrentReplacements.Commit();
             }
             else if (_rawMarkdown)

@@ -122,7 +122,14 @@ public class MarkdownFrameParser(string[] sourceLines)
                }
                else if (_key)
                {
-                  replacers.Add(new Replacer.Template(line));
+                  if (line.Matches(REGEX_BREAK))
+                  {
+                     replacers.Add(new Replacer.Break());
+                  }
+                  else
+                  {
+                     replacers.Add(new Replacer.Template(line));
+                  }
                }
                else
                {
