@@ -16,7 +16,7 @@ public static class MarkdownExtensions
             return text;
          }
 
-         return text.Substitute(REGEX_OPERATOR, "$1");
+         return text.Substitute(REGEX_OPERATOR, @"\$1");
       }
    }
 }

@@ -67,4 +67,12 @@ public class MarkdownTests
          Console.WriteLine($"Error: {exception.Message}");
       }
    }
+
+   [TestMethod]
+   public void MarkdownEscapeTest()
+   {
+      var message = "[|]**";
+      var escapedMessage = message.EscapeMarkdown();
+      Console.WriteLine(escapedMessage);
+   }
 }
