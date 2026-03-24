@@ -28,13 +28,9 @@ public static class MonadExtensions
                return nil;
             }
          }
+      }
 
-         return new Some<T>(obj);
-      }
-      else
-      {
-         return new Some<T>(obj);
-      }
+      return new Some<T>(obj);
    }
 
    public static Optional<T> Just<T>(this T obj) where T : notnull
@@ -48,13 +44,9 @@ public static class MonadExtensions
                return fail("No tuple item can be null");
             }
          }
+      }
 
-         return new Just<T>(obj);
-      }
-      else
-      {
-         return new Just<T>(obj);
-      }
+      return new Just<T>(obj);
    }
 
    public static Optional<T> Failed<T>(this string message) where T : notnull => fail(message);
@@ -732,7 +724,43 @@ public static class MonadExtensions
       });
    }
 
-   public static Maybe<TResult> Map<T1, T2, TResult>(this Maybe<(T1, T2)> maybe, Func<T1, T2, TResult> func) where TResult : notnull
+   public static Maybe<T> PickOrNone<T>(this IEnumerable<T> enumerable, Func<T, T, T> selector) where T : notnull
+   {
+      Maybe<T> _picked = nil;
+      foreach (var item in enumerable)
+      {
+         if (_picked is (true, var max))
+         {
+            _picked = selector(max, item);
+         }
+         else
+         {
+            _picked = item;
+         }
+      }
+
+      return _picked;
+   }
+
+   public static Optional<T> PickOrEmpty<T>(this IEnumerable<T> enumerable, Func<T, T, T> selector) where T : notnull
+   {
+      Optional<T> _picked = nil;
+      foreach (var item in enumerable)
+      {
+         if (_picked is (true, var max))
+         {
+            _picked = selector(max, item);
+         }
+         else
+         {
+            _picked = item;
+         }
+      }
+
+      return _picked;
+    }
+
+    public static Maybe<TResult> Map<T1, T2, TResult>(this Maybe<(T1, T2)> maybe, Func<T1, T2, TResult> func) where TResult : notnull
    {
       return maybe.Map(t => func(t.Item1, t.Item2));
    }

@@ -18,50 +18,56 @@ public static class EnumerableExtensions
       return string.Join(connector, enumerable.Select(i => i!.ToNonNullString()));
    }
 
-   public static IEnumerable<IEnumerable<T>> Pivot<T>(this IEnumerable<IEnumerable<T>> source, Func<T> defaultValue)
+   extension<T>(IEnumerable<IEnumerable<T>> source)
    {
-      T[][] array = [.. source.Select(row => (T[]) [.. row])];
-      if (array.Length != 0)
+      public IEnumerable<IEnumerable<T>> Pivot(Func<T> defaultValue)
       {
-         var maxRowLen = array.Select(a => a.Length).Max();
-         var minRowLen = array.Select(a => a.Length).Min();
-         var squared = array;
-         if (minRowLen != maxRowLen)
+         T[][] array = [.. source.Select(row => (T[]) [.. row])];
+         if (array.Length != 0)
          {
-            squared = [.. array.Select(row => row.Pad(maxRowLen, defaultValue()))];
+            var maxRowLen = array.Select(a => a.Length).Max();
+            var minRowLen = array.Select(a => a.Length).Min();
+            var squared = array;
+            if (minRowLen != maxRowLen)
+            {
+               squared = [.. array.Select(row => row.Pad(maxRowLen, defaultValue()))];
+            }
+
+            return [.. 0.Until(maxRowLen).Select(i => squared.Select(row => row[i]))];
          }
+         else
+         {
+            return array;
+         }
+      }
 
-         return [.. 0.Until(maxRowLen).Select(i => squared.Select(row => row[i]))];
-      }
-      else
-      {
-         return array;
-      }
+      public IEnumerable<IEnumerable<T>> Pivot(T defaultValue) => source.Pivot(() => defaultValue);
    }
 
-   public static IEnumerable<IEnumerable<T>> Pivot<T>(this IEnumerable<IEnumerable<T>> source, T defaultValue) => source.Pivot(() => defaultValue);
-
-   public static Result<T[]> ToResultOfArray<T>(this IEnumerable<T> enumerable)
+   extension<T>(IEnumerable<T> enumerable)
    {
-      try
+      public Result<T[]> ToResultOfArray()
       {
-         return (T[]) [.. enumerable];
+         try
+         {
+            return (T[]) [.. enumerable];
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
-      catch (Exception exception)
-      {
-         return exception;
-      }
-   }
 
-   public static Result<List<T>> ToResultOfList<T>(this IEnumerable<T> enumerable)
-   {
-      try
+      public Result<List<T>> ToResultOfList()
       {
-         return (List<T>) [.. enumerable];
-      }
-      catch (Exception exception)
-      {
-         return exception;
+         try
+         {
+            return (List<T>) [.. enumerable];
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
    }
 
@@ -129,20 +135,23 @@ public static class EnumerableExtensions
       }
    }
 
-   public static IEnumerable<T> Then<T>(this T seed, Func<T, T> next, Predicate<T> stop)
+   extension<T>(T seed)
    {
-      var current = seed;
-
-      yield return current;
-
-      while (!stop(current))
+      public IEnumerable<T> Then(Func<T, T> next, Predicate<T> stop)
       {
-         current = next(current);
-         yield return current;
-      }
-   }
+         var current = seed;
 
-   public static IEnumerable<T> Then<T>(this T seed, Func<T, T> next) => seed.Then(next, _ => false);
+         yield return current;
+
+         while (!stop(current))
+         {
+            current = next(current);
+            yield return current;
+         }
+      }
+
+      public IEnumerable<T> Then(Func<T, T> next) => seed.Then(next, _ => false);
+   }
 
    public static IEnumerable<(int index, T item)> Indexed<T>(this IEnumerable<T> enumerable)
    {
@@ -153,43 +162,46 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Maybe<int> IndexOf<T>(this IEnumerable<T> enumerable, T needle) where T : notnull
+   extension<T>(IEnumerable<T> enumerable) where T : notnull
    {
-      foreach (var (index, item) in enumerable.Indexed())
+      public Maybe<int> IndexOf(T needle)
       {
-         if (needle.Equals(item))
+         foreach (var (index, item) in enumerable.Indexed())
          {
-            return index;
+            if (needle.Equals(item))
+            {
+               return index;
+            }
          }
-      }
 
-      return nil;
-   }
-
-   public static Maybe<int> LastIndexOf<T>(this IEnumerable<T> enumerable, T needle) where T : notnull
-   {
-      foreach (var (index, item) in enumerable.Indexed().Reversed())
-      {
-         if (needle.Equals(item))
-         {
-            return index;
-         }
-      }
-
-      return nil;
-   }
-
-   public static Maybe<T> FirstOrNone<T>(this IEnumerable<T> enumerable) where T : notnull
-   {
-      var first = enumerable.FirstOrDefault();
-
-      if (first is not null)
-      {
-         return first;
-      }
-      else
-      {
          return nil;
+      }
+
+      public Maybe<int> LastIndexOf(T needle)
+      {
+         foreach (var (index, item) in enumerable.Indexed().Reversed())
+         {
+            if (needle.Equals(item))
+            {
+               return index;
+            }
+         }
+
+         return nil;
+      }
+
+      public Maybe<T> FirstOrNone()
+      {
+         var first = enumerable.FirstOrDefault();
+
+         if (first is not null)
+         {
+            return first;
+         }
+         else
+         {
+            return nil;
+         }
       }
    }
 
@@ -209,81 +221,82 @@ public static class EnumerableExtensions
       return nil;
    }
 
-   public static Maybe<T> LastOrNone<T>(this IEnumerable<T> enumerable) where T : notnull
+   extension<T>(IEnumerable<T> enumerable) where T : notnull
    {
-      var last = enumerable.LastOrDefault();
+      public Maybe<T> LastOrNone()
+      {
+         var last = enumerable.LastOrDefault();
 
-      if (last is not null)
-      {
-         return last;
+         if (last is not null)
+         {
+            return last;
+         }
+         else
+         {
+            return nil;
+         }
       }
-      else
+
+      public Maybe<T> AnyOrNone(Func<T, T, bool> predicate, params T[] needles)
       {
+         T[] array = [.. enumerable];
+         foreach (var needle in needles)
+         {
+            var _result = array.FirstOrNone(i => predicate(needle, i));
+            if (_result is (true, var result))
+            {
+               return result;
+            }
+         }
+
          return nil;
       }
-   }
 
-   public static Maybe<T> AnyOrNone<T>(this IEnumerable<T> enumerable, Func<T, T, bool> predicate, params T[] needles) where T : notnull
-   {
-      T[] array = [.. enumerable];
-      foreach (var needle in needles)
+      public Maybe<T> AnyOrNone(Func<T, T, bool> predicate, Func<T, T, T> returnFunc, params T[] needles)
       {
-         var _result = array.FirstOrNone(i => predicate(needle, i));
-         if (_result is (true, var result))
+         T[] array = [.. enumerable];
+         foreach (var needle in needles)
          {
-            return result;
+            var _result = array.FirstOrNone(i => predicate(needle, i));
+            if (_result is (true, var result))
+            {
+               return returnFunc(needle, result);
+            }
+         }
+
+         return nil;
+      }
+
+      public Result<T> FirstOrFailure(string failureMessage = "Default value")
+      {
+         try
+         {
+            return enumerable.FirstOrNone().Result(failureMessage);
+         }
+         catch (InvalidOperationException)
+         {
+            return fail(failureMessage);
+         }
+         catch (Exception exception)
+         {
+            return exception;
          }
       }
 
-      return nil;
-   }
-
-   public static Maybe<T> AnyOrNone<T>(this IEnumerable<T> enumerable, Func<T, T, bool> predicate, Func<T, T, T> returnFunc, params T[] needles)
-      where T : notnull
-   {
-      T[] array = [.. enumerable];
-      foreach (var needle in needles)
+      public Result<T> FirstOrFailure(Predicate<T> predicate, string failureMessage = "Default value")
       {
-         var _result = array.FirstOrNone(i => predicate(needle, i));
-         if (_result is (true, var result))
+         try
          {
-            return returnFunc(needle, result);
+            return enumerable.FirstOrNone(i => predicate(i)).Result(failureMessage);
          }
-      }
-
-      return nil;
-   }
-
-   public static Result<T> FirstOrFailure<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value") where T : notnull
-   {
-      try
-      {
-         return enumerable.FirstOrNone().Result(failureMessage);
-      }
-      catch (InvalidOperationException)
-      {
-         return fail(failureMessage);
-      }
-      catch (Exception exception)
-      {
-         return exception;
-      }
-   }
-
-   public static Result<T> FirstOrFailure<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failureMessage = "Default value")
-      where T : notnull
-   {
-      try
-      {
-         return enumerable.FirstOrNone(i => predicate(i)).Result(failureMessage);
-      }
-      catch (InvalidOperationException)
-      {
-         return fail(failureMessage);
-      }
-      catch (Exception exception)
-      {
-         return exception;
+         catch (InvalidOperationException)
+         {
+            return fail(failureMessage);
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
    }
 
@@ -354,35 +367,38 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<T> FirstOrFailure<T>(this IEnumerable<T> enumerable, Func<string> failureMessage) where T : notnull
+   extension<T>(IEnumerable<T> enumerable) where T : notnull
    {
-      try
+      public Result<T> FirstOrFailure(Func<string> failureMessage)
       {
-         return enumerable.FirstOrNone().Result(failureMessage());
+         try
+         {
+            return enumerable.FirstOrNone().Result(failureMessage());
+         }
+         catch (InvalidOperationException)
+         {
+            return fail(failureMessage());
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
-      catch (InvalidOperationException)
-      {
-         return fail(failureMessage());
-      }
-      catch (Exception exception)
-      {
-         return exception;
-      }
-   }
 
-   public static Result<T> FirstOrFailure<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage) where T : notnull
-   {
-      try
+      public Result<T> FirstOrFailure(Predicate<T> predicate, Func<string> failureMessage)
       {
-         return enumerable.FirstOrNone(i => predicate(i)).Result(failureMessage());
-      }
-      catch (InvalidOperationException)
-      {
-         return fail(failureMessage());
-      }
-      catch (Exception exception)
-      {
-         return exception;
+         try
+         {
+            return enumerable.FirstOrNone(i => predicate(i)).Result(failureMessage());
+         }
+         catch (InvalidOperationException)
+         {
+            return fail(failureMessage());
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
    }
 
@@ -453,36 +469,39 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<T> LastOrFailure<T>(this IEnumerable<T> enumerable, string failureMessage = "Default value") where T : notnull
+   extension<T>(IEnumerable<T> enumerable) where T : notnull
    {
-      try
+      public Result<T> LastOrFailure(string failureMessage = "Default value")
       {
-         return enumerable.LastOrNone().Result(failureMessage);
+         try
+         {
+            return enumerable.LastOrNone().Result(failureMessage);
+         }
+         catch (InvalidOperationException)
+         {
+            return fail(failureMessage);
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
-      catch (InvalidOperationException)
-      {
-         return fail(failureMessage);
-      }
-      catch (Exception exception)
-      {
-         return exception;
-      }
-   }
 
-   public static Result<T> LastOrFailure<T>(this IEnumerable<T> enumerable, Predicate<T> predicate,
-      string failureMessage = "Default value") where T : notnull
-   {
-      try
+      public Result<T> LastOrFailure(Predicate<T> predicate,
+         string failureMessage = "Default value")
       {
-         return enumerable.LastOrNone(i => predicate(i)).Result(failureMessage);
-      }
-      catch (InvalidOperationException)
-      {
-         return fail(failureMessage);
-      }
-      catch (Exception exception)
-      {
-         return exception;
+         try
+         {
+            return enumerable.LastOrNone(i => predicate(i)).Result(failureMessage);
+         }
+         catch (InvalidOperationException)
+         {
+            return fail(failureMessage);
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
    }
 
@@ -520,31 +539,34 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Result<T> LastOrFailure<T>(this IEnumerable<T> enumerable, Func<string> failureMessage) where T : notnull
+   extension<T>(IEnumerable<T> enumerable) where T : notnull
    {
-      try
+      public Result<T> LastOrFailure(Func<string> failureMessage)
       {
-         return enumerable.LastOrNone().Result(failureMessage());
+         try
+         {
+            return enumerable.LastOrNone().Result(failureMessage());
+         }
+         catch (InvalidOperationException)
+         {
+            return fail(failureMessage());
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
-      catch (InvalidOperationException)
-      {
-         return fail(failureMessage());
-      }
-      catch (Exception exception)
-      {
-         return exception;
-      }
-   }
 
-   public static Result<T> LastOrFailure<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failureMessage) where T : notnull
-   {
-      try
+      public Result<T> LastOrFailure(Predicate<T> predicate, Func<string> failureMessage)
       {
-         return enumerable.LastOrNone(i => predicate(i)).Result(failureMessage());
-      }
-      catch (Exception exception)
-      {
-         return exception;
+         try
+         {
+            return enumerable.LastOrNone(i => predicate(i)).Result(failureMessage());
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
    }
 
@@ -703,11 +725,14 @@ public static class EnumerableExtensions
       }
    }
 
-   public static Optional<T> FirstOrEmpty<T>(this IEnumerable<T> enumerable) where T : notnull => enumerable.FirstOrNone().Optional();
-
-   public static Optional<T> FirstOrEmpty<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) where T : notnull
+   extension<T>(IEnumerable<T> enumerable) where T : notnull
    {
-      return enumerable.FirstOrNone(predicate).Optional();
+      public Optional<T> FirstOrEmpty() => enumerable.FirstOrNone().Optional();
+
+      public Optional<T> FirstOrEmpty(Func<T, bool> predicate)
+      {
+         return enumerable.FirstOrNone(predicate).Optional();
+      }
    }
 
    public static Optional<int> FirstIndexOrEmpty<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
@@ -742,11 +767,14 @@ public static class EnumerableExtensions
       return enumerable.FirstOrNone(predicate).Optional();
    }
 
-   public static Optional<T> LastOrEmpty<T>(this IEnumerable<T> enumerable) where T : notnull => enumerable.LastOrNone().Optional();
-
-   public static Optional<T> LastOrEmpty<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) where T : notnull
+   extension<T>(IEnumerable<T> enumerable) where T : notnull
    {
-      return enumerable.LastOrNone(predicate).Optional();
+      public Optional<T> LastOrEmpty() => enumerable.LastOrNone().Optional();
+
+      public Optional<T> LastOrEmpty(Func<T, bool> predicate)
+      {
+         return enumerable.LastOrNone(predicate).Optional();
+      }
    }
 
    public static Optional<(T1, T2)> LastOrEmpty<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate)
@@ -765,15 +793,17 @@ public static class EnumerableExtensions
       return enumerable.LastOrNone(predicate).Optional();
    }
 
-   public static Optional<T> FirstOrFail<T>(this IEnumerable<T> enumerable, string failMessage = "Default value") where T : notnull
+   extension<T>(IEnumerable<T> enumerable) where T : notnull
    {
-      return enumerable.FirstOrFailure(failMessage).Optional();
-   }
+      public Optional<T> FirstOrFail(string failMessage = "Default value")
+      {
+         return enumerable.FirstOrFailure(failMessage).Optional();
+      }
 
-   public static Optional<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failMessage = "Default value")
-      where T : notnull
-   {
-      return enumerable.FirstOrFailure(predicate, failMessage).Optional();
+      public Optional<T> FirstOrFail(Predicate<T> predicate, string failMessage = "Default value")
+      {
+         return enumerable.FirstOrFailure(predicate, failMessage).Optional();
+      }
    }
 
    public static Optional<int> FirstIndexOrFail<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate, string failMessage = "Default value")
@@ -804,14 +834,17 @@ public static class EnumerableExtensions
       return enumerable.FirstOrFailure(predicate, failMessage).Optional();
    }
 
-   public static Optional<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Func<string> failMessage) where T : notnull
+   extension<T>(IEnumerable<T> enumerable) where T : notnull
    {
-      return enumerable.FirstOrFailure(failMessage).Optional();
-   }
+      public Optional<T> FirstOrFail(Func<string> failMessage)
+      {
+         return enumerable.FirstOrFailure(failMessage).Optional();
+      }
 
-   public static Optional<T> FirstOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failMessage) where T : notnull
-   {
-      return enumerable.FirstOrFailure(predicate, failMessage).Optional();
+      public Optional<T> FirstOrFail(Predicate<T> predicate, Func<string> failMessage)
+      {
+         return enumerable.FirstOrFailure(predicate, failMessage).Optional();
+      }
    }
 
    public static Optional<(T1, T2)> FirstOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate, Func<string> failMessage)
@@ -831,15 +864,17 @@ public static class EnumerableExtensions
       return enumerable.FirstOrFailure(predicate, failMessage).Optional();
    }
 
-   public static Optional<T> LastOrFail<T>(this IEnumerable<T> enumerable, string failMessage = "Default value") where T : notnull
+   extension<T>(IEnumerable<T> enumerable) where T : notnull
    {
-      return enumerable.LastOrFailure(failMessage).Optional();
-   }
+      public Optional<T> LastOrFail(string failMessage = "Default value")
+      {
+         return enumerable.LastOrFailure(failMessage).Optional();
+      }
 
-   public static Optional<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, string failMessage = "Default value")
-      where T : notnull
-   {
-      return enumerable.LastOrFailure(predicate, failMessage).Optional();
+      public Optional<T> LastOrFail(Predicate<T> predicate, string failMessage = "Default value")
+      {
+         return enumerable.LastOrFailure(predicate, failMessage).Optional();
+      }
    }
 
    public static Optional<(T1, T2)> LastOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate,
@@ -854,14 +889,17 @@ public static class EnumerableExtensions
       return enumerable.LastOrFailure(predicate, failMessage).Optional();
    }
 
-   public static Optional<T> LastOrFail<T>(this IEnumerable<T> enumerable, Func<string> failMessage) where T : notnull
+   extension<T>(IEnumerable<T> enumerable) where T : notnull
    {
-      return enumerable.LastOrFailure(failMessage).Optional();
-   }
+      public Optional<T> LastOrFail(Func<string> failMessage)
+      {
+         return enumerable.LastOrFailure(failMessage).Optional();
+      }
 
-   public static Optional<T> LastOrFail<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Func<string> failMessage) where T : notnull
-   {
-      return enumerable.LastOrFailure(predicate, failMessage).Optional();
+      public Optional<T> LastOrFail(Predicate<T> predicate, Func<string> failMessage)
+      {
+         return enumerable.LastOrFailure(predicate, failMessage).Optional();
+      }
    }
 
    public static Optional<(T1, T2)> LastOrFail<T1, T2>(this IEnumerable<(T1, T2)> enumerable, Func<T1, T2, bool> predicate, Func<string> failMessage)
@@ -881,92 +919,98 @@ public static class EnumerableExtensions
       return enumerable.LastOrFailure(predicate, failMessage).Optional();
    }
 
-   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> enumerable) where TKey : notnull
-      where TValue : notnull
+   extension<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> enumerable) where TKey : notnull where TValue : notnull
    {
-      return enumerable.ToHash(kv => kv.Key, kv => kv.Value);
-   }
-
-   public static Hash<TKey, TValue> ToHash<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> enumerable,
-      IEqualityComparer<TKey> comparer) where TKey : notnull where TValue : notnull
-   {
-      return enumerable.ToHash(kv => kv.Key, kv => kv.Value, comparer);
-   }
-
-   public static IEnumerable<TResult> FlatMap<TSource, TResult>(this IEnumerable<IEnumerable<TSource>> enumerable,
-      Func<TSource, TResult> mapFunc)
-   {
-      foreach (var outer in enumerable)
+      public Hash<TKey, TValue> ToHash()
       {
-         foreach (var inner in outer)
+         return enumerable.ToHash(kv => kv.Key, kv => kv.Value);
+      }
+
+      public Hash<TKey, TValue> ToHash(IEqualityComparer<TKey> comparer)
+      {
+         return enumerable.ToHash(kv => kv.Key, kv => kv.Value, comparer);
+      }
+   }
+
+   extension<TSource>(IEnumerable<IEnumerable<TSource>> enumerable)
+   {
+      public IEnumerable<TResult> FlatMap<TResult>(Func<TSource, TResult> mapFunc)
+      {
+         foreach (var outer in enumerable)
          {
-            yield return mapFunc(inner);
+            foreach (var inner in outer)
+            {
+               yield return mapFunc(inner);
+            }
+         }
+      }
+
+      public IEnumerable<TSource> Flatten()
+      {
+         foreach (var outer in enumerable)
+         {
+            foreach (var inner in outer)
+            {
+               yield return inner;
+            }
          }
       }
    }
 
-   public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> enumerable)
+   extension<TSource>(IEnumerable<TSource> enumerable)
    {
-      foreach (var outer in enumerable)
+      public TResult FoldLeft<TResult>(TResult init,
+         Func<TResult, TSource, TResult> foldFunc)
       {
-         foreach (var inner in outer)
+         return enumerable.Aggregate(init, foldFunc);
+      }
+
+      public TResult FoldRight<TResult>(TResult init,
+         Func<TSource, TResult, TResult> foldFunc)
+      {
+         List<TSource> list = [.. enumerable];
+         var accumulator = init;
+         for (var i = list.Count - 1; i >= 0; i--)
          {
-            yield return inner;
+            accumulator = foldFunc(list[i], accumulator);
          }
-      }
-   }
 
-   public static TResult FoldLeft<TSource, TResult>(this IEnumerable<TSource> enumerable, TResult init,
-      Func<TResult, TSource, TResult> foldFunc)
-   {
-      return enumerable.Aggregate(init, foldFunc);
-   }
-
-   public static TResult FoldRight<TSource, TResult>(this IEnumerable<TSource> enumerable, TResult init,
-      Func<TSource, TResult, TResult> foldFunc)
-   {
-      List<TSource> list = [.. enumerable];
-      var accumulator = init;
-      for (var i = list.Count - 1; i >= 0; i--)
-      {
-         accumulator = foldFunc(list[i], accumulator);
+         return accumulator;
       }
 
-      return accumulator;
-   }
+      public TSource FoldLeft(Func<TSource, TSource, TSource> foldFunc) => enumerable.Aggregate(foldFunc);
 
-   public static T FoldLeft<T>(this IEnumerable<T> enumerable, Func<T, T, T> foldFunc) => enumerable.Aggregate(foldFunc);
-
-   public static T FoldRight<T>(this IEnumerable<T> enumerable, Func<T, T, T> foldFunc)
-   {
-      List<T> list = [.. enumerable];
-      if (list.Count == 0)
+      public TSource FoldRight(Func<TSource, TSource, TSource> foldFunc)
       {
-         throw fail("Enumerable can't be empty");
-      }
-
-      var accumulator = list[^1];
-      for (var i = list.Count - 2; i >= 0; i--)
-      {
-         accumulator = foldFunc(list[i], accumulator);
-      }
-
-      return accumulator;
-   }
-
-   public static TResult Fold<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TResult, TSource, TResult> foldFunc, TResult defaultValue)
-      where TResult : notnull
-   {
-      Maybe<TResult> _result = nil;
-      foreach (var source in enumerable)
-      {
-         if (_result is (true, var result))
+         List<TSource> list = [.. enumerable];
+         if (list.Count == 0)
          {
-            _result = foldFunc(result, source);
+            throw fail("Enumerable can't be empty");
          }
+
+         var accumulator = list[^1];
+         for (var i = list.Count - 2; i >= 0; i--)
+         {
+            accumulator = foldFunc(list[i], accumulator);
+         }
+
+         return accumulator;
       }
 
-      return _result | defaultValue;
+      public TResult Fold<TResult>(Func<TResult, TSource, TResult> foldFunc, TResult defaultValue)
+         where TResult : notnull
+      {
+         Maybe<TResult> _result = nil;
+         foreach (var source in enumerable)
+         {
+            if (_result is (true, var result))
+            {
+               _result = foldFunc(result, source);
+            }
+         }
+
+         return _result | defaultValue;
+      }
    }
 
    public static Hash<TKey, TValue[]> Group<TKey, TValue>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> groupingFunc) where TKey : notnull
@@ -1137,139 +1181,147 @@ public static class EnumerableExtensions
       return _index;
    }
 
-   public static Maybe<int> IndexOfMin<TSource, TResult>(this IEnumerable<TSource> enumerable, Func<TSource, TResult> mappingFunc)
-      where TResult : IComparable<TResult>
+   extension<TSource>(IEnumerable<TSource> enumerable)
    {
-      Maybe<int> _index = nil;
-      var currentIndex = 0;
-      Maybe<TResult> _currentValue = nil;
-      foreach (var item in enumerable)
+      public Maybe<int> IndexOfMin<TResult>(Func<TSource, TResult> mappingFunc)
+         where TResult : IComparable<TResult>
       {
-         var mappedItem = mappingFunc(item);
-         if (_currentValue is (true, var currentValue))
+         Maybe<int> _index = nil;
+         var currentIndex = 0;
+         Maybe<TResult> _currentValue = nil;
+         foreach (var item in enumerable)
          {
-            if (mappedItem.ComparedTo(currentValue) < 0)
+            var mappedItem = mappingFunc(item);
+            if (_currentValue is (true, var currentValue))
+            {
+               if (mappedItem.ComparedTo(currentValue) < 0)
+               {
+                  _index = currentIndex;
+                  _currentValue = mappedItem;
+               }
+            }
+            else
             {
                _index = currentIndex;
                _currentValue = mappedItem;
             }
-         }
-         else
-         {
-            _index = currentIndex;
-            _currentValue = mappedItem;
+
+            currentIndex++;
          }
 
-         currentIndex++;
+         return _index;
       }
 
-      return _index;
-   }
-
-   public static IEnumerable<T> Reversed<T>(this IEnumerable<T> enumerable)
-   {
-      List<T> list = [.. enumerable];
-      list.Reverse();
-
-      return list;
-   }
-
-   public static Maybe<TResult> FirstOrNoneAs<T, TResult>(this IEnumerable<T> enumerable) where T : notnull where TResult : notnull
-   {
-      return enumerable.FirstOrNone(i => i is TResult).CastAs<TResult>();
-   }
-
-   public static Result<TResult> FirstOrFailAs<T, TResult>(this IEnumerable<T> enumerable) where T : notnull where TResult : notnull
-   {
-      return enumerable.FirstOrFailure(i => i is TResult).CastAs<TResult>();
-   }
-
-   public static bool AtLeastOne<T>(this IEnumerable<T> enumerable) where T : notnull => enumerable.FirstOrNone();
-
-   public static bool AtLeastOne<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate) where T : notnull => enumerable.FirstOrNone(predicate);
-
-   public static IEnumerable<T> Do<T>(this IEnumerable<T> enumerable, Action<T> action)
-   {
-      foreach (var value in enumerable)
+      public IEnumerable<TSource> Reversed()
       {
-         action(value);
-         yield return value;
+         List<TSource> list = [.. enumerable];
+         list.Reverse();
+
+         return list;
       }
    }
 
-   public static IEnumerable<T> DoIf<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Action<T> action)
+   extension<T>(IEnumerable<T> enumerable) where T : notnull
    {
-      foreach (var value in enumerable)
+      public Maybe<TResult> FirstOrNoneAs<TResult>() where TResult : notnull
       {
-         if (predicate(value))
+         return enumerable.FirstOrNone(i => i is TResult).CastAs<TResult>();
+      }
+
+      public Result<TResult> FirstOrFailAs<TResult>() where TResult : notnull
+      {
+         return enumerable.FirstOrFailure(i => i is TResult).CastAs<TResult>();
+      }
+
+      public bool AtLeastOne() => enumerable.FirstOrNone();
+      public bool AtLeastOne(Func<T, bool> predicate) => enumerable.FirstOrNone(predicate);
+   }
+
+   extension<T>(IEnumerable<T> enumerable)
+   {
+      public IEnumerable<T> Do(Action<T> action)
+      {
+         foreach (var value in enumerable)
          {
             action(value);
+            yield return value;
          }
-
-         yield return value;
       }
-   }
 
-   public static IEnumerable<T> DoIfElse<T>(this IEnumerable<T> enumerable, Predicate<T> predicate, Action<T> ifTrue, Action<T> ifFalse)
-   {
-      foreach (var value in enumerable)
+      public IEnumerable<T> DoIf(Predicate<T> predicate, Action<T> action)
       {
-         if (predicate(value))
+         foreach (var value in enumerable)
          {
-            ifTrue(value);
+            if (predicate(value))
+            {
+               action(value);
+            }
+
+            yield return value;
          }
-         else
+      }
+
+      public IEnumerable<T> DoIfElse(Predicate<T> predicate, Action<T> ifTrue, Action<T> ifFalse)
+      {
+         foreach (var value in enumerable)
          {
-            ifFalse(value);
+            if (predicate(value))
+            {
+               ifTrue(value);
+            }
+            else
+            {
+               ifFalse(value);
+            }
+
+            yield return value;
          }
-
-         yield return value;
-      }
-   }
-
-   public static bool AllMatch<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable, Func<T1, T2, bool> matcher,
-      bool mustBeSameLength = true) where T2 : notnull
-   {
-      T1[] left = [.. leftEnumerable];
-      T2[] right = [.. rightEnumerable];
-
-      if (mustBeSameLength && left.Length != right.Length)
-      {
-         return false;
       }
 
-      foreach (var leftItem in left)
+      public bool AllMatch<T2>(IEnumerable<T2> rightEnumerable, Func<T, T2, bool> matcher,
+         bool mustBeSameLength = true) where T2 : notnull
       {
-         if (!right.AtLeastOne(r => matcher(leftItem, r)))
+         T[] left = [.. enumerable];
+         T2[] right = [.. rightEnumerable];
+
+         if (mustBeSameLength && left.Length != right.Length)
          {
             return false;
          }
+
+         foreach (var leftItem in left)
+         {
+            if (!right.AtLeastOne(r => matcher(leftItem, r)))
+            {
+               return false;
+            }
+         }
+
+         return true;
       }
 
-      return true;
-   }
-
-   public static IEnumerable<(T1, Maybe<T2>)> AllMatched<T1, T2>(this IEnumerable<T1> leftEnumerable, IEnumerable<T2> rightEnumerable,
-      Func<T1, T2, bool> matcher) where T2 : notnull
-   {
-      T2[] rightArray = [.. rightEnumerable];
-      foreach (var left in leftEnumerable)
+      public IEnumerable<(T, Maybe<T2>)> AllMatched<T2>(IEnumerable<T2> rightEnumerable,
+         Func<T, T2, bool> matcher) where T2 : notnull
       {
-         yield return (left, rightArray.FirstOrNone(r => matcher(left, r)));
+         T2[] rightArray = [.. rightEnumerable];
+         foreach (var left in enumerable)
+         {
+            yield return (left, rightArray.FirstOrNone(r => matcher(left, r)));
+         }
       }
-   }
 
-   [Obsolete("Use native index")]
-   public static IEnumerable<(int index, T item)> IndexedEnumerable<T>(this IEnumerable<T> enumerable)
-   {
-      var index = 0;
-      foreach (var item in enumerable)
+      [Obsolete("Use native index")]
+      public IEnumerable<(int index, T item)> IndexedEnumerable()
       {
-         yield return (index++, item);
+         var index = 0;
+         foreach (var item in enumerable)
+         {
+            yield return (index++, item);
+         }
       }
-   }
 
-   public static Set<T> ToSet<T>(this IEnumerable<T> enumerable) => [.. enumerable];
+      public Set<T> ToSet() => [.. enumerable];
+   }
 
    public static StringSet ToStringSet(this IEnumerable<string> enumerable, bool ignoreCase)
    {
@@ -1322,86 +1374,92 @@ public static class EnumerableExtensions
       }
    }
 
-   public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, params string[] keys) where T : notnull
+   extension<T>(IEnumerable<T> enumerable) where T : notnull
    {
-      StringSet keySet = [.. keys];
-      StringHash<T> matching = [];
-      List<T> remainder = [];
-      foreach (var item in enumerable)
+      public IEnumerable<T> SortByList(Func<T, string> keyMap, params string[] keys)
       {
-         var key = keyMap(item);
-         if (keySet.Contains(key))
+         StringSet keySet = [.. keys];
+         StringHash<T> matching = [];
+         List<T> remainder = [];
+         foreach (var item in enumerable)
          {
-            matching[key] = item;
+            var key = keyMap(item);
+            if (keySet.Contains(key))
+            {
+               matching[key] = item;
+            }
+            else
+            {
+               remainder.Add(item);
+            }
          }
-         else
-         {
-            remainder.Add(item);
-         }
-      }
 
-      foreach (var key in keySet)
-      {
-         if (matching.Maybe[key] is (true, var item))
+         foreach (var key in keySet)
+         {
+            if (matching.Maybe[key] is (true, var item))
+            {
+               yield return item;
+            }
+         }
+
+         foreach (var item in remainder.OrderBy(keyMap))
          {
             yield return item;
          }
       }
 
-      foreach (var item in remainder.OrderBy(keyMap))
+      public IEnumerable<T> SortByList(Func<T, string> keyMap, IEnumerable<string> keys)
       {
-         yield return item;
+         return enumerable.SortByList(keyMap, [.. keys]);
       }
    }
 
-   public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, IEnumerable<string> keys) where T : notnull
+   extension<T>(IEnumerable<T> enumerable)
    {
-      return enumerable.SortByList(keyMap, [.. keys]);
-   }
-
-   public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, Func<T, T, int> compareFunc,
-      params string[] keys)
-   {
-      var comparer = Comparer<T>.Create((x, y) => compareFunc(x, y));
-      StringSet keySet = [.. keys];
-      Memo<string, SortedSet<T>> matching = new Memo<string, SortedSet<T>>.Function(_ => []);
-      var remainder = new SortedSet<T>(comparer);
-
-      foreach (var item in enumerable)
+      public IEnumerable<T> SortByList(Func<T, string> keyMap, Func<T, T, int> compareFunc,
+         params string[] keys)
       {
-         var key = keyMap(item);
-         if (keySet.Contains(key))
-         {
-            matching[key].Add(item);
-         }
-         else
-         {
-            remainder.Add(item);
-         }
-      }
+         var comparer = Comparer<T>.Create((x, y) => compareFunc(x, y));
+         StringSet keySet = [.. keys];
+         Memo<string, SortedSet<T>> matching = new Memo<string, SortedSet<T>>.Function(_ => []);
+         var remainder = new SortedSet<T>(comparer);
 
-      Hash<string, SortedSet<T>> matchingHash = matching;
-      foreach (var key in keySet)
-      {
-         if (matchingHash.Maybe[key] is (true, var list))
+         foreach (var item in enumerable)
          {
-            foreach (var item in list)
+            var key = keyMap(item);
+            if (keySet.Contains(key))
             {
-               yield return item;
+               matching[key].Add(item);
+            }
+            else
+            {
+               remainder.Add(item);
             }
          }
+
+         Hash<string, SortedSet<T>> matchingHash = matching;
+         foreach (var key in keySet)
+         {
+            if (matchingHash.Maybe[key] is (true, var list))
+            {
+               foreach (var item in list)
+               {
+                  yield return item;
+               }
+            }
+         }
+
+         foreach (var item in remainder)
+         {
+            yield return item;
+         }
       }
 
-      foreach (var item in remainder)
+      public IEnumerable<T> SortByList(Func<T, string> keyMap, Func<T, T, int> compareFunc,
+         IEnumerable<string> keys)
       {
-         yield return item;
+         return enumerable.SortByList(keyMap, compareFunc, [.. keys]);
       }
-   }
-
-   public static IEnumerable<T> SortByList<T>(this IEnumerable<T> enumerable, Func<T, string> keyMap, Func<T, T, int> compareFunc,
-      IEnumerable<string> keys)
-   {
-      return enumerable.SortByList(keyMap, compareFunc, [.. keys]);
    }
 
    private static Memo<T, int> getPaired<T>(IEnumerable<T> orderItems, int defaultValue) where T : notnull
@@ -1461,87 +1519,91 @@ public static class EnumerableExtensions
       return enumerable.ThenByDescending(i => paired[mapper(i)]);
    }
 
-   public static IEnumerable<TValue> Distinct<TValue, TKey>(this IEnumerable<TValue> enumerable, Func<TValue, TKey> keySelector)
+   extension<TValue>(IEnumerable<TValue> enumerable)
    {
-      var knownKeys = new HashSet<TKey>();
-      foreach (var value in enumerable)
+      public IEnumerable<TValue> Distinct<TKey>(Func<TValue, TKey> keySelector)
       {
-         if (knownKeys.Add(keySelector(value)))
+         var knownKeys = new HashSet<TKey>();
+         foreach (var value in enumerable)
          {
-            yield return value;
+            if (knownKeys.Add(keySelector(value)))
+            {
+               yield return value;
+            }
+         }
+      }
+
+      public Maybe<int> Find(TValue item, int startIndex = 0)
+      {
+         TValue[] array = [.. enumerable];
+         for (var i = startIndex; i < array.Length; i++)
+         {
+            if (array[i]!.Equals(item))
+            {
+               return i;
+            }
+         }
+
+         return nil;
+      }
+
+      public Maybe<int> Find(Func<TValue, bool> predicate, int startIndex = 0)
+      {
+         TValue[] array = [.. enumerable];
+         for (var i = startIndex; i < array.Length; i++)
+         {
+            if (predicate(array[i]))
+            {
+               return i;
+            }
+         }
+
+         return nil;
+      }
+
+      public IEnumerable<int> FindAll(TValue item, int startIndex = 0)
+      {
+         TValue[] array = [.. enumerable];
+         for (var i = startIndex; i < array.Length; i++)
+         {
+            if (array[i]!.Equals(item))
+            {
+               yield return i;
+            }
          }
       }
    }
 
-   public static Maybe<int> Find<T>(this IEnumerable<T> items, T item, int startIndex = 0)
+   extension<T1>(IEnumerable<T1> left) where T1 : notnull
    {
-      T[] array = [.. items];
-      for (var i = startIndex; i < array.Length; i++)
+      public IEnumerable<TResult> Merge<T2, TResult>(IEnumerable<T2> right, Func<T1, T2, TResult> map) where T2 : notnull
       {
-         if (array[i]!.Equals(item))
+         var leftQueue = new EnumerableQueue<T1>(left);
+         var rightQueue = new EnumerableQueue<T2>(right);
+
+         while (leftQueue.Next() is (true, var leftValue) && rightQueue.Next() is (true, var rightValue))
          {
-            return i;
+            yield return map(leftValue, rightValue);
          }
       }
 
-      return nil;
-   }
-
-   public static Maybe<int> Find<T>(this IEnumerable<T> items, Func<T, bool> predicate, int startIndex = 0)
-   {
-      T[] array = [.. items];
-      for (var i = startIndex; i < array.Length; i++)
+      public IEnumerable<(T1 left, T2 right)> Merge<T2>(IEnumerable<T2> right) where T2 : notnull
       {
-         if (predicate(array[i]))
+         return left.Merge<T1, T2, (T1, T2)>(right, (t1, t2) => (t1, t2));
+      }
+
+      public string Andify()
+      {
+         T1[] array = [.. left];
+         var length = array.Length;
+         return length switch
          {
-            return i;
-         }
+            0 => "",
+            1 => array[0].ToString() ?? "",
+            2 => $"{array[0]} and {array[1]}",
+            _ => $"{array.Take(array.Length - 1).ToString(", ")}, and {array[^1]}"
+         };
       }
-
-      return nil;
-   }
-
-   public static IEnumerable<int> FindAll<T>(this IEnumerable<T> items, T item, int startIndex = 0)
-   {
-      T[] array = [.. items];
-      for (var i = startIndex; i < array.Length; i++)
-      {
-         if (array[i]!.Equals(item))
-         {
-            yield return i;
-         }
-      }
-   }
-
-   public static IEnumerable<TResult> Merge<T1, T2, TResult>(this IEnumerable<T1> left, IEnumerable<T2> right, Func<T1, T2, TResult> map)
-      where T1 : notnull where T2 : notnull
-   {
-      var leftQueue = new EnumerableQueue<T1>(left);
-      var rightQueue = new EnumerableQueue<T2>(right);
-
-      while (leftQueue.Next() is (true, var leftValue) && rightQueue.Next() is (true, var rightValue))
-      {
-         yield return map(leftValue, rightValue);
-      }
-   }
-
-   public static IEnumerable<(T1 left, T2 right)> Merge<T1, T2>(this IEnumerable<T1> left, IEnumerable<T2> right) where T1 : notnull
-      where T2 : notnull
-   {
-      return left.Merge<T1, T2, (T1, T2)>(right, (t1, t2) => (t1, t2));
-   }
-
-   public static string Andify<T>(this IEnumerable<T> enumerable) where T : notnull
-   {
-      T[] array = [.. enumerable];
-      var length = array.Length;
-      return length switch
-      {
-         0 => "",
-         1 => array[0].ToString() ?? "",
-         2 => $"{array[0]} and {array[1]}",
-         _ => $"{array.Take(array.Length - 1).ToString(", ")}, and {array[^1]}"
-      };
    }
 
    public static IEnumerator<int> GetEnumerator(this Range range)
