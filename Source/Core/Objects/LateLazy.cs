@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Applications.Messaging;
 using Core.Assertions;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
@@ -15,6 +16,8 @@ public class LateLazy<T> where T : notnull
    protected string errorMessage;
    protected Maybe<T> _value;
    protected Maybe<Func<T>> _activator;
+
+   public readonly MessageEvent<T> Activated = new();
 
    public LateLazy(bool overriding = false, string errorMessage = DEFAULT_ERROR_MESSAGE)
    {
@@ -52,6 +55,8 @@ public class LateLazy<T> where T : notnull
             var returnValue = activator();
             returnValue.Must().Not.BeNull().OrThrow();
             _value = returnValue;
+
+            Activated.Invoke(returnValue);
 
             return returnValue;
          }
