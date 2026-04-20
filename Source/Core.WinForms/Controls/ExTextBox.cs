@@ -13,7 +13,7 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace Core.WinForms.Controls;
 
-public class ExTextBox : TextBox, ISubTextHost, IHasObjectId
+public class ExTextBox : TextBox, ISubTextHost, IHasObjectId, ITextProperty
 {
    public class WindowExtender : NativeWindow
    {

@@ -4,7 +4,7 @@ using Core.WinForms.TableLayoutPanels;
 
 namespace Core.WinForms.Controls;
 
-public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId
+public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, ITextProperty
 {
    protected UiAction uiLabel = new() { TabStop = true };
    protected ExTextBox textBox = new() { BorderStyle = BorderStyle.None, Font = new Font("Consolas", 12f) };

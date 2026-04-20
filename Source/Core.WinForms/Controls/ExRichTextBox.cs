@@ -11,7 +11,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public class ExRichTextBox : RichTextBox, IHasObjectId
+public class ExRichTextBox : RichTextBox, IHasObjectId, ITextProperty
 {
    public class WindowExtender : NativeWindow
    {

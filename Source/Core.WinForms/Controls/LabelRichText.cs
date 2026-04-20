@@ -4,7 +4,7 @@ using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
-public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObjectId
+public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObjectId, ITextProperty
 {
    protected UiAction uiLabel = new() { TabStop = true };
    protected ExRichTextBox textBox = new() { BorderStyle = BorderStyle.None, Font = new Font("Consolas", 12f) };
