@@ -105,6 +105,11 @@ public partial class Form1 : Form
          var form15 = new Form15();
          form15.Show();
       })).Menu();
+      (menus + "Form16" + (() =>
+      {
+         var form16 = new Form16();
+         form16.Show();
+      })).Menu();
       (menus + "Long Messaging" + (() =>
       {
          var longMessaging = new LongMessaging();
