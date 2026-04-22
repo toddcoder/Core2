@@ -1,24 +1,29 @@
-﻿namespace Core.WinForms.Controls;
+﻿using Core.Applications.Messaging;
+
+namespace Core.WinForms.Controls;
 
 public class UiMenuAction : UiAction
 {
    protected List<UiMenuItemData> items = [];
    protected bool menuOpen;
    protected Lazy<UiMenu> menu;
+   public readonly MessageEvent RequestMenuItems = new();
 
    public UiMenuAction()
    {
-      menu = new Lazy<UiMenu>(() =>
-      {
-         var uiMenu = new UiMenu(items);
-         uiMenu.Closed += (_, _) =>
-         {
-            menuOpen = false;
-            Invalidate();
-         };
-         return uiMenu;
-      });
+      menu = new Lazy<UiMenu>(menuFactory);
       ChooserGlyph = true;
+   }
+
+   protected UiMenu menuFactory()
+   {
+      var uiMenu = new UiMenu(items);
+      uiMenu.Closed += (_, _) =>
+      {
+         menuOpen = false;
+         Invalidate();
+      };
+      return uiMenu;
    }
 
    public void TextItem(string text, Action<string> onClick)
@@ -42,6 +47,7 @@ public class UiMenuAction : UiAction
       }
       else
       {
+         RequestMenuItems.Invoke();
          menuOpen = true;
          var location = Cursor.Position;
          location = PointToClient(location);
@@ -61,4 +67,6 @@ public class UiMenuAction : UiAction
          }
       });
    }
+
+   public void ResetMenu() => menu = new Lazy<UiMenu>(menuFactory);
 }
