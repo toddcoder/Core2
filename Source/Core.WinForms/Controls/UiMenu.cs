@@ -33,7 +33,7 @@ public sealed class UiMenu : ToolStripDropDown
          host.ItemClicked.Handler = () =>
          {
             Close(ToolStripDropDownCloseReason.ItemClicked);
-            item.OnClick.Invoke();
+            item.OnClick.Invoke(item.Text);
          };
 
          Items.Add(host);

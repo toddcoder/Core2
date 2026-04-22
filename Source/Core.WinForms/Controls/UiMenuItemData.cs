@@ -6,7 +6,7 @@ namespace Core.WinForms.Controls;
 
 public class UiMenuItemData
 {
-   public static UiMenuItemData TextItem(string text, Action onClick)
+   public static UiMenuItemData TextItem(string text, Action<string> onClick)
    {
       var item = new UiMenuItemData
       {
@@ -19,7 +19,7 @@ public class UiMenuItemData
       return item;
    }
 
-   public static UiMenuItemData TextItemWithImage(string text, Image image, Action onClick)
+   public static UiMenuItemData TextItemWithImage(string text, Image image, Action<string> onClick)
    {
       var item = new UiMenuItemData
       {
@@ -46,5 +46,5 @@ public class UiMenuItemData
 
    public bool IsSeparator { get; set; }
 
-   public readonly MessageEvent OnClick = new();
+   public readonly MessageEvent<string> OnClick = new();
 }

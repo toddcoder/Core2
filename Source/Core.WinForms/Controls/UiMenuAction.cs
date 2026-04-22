@@ -21,12 +21,12 @@ public class UiMenuAction : UiAction
       ChooserGlyph = true;
    }
 
-   public void TextItem(string text, Action onClick)
+   public void TextItem(string text, Action<string> onClick)
    {
       items.Add(UiMenuItemData.TextItem(text, onClick));
    }
 
-   public void TextItemWithImage(string text, Image image, Action onClick)
+   public void TextItemWithImage(string text, Image image, Action<string> onClick)
    {
       items.Add(UiMenuItemData.TextItemWithImage(text, image, onClick));
    }
