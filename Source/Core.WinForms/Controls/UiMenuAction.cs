@@ -18,6 +18,7 @@ public class UiMenuAction : UiAction
    protected UiMenu menuFactory()
    {
       var uiMenu = new UiMenu(items);
+      //uiMenu.Width = ClientSize.Width;
       uiMenu.Closed += (_, _) =>
       {
          menuOpen = false;

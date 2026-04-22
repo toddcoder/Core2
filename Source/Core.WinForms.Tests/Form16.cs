@@ -9,8 +9,8 @@ public partial class Form16 : Form
    public Form16()
    {
       InitializeComponent();
-      menu.TextItem("Alfa", text => Text = text);
-      menu.TextItem("Bravo", text => Text = text);
+      menu.TextItem("Alfa (A or alpha)", text => Text = text);
+      menu.TextItem("Bravo (B or beta)", text => Text = text);
       menu.Success("Menu");
       Controls.Add(menu);
       menu.Location = new Point(0, 0);
