@@ -1,4 +1,5 @@
 ﻿using Core.WinForms.Controls;
+using Core.WinForms.TableLayoutPanels;
 
 namespace Core.WinForms.Tests;
 
@@ -9,10 +10,15 @@ public partial class Form16 : Form
    public Form16()
    {
       InitializeComponent();
-      menu.TextItem("Alfa (A or alpha)", text => Text = text);
-      menu.TextItem("Bravo (B or beta)", text => Text = text);
+      menu.TextItem("Alfa (A or alpha)", text => menu.Success(text));
+      menu.TextItem("Bravo (B or beta)", text => menu.Success(text));
       menu.Success("Menu");
-      Controls.Add(menu);
-      menu.Location = new Point(0, 0);
+
+      var builder = new TableLayoutBuilder(tableLayoutPanel1);
+      _ = builder.Col + 200 + 100f;
+      _ = builder.Row + 60 + 100f;
+      builder.SetUp();
+
+      (builder + menu).Row();
    }
 }

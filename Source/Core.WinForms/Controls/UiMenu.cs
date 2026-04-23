@@ -18,7 +18,7 @@ public sealed class UiMenu : ToolStripDropDown
    private int textPadding = 42;
    private int textRightPadding = 16;
    private int minMenuWidth = 120;
-   private int maxMenuWidth = 400;
+   private int maxMenuWidth = 800;
 
    public UiMenu(IEnumerable<UiMenuItemData> items)
    {

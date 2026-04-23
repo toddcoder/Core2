@@ -8,17 +8,21 @@ public class UiMenuAction : UiAction
    protected bool menuOpen;
    protected Lazy<UiMenu> menu;
    public readonly MessageEvent RequestMenuItems = new();
+   public readonly MessageEvent MenuClosed = new();
 
-   public UiMenuAction()
+    public UiMenuAction()
    {
       menu = new Lazy<UiMenu>(menuFactory);
       ChooserGlyph = true;
+      ClickGlyph = true;
+      ClickText = "Open menu";
    }
+
+   public bool MenuEnabled { get; set; } = true;
 
    protected UiMenu menuFactory()
    {
       var uiMenu = new UiMenu(items);
-      //uiMenu.Width = ClientSize.Width;
       uiMenu.Closed += (_, _) =>
       {
          menuOpen = false;
@@ -42,18 +46,21 @@ public class UiMenuAction : UiAction
    protected override void OnClick(EventArgs e)
    {
       base.OnClick(e);
-      if (menuOpen)
+      if (MenuEnabled)
       {
-         menu.Value.Close();
-      }
-      else
-      {
-         RequestMenuItems.Invoke();
-         menuOpen = true;
-         var location = Cursor.Position;
-         location = PointToClient(location);
-         menu.Value.Show(this, location);
-         Focus();
+         if (menuOpen)
+         {
+            menu.Value.Close();
+         }
+         else
+         {
+            RequestMenuItems.Invoke();
+            menuOpen = true;
+            var location = Cursor.Position;
+            location = PointToClient(location);
+            menu.Value.Show(this, location);
+            Focus();
+         }
       }
    }
 
@@ -65,6 +72,7 @@ public class UiMenuAction : UiAction
          if (menuOpen && !menu.Value.ContainsFocus)
          {
             menu.Value.Close(ToolStripDropDownCloseReason.AppFocusChange);
+            MenuClosed.Invoke();
          }
       });
    }
