@@ -70,7 +70,7 @@ public class UiMenuAction : UiAction
       }
    }
 
-   public void Choose(IEnumerable<string> options, Action<string> onChoose, Func<string, Maybe<(Color backColor, Color foreColor)>> colorSelector)
+   public void Choose(IEnumerable<string> options, Action<string> onChoose, Func<string, Maybe<(Color foreColor, Color backColor)>> colorSelector)
    {
       foreach (var option in options)
       {
