@@ -51,4 +51,12 @@ public class UiMenuItemData
    public Maybe<Color> ForeColor { get; set; } = nil;
 
    public Maybe<Color> BackColor { get; set; } = nil;
+
+   public UiMenuItemData Colors(Color foreColor, Color backColor)
+   {
+      ForeColor = foreColor;
+      BackColor = backColor;
+
+      return this;
+   }
 }
