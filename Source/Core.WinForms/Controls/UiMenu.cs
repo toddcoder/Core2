@@ -4,18 +4,18 @@ namespace Core.WinForms.Controls;
 
 public sealed class UiMenu : ToolStripDropDown
 {
-   private Color backgroundColor = Color.Green;
-   private Color hoverColor = Color.FromArgb(60, 120, 215);
-   private Color textColor = Color.White;
-   private Color disabledColor = Color.Gray;
-   private Color separatorColor = Color.FromArgb(80, 80, 80);
-   private Color borderColor = Color.FromArgb(80, 80, 80);
+   private Color backgroundColor = SystemColors.Menu;
+   private Color hoverColor = SystemColors.MenuHighlight;
+   private Color textColor = SystemColors.MenuText;
+   private Color disabledColor = SystemColors.GrayText;
+   private Color separatorColor = SystemColors.ControlDark;
+   private Color borderColor = SystemColors.ControlDark;
    private Font itemFont = new("Consolas", 12f);
    private int itemHeight = 36;
    private int separatorHeight = 9;
    private int iconSize = 18;
    private int iconPadding = 10;
-   private int textPadding = 42;
+   private int textPadding = 32;
    private int textRightPadding = 16;
    private int minMenuWidth = 120;
    private int maxMenuWidth = 800;

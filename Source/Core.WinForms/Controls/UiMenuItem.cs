@@ -1,4 +1,5 @@
-﻿using Core.Applications.Messaging;
+﻿using System.Drawing.Drawing2D;
+using Core.Applications.Messaging;
 
 namespace Core.WinForms.Controls;
 
@@ -49,6 +50,7 @@ internal sealed class UiMenuItem : ToolStripControlHost
    private void panelPaint(PaintEventArgs e)
    {
       var g = e.Graphics;
+      g.HighQuality();
       var bounds = panel.ClientRectangle;
 
       if (arguments.Data.IsSeparator)
@@ -66,16 +68,15 @@ internal sealed class UiMenuItem : ToolStripControlHost
          var rectangle = new Rectangle(arguments.IconPadding, (bounds.Height - image.Height) / 2, image.Width, image.Height);
          g.DrawImage(image, rectangle);
       }
+      else
+      {
+         using var brush = new SolidBrush(Color.LightGray);
+         g.FillRectangle(brush, bounds.Left, bounds.Top, bounds.Left + arguments.TextPadding - 8, bounds.Bottom);
+      }
 
       var foregroundColor = arguments.Data.IsEnabled ? arguments.TextColor : arguments.DisabledColor;
-      using var brush = new SolidBrush(foregroundColor);
       var textBounds = new Rectangle(arguments.TextPadding, 0, bounds.Width - arguments.TextPadding - 4, bounds.Height);
-      var stringFormat = new StringFormat
-      {
-         Alignment = StringAlignment.Near,
-         LineAlignment = StringAlignment.Center,
-         Trimming = StringTrimming.EllipsisCharacter
-      };
-      g.DrawString(arguments.Data.Text, arguments.Font, brush, textBounds, stringFormat);
+      TextRenderer.DrawText(g, arguments.Data.Text, arguments.Font, textBounds, foregroundColor,
+         TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
    }
 }
