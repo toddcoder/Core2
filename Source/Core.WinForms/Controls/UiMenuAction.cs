@@ -1,5 +1,6 @@
 ﻿using Core.Applications.Messaging;
 using Core.Collections;
+using Core.Monads;
 
 namespace Core.WinForms.Controls;
 
@@ -53,6 +54,31 @@ public class UiMenuAction : UiAction
          if (backColors.Maybe[option] is (true, var backColor))
          {
             item.BackColor = backColor;
+         }
+      }
+   }
+
+   public void Choose(IEnumerable<string> options, Action<string> onChoose, StringHash<Image> images)
+   {
+      foreach (var option in options)
+      {
+         var item = TextItem(option, onChoose);
+         if (images.Maybe[option] is (true, var image))
+         {
+            item.Image = image;
+         }
+      }
+   }
+
+   public void Choose(IEnumerable<string> options, Action<string> onChoose, Func<string, Maybe<(Color backColor, Color foreColor)>> colorSelector)
+   {
+      foreach (var option in options)
+      {
+         var item = TextItem(option, onChoose);
+         if (colorSelector(option) is (true, var colors))
+         {
+            item.BackColor = colors.backColor;
+            item.ForeColor = colors.foreColor;
          }
       }
    }
