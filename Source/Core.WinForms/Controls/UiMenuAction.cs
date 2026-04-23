@@ -1,4 +1,5 @@
 ﻿using Core.Applications.Messaging;
+using Core.Collections;
 
 namespace Core.WinForms.Controls;
 
@@ -29,6 +30,31 @@ public class UiMenuAction : UiAction
          Invalidate();
       };
       return uiMenu;
+   }
+
+   public void Choose(IEnumerable<string> options, Action<string> onChoose)
+   {
+      foreach (var option in options)
+      {
+         TextItem(option, onChoose);
+      }
+   }
+
+   public void Choose(IEnumerable<string> options, Action<string> onChoose, StringHash<Color> foreColors, StringHash<Color> backColors)
+   {
+      foreach (var option in options)
+      {
+         var item = TextItem(option, onChoose);
+         if (foreColors.Maybe[option] is (true, var foreColor))
+         {
+            item.ForeColor = foreColor;
+         }
+
+         if (backColors.Maybe[option] is (true, var backColor))
+         {
+            item.BackColor = backColor;
+         }
+      }
    }
 
    public UiMenuItemData TextItem(string text, Action<string> onClick)
