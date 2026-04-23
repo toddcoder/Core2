@@ -18,11 +18,31 @@ public static class EnumerableExtensions
       return string.Join(connector, enumerable.Select(i => i!.ToNonNullString()));
    }
 
+   extension<T>(IEnumerable<T> enumerable)
+   {
+      public IEnumerable<T> SortBy(Func<T, int> sorter)
+      {
+         var hash = new Memo<int, List<T>>.Function(_ => []);
+         foreach (var item in enumerable)
+         {
+            hash[sorter(item)].Add(item);
+         }
+
+         foreach (var key in hash.Keys.Order())
+         {
+            foreach (var item in hash[key].Order())
+            {
+               yield return item;
+            }
+         }
+      }
+   }
+
    extension<T>(IEnumerable<IEnumerable<T>> source)
    {
       public IEnumerable<IEnumerable<T>> Pivot(Func<T> defaultValue)
       {
-         T[][] array = [.. source.Select(row => (T[]) [.. row])];
+         T[][] array = [.. source.Select(row => (T[])[.. row])];
          if (array.Length != 0)
          {
             var maxRowLen = array.Select(a => a.Length).Max();
@@ -50,7 +70,7 @@ public static class EnumerableExtensions
       {
          try
          {
-            return (T[]) [.. enumerable];
+            return (T[])[.. enumerable];
          }
          catch (Exception exception)
          {
@@ -62,7 +82,7 @@ public static class EnumerableExtensions
       {
          try
          {
-            return (List<T>) [.. enumerable];
+            return (List<T>)[.. enumerable];
          }
          catch (Exception exception)
          {
