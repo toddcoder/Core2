@@ -279,6 +279,8 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
    public event EventHandler<EventArgs>? StatusFaded;
    public event EventHandler<UiActionMessageArgs>? MessageReceived;
    public readonly MessageEvent Clicked = new();
+   public readonly MessageEvent KeyMatchDown = new();
+   public readonly MessageEvent KeyMatchUp = new();
 
    public UiAction()
    {

@@ -105,11 +105,13 @@ public class KeyMatch
             ClearMessage();
             DisplayDown();
             uiAction.Refresh();
+            uiAction.KeyMatchDown.Invoke();
             break;
          case KeyMatchStatus.Up:
             ClearMessage();
             DisplayUp();
             uiAction.Refresh();
+            uiAction.KeyMatchUp.Invoke();
             break;
       }
    }
