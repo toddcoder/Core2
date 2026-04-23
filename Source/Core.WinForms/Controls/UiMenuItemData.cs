@@ -47,4 +47,8 @@ public class UiMenuItemData
    public bool IsSeparator { get; set; }
 
    public readonly MessageEvent<string> OnClick = new();
+
+   public Maybe<Color> ForeColor { get; set; } = nil;
+
+   public Maybe<Color> BackColor { get; set; } = nil;
 }

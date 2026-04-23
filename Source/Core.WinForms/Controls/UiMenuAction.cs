@@ -10,7 +10,7 @@ public class UiMenuAction : UiAction
    public readonly MessageEvent RequestMenuItems = new();
    public readonly MessageEvent MenuClosed = new();
 
-    public UiMenuAction()
+   public UiMenuAction()
    {
       menu = new Lazy<UiMenu>(menuFactory);
       ChooserGlyph = true;
@@ -31,17 +31,29 @@ public class UiMenuAction : UiAction
       return uiMenu;
    }
 
-   public void TextItem(string text, Action<string> onClick)
+   public UiMenuItemData TextItem(string text, Action<string> onClick)
    {
-      items.Add(UiMenuItemData.TextItem(text, onClick));
+      var item = UiMenuItemData.TextItem(text, onClick);
+      items.Add(item);
+
+      return item;
    }
 
-   public void TextItemWithImage(string text, Image image, Action<string> onClick)
+   public UiMenuItemData TextItemWithImage(string text, Image image, Action<string> onClick)
    {
-      items.Add(UiMenuItemData.TextItemWithImage(text, image, onClick));
+      var item = UiMenuItemData.TextItemWithImage(text, image, onClick);
+      items.Add(item);
+
+      return item;
    }
 
-   public void Separator() => items.Add(UiMenuItemData.Separator());
+   public UiMenuItemData Separator()
+   {
+      var item = UiMenuItemData.Separator();
+      items.Add(item);
+
+      return item;
+   }
 
    protected override void OnClick(EventArgs e)
    {

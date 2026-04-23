@@ -31,7 +31,9 @@ public sealed class UiMenu : ToolStripDropDown
       foreach (var item in items1)
       {
          var height = item.IsSeparator ? separatorHeight : itemHeight;
-         var arguments = new UiMenuArguments(item, height, menuWidth, backgroundColor, hoverColor, textColor, disabledColor, separatorColor, itemFont,
+         var background = item.BackColor | backgroundColor;
+         var foreColor = item.ForeColor | textColor;
+         var arguments = new UiMenuArguments(item, height, menuWidth, background, hoverColor, foreColor, disabledColor, separatorColor, itemFont,
             iconSize, iconPadding, textPadding);
 
          var host = new UiMenuItem(arguments);
