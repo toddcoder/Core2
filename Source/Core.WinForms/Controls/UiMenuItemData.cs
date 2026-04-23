@@ -52,6 +52,8 @@ public class UiMenuItemData
 
    public Maybe<Color> BackColor { get; set; } = nil;
 
+   public bool UsesDefaultColors => !ForeColor && !BackColor;
+
    public UiMenuItemData Colors(Color foreColor, Color backColor)
    {
       ForeColor = foreColor;

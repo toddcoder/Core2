@@ -68,7 +68,7 @@ internal sealed class UiMenuItem : ToolStripControlHost
          var rectangle = new Rectangle(arguments.IconPadding, (bounds.Height - image.Height) / 2, image.Width, image.Height);
          g.DrawImage(image, rectangle);
       }
-      else
+      else if (arguments.Data.UsesDefaultColors)
       {
          using var brush = new SolidBrush(Color.LightGray);
          g.FillRectangle(brush, bounds.Left, bounds.Top, bounds.Left + arguments.TextPadding - 8, bounds.Bottom);
