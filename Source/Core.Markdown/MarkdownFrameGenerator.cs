@@ -80,7 +80,7 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                   {
                      if (options.MultipleReplacements.Maybe[key] is (true, var replacements))
                      {
-                        lines.AddRange(replacements.ReplacedLines(templateLines).Select(l => scalarReplacements.Replace(l)));
+                        lines.AddRange(replacements.ReplacedLines(templateLines).Select(scalarReplacements.Replace));
                      }
                   }
 

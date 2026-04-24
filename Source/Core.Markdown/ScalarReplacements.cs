@@ -1,7 +1,4 @@
 ﻿using Core.Collections;
-using Core.Matching;
-using Core.Objects;
-using Core.Strings;
 using static Core.Markdown.ReplacementFunctions;
 
 namespace Core.Markdown;

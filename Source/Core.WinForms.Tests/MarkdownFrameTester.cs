@@ -90,7 +90,9 @@ public partial class MarkdownFrameTester : Form
       {
          var scalarReplacements = new ScalarReplacements();
          MultiReplacements multipleReplacements = new();
-         updateReplacements(scalarReplacements, multipleReplacements);
+         //updateReplacements(scalarReplacements, multipleReplacements);
+         var replacementsParser = new MarkdownFrameReplacementsParser(textReplacements.Lines, scalarReplacements, multipleReplacements);
+         replacementsParser.Parse();
          var options = new MarkdownFrameTestOptions(textSource.Text, true, scalarReplacements, multipleReplacements, []);
 
          var _html =

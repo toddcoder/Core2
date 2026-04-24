@@ -10,8 +10,8 @@ namespace Core.Markdown;
 public class MarkdownFrameParser(string[] sourceLines)
 {
    protected const string REGEX_STYLE = @"^ '\' /(-['[']+) '[' /(-[']']+) ']' $; f";
-   protected const string REGEX_USE_STYLE = "'<!' /(-['!']+) /('!'1%2) /(-['>']+)'>'; f";
-   protected const string REGEX_RAW_STYLE = "/(-['(']+ '(' -[')']+ ')') /s*; f";
+   public const string REGEX_USE_STYLE = "'<!' /(-['!']+) /('!'1%2) /(-['>']+)'>'; f";
+   public const string REGEX_RAW_STYLE = "/(-['(']+ '(' -[')']+ ')') /s*; f";
    protected const string REGEX_INCLUSION = "^ '[:' /(-[':']+) ':]' $; f";
    protected const string REGEX_INCLUSION_NEGATIVE = "^ '[:!' /(-[':']+) ':]' $; f";
    protected const string REGEX_INCLUSION_END = "^ '[end]' $; f";

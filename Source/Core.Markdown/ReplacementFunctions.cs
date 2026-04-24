@@ -7,8 +7,32 @@ namespace Core.Markdown;
 
 public static class ReplacementFunctions
 {
+   public static string useStyle(string input)
+   {
+      if (input.Matches(MarkdownFrameParser.REGEX_USE_STYLE) is (true, var useStyleResult))
+      {
+         Slicer slicer = input;
+         foreach (var match in useStyleResult)
+         {
+            var linePortion = match.FirstGroup;
+            var isSpan = match.SecondGroup == "!";
+            var element = isSpan ? "span" : "div";
+            var style = match.ThirdGroup;
+            slicer[match.Index, match.Length] = $"<{element} class=\"{style}\">{linePortion}</{element}>";
+         }
+
+         return slicer.ToString();
+      }
+      else
+      {
+         return input;
+      }
+   }
+
    public static string replace(string input, Hash<string, string> hash)
    {
+      input = useStyle(input);
+
       if (input.Matches("'::' /(-[':']+) '::' ('[' /(-[']']+) ']')?; f") is (true, var result))
       {
          Slicer slicer = input;
