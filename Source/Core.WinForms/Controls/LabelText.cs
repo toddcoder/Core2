@@ -14,11 +14,13 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
    public new event EventHandler? TextChanged;
    public event EventHandler<LabelActionMessageArgs>? MessageReceived;
 
-   public LabelText(string label)
+   public LabelText(string label, bool isMenuAction = false)
    {
       InitializeComponent();
 
+      uiLabel = isMenuAction ? new UiMenuAction() : new UiAction();
       uiLabel.Divider(label);
+      uiLabel.TabStop = true;
 
       textBox.Text = "";
       textBox.TextChanged += (_, _) =>

@@ -8,7 +8,7 @@ namespace Core.WinForms.Controls;
 
 public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
 {
-   protected UiAction uiLabel = new();
+   protected UiAction uiLabel;
    protected UiAction uiUrl = new() { UseEmojis = false, AutoSizeText = true, AllowDrop = true };
    protected TableLayoutPanel textLayoutPanel = new() { Visible = false };
    protected ExTextBox textBox = new() { TextAlign = HorizontalAlignment.Center, ForeColor = Color.Blue };
@@ -26,7 +26,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
    public event EventHandler? Accepted;
    public event EventHandler? Cancelled;
 
-   public LabelUrl(string label)
+   public LabelUrl(string label, bool isMenuAction = false)
    {
       var resources = new Resources<LabelUrl>();
       var copyImage = resources.Image("Copy.png");
@@ -36,6 +36,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
 
       InitializeComponent();
 
+      uiLabel = isMenuAction ? new UiMenuAction() : new UiAction();
       uiLabel.Divider(label);
 
       uiUrl.Font = new Font("Consolas", 1f, FontStyle.Underline);

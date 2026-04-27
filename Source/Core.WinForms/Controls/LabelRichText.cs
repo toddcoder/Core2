@@ -6,7 +6,7 @@ namespace Core.WinForms.Controls;
 
 public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObjectId, ITextProperty
 {
-   protected UiAction uiLabel = new() { TabStop = true };
+   protected UiAction uiLabel;
    protected ExRichTextBox textBox = new() { BorderStyle = BorderStyle.None, Font = new Font("Consolas", 12f) };
    protected UiAction uiCopy = new();
    protected UiAction uiPaste = new();
@@ -21,11 +21,12 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
    public new event EventHandler? TextChanged;
    public event EventHandler<LabelActionMessageArgs>? MessageReceived;
 
-   public LabelRichText(string label)
+   public LabelRichText(string label, bool isMenuAction = false)
    {
       InitializeComponent();
 
-      uiLabel.Divider(label);
+      uiLabel = isMenuAction ? new UiMenuAction() : new UiAction();
+      uiLabel.TabStop = true;
 
       textBox.Text = "";
       textBox.TextChanged += (_, _) =>

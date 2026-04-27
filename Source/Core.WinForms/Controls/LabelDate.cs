@@ -6,7 +6,7 @@ namespace Core.WinForms.Controls;
 
 public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
 {
-   protected UiAction uiLabel = new();
+   protected UiAction uiLabel;
    protected bool isLocked;
    protected LabelUiActionHost<CoreDateTimePicker> host;
    protected Maybe<DateTimePickerFormat> _lastFormat = nil;
@@ -14,10 +14,11 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
    public event EventHandler? ValueChanged;
    public event EventHandler<LabelActionMessageArgs>? MessageReceived;
 
-   public LabelDate(string label)
+   public LabelDate(string label, bool isMenuAction = false)
    {
       InitializeComponent();
 
+      uiLabel = isMenuAction ? new UiMenuAction() : new UiAction();
       uiLabel.Divider(label);
 
       dateTimePicker.Format = DateTimePickerFormat.Short;
