@@ -41,11 +41,11 @@ public class UiMenuAction : UiAction
       }
    }
 
-   public void Choose(Hash<string, string> hash, Action<string> onChoose)
+   public void Choose(Hash<string, string> hash, Action<string, string> onChoose)
    {
       foreach (var (key, selectedValue) in hash)
       {
-         TextItem(key, _ => onChoose(selectedValue));
+         TextItem(key, _ => onChoose(key, selectedValue));
       }
    }
 
@@ -66,11 +66,11 @@ public class UiMenuAction : UiAction
       }
    }
 
-   public void Choose(Hash<string, string> hash, Action<string> onChoose, StringHash<Color> foreColors, StringHash<Color> backColors)
+   public void Choose(Hash<string, string> hash, Action<string, string> onChoose, StringHash<Color> foreColors, StringHash<Color> backColors)
    {
       foreach (var (key, selectedValue) in hash)
       {
-         var item = TextItem(key, _ => onChoose(selectedValue));
+         var item = TextItem(key, _ => onChoose(key, selectedValue));
          if (foreColors.Maybe[key] is (true, var foreColor))
          {
             item.ForeColor = foreColor;
@@ -95,11 +95,11 @@ public class UiMenuAction : UiAction
       }
    }
 
-   public void Choose(Hash<string, string> hash, Action<string> onChoose, StringHash<Image> images)
+   public void Choose(Hash<string, string> hash, Action<string, string> onChoose, StringHash<Image> images)
    {
       foreach (var (key, selectedValue) in hash)
       {
-         var item = TextItem(key, _ => onChoose(selectedValue));
+         var item = TextItem(key, _ => onChoose(key, selectedValue));
          if (images.Maybe[key] is (true, var image))
          {
             item.Image = image;
@@ -120,11 +120,11 @@ public class UiMenuAction : UiAction
       }
    }
 
-   public void Choose(Hash<string, string> hash, Action<string> onChoose, Func<string, Maybe<(Color foreColor, Color backColor)>> colorSelector)
+   public void Choose(Hash<string, string> hash, Action<string, string> onChoose, Func<string, Maybe<(Color foreColor, Color backColor)>> colorSelector)
    {
       foreach (var (key, selectedValue) in hash)
       {
-         var item = TextItem(key, _ => onChoose(selectedValue));
+         var item = TextItem(key, _ => onChoose(key, selectedValue));
          if (colorSelector(key) is (true, var colors))
          {
             item.BackColor = colors.backColor;
