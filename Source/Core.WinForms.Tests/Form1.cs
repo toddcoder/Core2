@@ -257,12 +257,12 @@ public partial class Form1 : Form
       Set<Chosen> chosenSet = [];
       var counts = choices.ToStringHash(c => c, _ => 0);
 
-      var uiButton7 = new UiAction { AutoSizeText = true, ChooserGlyph = true };
+      var uiButton7 = new UiMenuAction { AutoSizeText = true };
       (builder + uiButton7).Row();
       uiButton7.NoStatus("choose");
       uiButton7.Click += (_, _) =>
       {
-         if (uiDirty.IsDirty)
+         /*if (uiDirty.IsDirty)
          {
             uiButton7.Choose("Non-Auto-Close").AutoClose(false).Choices(choices).Choose();
          }
@@ -277,7 +277,7 @@ public partial class Form1 : Form
             {
                uiChosen.Success(chosen.Value);
             }
-         }
+         }*/
       };
       uiButton7.ChosenItemChecked += (_, e) => chosenSet = e.ChosenSet;
       uiButton7.ChooserClosed += (_, _) => uiButton7.Success(chosenSet.Select(c => c.Key.Keep(1)).Order().ToString(""));
@@ -317,7 +317,7 @@ public partial class Form1 : Form
       var uiButton9 = new UiAction { ChooserGlyph = true };
       (builder + uiButton9).Row();
       uiButton9.Button("Update Choices");
-      var chooser = uiButton9.Choose("Update").AutoClose(false).Choices(choices).Chooser();
+      /*var chooser = uiButton9.Choose("Update").AutoClose(false).Choices(choices).Chooser();
       uiButton9.Click += (_, _) => chooser.Open();
       uiButton9.ClickText = "Update choices";
       uiButton9.KeyDownCaption = new KeyDownCapture.ControlKey("Clear Choices");
@@ -331,7 +331,7 @@ public partial class Form1 : Form
          {
             chooser.Update(alternateChoices);
          }
-      };
+      };*/
 
       (builder + uiDivider).SpanCol(2).Row();
       uiDivider.Divider("part 2");

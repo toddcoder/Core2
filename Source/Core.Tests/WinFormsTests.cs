@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
+using Core.Collections;
 using Core.Dates.DateIncrements;
 using Core.Strings;
 using Core.WinForms;
@@ -492,9 +493,9 @@ public class WinFormsTests
    public void ChooserTest()
    {
       var form = new Form();
-      var uiAction = new UiAction();
+      var uiAction = new UiMenuAction();
       uiAction.SetUp(0, 0, 200, 40);
-      uiAction.Click += (_, _) => _ = uiAction.Choose("A,B,C").SizeToText(true).Choices("Alpha", "Bravo", "Charlie").Choose();
+      uiAction.RequestMenuItems.Handler = () => uiAction.Choose("Alpha", "Bravo", "Charlie").Then(uiAction.Success);
       uiAction.ClickText = "Select item";
 
       form.ShowDialog();
@@ -504,16 +505,9 @@ public class WinFormsTests
    public void Chooser2Test()
    {
       var form = new Form();
-      var uiAction = new UiAction();
+      var uiAction = new UiMenuAction();
       uiAction.SetUp(0, 0, 200, 40);
-      uiAction.Click += (_, _) =>
-      {
-         var _chosen = uiAction.Choose("A,B,C").Choices("Alpha", "Bravo", "Charlie").ModifyTitle(false).NilItem(nil).Choose();
-         if (_chosen is (true, var chosen))
-         {
-            MessageBox.Show(chosen.Value);
-         }
-      };
+      uiAction.RequestMenuItems.Handler = () => uiAction.Choose("Alpha", "Bravo", "Charlie").Then(text => MessageBox.Show(text));
       uiAction.ClickText = "Select item";
 
       form.ShowDialog();
@@ -523,21 +517,9 @@ public class WinFormsTests
    public void Chooser3Test()
    {
       var form = new Form();
-      var uiAction = new UiAction();
+      var uiAction = new UiMenuAction();
       uiAction.SetUp(0, 0, 200, 40);
-      uiAction.Click += (_, _) => _ = uiAction.Choose("A,B,C").Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
-      uiAction.ClickText = "Select item";
-
-      form.ShowDialog();
-   }
-
-   [TestMethod]
-   public void Chooser4Test()
-   {
-      var form = new Form();
-      var uiAction = new UiAction();
-      uiAction.SetUp(0, 0, 200, 40);
-      uiAction.Click += (_, _) => _ = uiAction.Choose("A,B,C", 800).Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
+      uiAction.RequestMenuItems.Handler = () => uiAction.Choose(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Then((_, v) => uiAction.Success(v));
       uiAction.ClickText = "Select item";
 
       form.ShowDialog();
@@ -547,17 +529,18 @@ public class WinFormsTests
    public void ChooserEventTest()
    {
       var form = new Form();
-      var uiAction = new UiAction();
+      var uiAction = new UiMenuAction();
       uiAction.SetUp(0, 0, 200, 40);
-      uiAction.AppearanceOverride += (_, e) =>
+      /*uiAction.AppearanceOverride += (_, e) =>
       {
          e.ForeColor = Color.White;
          e.BackColor = Color.Red;
          e.Italic = true;
          e.Override = true;
-      };
-      uiAction.Click += (_, _) => _ = uiAction.Choose("A,B,C", 800).Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
-      uiAction.ClickText = "Select item";
+      };*/
+      //uiAction.Click += (_, _) => _ = uiAction.Choose("A,B,C", 800).Choices(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Choose();
+      uiAction.RequestMenuItems.Handler = () => uiAction.Choose(("Alpha", "A"), ("Bravo", "B"), ("Charlie", "C")).Then((_, v) => uiAction.Success(v));
+        uiAction.ClickText = "Select item";
 
       form.ShowDialog();
    }
@@ -677,7 +660,6 @@ public class WinFormsTests
 
       form.ShowDialog();
    }
-
 
    [TestMethod]
    public void FloatingFailureTest()

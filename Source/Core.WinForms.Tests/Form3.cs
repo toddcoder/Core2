@@ -37,8 +37,8 @@ public partial class Form3 : Form
    }
 
    protected RandomNumbers randomNumbers;
-   protected UiAction uiChooserTop = new() { ChooserGlyph = true };
-   protected UiAction uiChooserBottom = new() { ChooserGlyph = true };
+   protected UiMenuAction uiChooserTop = new();
+   protected UiMenuAction uiChooserBottom = new();
    protected UiAction uiResult = new();
 
    public Form3()
@@ -52,23 +52,10 @@ public partial class Form3 : Form
       _ = builder.Row + 40 + 100f + 40 + 40;
       builder.SetUp();
 
-      uiChooserTop.Click += (_, _) =>
-      {
-         var _chosen = uiChooserTop.Choose("Items").Choices(getChoices()).Choose();
-         if (_chosen is (true, var chosen))
-         {
-            uiChooserTop.Success(chosen.Value);
-         }
-      };
+      uiChooserTop.RequestMenuItems.Handler = () => uiChooserTop.Choose(getChoices(), chosen => uiChooserTop.Success(chosen));
+      uiChooserTop.ClickText = "Select items";
 
-      uiChooserBottom.Click += (_, _) =>
-      {
-         var _chosen = uiChooserBottom.Choose("Items").Choices(getChoices()).FlyUp().Choose();
-         if (_chosen is (true, var chosen))
-         {
-            uiChooserBottom.Success(chosen.Value);
-         }
-      };
+      uiChooserBottom.RequestMenuItems.Handler = () => uiChooserBottom.Choose(getChoices(), chosen => uiChooserBottom.Success(chosen));
       uiChooserBottom.ClickText = "Select items";
 
       uiResult.Button("Start");

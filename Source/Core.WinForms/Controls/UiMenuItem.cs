@@ -1,5 +1,4 @@
-﻿using System.Drawing.Drawing2D;
-using Core.Applications.Messaging;
+﻿using Core.Applications.Messaging;
 
 namespace Core.WinForms.Controls;
 

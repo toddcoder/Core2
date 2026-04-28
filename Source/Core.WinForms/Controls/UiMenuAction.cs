@@ -1,6 +1,7 @@
 ﻿using Core.Applications.Messaging;
 using Core.Collections;
 using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
@@ -9,6 +10,8 @@ public class UiMenuAction : UiAction
    protected List<UiMenuItemData> items = [];
    protected bool menuOpen;
    protected Lazy<UiMenu> menu;
+   protected Maybe<string[]> _textItems = nil;
+   protected Maybe<Hash<string, string>> _hash = nil;
    public readonly MessageEvent RequestMenuItems = new();
    public readonly MessageEvent MenuClosed = new();
 
@@ -33,6 +36,18 @@ public class UiMenuAction : UiAction
       return uiMenu;
    }
 
+   public UiMenuAction Choose(params string[] textItems)
+   {
+      _textItems = textItems;
+      return this;
+   }
+
+   public UiMenuAction Choose(params (string key, string value)[] hashItems)
+   {
+      _hash = hashItems.ToHash();
+      return this;
+   }
+
    public void Choose(IEnumerable<string> options, Action<string> onChoose)
    {
       foreach (var option in options)
@@ -49,87 +64,67 @@ public class UiMenuAction : UiAction
       }
    }
 
-   public void Choose(IEnumerable<string> options, Action<string> onChoose, StringHash<Color> foreColors, StringHash<Color> backColors)
+   public void Then(Action<string> onChoose)
+   {
+      if (_textItems is (true, var textItems))
+      {
+         foreach (var textItem in textItems)
+         {
+            TextItem(textItem, onChoose);
+         }
+      }
+   }
+
+   public void Then(Action<string> onChoose, Action<UiMenuItemData> setter)
+   {
+      if (_textItems is (true, var textItems))
+      {
+         foreach (var textItem in textItems)
+         {
+            var item = TextItem(textItem, onChoose);
+            setter(item);
+         }
+      }
+   }
+
+   public void Then(Action<string, string> onChoose)
+   {
+      if (_hash is (true, var hash))
+      {
+         foreach (var (key, selectedValue) in hash)
+         {
+            TextItem(key, _ => onChoose(key, selectedValue));
+         }
+      }
+   }
+
+   public void Then(Action<string, string> onChoose, Action<UiMenuItemData> setter)
+   {
+      if (_hash is (true, var hash))
+      {
+         foreach (var (key, selectedValue) in hash)
+         {
+            var item = TextItem(key, _ => onChoose(key, selectedValue));
+            setter(item);
+         }
+      }
+   }
+
+   public void Choose(IEnumerable<string> options, Action<string> onChoose, Action<UiMenuItemData> setter)
    {
       foreach (var option in options)
       {
          var item = TextItem(option, onChoose);
-         if (foreColors.Maybe[option] is (true, var foreColor))
-         {
-            item.ForeColor = foreColor;
-         }
-
-         if (backColors.Maybe[option] is (true, var backColor))
-         {
-            item.BackColor = backColor;
-         }
+         setter(item);
       }
    }
 
-   public void Choose(Hash<string, string> hash, Action<string, string> onChoose, StringHash<Color> foreColors, StringHash<Color> backColors)
+   public void Choose(Hash<string, string> hash, Action<string, string> onChoose, Action<UiMenuItemData> setter)
    {
       foreach (var (key, selectedValue) in hash)
       {
          var item = TextItem(key, _ => onChoose(key, selectedValue));
-         if (foreColors.Maybe[key] is (true, var foreColor))
-         {
-            item.ForeColor = foreColor;
-         }
-
-         if (backColors.Maybe[key] is (true, var backColor))
-         {
-            item.BackColor = backColor;
-         }
-      }
-   }
-
-   public void Choose(IEnumerable<string> options, Action<string> onChoose, StringHash<Image> images)
-   {
-      foreach (var option in options)
-      {
-         var item = TextItem(option, onChoose);
-         if (images.Maybe[option] is (true, var image))
-         {
-            item.Image = image;
-         }
-      }
-   }
-
-   public void Choose(Hash<string, string> hash, Action<string, string> onChoose, StringHash<Image> images)
-   {
-      foreach (var (key, selectedValue) in hash)
-      {
-         var item = TextItem(key, _ => onChoose(key, selectedValue));
-         if (images.Maybe[key] is (true, var image))
-         {
-            item.Image = image;
-         }
-      }
-   }
-
-   public void Choose(IEnumerable<string> options, Action<string> onChoose, Func<string, Maybe<(Color foreColor, Color backColor)>> colorSelector)
-   {
-      foreach (var option in options)
-      {
-         var item = TextItem(option, onChoose);
-         if (colorSelector(option) is (true, var colors))
-         {
-            item.BackColor = colors.backColor;
-            item.ForeColor = colors.foreColor;
-         }
-      }
-   }
-
-   public void Choose(Hash<string, string> hash, Action<string, string> onChoose, Func<string, Maybe<(Color foreColor, Color backColor)>> colorSelector)
-   {
-      foreach (var (key, selectedValue) in hash)
-      {
-         var item = TextItem(key, _ => onChoose(key, selectedValue));
-         if (colorSelector(key) is (true, var colors))
-         {
-            item.BackColor = colors.backColor;
-            item.ForeColor = colors.foreColor;
-         }
+         setter(item);
       }
    }
 

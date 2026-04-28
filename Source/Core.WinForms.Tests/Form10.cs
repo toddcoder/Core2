@@ -9,7 +9,7 @@ namespace Core.WinForms.Tests;
 public partial class Form10 : Form
 {
    protected ControlContainer<UiAction> container = ControlContainer<UiAction>.ReadingContainer();
-   protected UiAction uiDirection = new() { ChooserGlyph = true };
+   protected UiMenuAction uiDirection = new();
    protected UiAction uiRemove = new();
    protected UiAction uiAdd = new();
    protected MaybeStack<UiAction> stack = [];
@@ -28,34 +28,32 @@ public partial class Form10 : Form
       uiIdle.NoStatus("idle");
 
       uiDirection.Success("Reading");
-      uiDirection.Click += (_, _) =>
+      uiDirection.RequestMenuItems.Handler = () =>
       {
-         var _chosen = uiDirection.Choose("Direction").Choices("Reading", "Horizontal", "Vertical", "Fixed")
-            .ModifyTitle(false).Choose();
-         if (_chosen is (true, var chosen))
-         {
-            container.Clear();
-            container.Direction = chosen.Value switch
-            {
-               "Reading" => ControlDirection.Reading,
-               "Horizontal" => ControlDirection.Horizontal,
-               "Vertical" => ControlDirection.Vertical,
-               "Fixed" => ControlDirection.Reading,
-               _ => container.Direction
-            };
-            if (chosen.Value == "Fixed")
-            {
-               container.ControlWidth = 200;
-               container.ControlHeight = 60;
-            }
-            else
-            {
-               container.ControlWidth = nil;
-               container.ControlHeight = nil;
-            }
+          uiDirection.Choose("Reading", "Horizontal", "Vertical", "Fixed").Then(chosen =>
+          {
+             container.Clear();
+             container.Direction = chosen switch
+             {
+                "Reading" => ControlDirection.Reading,
+                "Horizontal" => ControlDirection.Horizontal,
+                "Vertical" => ControlDirection.Vertical,
+                "Fixed" => ControlDirection.Reading,
+                _ => container.Direction
+             };
+             if (chosen == "Fixed")
+             {
+                container.ControlWidth = 200;
+                container.ControlHeight = 60;
+             }
+             else
+             {
+                container.ControlWidth = nil;
+                container.ControlHeight = nil;
+             }
 
-            uiDirection.Success(chosen.Value);
-         }
+             uiDirection.Success(chosen);
+          });
       };
       uiDirection.ClickText = "Select direction";
 

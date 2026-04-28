@@ -11,7 +11,7 @@ public partial class Form4 : Form
    protected UiAction uiRemove = new();
    protected UiAction uiInsert = new();
    protected ExTextBox textCaption = new();
-   protected UiAction uiIndexes = new() { ClickGlyph = true };
+   protected UiMenuAction uiIndexes = new() { ClickGlyph = true };
    protected UiAction uiWaiting = new();
 
    public Form4()
@@ -51,17 +51,9 @@ public partial class Form4 : Form
       textCaption.Shortcut(Keys.Control | Keys.R, _ => textCaption.Text = "foobar");
 
       uiIndexes.NoStatus("indexes");
-      uiIndexes.Click += (_, _) =>
+      uiIndexes.RequestMenuItems.Handler = () =>
       {
-         var _chosen = uiIndexes.Choose("Indexes").Choices(getIndexes()).Choose();
-         if (_chosen is (true, var chosen))
-         {
-            uiIndexes.Success(chosen.Value);
-         }
-
-         return;
-
-         IEnumerable<string> getIndexes() => Enumerable.Range(0, container.Count).Select(i => i.ToString());
+         uiIndexes.Choose(Enumerable.Range(0, container.Count).Select(i => i.ToString()).ToArray(), chosen => { uiIndexes.Success(chosen); });
       };
       uiInsert.ClickText = "Select index";
 

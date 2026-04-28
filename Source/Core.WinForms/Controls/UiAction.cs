@@ -3287,7 +3287,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
-   public ChooserSet Choose(string title, int width)
+   /*public ChooserSet Choose(string title, int width)
    {
       var chooser = new Chooser(title, this, width);
       return new ChooserSet(chooser);
@@ -3297,7 +3297,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
    {
       var chooser = new Chooser(title, this, nil);
       return new ChooserSet(chooser);
-   }
+   }*/
 
    public void OnAppearanceOverride(AppearanceOverrideArgs e) => AppearanceOverride?.Invoke(this, e);
 

@@ -61,4 +61,8 @@ public class UiMenuItemData
 
       return this;
    }
+
+   public bool IsBold { get; set; }
+
+   public bool IsItalic { get; set; }
 }
