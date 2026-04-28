@@ -52,10 +52,10 @@ public partial class Form3 : Form
       _ = builder.Row + 40 + 100f + 40 + 40;
       builder.SetUp();
 
-      uiChooserTop.RequestMenuItems.Handler = () => uiChooserTop.Choose(getChoices(), chosen => uiChooserTop.Success(chosen));
+      uiChooserTop.RequestMenuItems.Handler = () => uiChooserTop.Choose(getChoices()).Then(chosen => uiChooserTop.Success(chosen));
       uiChooserTop.ClickText = "Select items";
 
-      uiChooserBottom.RequestMenuItems.Handler = () => uiChooserBottom.Choose(getChoices(), chosen => uiChooserBottom.Success(chosen));
+      uiChooserBottom.RequestMenuItems.Handler = () => uiChooserBottom.Choose(getChoices()).Then(chosen => uiChooserBottom.Success(chosen));
       uiChooserBottom.ClickText = "Select items";
 
       uiResult.Button("Start");

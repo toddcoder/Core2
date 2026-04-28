@@ -12,6 +12,7 @@ public class UiMenuAction : UiAction
    protected Lazy<UiMenu> menu;
    protected Maybe<string[]> _textItems = nil;
    protected Maybe<Hash<string, string>> _hash = nil;
+   protected Maybe<Action<UiMenuItemData>> _setter = nil;
    public readonly MessageEvent RequestMenuItems = new();
    public readonly MessageEvent MenuClosed = new();
 
@@ -42,47 +43,42 @@ public class UiMenuAction : UiAction
       return this;
    }
 
+   public UiMenuAction Choose(IEnumerable<string> textItems)
+   {
+      _textItems = (string[])[.. textItems];
+      return this;
+   }
+
    public UiMenuAction Choose(params (string key, string value)[] hashItems)
    {
       _hash = hashItems.ToHash();
       return this;
    }
 
-   public void Choose(IEnumerable<string> options, Action<string> onChoose)
+   public UiMenuAction Set(Action<UiMenuItemData> setter)
    {
-      foreach (var option in options)
-      {
-         TextItem(option, onChoose);
-      }
-   }
-
-   public void Choose(Hash<string, string> hash, Action<string, string> onChoose)
-   {
-      foreach (var (key, selectedValue) in hash)
-      {
-         TextItem(key, _ => onChoose(key, selectedValue));
-      }
+      _setter = setter;
+      return this;
    }
 
    public void Then(Action<string> onChoose)
    {
       if (_textItems is (true, var textItems))
       {
-         foreach (var textItem in textItems)
+         if (_setter is (true, var setter))
          {
-            TextItem(textItem, onChoose);
+            foreach (var textItem in textItems)
+            {
+               var item = TextItem(textItem, onChoose);
+               setter(item);
+            }
          }
-      }
-   }
-
-   public void Then(Action<string> onChoose, Action<UiMenuItemData> setter)
-   {
-      if (_textItems is (true, var textItems))
-      {
-         foreach (var textItem in textItems)
+         else
          {
-            var item = TextItem(textItem, onChoose);
-            setter(item);
+            foreach (var textItem in textItems)
+            {
+               TextItem(textItem, onChoose);
+            }
          }
       }
    }
@@ -91,40 +87,21 @@ public class UiMenuAction : UiAction
    {
       if (_hash is (true, var hash))
       {
-         foreach (var (key, selectedValue) in hash)
+         if (_setter is (true, var setter))
          {
-            TextItem(key, _ => onChoose(key, selectedValue));
+            foreach (var (key, selectedValue) in hash)
+            {
+               var item = TextItem(key, _ => onChoose(key, selectedValue));
+               setter(item);
+            }
          }
-      }
-   }
-
-   public void Then(Action<string, string> onChoose, Action<UiMenuItemData> setter)
-   {
-      if (_hash is (true, var hash))
-      {
-         foreach (var (key, selectedValue) in hash)
+         else
          {
-            var item = TextItem(key, _ => onChoose(key, selectedValue));
-            setter(item);
+            foreach (var (key, selectedValue) in hash)
+            {
+               TextItem(key, _ => onChoose(key, selectedValue));
+            }
          }
-      }
-   }
-
-   public void Choose(IEnumerable<string> options, Action<string> onChoose, Action<UiMenuItemData> setter)
-   {
-      foreach (var option in options)
-      {
-         var item = TextItem(option, onChoose);
-         setter(item);
-      }
-   }
-
-   public void Choose(Hash<string, string> hash, Action<string, string> onChoose, Action<UiMenuItemData> setter)
-   {
-      foreach (var (key, selectedValue) in hash)
-      {
-         var item = TextItem(key, _ => onChoose(key, selectedValue));
-         setter(item);
       }
    }
 

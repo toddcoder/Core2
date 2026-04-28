@@ -53,7 +53,7 @@ public partial class Form4 : Form
       uiIndexes.NoStatus("indexes");
       uiIndexes.RequestMenuItems.Handler = () =>
       {
-         uiIndexes.Choose(Enumerable.Range(0, container.Count).Select(i => i.ToString()).ToArray(), chosen => { uiIndexes.Success(chosen); });
+         uiIndexes.Choose(Enumerable.Range(0, container.Count).Select(i => i.ToString())).Then(chosen => uiIndexes.Success(chosen));
       };
       uiInsert.ClickText = "Select index";
 
