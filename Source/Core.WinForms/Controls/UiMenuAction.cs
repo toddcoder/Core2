@@ -55,6 +55,12 @@ public class UiMenuAction : UiAction
       return this;
    }
 
+   public UiMenuAction Choose(Hash<string, string> hashItems)
+   {
+      _hash = hashItems;
+      return this;
+   }
+
    public UiMenuAction Set(Action<UiMenuItemData> setter)
    {
       _setter = setter;
