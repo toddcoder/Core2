@@ -3516,7 +3516,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
-   public int RectangleCount
+   public virtual int RectangleCount
    {
       get => rectangles.Length;
       set

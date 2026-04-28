@@ -16,6 +16,7 @@ public class UiMenuAction : UiAction
    protected Maybe<string> _chosenValue = nil;
    protected Maybe<(string key, string value)> _chosenValues = nil;
    public readonly MessageEvent RequestMenuItems = new();
+   public MessageEvent<int>[] RequestAlternateMenuItems = [];
    public readonly MessageEvent MenuClosed = new();
 
    public UiMenuAction()
@@ -37,6 +38,16 @@ public class UiMenuAction : UiAction
          Invalidate();
       };
       return uiMenu;
+   }
+
+   public override int RectangleCount
+   {
+      get => base.RectangleCount;
+      set
+      {
+         base.RectangleCount = value;
+         RequestAlternateMenuItems = [.. Enumerable.Range(0, value).Select(_ => new MessageEvent<int>())];
+      }
    }
 
    public UiMenuAction Choose(params string[] textItems)
@@ -192,6 +203,23 @@ public class UiMenuAction : UiAction
          {
             menu.Value.Close();
          }
+         else if (type is UiActionType.Alternate or UiActionType.ReadOnlyAlternate)
+         {
+            ResetMenu();
+            var location = PointToClient(Cursor.Position);
+            for (var i = 0; i < rectangles.Length; i++)
+            {
+               if (rectangles[i].Contains(location) && DisabledIndex != i)
+               {
+                  RequestAlternateMenuItems[i].Invoke(i);
+                  break;
+               }
+            }
+
+            menuOpen = true;
+            menu.Value.Show(this, location);
+            Focus();
+         }
          else
          {
             RequestMenuItems.Invoke();
@@ -217,5 +245,14 @@ public class UiMenuAction : UiAction
       });
    }
 
-   public void ResetMenu() => menu = new Lazy<UiMenu>(menuFactory);
+   public void ResetMenu()
+   {
+      menu = new Lazy<UiMenu>(menuFactory);
+      items.Clear();
+      _textItems = nil;
+      _hash = nil;
+      _setter = nil;
+      _chosenValue = nil;
+      _chosenValues = nil;
+   }
 }
