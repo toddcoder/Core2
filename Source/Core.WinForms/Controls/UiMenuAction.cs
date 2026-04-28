@@ -13,6 +13,8 @@ public class UiMenuAction : UiAction
    protected Maybe<string[]> _textItems = nil;
    protected Maybe<Hash<string, string>> _hash = nil;
    protected Maybe<Action<UiMenuItemData>> _setter = nil;
+   protected Maybe<string> _chosenValue = nil;
+   protected Maybe<(string key, string value)> _chosenValues = nil;
    public readonly MessageEvent RequestMenuItems = new();
    public readonly MessageEvent MenuClosed = new();
 
@@ -89,6 +91,48 @@ public class UiMenuAction : UiAction
       }
    }
 
+   public UiMenuAction Then()
+   {
+      if (_textItems is (true, var textItems))
+      {
+         if (_setter is (true, var setter))
+         {
+            foreach (var textItem in textItems)
+            {
+               var item = TextItem(textItem, t => _chosenValue = t);
+               setter(item);
+            }
+         }
+         else
+         {
+            foreach (var textItem in textItems)
+            {
+               TextItem(textItem, t => _chosenValue = t);
+            }
+         }
+      }
+      else if (_hash is (true, var hash))
+      {
+         if (_setter is (true, var setter))
+         {
+            foreach (var (key, selectedValue) in hash)
+            {
+               var item = TextItem(key, _ => _chosenValues = (key, selectedValue));
+               setter(item);
+            }
+         }
+         else
+         {
+            foreach (var (key, selectedValue) in hash)
+            {
+               TextItem(key, _ => _chosenValues = (key, selectedValue));
+            }
+         }
+      }
+
+      return this;
+   }
+
    public void Then(Action<string, string> onChoose)
    {
       if (_hash is (true, var hash))
@@ -110,6 +154,10 @@ public class UiMenuAction : UiAction
          }
       }
    }
+
+   public Maybe<string> ChosenValue => _chosenValue;
+
+   public Maybe<(string key, string value)> ChosenValues => _chosenValues;
 
    public UiMenuItemData TextItem(string text, Action<string> onClick)
    {
