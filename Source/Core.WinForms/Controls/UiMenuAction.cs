@@ -1,6 +1,7 @@
 ﻿using Core.Applications.Messaging;
 using Core.Collections;
 using Core.Monads;
+using Core.Strings;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -80,6 +81,11 @@ public class UiMenuAction : UiAction
       return this;
    }
 
+   protected UiMenuItemData getItem(string text, Action<string> onClick)
+   {
+      return text.IsNotEmpty() ? TextItem(text, onClick) : Separator();
+   }
+
    public void Then(Action<string> onChoose)
    {
       if (_textItems is (true, var textItems))
@@ -88,7 +94,7 @@ public class UiMenuAction : UiAction
          {
             foreach (var textItem in textItems)
             {
-               var item = TextItem(textItem, onChoose);
+               var item = getItem(textItem, onChoose);
                setter(item);
             }
          }
@@ -96,7 +102,7 @@ public class UiMenuAction : UiAction
          {
             foreach (var textItem in textItems)
             {
-               TextItem(textItem, onChoose);
+               getItem(textItem, onChoose);
             }
          }
       }
@@ -110,7 +116,7 @@ public class UiMenuAction : UiAction
          {
             foreach (var textItem in textItems)
             {
-               var item = TextItem(textItem, t => _chosenValue = t);
+               var item = getItem(textItem, t => _chosenValue = t);
                setter(item);
             }
          }
@@ -118,7 +124,7 @@ public class UiMenuAction : UiAction
          {
             foreach (var textItem in textItems)
             {
-               TextItem(textItem, t => _chosenValue = t);
+               getItem(textItem, t => _chosenValue = t);
             }
          }
       }
@@ -128,7 +134,7 @@ public class UiMenuAction : UiAction
          {
             foreach (var (key, selectedValue) in hash)
             {
-               var item = TextItem(key, _ => _chosenValues = (key, selectedValue));
+               var item = getItem(key, _ => _chosenValues = (key, selectedValue));
                setter(item);
             }
          }
@@ -136,7 +142,7 @@ public class UiMenuAction : UiAction
          {
             foreach (var (key, selectedValue) in hash)
             {
-               TextItem(key, _ => _chosenValues = (key, selectedValue));
+               getItem(key, _ => _chosenValues = (key, selectedValue));
             }
          }
       }
@@ -152,7 +158,7 @@ public class UiMenuAction : UiAction
          {
             foreach (var (key, selectedValue) in hash)
             {
-               var item = TextItem(key, _ => onChoose(key, selectedValue));
+               var item = getItem(key, _ => onChoose(key, selectedValue));
                setter(item);
             }
          }
@@ -160,7 +166,7 @@ public class UiMenuAction : UiAction
          {
             foreach (var (key, selectedValue) in hash)
             {
-               TextItem(key, _ => onChoose(key, selectedValue));
+               getItem(key, _ => onChoose(key, selectedValue));
             }
          }
       }
