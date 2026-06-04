@@ -7,7 +7,7 @@ public partial class Form16 : Form
 {
    protected UiMenuAction menu1 = new();
    protected UiMenuAction menu2 = new();
-   protected UiAction uiDisplay = new();
+   protected TempMessage tmDisplay = new();
 
    public Form16()
    {
@@ -25,13 +25,13 @@ public partial class Form16 : Form
             switch (letter)
             {
                case "A":
-                  uiDisplay.Success("Alpha");
+                  tmDisplay.Display("Alpha");
                   break;
                case "B":
-                  uiDisplay.Success("Beta");
+                  tmDisplay.Display("Beta");
                   break;
                case "C":
-                  uiDisplay.Success("Kappa");
+                  tmDisplay.Display("Kappa");
                   break;
             }
          });
@@ -43,13 +43,13 @@ public partial class Form16 : Form
             switch (letter)
             {
                case "A":
-                  uiDisplay.Success("Alfa");
+                  tmDisplay.Display("Alfa");
                   break;
                case "B":
-                  uiDisplay.Success("Bravo");
+                  tmDisplay.Display("Bravo");
                   break;
                case "C":
-                  uiDisplay.Success("Charlie");
+                  tmDisplay.Display("Charlie");
                   break;
              }
          });
@@ -61,13 +61,13 @@ public partial class Form16 : Form
             switch (letter)
             {
                case "A":
-                  uiDisplay.Success("Ay");
+                  tmDisplay.Display("Ay");
                   break;
                case "B":
-                  uiDisplay.Success("Bee");
+                  tmDisplay.Display("Bee");
                   break;
                case "C":
-                  uiDisplay.Success("Cee");
+                  tmDisplay.Display("Cee");
                   break;
             }
          });
@@ -130,7 +130,7 @@ public partial class Form16 : Form
            });
         };*/
 
-        uiDisplay.NoStatus("display");
+        tmDisplay.Display("display");
 
       var builder = new TableLayoutBuilder(tableLayoutPanel1);
       _ = builder.Col + 200 + 400 + 200 + 100f;
@@ -139,6 +139,6 @@ public partial class Form16 : Form
 
       (builder + menu1).Next();
       (builder + menu2).Next();
-      (builder + uiDisplay).Row();
+      (builder + tmDisplay).Row();
    }
 }
