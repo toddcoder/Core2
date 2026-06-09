@@ -1,5 +1,7 @@
 ﻿using Core.Collections;
 using Core.Markdown;
+using Core.Monads;
+using static Core.Monads.MonadFunctions;
 
 namespace Core.Tests;
 
@@ -14,4 +16,6 @@ public class MarkdownFrameTestOptions(string source) : IMarkdownFrameOptions
    public MultiReplacements MultipleReplacements { get; set; } = new();
 
    public StringHash Variables { get; set; } = [];
+
+   public Maybe<int> PageBreak { get; set; } = nil;
 }

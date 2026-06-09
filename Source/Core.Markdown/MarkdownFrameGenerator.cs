@@ -7,8 +7,12 @@ namespace Core.Markdown;
 
 public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions options)
 {
+   protected Maybe<int> _pageBreak = options.PageBreak;
+
    public Optional<(string source, string styles, bool tidy)> Generate()
    {
+      var lines = new BreakingLines(_pageBreak);
+
       try
       {
          List<Replacer> includedReplacers = [];
@@ -52,7 +56,6 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
             }
          }
 
-         List<string> lines = [];
          List<string> styles = [];
          List<string> templateLines = [];
          Maybe<string> _key = nil;
@@ -68,6 +71,9 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                }
                case Replacer.Break:
                   lines.Add("<br></br>");
+                  break;
+               case Replacer.PageBreak:
+                  lines.Add("""<div style="page-break-after: always;"></div><br></br>""");
                   break;
                case Replacer.MultiBegin multiBegin:
                {
@@ -116,7 +122,7 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
             options.Variables[key] = scalarReplacements.Replace(value);
          }
 
-         return (lines.ToString(Environment.NewLine), styles.ToString(Environment.NewLine), options.Tidy);
+         return (lines.ToString(), styles.ToString(Environment.NewLine), options.Tidy);
 
          Maybe<string> keyExists(string key)
          {

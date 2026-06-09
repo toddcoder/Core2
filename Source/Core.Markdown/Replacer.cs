@@ -21,4 +21,6 @@ public abstract record Replacer
    public sealed record RawMarkdown(string Markdown) : Replacer;
 
    public sealed record Break : Replacer;
+
+   public sealed record PageBreak : Replacer;
 }

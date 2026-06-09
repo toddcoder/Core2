@@ -21,6 +21,7 @@ public class MarkdownFrameParser(string[] sourceLines)
    protected const string REGEX_BREAK = "^ '<!>' $; f";
    protected const string REGEX_VARIABLE = "^ '//' /([/w '.-']+) /s* ':' /s* /(.+) $; f";
    protected const string REGEX_HEADER = "^ 'header' /(/d+); f";
+   protected const string REGEX_PAGE_BREAK = "^ '<!!>' $; f";
 
    public Optional<Replacer[]> Parse(IMarkdownFrameOptions options)
    {
@@ -120,11 +121,19 @@ public class MarkdownFrameParser(string[] sourceLines)
                {
                   replacers.Add(new Replacer.Break());
                }
+               else if (line.Matches(REGEX_PAGE_BREAK))
+               {
+                  replacers.Add(new Replacer.PageBreak());
+               }
                else if (_key)
                {
                   if (line.Matches(REGEX_BREAK))
                   {
                      replacers.Add(new Replacer.Break());
+                  }
+                  else if (line.Matches(REGEX_PAGE_BREAK))
+                  {
+                     replacers.Add(new Replacer.PageBreak());
                   }
                   else
                   {

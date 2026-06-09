@@ -1,4 +1,5 @@
 ﻿using Core.Collections;
+using Core.Monads;
 
 namespace Core.Markdown;
 
@@ -13,4 +14,6 @@ public interface IMarkdownFrameOptions
    MultiReplacements MultipleReplacements { get; }
 
    StringHash Variables { get; }
+
+   Maybe<int> PageBreak { get; }
 }
