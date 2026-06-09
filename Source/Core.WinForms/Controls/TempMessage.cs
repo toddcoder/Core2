@@ -4,8 +4,8 @@ namespace Core.WinForms.Controls;
 
 public partial class TempMessage : UserControl
 {
-   protected int foreAlpha = 100;
-   protected int backAlpha = 100;
+   protected int foreAlpha = 255;
+   protected int backAlpha = 255;
    protected Color foreColor = Color.White;
    protected Color backColor = Color.Blue;
    protected Color workingForeColor = Color.White;
@@ -31,8 +31,8 @@ public partial class TempMessage : UserControl
       this.message = message;
       this.foreColor = foreColor;
       this.backColor = backColor;
-      foreAlpha = 100;
-      backAlpha = 100;
+      foreAlpha = 255;
+      backAlpha = 255;
       workingForeColor = foreColor.WithAlpha(foreAlpha);
       workingBackColor = backColor.WithAlpha(backAlpha);
       loweringBack = false;
@@ -40,12 +40,7 @@ public partial class TempMessage : UserControl
       Invalidate();
    }
 
-   public void Display(string message)
-   {
-      foreColor = Color.White;
-      backColor = Color.Blue;
-      Display(message, foreColor, backColor);
-   }
+   public void Display(string message) => Display(message, Color.White, Color.Blue);
 
    protected override void OnPaint(PaintEventArgs e)
    {
@@ -68,43 +63,48 @@ public partial class TempMessage : UserControl
    protected override void OnPaintBackground(PaintEventArgs e)
    {
       base.OnPaintBackground(e);
+      e.Graphics.HighQuality();
 
       if (loweringBack)
       {
-         e.Graphics.HighQuality();
          using var backBrush = new SolidBrush(workingBackColor);
+         e.Graphics.FillRectangle(backBrush, ClientRectangle);
+      }
+      else
+      {
+         using var backBrush = new SolidBrush(backColor);
          e.Graphics.FillRectangle(backBrush, ClientRectangle);
       }
    }
 
    protected void timer_Tick(object sender, EventArgs e)
    {
-      if (foreAlpha <= 0)
+      if (loweringBack)
       {
-         loweringBack = true;
-      }
-      else if (backAlpha <= 0)
-      {
-         foreAlpha = 100;
-         backAlpha = 100;
-         message = "";
-         loweringBack = false;
-         timer.Enabled = false;
-      }
-      else
-      {
-         if (loweringBack)
+         if (backAlpha >= 0)
          {
             workingBackColor = backColor.WithAlpha(backAlpha);
             backAlpha -= 5;
          }
          else
          {
+            timer.Enabled = false;
+         }
+      }
+      else
+      {
+         if (foreAlpha >= 0)
+         {
             workingForeColor = foreColor.WithAlpha(foreAlpha);
+            workingBackColor = backColor;
             foreAlpha -= 5;
          }
-
-         Invalidate();
+         else
+         {
+            loweringBack = true;
+         }
       }
+
+      Invalidate();
    }
 }
