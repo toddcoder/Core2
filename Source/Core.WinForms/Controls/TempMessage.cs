@@ -1,6 +1,4 @@
-﻿using System.Drawing.Text;
-
-namespace Core.WinForms.Controls;
+﻿namespace Core.WinForms.Controls;
 
 public partial class TempMessage : UserControl
 {
@@ -11,19 +9,20 @@ public partial class TempMessage : UserControl
    protected Color workingForeColor = Color.White;
    protected Color workingBackColor = Color.Blue;
    protected string message = "";
-   protected Lazy<Font> boldFont;
    protected bool loweringBack;
 
    public TempMessage()
    {
       InitializeComponent();
 
-      boldFont = new Lazy<Font>(() => new Font(Font, FontStyle.Bold));
-
       SetStyle(ControlStyles.UserPaint, true);
       SetStyle(ControlStyles.DoubleBuffer, true);
       SetStyle(ControlStyles.AllPaintingInWmPaint, true);
    }
+
+   public bool AutoSizeText { get; set; } = true;
+
+   public bool UseEmojis { get; set; } = true;
 
    public void Display(string message, Color foreColor, Color backColor)
    {
@@ -48,16 +47,19 @@ public partial class TempMessage : UserControl
 
       if (!loweringBack)
       {
-         e.Graphics.HighQuality();
-         e.Graphics.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
-         e.Graphics.TextContrast = 0;
-
-         using var foreBrush = new SolidBrush(workingForeColor);
-         using var sf = new StringFormat();
-         sf.Alignment = StringAlignment.Center;
-         sf.LineAlignment = StringAlignment.Center;
-         e.Graphics.DrawString(message, boldFont.Value, foreBrush, ClientRectangle, sf);
+         writeMessage(e.Graphics);
       }
+   }
+
+   protected void writeMessage(Graphics g)
+   {
+      var writer = new ControlWriter()
+      {
+         Color = workingForeColor,
+         Font = Font,
+         Rectangle = ClientRectangle
+      };
+      writer.Write(g, message);
    }
 
    protected override void OnPaintBackground(PaintEventArgs e)
