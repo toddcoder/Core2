@@ -41,6 +41,12 @@ public partial class TempMessage : UserControl
 
    public void Display(string message) => Display(message, Color.White, Color.Blue);
 
+   public void Success(string message) => Display(message, Color.White, Color.Green);
+
+   public void Failure(string message) => Display(message, Color.White, Color.Red);
+
+   public void Exception(Exception exception) => Display(exception.Message, Color.White, Color.Gold);
+
    protected override void OnPaint(PaintEventArgs e)
    {
       base.OnPaint(e);
@@ -53,7 +59,7 @@ public partial class TempMessage : UserControl
 
    protected void writeMessage(Graphics g)
    {
-      var writer = new ControlWriter()
+      var writer = new ControlWriter
       {
          Color = workingForeColor,
          Font = Font,
