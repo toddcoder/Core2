@@ -145,9 +145,6 @@ public class ControlWriter
 
          if (Floor || Ceiling)
          {
-            /*var rectangle = AutoSizingWriter.NarrowRectangle(Rectangle, nil, nil);
-            var writer = new AutoSizingWriter(text, rectangle, Color, Font, IsPath);
-            writer.Write(g);*/
             var _adjustedFont = getAdjustedFont(g, text, Font, Rectangle.Width, Floor | DEFAULT_FLOOR, Ceiling | DEFAULT_CEILING);
             if (_adjustedFont is (true, var adjustedFont))
             {

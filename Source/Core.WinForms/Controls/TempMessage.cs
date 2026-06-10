@@ -43,9 +43,9 @@ public partial class TempMessage : UserControl
 
    public void Success(string message) => Display(message, Color.White, Color.Green);
 
-   public void Failure(string message) => Display(message, Color.White, Color.Red);
+   public void Failure(string message) => Display(message, Color.Black, Color.Gold);
 
-   public void Exception(Exception exception) => Display(exception.Message, Color.White, Color.Gold);
+   public void Exception(Exception exception) => Display(exception.Message, Color.White, Color.Red);
 
    protected override void OnPaint(PaintEventArgs e)
    {
@@ -63,8 +63,15 @@ public partial class TempMessage : UserControl
       {
          Color = workingForeColor,
          Font = Font,
-         Rectangle = ClientRectangle
+         Rectangle = ClientRectangle,
+         UseEmojis = UseEmojis
       };
+      if (AutoSizeText)
+      {
+         writer.Floor = 6;
+         writer.Ceiling = 12;
+      }
+
       writer.Write(g, message);
    }
 
