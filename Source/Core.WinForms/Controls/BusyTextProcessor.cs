@@ -61,7 +61,7 @@ public class BusyTextProcessor
       return spokeAngles;
    }
 
-   protected static Rectangle getDrawRectangle(Rectangle clientRectangle, bool leftSide)
+   public static Rectangle GetDrawRectangle(Rectangle clientRectangle, bool leftSide)
    {
       var side = clientRectangle.Height;
       var drawRectangle = clientRectangle with { Width = side, Height = side };
@@ -75,7 +75,7 @@ public class BusyTextProcessor
       }
    }
 
-   protected static Rectangle getTextRectangle(Rectangle drawRectangle, Rectangle clientRectangle, bool leftSide)
+   public static Rectangle GetTextRectangle(Rectangle drawRectangle, Rectangle clientRectangle, bool leftSide)
    {
       if (leftSide)
       {
@@ -98,8 +98,8 @@ public class BusyTextProcessor
 
       colors = generatePalette(this.color);
       angles = generateAngles();
-      drawRectangle = getDrawRectangle(clientRectangle, leftSide);
-      textRectangle = getTextRectangle(drawRectangle, clientRectangle, leftSide);
+      drawRectangle = GetDrawRectangle(clientRectangle, leftSide);
+      textRectangle = GetTextRectangle(drawRectangle, clientRectangle, leftSide);
       center = getCenter(drawRectangle);
    }
 

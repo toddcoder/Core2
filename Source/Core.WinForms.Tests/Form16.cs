@@ -7,7 +7,9 @@ public partial class Form16 : Form
 {
    protected UiMenuAction menu1 = new();
    protected UiMenuAction menu2 = new();
-   protected TempMessage tmDisplay = new();
+   protected TempMessage tmDisplay1 = new();
+   protected UiAction uiSwitch = new();
+   protected TempMessage tmBusy = new();
 
    public Form16()
    {
@@ -25,13 +27,13 @@ public partial class Form16 : Form
             switch (letter)
             {
                case "A":
-                  tmDisplay.Display("Alpha");
+                  tmDisplay1.Display("Alpha");
                   break;
                case "B":
-                  tmDisplay.Display("Beta");
+                  tmDisplay1.Display("Beta");
                   break;
                case "C":
-                  tmDisplay.Display("Kappa");
+                  tmDisplay1.Display("Kappa");
                   break;
             }
          });
@@ -43,15 +45,15 @@ public partial class Form16 : Form
             switch (letter)
             {
                case "A":
-                  tmDisplay.Display("Alfa");
+                  tmDisplay1.Display("Alfa");
                   break;
                case "B":
-                  tmDisplay.Display("Bravo");
+                  tmDisplay1.Display("Bravo");
                   break;
                case "C":
-                  tmDisplay.Display("Charlie");
+                  tmDisplay1.Display("Charlie");
                   break;
-             }
+            }
          });
       };
       menu2.RequestAlternateMenuItems[2].Handler = _ =>
@@ -61,84 +63,34 @@ public partial class Form16 : Form
             switch (letter)
             {
                case "A":
-                  tmDisplay.Display("Ay");
+                  tmDisplay1.Display("Ay");
                   break;
                case "B":
-                  tmDisplay.Display("Bee");
+                  tmDisplay1.Display("Bee");
                   break;
                case "C":
-                  tmDisplay.Display("Cee");
+                  tmDisplay1.Display("Cee");
                   break;
             }
          });
       };
-        /*menu2.RequestAlternateMenuItems.Handler = indexLocation =>
-        {
-           var (index, location) = indexLocation;
-           menu2.Choose("A", "B", "C").Then(letter =>
-           {
-              uiDisplay.ClearSubTexts();
-              uiDisplay.SubText(location.ToString());
-              switch (index)
-              {
-                 case 0:
-                    switch (letter)
-                    {
-                       case "A":
-                          uiDisplay.Success("Alpha");
-                          break;
-                       case "B":
-                          uiDisplay.Success("Beta");
-                          break;
-                       case "C":
-                          uiDisplay.Success("Kappa");
-                          break;
-                    }
 
-                    break;
-                 case 1:
-                    switch (letter)
-                    {
-                       case "A":
-                          uiDisplay.Success("Alfa");
-                          break;
-                       case "B":
-                          uiDisplay.Success("Bravo");
-                          break;
-                       case "C":
-                          uiDisplay.Success("Charlie");
-                          break;
-                    }
+      tmDisplay1.Display("display");
 
-                    break;
-                 case 2:
-                    switch (letter)
-                    {
-                       case "A":
-                          uiDisplay.Success("Ay");
-                          break;
-                       case "B":
-                          uiDisplay.Success("Bee");
-                          break;
-                       case "C":
-                          uiDisplay.Success("Cee");
-                          break;
-                    }
-
-                    break;
-              }
-           });
-        };*/
-
-        tmDisplay.Display("display");
+      uiSwitch.CheckBox("Busy", false);
+      uiSwitch.Click += (_, _) => tmBusy.IsBusy = uiSwitch.BoxChecked;
+      tmBusy.Display("not busy");
 
       var builder = new TableLayoutBuilder(tableLayoutPanel1);
       _ = builder.Col + 200 + 400 + 200 + 100f;
-      _ = builder.Row + 60 + 100f;
+      _ = builder.Row + 60 + 60 + 100f;
       builder.SetUp();
 
       (builder + menu1).Next();
       (builder + menu2).Next();
-      (builder + tmDisplay).Row();
+      (builder + tmDisplay1).Row();
+
+      (builder + uiSwitch).Next();
+      (builder + tmBusy).Row();
    }
 }

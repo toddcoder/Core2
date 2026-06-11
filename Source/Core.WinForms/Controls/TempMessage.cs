@@ -1,7 +1,17 @@
-﻿namespace Core.WinForms.Controls;
+﻿using Core.Monads;
+using static Core.Monads.MonadFunctions;
+
+namespace Core.WinForms.Controls;
 
 public partial class TempMessage : UserControl
 {
+   protected enum PaintStatus
+   {
+      Fore,
+      Back,
+      Busy
+   }
+
    protected int foreAlpha = 255;
    protected int backAlpha = 255;
    protected Color foreColor = Color.White;
@@ -9,7 +19,9 @@ public partial class TempMessage : UserControl
    protected Color workingForeColor = Color.White;
    protected Color workingBackColor = Color.Blue;
    protected string message = "";
-   protected bool loweringBack;
+   protected PaintStatus paintStatus = PaintStatus.Fore;
+   protected Maybe<BusyTextProcessor> _busyTextProcessor = nil;
+   protected Rectangle textRectangle = Rectangle.Empty;
 
    public TempMessage()
    {
@@ -24,19 +36,40 @@ public partial class TempMessage : UserControl
 
    public bool UseEmojis { get; set; } = true;
 
+   public bool IsBusy
+   {
+      get => paintStatus == PaintStatus.Busy;
+      set
+      {
+         paintStatus = value ? PaintStatus.Busy : PaintStatus.Fore;
+         if (paintStatus is PaintStatus.Fore)
+         {
+            reset();
+         }
+
+         Invalidate();
+      }
+   }
+
    public void Display(string message, Color foreColor, Color backColor)
    {
       timer.Enabled = false;
       this.message = message;
       this.foreColor = foreColor;
       this.backColor = backColor;
+      reset();
+      timer.Enabled = true;
+      Invalidate();
+   }
+
+   protected void reset()
+   {
       foreAlpha = 255;
       backAlpha = 255;
       workingForeColor = foreColor.WithAlpha(foreAlpha);
       workingBackColor = backColor.WithAlpha(backAlpha);
-      loweringBack = false;
-      timer.Enabled = true;
-      Invalidate();
+      textRectangle = ClientRectangle;
+      paintStatus = PaintStatus.Fore;
    }
 
    public void Display(string message) => Display(message, Color.White, Color.Blue);
@@ -51,9 +84,16 @@ public partial class TempMessage : UserControl
    {
       base.OnPaint(e);
 
-      if (!loweringBack)
+      switch (paintStatus)
       {
-         writeMessage(e.Graphics);
+         case PaintStatus.Fore:
+            writeMessage(e.Graphics);
+            break;
+         case PaintStatus.Busy:
+            workingForeColor = foreColor;
+            workingBackColor = backColor;
+            writeMessage(e.Graphics);
+            break;
       }
    }
 
@@ -63,14 +103,10 @@ public partial class TempMessage : UserControl
       {
          Color = workingForeColor,
          Font = Font,
-         Rectangle = ClientRectangle,
-         UseEmojis = UseEmojis
+         Rectangle = textRectangle,
+         UseEmojis = UseEmojis,
+         AutoSizeText = AutoSizeText
       };
-      if (AutoSizeText)
-      {
-         writer.Floor = 6;
-         writer.Ceiling = 12;
-      }
 
       writer.Write(g, message);
    }
@@ -80,46 +116,78 @@ public partial class TempMessage : UserControl
       base.OnPaintBackground(e);
       e.Graphics.HighQuality();
 
-      if (loweringBack)
+      switch (paintStatus)
       {
-         using var backBrush = new SolidBrush(workingBackColor);
-         e.Graphics.FillRectangle(backBrush, ClientRectangle);
-      }
-      else
-      {
-         using var backBrush = new SolidBrush(backColor);
-         e.Graphics.FillRectangle(backBrush, ClientRectangle);
+         case PaintStatus.Fore:
+         {
+            textRectangle = ClientRectangle;
+            using var backBrush = new SolidBrush(backColor);
+            e.Graphics.FillRectangle(backBrush, textRectangle);
+            break;
+         }
+         case PaintStatus.Back:
+         {
+            textRectangle = ClientRectangle;
+            using var backBrush = new SolidBrush(workingBackColor);
+            e.Graphics.FillRectangle(backBrush, textRectangle);
+            break;
+         }
+         case PaintStatus.Busy:
+         {
+            using var backBrush = new SolidBrush(backColor);
+            e.Graphics.FillRectangle(backBrush, ClientRectangle);
+            (var busyTextProcessor, _busyTextProcessor) = _busyTextProcessor.Create(getBusyTextProcessor);
+            textRectangle = busyTextProcessor.TextRectangle;
+            busyTextProcessor.OnPaint(e);
+            break;
+         }
       }
    }
 
+   protected BusyTextProcessor getBusyTextProcessor() => new(Color.White, ClientRectangle);
+
    protected void timer_Tick(object sender, EventArgs e)
    {
-      if (loweringBack)
+      switch (paintStatus)
       {
-         if (backAlpha >= 0)
-         {
-            workingBackColor = backColor.WithAlpha(backAlpha);
-            backAlpha -= 5;
-         }
-         else
-         {
-            timer.Enabled = false;
-         }
-      }
-      else
-      {
-         if (foreAlpha >= 0)
-         {
+         case PaintStatus.Fore when foreAlpha >= 0:
             workingForeColor = foreColor.WithAlpha(foreAlpha);
             workingBackColor = backColor;
             foreAlpha -= 5;
-         }
-         else
+            break;
+         case PaintStatus.Fore:
+            paintStatus = PaintStatus.Back;
+            break;
+         case PaintStatus.Back when backAlpha >= 0:
+            workingBackColor = backColor.WithAlpha(backAlpha);
+            backAlpha -= 5;
+            break;
+         case PaintStatus.Back:
+            timer.Enabled = false;
+            break;
+         case PaintStatus.Busy:
          {
-            loweringBack = true;
+            (var busyTextProcessor, _busyTextProcessor) = _busyTextProcessor.Create(getBusyTextProcessor);
+            busyTextProcessor.OnTick();
+            break;
          }
       }
 
       Invalidate();
+   }
+
+   protected override void OnResize(EventArgs e)
+   {
+      base.OnResize(e);
+
+      if (ClientRectangle.Width != 0 && ClientRectangle.Height != 0)
+      {
+         textRectangle = ClientRectangle;
+         if (_busyTextProcessor)
+         {
+            (var busyTextProcessor, _busyTextProcessor) = _busyTextProcessor.Create(getBusyTextProcessor);
+            textRectangle = busyTextProcessor.TextRectangle;
+         }
+      }
    }
 }

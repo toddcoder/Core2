@@ -7,9 +7,6 @@ namespace Core.WinForms.Controls;
 
 public class ControlWriter
 {
-   protected const int DEFAULT_FLOOR = 6;
-   protected const int DEFAULT_CEILING = 12;
-
    protected static StringFormat GetFormat(CardinalAlignment alignment)
    {
       var stringFormat = new StringFormat();
@@ -77,9 +74,11 @@ public class ControlWriter
 
    public required Rectangle Rectangle { get; set; }
 
-   public Maybe<int> Floor { get; set; } = nil;
+   public bool AutoSizeText { get; set; }
 
-   public Maybe<int> Ceiling { get; set; } = nil;
+   public int MinimumSize { get; set; } = 6;
+
+   public int MaximumSize { get; set; } = 12;
 
    public bool UseEmojis { get; set; } = true;
 
@@ -97,23 +96,6 @@ public class ControlWriter
       var y = Rectangle.Y + (Rectangle.Height - textSize.Height) / 2;
 
       return new Rectangle(x, y, textSize.Width, textSize.Height);
-   }
-
-   protected Rectangle narrowRectangle()
-   {
-      var rectangle = Rectangle;
-
-      if (Floor is (true, var floor and >= 0))
-      {
-         rectangle = rectangle with { X = floor, Width = rectangle.Width - floor };
-      }
-
-      if (Ceiling is (true, var ceiling))
-      {
-         rectangle = rectangle with { Width = ceiling - rectangle.X };
-      }
-
-      return rectangle;
    }
 
    protected Maybe<Font> getAdjustedFont(Graphics g, string text, Font originalFont, int containerWidth, int floor, int ceiling)
@@ -143,19 +125,18 @@ public class ControlWriter
          g.HighQuality();
          g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
 
-         if (Floor || Ceiling)
+         if (AutoSizeText)
          {
-            var _adjustedFont = getAdjustedFont(g, text, Font, Rectangle.Width, Floor | DEFAULT_FLOOR, Ceiling | DEFAULT_CEILING);
+            var _adjustedFont = getAdjustedFont(g, text, Font, Rectangle.Width, MinimumSize, MaximumSize);
             if (_adjustedFont is (true, var adjustedFont))
             {
-               var narrowedRectangle = narrowRectangle();
                using var brush = new SolidBrush(Color);
                using var stringFormat = GetFormat(Alignment);
-               g.DrawString(text, adjustedFont, brush, narrowedRectangle, stringFormat);
+               g.DrawString(text, adjustedFont, brush, Rectangle, stringFormat);
             }
             else
             {
-               var smallestFont = getFont(Font, Floor | DEFAULT_FLOOR);
+               var smallestFont = getFont(Font, MinimumSize);
                using var brush = new SolidBrush(Color);
                using var stringFormat = GetFormat(Alignment);
                g.DrawString(text, smallestFont, brush, Rectangle, stringFormat);
