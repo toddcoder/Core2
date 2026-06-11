@@ -75,11 +75,8 @@ public partial class Form16 : Form
          });
       };
 
-      tmDisplay1.Display("display");
-
       uiSwitch.CheckBox("Busy", false);
       uiSwitch.Click += (_, _) => tmBusy.IsBusy = uiSwitch.BoxChecked;
-      tmBusy.Display("not busy");
 
       var builder = new TableLayoutBuilder(tableLayoutPanel1);
       _ = builder.Col + 200 + 400 + 200 + 100f;

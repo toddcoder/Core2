@@ -1,27 +1,31 @@
-﻿using Core.Monads;
+﻿using System.Drawing.Drawing2D;
+using Core.Applications.Messaging;
+using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
 
 public partial class TempMessage : UserControl
 {
-   protected enum PaintStatus
+   public enum PaintStatus
    {
+      Initialize,
       Fore,
       Back,
       Busy
    }
 
-   protected int foreAlpha = 255;
-   protected int backAlpha = 255;
    protected Color foreColor = Color.White;
    protected Color backColor = Color.Blue;
-   protected Color workingForeColor = Color.White;
-   protected Color workingBackColor = Color.Blue;
+   protected FadingColor fadingForeColor = Color.White;
+   protected FadingColor fadingBackColor = Color.Blue;
+   protected FadingColor initializeForeColor = SystemColors.ControlText;
    protected string message = "";
-   protected PaintStatus paintStatus = PaintStatus.Fore;
+   protected PaintStatus paintStatus = PaintStatus.Initialize;
    protected Maybe<BusyTextProcessor> _busyTextProcessor = nil;
    protected Rectangle textRectangle = Rectangle.Empty;
+
+   public readonly MessageEvent<PaintStatus> PaintStatusChanged = new();
 
    public TempMessage()
    {
@@ -30,6 +34,8 @@ public partial class TempMessage : UserControl
       SetStyle(ControlStyles.UserPaint, true);
       SetStyle(ControlStyles.DoubleBuffer, true);
       SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+
+      PaintStatusChanged.Invoke(paintStatus);
    }
 
    public bool AutoSizeText { get; set; } = true;
@@ -42,6 +48,7 @@ public partial class TempMessage : UserControl
       set
       {
          paintStatus = value ? PaintStatus.Busy : PaintStatus.Fore;
+         PaintStatusChanged.Invoke(paintStatus);
          if (paintStatus is PaintStatus.Fore)
          {
             reset();
@@ -64,12 +71,11 @@ public partial class TempMessage : UserControl
 
    protected void reset()
    {
-      foreAlpha = 255;
-      backAlpha = 255;
-      workingForeColor = foreColor.WithAlpha(foreAlpha);
-      workingBackColor = backColor.WithAlpha(backAlpha);
+      fadingForeColor.Reset();
+      fadingBackColor.Reset();
       textRectangle = ClientRectangle;
       paintStatus = PaintStatus.Fore;
+      PaintStatusChanged.Invoke(paintStatus);
    }
 
    public void Display(string message) => Display(message, Color.White, Color.Blue);
@@ -86,12 +92,20 @@ public partial class TempMessage : UserControl
 
       switch (paintStatus)
       {
+         case PaintStatus.Initialize when initializeForeColor.IsFading:
+         {
+            var smallerRectangle = ClientRectangle.Shrink(10);
+            using var pen = new Pen(initializeForeColor);
+            pen.DashStyle = DashStyle.Dash;
+            e.Graphics.DrawRectangle(pen, smallerRectangle);
+            break;
+         }
          case PaintStatus.Fore:
             writeMessage(e.Graphics);
             break;
          case PaintStatus.Busy:
-            workingForeColor = foreColor;
-            workingBackColor = backColor;
+            fadingForeColor = foreColor;
+            fadingBackColor = backColor;
             writeMessage(e.Graphics);
             break;
       }
@@ -101,7 +115,7 @@ public partial class TempMessage : UserControl
    {
       var writer = new ControlWriter
       {
-         Color = workingForeColor,
+         Color = fadingForeColor,
          Font = Font,
          Rectangle = textRectangle,
          UseEmojis = UseEmojis,
@@ -118,6 +132,12 @@ public partial class TempMessage : UserControl
 
       switch (paintStatus)
       {
+         case PaintStatus.Initialize:
+         {
+            using var brush = new SolidBrush(SystemColors.Control);
+            e.Graphics.FillRectangle(brush, ClientRectangle);
+            break;
+         }
          case PaintStatus.Fore:
          {
             textRectangle = ClientRectangle;
@@ -128,7 +148,7 @@ public partial class TempMessage : UserControl
          case PaintStatus.Back:
          {
             textRectangle = ClientRectangle;
-            using var backBrush = new SolidBrush(workingBackColor);
+            using var backBrush = new SolidBrush(fadingBackColor);
             e.Graphics.FillRectangle(backBrush, textRectangle);
             break;
          }
@@ -150,17 +170,19 @@ public partial class TempMessage : UserControl
    {
       switch (paintStatus)
       {
-         case PaintStatus.Fore when foreAlpha >= 0:
-            workingForeColor = foreColor.WithAlpha(foreAlpha);
-            workingBackColor = backColor;
-            foreAlpha -= 5;
+         case PaintStatus.Initialize when initializeForeColor.IsFading:
+            initializeForeColor.Fade();
+            break;
+         case PaintStatus.Fore when fadingForeColor.IsFading:
+            fadingForeColor.Fade();
+            fadingBackColor = backColor;
             break;
          case PaintStatus.Fore:
             paintStatus = PaintStatus.Back;
+            PaintStatusChanged.Invoke(paintStatus);
             break;
-         case PaintStatus.Back when backAlpha >= 0:
-            workingBackColor = backColor.WithAlpha(backAlpha);
-            backAlpha -= 5;
+         case PaintStatus.Back when fadingBackColor.IsFading:
+            fadingBackColor.Fade();
             break;
          case PaintStatus.Back:
             timer.Enabled = false;
