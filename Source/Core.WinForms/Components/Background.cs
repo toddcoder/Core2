@@ -7,7 +7,7 @@ namespace Core.WinForms.Components;
 public abstract class Background
 {
    protected CoreBackgroundWorker worker = new();
-   protected bool cancel = false;
+   protected bool cancel;
 
    public readonly MessageEvent Canceled = new();
    public readonly MessageEvent Finalized = new();
@@ -117,5 +117,12 @@ public abstract class Background
       }
 
       return unit;
+   }
+
+   public void CancelAsync()
+   {
+      cancel = true;
+      worker.CancelAsync();
+      Canceled.Invoke();
    }
 }
