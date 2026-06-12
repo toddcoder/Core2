@@ -31,6 +31,21 @@ public abstract class Background
       };
    }
 
+   public bool IsBusy => worker.IsBusy;
+
+   public bool Cancel
+   {
+      get => cancel;
+      set
+      {
+         cancel = value;
+         if (cancel)
+         {
+            CancelAsync();
+         }
+      }
+   }
+
    public virtual void Initialize()
    {
    }
