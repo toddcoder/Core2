@@ -18,8 +18,8 @@ public class PieProgressProcessor(Rectangle clientRectangle, int maximum, Color 
    public override void OnPaint(Graphics g)
    {
       g.HighQuality();
-      g.FillEllipse(Brushes.CadetBlue, clientRectangle);
-      g.FillPie(Brushes.Coral, clientRectangle, 0, sweepAngle);
+      g.FillEllipse(Brushes.Red, clientRectangle);
+      g.FillPie(Brushes.Green, clientRectangle, 0, sweepAngle);
       using var pen = new Pen(foreColor, 1);
       g.DrawEllipse(pen, clientRectangle);
    }
