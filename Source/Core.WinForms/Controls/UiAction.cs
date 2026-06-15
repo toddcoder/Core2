@@ -1676,7 +1676,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
                progressSubText.Draw(e.Graphics);
             }
 
-            progressDefiniteProcessor.OnPaint(e.Graphics, percentage, Color.Black, clientRectangle);
+            progressDefiniteProcessor.OnPaint(e.Graphics, percentage, Color.White, clientRectangle);
 
             writer.AutoSizeText = autoSize;
 
@@ -2184,15 +2184,15 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
             progressDefiniteProcessor.OnPaintBackground(pevent.Graphics);
             var textRectangle = progressDefiniteProcessor.TextRectangle;
 
-            using var coralBrush = new SolidBrush(Color.Coral);
-            fillRectangle(pevent.Graphics, coralBrush, textRectangle);
+            using var redBrush = new SolidBrush(Color.Red);
+            fillRectangle(pevent.Graphics, redBrush, textRectangle);
             var width = textRectangle.Width;
             var percentWidth = getPercentage(width);
             var location = textRectangle.Location;
             var size = new Size(percentWidth, textRectangle.Height);
             var rectangle = new Rectangle(location, size);
-            using var cornflowerBlueBrush = new SolidBrush(Color.CornflowerBlue);
-            fillRectangle(pevent.Graphics, cornflowerBlueBrush, rectangle);
+            using var greenBrush = new SolidBrush(Color.Green);
+            fillRectangle(pevent.Graphics, greenBrush, rectangle);
 
             break;
          }
@@ -2203,15 +2203,15 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
          }
          case UiActionType.MuteProgress:
          {
-            using var coralBrush = new SolidBrush(Color.Coral);
-            fillRectangle(pevent.Graphics, coralBrush, clientRectangle);
+            using var redBrush = new SolidBrush(Color.Red);
+            fillRectangle(pevent.Graphics, redBrush, clientRectangle);
             var width = clientRectangle.Width;
             var percentWidth = getPercentage(width);
             var location = clientRectangle.Location;
             var size = new Size(percentWidth, clientRectangle.Height);
             var rectangle = new Rectangle(location, size);
-            using var cornflowerBlueBrush = new SolidBrush(Color.CornflowerBlue);
-            fillRectangle(pevent.Graphics, cornflowerBlueBrush, rectangle);
+            using var greenBrush = new SolidBrush(Color.Green);
+            fillRectangle(pevent.Graphics, greenBrush, rectangle);
 
             break;
          }

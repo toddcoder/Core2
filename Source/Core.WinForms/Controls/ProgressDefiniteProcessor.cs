@@ -97,7 +97,7 @@ public class ProgressDefiniteProcessor
          stopwatch.Start();
       }
 
-      using var percentBrush = new SolidBrush(Color.LightSteelBlue);
+      using var percentBrush = new SolidBrush(Color.White);
       g.FillRectangle(percentBrush, percentRectangle);
    }
 
