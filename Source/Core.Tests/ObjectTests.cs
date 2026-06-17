@@ -1,5 +1,5 @@
 ﻿using Core.Objects;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static Core.Lambdas.LambdaFunctions;
 using static Core.Objects.GetHashCodeGenerator;
 
 namespace Core.Tests;
@@ -27,5 +27,29 @@ public class ObjectTests
 
       i.Reset();
       Console.WriteLine(i * 10 + 4);
+   }
+
+   [TestMethod]
+   public void CachedValueTest()
+   {
+      /*CachedValue<int> cachedValue = (Func<int>)(() =>
+      {
+         Console.WriteLine("Creating");
+         return 153;
+      });
+
+      var x = cachedValue;
+      var y = cachedValue;
+
+      Console.WriteLine(x + y);*/
+      var cachedValue = new CachedValue<int>(() =>
+      {
+         Console.WriteLine("Creating");
+         return 153;
+      });
+      var x = cachedValue.Value;
+      var y = cachedValue.Value;
+
+      Console.WriteLine(x + y);
    }
 }
