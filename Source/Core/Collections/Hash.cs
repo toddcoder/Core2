@@ -82,17 +82,9 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
    {
       get
       {
-         if (ContainsKey(key))
+         if (TryGetValue(key, out var value))
          {
-            try
-            {
-               locker.EnterReadLock();
-               return base[key];
-            }
-            finally
-            {
-               locker.ExitReadLock();
-            }
+            return value;
          }
          else
          {
@@ -104,14 +96,11 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
          try
          {
             locker.EnterWriteLock();
-            if (ContainsKey(key))
+            var added = TryAdd(key, value);
+            if (!added)
             {
                base[key] = value;
                Updated.Invoke(new HashArgs<TKey, TValue>(key, value));
-            }
-            else
-            {
-               Add(key, value);
             }
          }
          finally
@@ -151,10 +140,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
             try
             {
                locker.EnterWriteLock();
-               Add(key, value);
-            }
-            catch
-            {
+               TryAdd(key, value);
             }
             finally
             {
@@ -180,10 +166,7 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
             try
             {
                locker.EnterWriteLock();
-               Add(key, value);
-            }
-            catch
-            {
+               TryAdd(key, value);
             }
             finally
             {
@@ -193,18 +176,6 @@ public class Hash<TKey, TValue> : Dictionary<TKey, TValue>, IHash<TKey, TValue> 
 
          return value;
       }
-   }
-
-   [Obsolete("Use Memo instead.")]
-   public TValue Memoize(TKey key, Func<TKey, TValue> defaultValue, bool alwaysUseDefaultValue = false)
-   {
-      return alwaysUseDefaultValue ? defaultValue(key) : Find(key, defaultValue, true);
-   }
-
-   [Obsolete("Use Memo instead.")]
-   public TValue Memoize(TKey key, TValue value, bool alwaysUseDefaultValue = false)
-   {
-      return alwaysUseDefaultValue ? value : Find(key, value, true);
    }
 
    public TKey[] KeyArray()
