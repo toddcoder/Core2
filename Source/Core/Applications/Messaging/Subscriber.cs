@@ -9,6 +9,7 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
    protected string name;
    protected Guid id = Guid.NewGuid();
    protected StringHash<MessageEvent<Publication<TPayload>>> events = [];
+   protected bool enabled = true;
 
    public readonly MessageEvent<Publication<TPayload>> Received = new();
 
@@ -28,6 +29,11 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 
    public void InvokeTopic(Publication<TPayload> payload)
    {
+      if (!enabled)
+      {
+         return;
+      }
+
       if (events.Maybe[payload.Topic] is (true, var handler))
       {
          handler.Invoke(payload);
@@ -40,6 +46,11 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 
    public async Task InvokeTopicAsync(Publication<TPayload> payload)
    {
+      if (!enabled)
+      {
+         return;
+      }
+
       if (events.Maybe[payload.Topic] is (true, var handler))
       {
          await handler.InvokeAsync(payload);
@@ -58,6 +69,10 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
 
    public void Unsubscribe() => Publisher<TPayload>.RemoveSubscriber(name, this);
 
+   public void Suspend() => enabled = false;
+
+   public void Resume() => enabled = true;
+
    public void Dispose()
    {
       Unsubscribe();
@@ -72,6 +87,7 @@ public class Subscriber<TTopic, TPayload> : IDisposable where TTopic : notnull w
    protected string name;
    protected Guid id = Guid.NewGuid();
    protected Hash<TTopic, MessageEvent<Publication<TTopic, TPayload>>> events = [];
+   protected bool enabled = true;
 
    public readonly MessageEvent<Publication<TTopic, TPayload>> Received = new();
 
@@ -91,6 +107,11 @@ public class Subscriber<TTopic, TPayload> : IDisposable where TTopic : notnull w
 
    public void InvokeTopic(Publication<TTopic, TPayload> payload)
    {
+      if (!enabled)
+      {
+         return;
+      }
+
       if (events.Maybe[payload.Topic] is (true, var handler))
       {
          handler.Invoke(payload);
@@ -103,6 +124,11 @@ public class Subscriber<TTopic, TPayload> : IDisposable where TTopic : notnull w
 
    public async Task InvokeTopicAsync(Publication<TTopic, TPayload> payload)
    {
+      if (!enabled)
+      {
+         return;
+      }
+
       if (events.Maybe[payload.Topic] is (true, var handler))
       {
          await handler.InvokeAsync(payload);
@@ -121,6 +147,10 @@ public class Subscriber<TTopic, TPayload> : IDisposable where TTopic : notnull w
 
    public void Unsubscribe() => Publisher<TTopic, TPayload>.RemoveSubscriber(name, this);
 
+   public void Suspend() => enabled = false;
+
+   public void Resume() => enabled = true;
+
    public void Dispose()
    {
       Unsubscribe();
@@ -135,6 +165,7 @@ public class Subscriber : IDisposable
    protected string name;
    protected Guid id = Guid.NewGuid();
    protected StringHash<MessageEvent<Publication>> events = [];
+   protected bool enabled = true;
 
    public readonly MessageEvent<Publication> Received = new();
 
@@ -154,6 +185,11 @@ public class Subscriber : IDisposable
 
    public void InvokeTopic(Publication payload)
    {
+      if (!enabled)
+      {
+         return;
+      }
+
       if (events.Maybe[payload.Topic] is (true, var handler))
       {
          handler.Invoke(payload);
@@ -166,6 +202,11 @@ public class Subscriber : IDisposable
 
    public async Task InvokeTopicAsync(Publication payload)
    {
+      if (!enabled)
+      {
+         return;
+      }
+
       if (events.Maybe[payload.Topic] is (true, var handler))
       {
          await handler.InvokeAsync(payload);
@@ -183,6 +224,10 @@ public class Subscriber : IDisposable
    public void Queue() => Publisher.QueueSubscriber(name, this);
 
    public void Unsubscribe() => Publisher.RemoveSubscriber(name, this);
+
+   public void Suspend() => enabled = false;
+
+   public void Resume() => enabled = true;
 
    public void Dispose()
    {
