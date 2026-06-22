@@ -509,11 +509,11 @@ public static class EnumerableExtensions
          }
       }
 
-      public IEnumerable<T> WhereIs<T2>(Func<T, bool> predicate) where T2 : notnull
+      public IEnumerable<T> WhereIs<T2>(Func<T2, bool> predicate) where T2 : notnull
       {
          foreach (var item in enumerable)
          {
-            if (item is T2 && predicate(item))
+            if (item is T2 t2Item && predicate(t2Item))
             {
                yield return item;
             }
