@@ -508,6 +508,28 @@ public static class EnumerableExtensions
             }
          }
       }
+
+      public IEnumerable<T> WhereIs<T2>(Func<T, bool> predicate) where T2 : notnull
+      {
+         foreach (var item in enumerable)
+         {
+            if (item is T2 && predicate(item))
+            {
+               yield return item;
+            }
+         }
+      }
+
+      public IEnumerable<T> WhereIs<T2>() where T2 : notnull
+      {
+         foreach (var item in enumerable)
+         {
+            if (item is T2)
+            {
+               yield return item;
+            }
+         }
+      }
    }
 
    extension<T>(IEnumerable<IEnumerable<T>> source)
