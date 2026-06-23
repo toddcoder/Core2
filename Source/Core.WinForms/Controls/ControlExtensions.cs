@@ -26,84 +26,83 @@ public static class ControlExtensions
       setUpFont(control, fontName, fontSize, fontStyle);
    }
 
-   public static void SetUp(this Control control, int x, int y, int width, int height, AnchorStyles anchor, string fontName = "Consolas",
-      float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular)
+   extension(Control control)
    {
-      setUpDimensions(control, x, y, width, height, fontName, fontSize, fontStyle);
-      control.Anchor = anchor;
-   }
-
-   public static void SetUp(this Control control, int x, int y, int width, int height, DockStyle dock, string fontName = "Consolas",
-      float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular)
-   {
-      setUpDimensions(control, x, y, width, height, fontName, fontSize, fontStyle);
-      control.Dock = dock;
-   }
-
-   public static void SetUpInTableLayoutPanel(this Control control, TableLayoutPanel tableLayoutPanel, int column, int row, int columnSpan = 1,
-      int rowSpan = 1, string fontName = "Consolas", float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular,
-      DockStyle dockStyle = DockStyle.Fill)
-   {
-      control.Dock = dockStyle;
-      tableLayoutPanel.Controls.Add(control, column, row);
-
-      if (columnSpan > 1)
+      public void SetUp(int x, int y, int width, int height, AnchorStyles anchor, string fontName = "Consolas",
+         float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular)
       {
-         tableLayoutPanel.SetColumnSpan(control, columnSpan);
+         setUpDimensions(control, x, y, width, height, fontName, fontSize, fontStyle);
+         control.Anchor = anchor;
       }
 
-      if (rowSpan > 1)
+      public void SetUp(int x, int y, int width, int height, DockStyle dock, string fontName = "Consolas",
+         float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular)
       {
-         tableLayoutPanel.SetRowSpan(control, rowSpan);
+         setUpDimensions(control, x, y, width, height, fontName, fontSize, fontStyle);
+         control.Dock = dock;
       }
 
-      setUpFont(control, fontName, fontSize, fontStyle);
-   }
+      public void SetUpInTableLayoutPanel(TableLayoutPanel tableLayoutPanel, int column, int row, int columnSpan = 1,
+         int rowSpan = 1, string fontName = "Consolas", float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular,
+         DockStyle dockStyle = DockStyle.Fill)
+      {
+         control.Dock = dockStyle;
+         tableLayoutPanel.Controls.Add(control, column, row);
 
-   public static void SetUpInPanel(this Control control, Panel panel, string fontName = "Consolas", float fontSize = 12f,
-      FontStyle fontStyle = FontStyle.Regular, DockStyle dockStyle = DockStyle.Fill)
-   {
-      control.Dock = dockStyle;
-      panel.Controls.Add(control);
-      setUpFont(control, fontName, fontSize, fontStyle);
-   }
+         if (columnSpan > 1)
+         {
+            tableLayoutPanel.SetColumnSpan(control, columnSpan);
+         }
 
-   public static void SetUp(this Control control, int x, int y, int width, int height, string fontName = "Consolas", float fontSize = 12f,
-      FontStyle fontStyle = FontStyle.Regular)
-   {
-      setUpDimensions(control, x, y, width, height, fontName, fontSize, fontStyle);
-   }
+         if (rowSpan > 1)
+         {
+            tableLayoutPanel.SetRowSpan(control, rowSpan);
+         }
 
-   public static void SetupInFlowLayoutPanel(this Control control, FlowLayoutPanel flowLayoutPanel, string fontName = "Consolas",
-      float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular, DockStyle dockStyle = DockStyle.Fill)
-   {
-      control.Dock = dockStyle;
-      flowLayoutPanel.Controls.Add(control);
-      setUpFont(control, fontName, fontSize, fontStyle);
-   }
+         setUpFont(control, fontName, fontSize, fontStyle);
+      }
 
-   public static Point CursorPosition(this Control control) => control.Get(() => control.PointToClient(Cursor.Position));
+      public void SetUpInPanel(Panel panel, string fontName = "Consolas", float fontSize = 12f,
+         FontStyle fontStyle = FontStyle.Regular, DockStyle dockStyle = DockStyle.Fill)
+      {
+         control.Dock = dockStyle;
+         panel.Controls.Add(control);
+         setUpFont(control, fontName, fontSize, fontStyle);
+      }
 
-   public static void MoveTo(this Control control, Point location) => control.Location = location;
+      public void SetUp(int x, int y, int width, int height, string fontName = "Consolas", float fontSize = 12f,
+         FontStyle fontStyle = FontStyle.Regular)
+      {
+         setUpDimensions(control, x, y, width, height, fontName, fontSize, fontStyle);
+      }
 
-   public static void MoveTo(this Control control, int x, int y) => control.MoveTo(new Point(x, y));
+      public void SetupInFlowLayoutPanel(FlowLayoutPanel flowLayoutPanel, string fontName = "Consolas",
+         float fontSize = 12f, FontStyle fontStyle = FontStyle.Regular, DockStyle dockStyle = DockStyle.Fill)
+      {
+         control.Dock = dockStyle;
+         flowLayoutPanel.Controls.Add(control);
+         setUpFont(control, fontName, fontSize, fontStyle);
+      }
 
-   public static void MoveTo(this Control control, Rectangle rectangle)
-   {
-      control.MoveTo(rectangle.Location);
-      control.Size = rectangle.Size;
-   }
+      public Point CursorPosition() => control.Get(() => control.PointToClient(Cursor.Position));
+      public void MoveTo(Point location) => control.Location = location;
+      public void MoveTo(int x, int y) => control.MoveTo(new Point(x, y));
 
-   public static void MoveTo(this Control control, Point location, Size size) => control.MoveTo(new Rectangle(location, size));
+      public void MoveTo(Rectangle rectangle)
+      {
+         control.MoveTo(rectangle.Location);
+         control.Size = rectangle.Size;
+      }
 
-   public static void MoveTo(this Control control, int x, int y, Size size) => control.MoveTo(new Point(x, y), size);
+      public void MoveTo(Point location, Size size) => control.MoveTo(new Rectangle(location, size));
+      public void MoveTo(int x, int y, Size size) => control.MoveTo(new Point(x, y), size);
+      public void MoveTo(Point location, int width, int height) => control.MoveTo(location, new Size(width, height));
 
-   public static void MoveTo(this Control control, Point location, int width, int height) => control.MoveTo(location, new Size(width, height));
-
-   public static void ZeroOut(this Control control)
-   {
-      control.Padding = new Padding(0);
-      control.Margin = new Padding(0);
+      public void ZeroOut()
+      {
+         control.Padding = new Padding(0);
+         control.Margin = new Padding(0);
+      }
    }
 
    public static Image Image<T>(this Resources<T> resources, string name)
@@ -146,6 +145,26 @@ public static class ControlExtensions
    public static void UnsubscribeOnRemoved(this Subscriber subscriber, Control control)
    {
       control.ControlRemoved += (_, _) => subscriber.Unsubscribe();
+   }
+
+   public static void UnsubscribeOnDisposed<TPayload>(this SubscriberServer<TPayload> subscriber, Control control) where TPayload : notnull
+   {
+      control.Disposed += (_, _) => subscriber.Dispose();
+   }
+
+   public static void UnsubscribeOnRemoved<TPayload>(this SubscriberServer<TPayload> subscriber, Control control) where TPayload : notnull
+   {
+      control.ControlRemoved += (_, _) => subscriber.Dispose();
+   }
+
+   public static void UnsubscribeOnDisposed(this SubscriberServer subscriber, Control control)
+   {
+      control.Disposed += (_, _) => subscriber.Dispose();
+   }
+
+   public static void UnsubscribeOnRemoved(this SubscriberServer subscriber, Control control)
+   {
+      control.ControlRemoved += (_, _) => subscriber.Dispose();
    }
 
    public static DragDrop<TabControl> DragDrop(this TabControl tabControl) => new(tabControl);

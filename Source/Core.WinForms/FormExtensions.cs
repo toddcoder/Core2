@@ -37,44 +37,75 @@ public static class FormExtensions
       return fi;
    }
 
-   public static bool Flash(this Form form)
+   extension(Form form)
    {
-      var fi = createFlashWindowInfo(form.Handle, FLASHW_ALL | FLASHW_TIMERNOFG, uint.MaxValue, 0);
-      return FlashWindowEx(ref fi);
+      public bool Flash()
+      {
+         var fi = createFlashWindowInfo(form.Handle, FLASHW_ALL | FLASHW_TIMERNOFG, uint.MaxValue, 0);
+         return FlashWindowEx(ref fi);
+      }
+
+      public bool Flash(uint count)
+      {
+         var fi = createFlashWindowInfo(form.Handle, FLASHW_ALL, count, 0);
+         return FlashWindowEx(ref fi);
+      }
+
+      public bool StartFlashing() => form.Flash(uint.MaxValue);
+
+      public bool StopFlashing()
+      {
+         var fi = createFlashWindowInfo(form.Handle, FLASHW_STOP, uint.MaxValue, 0);
+         return FlashWindowEx(ref fi);
+      }
    }
 
-   public static bool Flash(this Form form, uint count)
+   extension<TPayload>(Subscriber<TPayload> subscriber) where TPayload : notnull
    {
-      var fi = createFlashWindowInfo(form.Handle, FLASHW_ALL, count, 0);
-      return FlashWindowEx(ref fi);
+      public void UnsubscribeOnClose(Form form)
+      {
+         form.FormClosed += (_, _) => subscriber.Unsubscribe();
+      }
    }
 
-   public static bool StartFlashing(this Form form) => form.Flash(uint.MaxValue);
-
-   public static bool StopFlashing(this Form form)
+   extension<TPayload>(SubscriberServer<TPayload> subscriber) where TPayload : notnull
    {
-      var fi = createFlashWindowInfo(form.Handle, FLASHW_STOP, uint.MaxValue, 0);
-      return FlashWindowEx(ref fi);
+      public void UnsubscribeOnClose(Form form)
+      {
+         form.FormClosed += (_, _) => subscriber.Dispose();
+      }
    }
 
-   public static void UnsubscribeOnClose<TPayload>(this Subscriber<TPayload> subscriber, Form form) where TPayload : notnull
-   {
-      form.FormClosed += (_, _) => subscriber.Unsubscribe();
-   }
-
-   public static void UnsubscribeOnClose<TTopic, TPayload>(this Subscriber<TTopic, TPayload> subscriber, Form form) where TTopic : notnull
+   extension<TTopic, TPayload>(Subscriber<TTopic, TPayload> subscriber) where TTopic : notnull
       where TPayload : notnull
    {
-      form.FormClosed += (_, _) => subscriber.Unsubscribe();
+      public void UnsubscribeOnClose(Form form)
+      {
+         form.FormClosed += (_, _) => subscriber.Unsubscribe();
+      }
    }
 
-   public static void UnsubscribeOnClose(this Subscriber subscriber, Form form)
+   extension(Subscriber subscriber)
    {
-      form.FormClosed += (_, _) => subscriber.Unsubscribe();
+      public void UnsubscribeOnClose(Form form)
+      {
+         form.FormClosed += (_, _) => subscriber.Unsubscribe();
+      }
    }
 
-   public static void StopListeningOnClose(this XSubscriber subscriber, Form form)
+   extension(SubscriberServer subscriber)
    {
-      form.FormClosed += (_, _) => subscriber.StopListening();
+      public void UnsubscribeOnClose(Form form)
+      {
+         form.FormClosed += (_, _) => subscriber.Dispose();
+      }
+   }
+
+   extension(XSubscriber subscriber)
+   {
+      public void StopListeningOnClose(Form form)
+      {
+         form.FormClosed += (_, _) => subscriber.StopListening();
+      }
    }
 }
