@@ -254,7 +254,7 @@ public class Publisher
    protected string name;
    protected object mutex = new();
 
-   protected Publisher(string name)
+   public Publisher(string name)
    {
       this.name = name;
    }
