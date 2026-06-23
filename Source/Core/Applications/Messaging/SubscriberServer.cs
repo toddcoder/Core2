@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Core.Applications.Messaging;
@@ -19,6 +20,16 @@ public abstract class SubscriberServer<TPayload>(string name) : IDisposable wher
          {
             var topic = method.Name[2..];
             subscriber[topic] = publication => method.Invoke(this, [publication]);
+         }
+      }
+
+      var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+      foreach (var propertyInfo in properties)
+      {
+         if (propertyInfo.PropertyType == typeof(Action<Publication<TPayload>>))
+         {
+            var topic = propertyInfo.Name;
+            subscriber[topic] = publication => ((Action<Publication<TPayload>>)propertyInfo.GetValue(this)!)?.Invoke(publication);
          }
       }
    }
