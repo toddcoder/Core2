@@ -22,7 +22,7 @@ public class PublishSubscribeTests
          Console.WriteLine($"charlie: {publication.Payload}");
       }
 
-      public Action<Publication<string>> Delta { get; set; }
+      public Action<Publication<string>> OnDelta { get; set; } = _ => { };
    }
 
    protected class AlphabetPublishingCenter() : PublishingCenter<string>("alphabet")
@@ -40,7 +40,7 @@ public class PublishSubscribeTests
    public void SubscriberServerTest()
    {
       using var subscriberServer = new AlphabetSubscriberServer();
-      subscriberServer.Delta = publication => Console.WriteLine($"delta: {publication.Payload}");
+      subscriberServer.OnDelta = publication => Console.WriteLine($"delta: {publication.Payload}");
       subscriberServer.Start();
 
       var center = new AlphabetPublishingCenter();
@@ -48,5 +48,13 @@ public class PublishSubscribeTests
       center.PublishBeta("B");
       center.PublishCharlie("C");
       center.PublishDelta("D");
+   }
+
+   protected class TextChannel() : SubscriberChannel<string>("text")
+   {
+      public void ReceiveUpper(Publication<string> publication)
+      {
+         Console.WriteLine($"Received Upper: {publication.Payload}");
+      }
    }
 }
