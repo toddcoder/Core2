@@ -52,5 +52,53 @@ public class PublishSubscribeTests
 
    protected class AlphabetChannel() : Channel<string, string>("alphabet")
    {
+      public string QueryA(string query) => "Alpha";
+
+      public string QueryB(string query) => "Bravo";
+
+      public string QueryC(string query) => "Charlie";
+
+      public void ResponseA(string response) => Console.WriteLine($"ResponseA: {response}");
+
+      public void ResponseB(string response) => Console.WriteLine($"ResponseB: {response}");
+
+      public void ResponseC(string response) => Console.WriteLine($"ResponseC: {response}");
+
+      public void SendA(string query) => Send("A", query);
+
+      public void SendB(string query) => Send("B", query);
+
+      public void SendC(string query) => Send("C", query);
+   }
+
+   protected class StringToIntChannel() : Channel<string, int>("string-to-int")
+   {
+      public int QueryLength(string query) => query.Length;
+
+      public int QueryLengthOfLength(string query) => query.Length.ToString().Length;
+
+      public int QueryParse(string query) => int.Parse(query);
+
+      public void ResponseLength(int response) => Console.WriteLine($"ResponseLength: {response}");
+
+      public void ResponseLengthOfLength(int response) => Console.WriteLine($"ResponseLengthOfLength: {response}");
+
+      public void ResponseParse(int response) => Console.WriteLine($"ResponseParse: {response}");
+
+      public void Length(string query) => Send("Length", query);
+
+      public void LengthOfLength(string query) => Send("LengthOfLength", query);
+
+      public void Parse(string query) => Send("Parse", query);
+   }
+
+   [TestMethod]
+   public void ChannelTest()
+   {
+      using var channel = new AlphabetChannel();
+      channel.Start();
+      channel.SendA("A");
+      channel.SendB("B");
+      channel.SendC("C");
    }
 }

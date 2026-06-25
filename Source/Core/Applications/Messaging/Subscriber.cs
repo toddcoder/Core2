@@ -27,6 +27,12 @@ public class Subscriber<TPayload> : IDisposable where TPayload : notnull
       set => events[topic] = new MessageEvent<Publication<TPayload>> { Handler = value };
    }
 
+   public void SetTopic(string topic, Action<TPayload> handler)
+   {
+      var action = (Publication<TPayload> publication) => handler(publication.Payload);
+      events[topic] = new MessageEvent<Publication<TPayload>> { Handler = action };
+   }
+
    public void InvokeTopic(Publication<TPayload> payload)
    {
       if (!enabled)
@@ -105,6 +111,12 @@ public class Subscriber<TTopic, TPayload> : IDisposable where TTopic : notnull w
       set => events[topic] = new MessageEvent<Publication<TTopic, TPayload>> { Handler = value };
    }
 
+   public void SetTopic(TTopic topic, Action<TPayload> handler)
+   {
+      var action = (Publication<TTopic, TPayload> publication) => handler(publication.Payload);
+      events[topic] = new MessageEvent<Publication<TTopic, TPayload>> { Handler = action };
+   }
+
    public void InvokeTopic(Publication<TTopic, TPayload> payload)
    {
       if (!enabled)
@@ -181,6 +193,12 @@ public class Subscriber : IDisposable
    public Action<Publication> this[string topic]
    {
       set => events[topic] = new MessageEvent<Publication> { Handler = value };
+   }
+
+   public void SetTopic(string topic, Action handler)
+   {
+      var action = (Publication publication) => handler();
+      events[topic] = new MessageEvent<Publication> { Handler = action };
    }
 
    public void InvokeTopic(Publication payload)

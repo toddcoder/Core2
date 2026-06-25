@@ -83,7 +83,6 @@ public abstract class SubscriberChannel<TPayload>(string name) : IDisposable whe
    public void Dispose()
    {
       receiver.Unsubscribe();
-      sender.Unsubscribe();
    }
 }
 
