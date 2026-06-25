@@ -55,7 +55,7 @@ public abstract class SubscriberChannel<TPayload>(string name) : IDisposable whe
          if (propertyInfo.PropertyType == typeof(Action<Publication<TPayload>>))
          {
             var topic = $"send-{propertyInfo.Name[4..]}";
-            sender[topic] = publication => ((Action<Publication<TPayload>>)propertyInfo.GetValue(this)!)?.Invoke(publication);
+            //sender[topic] = publication => ((Action<Publication<TPayload>>)propertyInfo.GetValue(this)!)?.Invoke(publication);
          }
       }
    }

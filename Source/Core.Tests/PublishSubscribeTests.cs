@@ -50,11 +50,7 @@ public class PublishSubscribeTests
       center.PublishDelta("D");
    }
 
-   protected class TextChannel() : SubscriberChannel<string>("text")
+   protected class AlphabetChannel() : Channel<string, string>("alphabet")
    {
-      public void ReceiveUpper(Publication<string> publication)
-      {
-         Console.WriteLine($"Received Upper: {publication.Payload}");
-      }
    }
 }
