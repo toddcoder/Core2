@@ -1676,7 +1676,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
                progressSubText.Draw(e.Graphics);
             }
 
-            progressDefiniteProcessor.OnPaint(e.Graphics, percentage, Color.White, clientRectangle);
+            progressDefiniteProcessor.OnPaint(e.Graphics, percentage, Color.Black, clientRectangle);
 
             writer.AutoSizeText = autoSize;
 

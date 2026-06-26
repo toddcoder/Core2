@@ -28,7 +28,7 @@ public abstract class SubscriberServer<TPayload>(string name) : IDisposable wher
          if (propertyInfo.PropertyType == typeof(Action<Publication<TPayload>>))
          {
             var topic = propertyInfo.Name[2..];
-            subscriber[topic] = publication => ((Action<Publication<TPayload>>)propertyInfo.GetValue(this)!)?.Invoke(publication);
+            subscriber[topic] = publication => ((Action<Publication<TPayload>>)propertyInfo.GetValue(this)!)(publication);
          }
       }
    }
