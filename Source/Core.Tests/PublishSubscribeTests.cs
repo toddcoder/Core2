@@ -7,22 +7,22 @@ public class PublishSubscribeTests
 {
    protected class AlphabetSubscriberServer() : Channel<string, byte>("alphabet0")
    {
-      public void QueryAlpha(string payload)
+      public void OnAlpha(string payload)
       {
          Console.WriteLine($"alpha: {payload}");
       }
 
-      public void QueryBeta(string payload)
+      public void OnBeta(string payload)
       {
          Console.WriteLine($"beta: {payload}");
       }
 
-      public void QueryCharlie(string payload)
+      public void OnCharlie(string payload)
       {
          Console.WriteLine($"charlie: {payload}");
       }
 
-      public void QueryDelta(Func<string> payload)
+      public void OnDelta(Func<string> payload)
       {
          Console.WriteLine($"delta: {payload()}");
       }

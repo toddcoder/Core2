@@ -8,6 +8,7 @@ public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe
    where TResponse : notnull
 {
    protected const string QUERY = "Query";
+   protected const string ON = "On";
    protected const string RESPONSE = "Response";
 
    protected Subscriber<TQuery> subscriberQuery = new($"query-{name}", autoSubscribe);
@@ -33,7 +34,7 @@ public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe
             var parameterType = parameters[0].ParameterType;
             if (parameterType == typeof(TQuery))
             {
-               subscriberQuery.SetTopic(topic,  (TQuery query) =>
+               subscriberQuery.SetTopic(topic, (TQuery query) =>
                {
                   var response = (TResponse)methodInfo.Invoke(this, [query])!;
                   subscriberResponse.InvokeTopic(new Publication<TResponse>(topic, response));
@@ -48,9 +49,16 @@ public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe
                });
             }
          }
-         else if (returnType == typeof(void) && parameters.Length == 1)
+      }
+
+      methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public).Where(m => m.Name.StartsWith(ON));
+      foreach (var methodInfo in methods)
+      {
+         var returnType = methodInfo.ReturnType;
+         var parameters = methodInfo.GetParameters();
+         if (returnType == typeof(void) && parameters.Length == 1)
          {
-            var topic = methodInfo.Name[QUERY.Length..];
+            var topic = methodInfo.Name[ON.Length..];
             var parameterType = parameters[0].ParameterType;
             if (parameterType == typeof(TQuery))
             {
