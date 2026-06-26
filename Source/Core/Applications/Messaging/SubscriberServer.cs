@@ -15,20 +15,10 @@ public abstract class SubscriberServer<TPayload>(string name) : IDisposable wher
       foreach (var method in methods)
       {
          var parameters = method.GetParameters();
-         if (parameters.Length == 1 && parameters[0].ParameterType == typeof(Publication<TPayload>))
+         if (parameters.Length == 1 && parameters[0].ParameterType == typeof(TPayload))
          {
             var topic = method.Name[2..];
-            subscriber[topic] = publication => method.Invoke(this, [publication]);
-         }
-      }
-
-      var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.Name.StartsWith("On"));
-      foreach (var propertyInfo in properties)
-      {
-         if (propertyInfo.PropertyType == typeof(Action<Publication<TPayload>>))
-         {
-            var topic = propertyInfo.Name[2..];
-            subscriber[topic] = publication => ((Action<Publication<TPayload>>)propertyInfo.GetValue(this)!)(publication);
+            subscriber.SetTopic(topic, payload => { subscriber[topic] = _ => method.Invoke(this, [new Publication<TPayload>(topic, payload)]); });
          }
       }
    }

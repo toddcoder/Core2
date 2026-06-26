@@ -27,14 +27,39 @@ public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe
       {
          var returnType = methodInfo.ReturnType;
          var parameters = methodInfo.GetParameters();
-         if (returnType == typeof(TResponse) && parameters.Length == 1 && parameters[0].ParameterType == typeof(TQuery))
+         if (returnType == typeof(TResponse) && parameters.Length == 1)
          {
             var topic = methodInfo.Name[QUERY.Length..];
-            subscriberQuery.SetTopic(topic, query =>
+            var parameterType = parameters[0].ParameterType;
+            if (parameterType == typeof(TQuery))
             {
-               var response = (TResponse)methodInfo.Invoke(this, [query])!;
-               subscriberResponse.InvokeTopic(new Publication<TResponse>(topic, response));
-            });
+               subscriberQuery.SetTopic(topic,  (TQuery query) =>
+               {
+                  var response = (TResponse)methodInfo.Invoke(this, [query])!;
+                  subscriberResponse.InvokeTopic(new Publication<TResponse>(topic, response));
+               });
+            }
+            else if (parameterType == typeof(Func<TQuery>))
+            {
+               subscriberQuery.SetTopic(topic, func =>
+               {
+                  var response = (TResponse)methodInfo.Invoke(this, [func()])!;
+                  subscriberResponse.InvokeTopic(new Publication<TResponse>(topic, response));
+               });
+            }
+         }
+         else if (returnType == typeof(void) && parameters.Length == 1)
+         {
+            var topic = methodInfo.Name[QUERY.Length..];
+            var parameterType = parameters[0].ParameterType;
+            if (parameterType == typeof(TQuery))
+            {
+               subscriberQuery.SetTopic(topic, (TQuery query) => methodInfo.Invoke(this, [query]));
+            }
+            else if (parameterType == typeof(Func<TQuery>))
+            {
+               subscriberQuery.SetTopic(topic, func => methodInfo.Invoke(this, [func()]));
+            }
          }
       }
    }
@@ -48,7 +73,7 @@ public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe
          if (parameters.Length == 1 && parameters[0].ParameterType == typeof(TResponse))
          {
             var topic = methodInfo.Name[RESPONSE.Length..];
-            subscriberResponse.SetTopic(topic, response => methodInfo.Invoke(this, [response]));
+            subscriberResponse.SetTopic(topic, (TResponse response) => methodInfo.Invoke(this, [response]));
          }
       }
    }

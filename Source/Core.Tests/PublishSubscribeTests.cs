@@ -5,52 +5,58 @@ namespace Core.Tests;
 [TestClass]
 public class PublishSubscribeTests
 {
-   protected class AlphabetSubscriberServer() : SubscriberServer<string>("alphabet")
+   protected class AlphabetSubscriberServer() : Channel<string, byte>("alphabet0")
    {
-      public void OnAlpha(Publication<string> publication)
+      public void QueryAlpha(string payload)
       {
-         Console.WriteLine($"alpha: {publication.Payload}");
+         Console.WriteLine($"alpha: {payload}");
       }
 
-      public void OnBeta(Publication<string> publication)
+      public void QueryBeta(string payload)
       {
-         Console.WriteLine($"beta: {publication.Payload}");
+         Console.WriteLine($"beta: {payload}");
       }
 
-      public void OnCharlie(Publication<string> publication)
+      public void QueryCharlie(string payload)
       {
-         Console.WriteLine($"charlie: {publication.Payload}");
+         Console.WriteLine($"charlie: {payload}");
       }
 
-      public Action<Publication<string>> OnDelta { get; set; } = _ => { };
-   }
+      public void QueryDelta(Func<string> payload)
+      {
+         Console.WriteLine($"delta: {payload()}");
+      }
 
-   protected class AlphabetPublishingCenter() : PublishingCenter<string>("alphabet")
-   {
-      public void PublishAlpha(string payload) => publish("Alpha", payload);
+      public void PublishAlpha(string payload) => Send("Alpha", payload);
 
-      public void PublishBeta(string payload) => publish("Beta", payload);
+      public void PublishBeta(string payload) => Send("Beta", payload);
 
-      public void PublishCharlie(string payload) => publish("Charlie", payload);
+      public void PublishCharlie(string payload) => Send("Charlie", payload);
 
-      public void PublishDelta(string payload) => publish("Delta", payload);
+      public void PublishDelta(string payload) => Send("Delta", payload);
    }
 
    [TestMethod]
    public void SubscriberServerTest()
    {
-      using var subscriberServer = new AlphabetSubscriberServer();
-      subscriberServer.OnDelta = publication => Console.WriteLine($"delta: {publication.Payload}");
+      /*using var subscriberServer = new AlphabetSubscriberServer();
+      //subscriberServer.OnDelta(()=>Console.WriteLine($"delta: {payload()}"));
       subscriberServer.Start();
 
       var center = new AlphabetPublishingCenter();
       center.PublishAlpha("A");
       center.PublishBeta("B");
       center.PublishCharlie("C");
+      center.PublishDelta("D");*/
+      using var center = new AlphabetSubscriberServer();
+      center.Start();
+      center.PublishAlpha("A");
+      center.PublishBeta("B");
+      center.PublishCharlie("C");
       center.PublishDelta("D");
    }
 
-   protected class AlphabetChannel() : Channel<string, string>("alphabet")
+protected class AlphabetChannel() : Channel<string, string>("alphabet1")
    {
       public string QueryA(string query) => "Alpha";
 
