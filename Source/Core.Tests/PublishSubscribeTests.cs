@@ -95,10 +95,16 @@ public class PublishSubscribeTests
    [TestMethod]
    public void ChannelTest()
    {
-      using var channel = new AlphabetChannel();
-      channel.Start();
-      channel.SendA("A");
-      channel.SendB("B");
-      channel.SendC("C");
+      using var alphabetChannel = new AlphabetChannel();
+      alphabetChannel.Start();
+      alphabetChannel.SendA("A");
+      alphabetChannel.SendB("B");
+      alphabetChannel.SendC("C");
+
+      using var stringToIntChannel = new StringToIntChannel();
+      stringToIntChannel.Start();
+      stringToIntChannel.Length("Hello");
+      stringToIntChannel.LengthOfLength("Hello");
+      stringToIntChannel.Parse("123");
    }
 }
