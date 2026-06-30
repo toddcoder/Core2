@@ -28,11 +28,11 @@ public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe
       {
          var returnType = methodInfo.ReturnType;
          var parameters = methodInfo.GetParameters();
-         if (returnType == typeof(TResponse) && parameters.Length == 1)
+         if (returnType.IsAssignableTo(typeof(TResponse)) && parameters.Length == 1)
          {
             var topic = methodInfo.Name[QUERY.Length..];
             var parameterType = parameters[0].ParameterType;
-            if (parameterType == typeof(TQuery))
+            if (parameterType.IsAssignableTo(typeof(TQuery)))
             {
                subscriberQuery.SetTopic(topic, (TQuery query) =>
                {
@@ -40,7 +40,7 @@ public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe
                   subscriberResponse.InvokeTopic(new Publication<TResponse>(topic, response));
                });
             }
-            else if (parameterType == typeof(Func<TQuery>))
+            else if (parameterType.IsAssignableTo(typeof(Func<TQuery>)))
             {
                subscriberQuery.SetTopic(topic, func =>
                {
@@ -60,11 +60,11 @@ public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe
          {
             var topic = methodInfo.Name[ON.Length..];
             var parameterType = parameters[0].ParameterType;
-            if (parameterType == typeof(TQuery))
+            if (typeof(TQuery).IsAssignableTo(parameterType))
             {
                subscriberQuery.SetTopic(topic, (TQuery query) => methodInfo.Invoke(this, [query]));
             }
-            else if (parameterType == typeof(Func<TQuery>))
+            else if (typeof(Func<TQuery>).IsAssignableTo(parameterType))
             {
                subscriberQuery.SetTopic(topic, func => methodInfo.Invoke(this, [func()]));
             }
@@ -78,7 +78,7 @@ public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe
       foreach (var methodInfo in methods)
       {
          var parameters = methodInfo.GetParameters();
-         if (parameters.Length == 1 && parameters[0].ParameterType == typeof(TResponse))
+         if (parameters.Length == 1 && parameters[0].ParameterType.IsAssignableTo(typeof(TResponse)))
          {
             var topic = methodInfo.Name[RESPONSE.Length..];
             subscriberResponse.SetTopic(topic, (TResponse response) => methodInfo.Invoke(this, [response]));
@@ -120,4 +120,8 @@ public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe
       subscriberQuery.Unsubscribe();
       subscriberResponse.Unsubscribe();
    }
+}
+
+public class Channel<T>(string name) : Channel<T, T>(name) where T : notnull
+{
 }

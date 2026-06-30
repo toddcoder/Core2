@@ -56,7 +56,7 @@ public class PublishSubscribeTests
       center.PublishDelta("D");
    }
 
-protected class AlphabetChannel() : Channel<string, string>("alphabet1")
+   protected class AlphabetChannel() : Channel<string, string>("alphabet1")
    {
       public string QueryA(string query) => "Alpha";
 
@@ -112,5 +112,45 @@ protected class AlphabetChannel() : Channel<string, string>("alphabet1")
       stringToIntChannel.Length("Hello");
       stringToIntChannel.LengthOfLength("Hello");
       stringToIntChannel.Parse("123");
+   }
+
+   public abstract record Arguments
+   {
+      public sealed record Integer(int I) : Arguments;
+
+      public sealed record Double(double D) : Arguments;
+
+      public sealed record Str(string S) : Arguments;
+   }
+
+   public class ArgumentsChannel() : Channel<Arguments>("arguments")
+   {
+      public Arguments QueryInteger(Arguments.Integer query) => new Arguments.Integer(query.I + 1);
+
+      public Arguments QueryDouble(Arguments.Double query) => new Arguments.Double(query.D * 2);
+
+      public Arguments QueryStr(Arguments.Str query) => new Arguments.Str(query.S.ToUpper());
+
+      public void ResponseInteger(Arguments.Integer response) => Console.WriteLine($"ResponseInteger: {response.I}");
+
+      public void ResponseDouble(Arguments.Double response) => Console.WriteLine($"ResponseDouble: {response.D}");
+
+      public void ResponseStr(Arguments.Str response) => Console.WriteLine($"ResponseStr: {response.S}");
+
+      public void SendInteger(int i) => Send("Integer", new Arguments.Integer(i));
+
+      public void SendDouble(double d) => Send("Double", new Arguments.Double(d));
+
+      public void SendStr(string s) => Send("Str", new Arguments.Str(s));
+   }
+
+   [TestMethod]
+   public void SubTypeTest()
+   {
+      using var argumentsChannel = new ArgumentsChannel();
+      argumentsChannel.Start();
+      argumentsChannel.SendInteger(1);
+      argumentsChannel.SendDouble(2.0);
+      argumentsChannel.SendStr("hello");
    }
 }
