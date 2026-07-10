@@ -260,6 +260,17 @@ public partial class Form1 : Form
       var uiButton7 = new UiMenuAction { AutoSizeText = true };
       (builder + uiButton7).Row();
       uiButton7.NoStatus("choose");
+      uiButton7.RequestMenuItems.Handler = () =>
+      {
+         if (uiDirty.IsDirty || uiCheckBox.BoxChecked)
+         {
+            uiButton7.Choose(choices);
+         }
+         else
+         {
+            uiButton7.Choose(choices).Then(uiChosen.Success);
+         }
+      };
       uiButton7.Click += (_, _) =>
       {
          /*if (uiDirty.IsDirty)

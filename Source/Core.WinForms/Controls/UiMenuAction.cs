@@ -224,7 +224,8 @@ public class UiMenuAction : UiAction
 
             menuOpen = true;
             menu.Value.Show(this, location);
-            Focus();
+            //Focus();
+            menu.Value.Focus();
          }
          else
          {
@@ -233,7 +234,8 @@ public class UiMenuAction : UiAction
             var location = Cursor.Position;
             location = PointToClient(location);
             menu.Value.Show(this, location);
-            Focus();
+            menu.Value.Focus();
+            //Focus();
          }
       }
    }
