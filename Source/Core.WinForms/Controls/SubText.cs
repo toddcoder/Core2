@@ -126,23 +126,28 @@ public class SubText(ISubTextHost subTextHost, string text, int x, int y, Size s
 
    protected string withEmojis(string originalText) => useEmojis ? originalText.EmojiSubstitutions() : originalText;
 
+   public static TextFormatFlags StandardFlags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.HorizontalCenter |
+      TextFormatFlags.VerticalCenter;
+
+   public static Size GetTextSize(Maybe<Graphics> _graphics, string text, Font font, TextFormatFlags flags)
+   {
+      if (_graphics is (true, var graphics))
+      {
+         return TextRenderer.MeasureText(graphics, text, font, new Size(int.MaxValue, int.MaxValue), flags);
+      }
+      else
+      {
+         return TextRenderer.MeasureText(text, font, new Size(int.MaxValue, int.MaxValue), flags);
+      }
+   }
+
    public (Size measuredSize, string text, TextFormatFlags flags, Font font) TextSize(Maybe<Graphics> _graphics)
    {
       var newText = withEmojis(text);
       var font = new Font(FontName, FontSize, FontStyle);
-      var flags = TextFormatFlags.EndEllipsis | TextFormatFlags.NoPrefix | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
-      var proposedSize = new Size(int.MaxValue, int.MaxValue);
-      Size measuredSize;
-      if (_graphics is (true, var graphics))
-      {
-         measuredSize = TextRenderer.MeasureText(graphics, newText, font, proposedSize, flags);
-      }
-      else
-      {
-         measuredSize = TextRenderer.MeasureText(newText, font, proposedSize, flags);
-      }
 
-      return (measuredSize, newText, flags, font);
+      var textSize = GetTextSize(_graphics, newText, font, StandardFlags);
+      return (textSize, newText, StandardFlags, font);
    }
 
    public (int x, int y) LocationFromAlignment(Rectangle clientRectangle)
