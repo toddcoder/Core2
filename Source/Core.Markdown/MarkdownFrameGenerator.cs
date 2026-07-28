@@ -96,7 +96,7 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                }
                case Replacer.StyleSpecifier styleSpecifier:
                {
-                  styles.Add(styleSpecifier.Style);
+                  styles.Add(scalarReplacements.Replace(styleSpecifier.Style));
                   break;
                }
                case Replacer.RawMarkdown rawMarkdown:
