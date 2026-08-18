@@ -111,7 +111,7 @@ public partial class TempMessage : UserControl
       }
    }
 
-   protected void writeMessage(Graphics g)
+   protected virtual void writeMessage(Graphics g)
    {
       var writer = new ControlWriter
       {

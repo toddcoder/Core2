@@ -11,7 +11,7 @@ public class ProgressDefiniteProcessor
    protected Font font;
    protected Rectangle percentRectangle;
    protected Rectangle textRectangle;
-   protected Maybe<Stopwatch> _stopwatch;
+   protected Maybe<Stopwatch> _stopwatch = nil;
    protected bool showToGo;
    protected bool useEmojis;
    protected bool pendingRectangleChange;
@@ -19,14 +19,11 @@ public class ProgressDefiniteProcessor
    public ProgressDefiniteProcessor(Font font, Graphics graphics, Rectangle clientRectangle, bool showToGo, bool useEmojis)
    {
       this.font = font;
+      ShowToGo = showToGo;
       this.useEmojis = useEmojis;
 
       percentRectangle = getPercentRectangle(graphics, clientRectangle, showToGo);
       textRectangle = getTextRectangle(clientRectangle);
-
-      _stopwatch = nil;
-      ShowToGo = showToGo;
-      pendingRectangleChange = false;
    }
 
    public Rectangle PercentRectangle => percentRectangle;
