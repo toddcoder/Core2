@@ -34,6 +34,7 @@ public partial class Form16 : Form
             {
                case "A":
                   tmDisplay1.Display("Alpha");
+                  tmProgress.Display("Alpha");
                   break;
                case "B":
                   tmDisplay1.Display("Beta");
@@ -87,6 +88,10 @@ public partial class Form16 : Form
          tmBusy.IsBusy = uiSwitch.BoxChecked;
          timer1.Enabled = uiSwitch.BoxChecked;
          tmProgress.Maximum = uiSwitch.BoxChecked ? 20 : nil;
+         if (!uiSwitch.BoxChecked)
+         {
+            value = 0;
+         }
       };
 
       var builder = new TableLayoutBuilder(tableLayoutPanel1);
@@ -115,7 +120,7 @@ public partial class Form16 : Form
          else
          {
             value = 0;
-            tmProgress.Maximum = nil;
+            tmProgress.Reset();
             timer1.Enabled = false;
          }
       }

@@ -19,30 +19,37 @@ public class TempProgress : TempMessage
 
    protected override void OnPaint(PaintEventArgs e)
    {
-      if (Maximum is (true, var maximum) && value <= maximum)
+      if (Maximum is (true, var maximum))
       {
-         e.Graphics.HighQuality();
-
-         var percentage = (float)value / maximum;
-         var width = (int)(ClientRectangle.Width * percentage);
-         var greenRectangle = ClientRectangle with { Width = width };
-         var text = message.IsNotEmpty() ? message : $"{(int)(percentage * 100)}%";
-
-         using var redBrush = new SolidBrush(Color.Red);
-         e.Graphics.FillRectangle(redBrush, ClientRectangle);
-
-         using var greenBrush = new SolidBrush(Color.Green);
-         e.Graphics.FillRectangle(greenBrush, greenRectangle);
-
-         var writer = new ControlWriter
+         if (value <= maximum)
          {
-            Color = Color.White,
-            Font = Font,
-            Rectangle = ClientRectangle,
-            UseEmojis = UseEmojis,
-            AutoSizeText = AutoSizeText
-         };
-         writer.Write(e.Graphics, text);
+            e.Graphics.HighQuality();
+
+            var percentage = (float)value / maximum;
+            var width = (int)(ClientRectangle.Width * percentage);
+            var greenRectangle = ClientRectangle with { Width = width };
+            var text = message.IsNotEmpty() ? message : $"{(int)(percentage * 100)}%";
+
+            using var redBrush = new SolidBrush(Color.Red);
+            e.Graphics.FillRectangle(redBrush, ClientRectangle);
+
+            using var greenBrush = new SolidBrush(Color.Green);
+            e.Graphics.FillRectangle(greenBrush, greenRectangle);
+
+            var writer = new ControlWriter
+            {
+               Color = Color.White,
+               Font = Font,
+               Rectangle = ClientRectangle,
+               UseEmojis = UseEmojis,
+               AutoSizeText = AutoSizeText
+            };
+            writer.Write(e.Graphics, text);
+         }
+         else
+         {
+            Display("");
+         }
       }
       else
       {
@@ -59,5 +66,11 @@ public class TempProgress : TempMessage
       {
          base.OnPaintBackground(e);
       }
+   }
+
+   public void Reset()
+   {
+      value = -1;
+      Maximum = nil;
    }
 }
