@@ -43,7 +43,9 @@ public class MarkdownFrame(string styles, string markdown, bool tidy, StringHash
             var rawHtml = document.ToHtml(pipeline);
 
             var newHtml = $"<html><body>{rawHtml}</body></html>";
+#pragma warning disable CA1416
             return tidy ? newHtml.Tidy(true) : newHtml;
+#pragma warning restore CA1416
          }
 
          var parser = new StylesParser(styles);
@@ -55,7 +57,9 @@ public class MarkdownFrame(string styles, string markdown, bool tidy, StringHash
             var rawHtml = document.ToHtml(pipeline);
 
             var newHtml = html.Replace("<body />", $"<body>{rawHtml}</body>");
+#pragma warning disable CA1416
             return tidy ? newHtml.Tidy(true) : newHtml;
+#pragma warning restore CA1416
          }
          else
          {

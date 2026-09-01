@@ -23,42 +23,12 @@ public static class MarkupExtensions
       return reader.ReadToEnd();
    });
 
-   public static string Tidy(this string markup, Encoding encoding, bool includeHeader = true, char quoteChar = '"')
+   extension(string markup)
    {
-      markup.Must().Not.BeNullOrEmpty().OrThrow();
-      encoding.Must().Not.BeNull().OrThrow();
-
-      var document = new XmlDocument();
-      document.LoadXml(markup);
-      document.LoadXml(document.OuterXml.Substitute(PATTERN_EMPTY_ELEMENT, TEXT_EMPTY_ELEMENT));
-
-      using var stream = new MemoryStream();
-      using var writer = new XmlTextWriter(stream, encoding);
-      writer.Formatting = Formatting.Indented;
-      writer.Indentation = 3;
-      writer.QuoteChar = quoteChar;
-
-      document.Save(writer);
-
-      var _text = fromStream(stream, encoding);
-      if (_text is (true, var text))
+      public string Tidy(Encoding encoding, bool includeHeader = true, char quoteChar = '"')
       {
-         return includeHeader ? text : text.Substitute(PATTERN_HEADER, string.Empty).Trim();
-      }
-      else
-      {
-         return string.Empty;
-      }
-   }
-
-   public static Optional<string> TidyXml(this string markup, Encoding encoding, bool includeHeader = true, char quoteChar = '"')
-   {
-      try
-      {
-         if (markup.IsEmpty())
-         {
-            return nil;
-         }
+         markup.Must().Not.BeNullOrEmpty().OrThrow();
+         encoding.Must().Not.BeNull().OrThrow();
 
          var document = new XmlDocument();
          document.LoadXml(markup);
@@ -79,51 +49,84 @@ public static class MarkupExtensions
          }
          else
          {
-            return _text.Exception;
+            return string.Empty;
          }
       }
-      catch (Exception exception)
+
+      public Optional<string> TidyXml(Encoding encoding, bool includeHeader = true, char quoteChar = '"')
       {
-         return exception;
+         try
+         {
+            if (markup.IsEmpty())
+            {
+               return nil;
+            }
+
+            var document = new XmlDocument();
+            document.LoadXml(markup);
+            document.LoadXml(document.OuterXml.Substitute(PATTERN_EMPTY_ELEMENT, TEXT_EMPTY_ELEMENT));
+
+            using var stream = new MemoryStream();
+            using var writer = new XmlTextWriter(stream, encoding);
+            writer.Formatting = Formatting.Indented;
+            writer.Indentation = 3;
+            writer.QuoteChar = quoteChar;
+
+            document.Save(writer);
+
+            var _text = fromStream(stream, encoding);
+            if (_text is (true, var text))
+            {
+               return includeHeader ? text : text.Substitute(PATTERN_HEADER, string.Empty).Trim();
+            }
+            else
+            {
+               return _text.Exception;
+            }
+         }
+         catch (Exception exception)
+         {
+            return exception;
+         }
       }
-   }
 
-   public static string Tidy(this string markup, bool includeHeader) => Tidy(markup, Encoding.UTF8, includeHeader);
+      public string Tidy(bool includeHeader) => Tidy(markup, Encoding.UTF8, includeHeader);
 
-   public static Optional<string> TidyXml(this string markup, bool includeHeader) => markup.TidyXml(Encoding.UTF8, includeHeader);
+      public Optional<string> TidyXml(bool includeHeader) => markup.TidyXml(Encoding.UTF8, includeHeader);
 
-   public static string ToMarkup(this string text)
-   {
-      text.Must().Not.BeNullOrEmpty().OrThrow();
+      public string ToMarkup()
+      {
+         markup.Must().Not.BeNullOrEmpty().OrThrow();
 
-      text = text.Substitute("'&' -(> ('amp' | 'lt' | 'gt' | 'quot' | 'apos') ';'); f", "&amp;");
-      text = text.Substitute("'<'; f", "&lt;");
-      text = text.Substitute("'>'; f", "&gt;");
-      text = text.Substitute("[dquote]; f", "&quot;");
-      text = text.Substitute("[squote]; f", "&apos;");
+         markup = markup.Substitute("'&' -(> ('amp' | 'lt' | 'gt' | 'quot' | 'apos') ';'); f", "&amp;");
+         markup = markup.Substitute("'<'; f", "&lt;");
+         markup = markup.Substitute("'>'; f", "&gt;");
+         markup = markup.Substitute("[dquote]; f", "&quot;");
+         markup = markup.Substitute("[squote]; f", "&apos;");
 
-      return text;
-   }
+         return markup;
+      }
 
-   public static string FromMarkup(this string text)
-   {
-      text.Must().Not.BeNullOrEmpty().OrThrow();
+      public string FromMarkup()
+      {
+         markup.Must().Not.BeNullOrEmpty().OrThrow();
 
-      text = text.Substitute("'&apos;'; f", "'");
-      text = text.Substitute("'&quot;'; f", "\"");
-      text = text.Substitute("'&gt;'; f", ">");
-      text = text.Substitute("'&lt;'; f", "<");
-      text = text.Substitute("'&amp'; f", "&");
+         markup = markup.Substitute("'&apos;'; f", "'");
+         markup = markup.Substitute("'&quot;'; f", "\"");
+         markup = markup.Substitute("'&gt;'; f", ">");
+         markup = markup.Substitute("'&lt;'; f", "<");
+         markup = markup.Substitute("'&amp'; f", "&");
 
-      return text;
-   }
+         return markup;
+      }
 
-   public static string Simplify(this string markup)
-   {
-      markup.Must().Not.BeNullOrEmpty().OrThrow();
+      public string Simplify()
+      {
+         markup.Must().Not.BeNullOrEmpty().OrThrow();
 
-      return markup
-         .Substitute("/s+ /w+ ':' /w '=' [dquote] -[dquote]+ [dquote]; f", "")
-         .Substitute("/s+ 'xmlns=' [dquote] -[dquote]+ [dquote]; f", "");
+         return markup
+            .Substitute("/s+ /w+ ':' /w '=' [dquote] -[dquote]+ [dquote]; f", "")
+            .Substitute("/s+ 'xmlns=' [dquote] -[dquote]+ [dquote]; f", "");
+      }
    }
 }

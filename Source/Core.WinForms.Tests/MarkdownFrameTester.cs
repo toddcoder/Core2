@@ -3,12 +3,9 @@ using Core.Computers;
 using Core.Dates.DateIncrements;
 using Core.Enumerables;
 using Core.Markdown;
-using Core.Matching;
-using Core.Monads;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.TableLayoutPanels;
-using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Tests;
 
@@ -113,61 +110,6 @@ public partial class MarkdownFrameTester : Form
          else
          {
             uiRefresh.Failure("failed");
-         }
-      }
-
-      void updateReplacements(ScalarReplacements scalarReplacements, MultiReplacements multiLineReplacements)
-      {
-         Maybe<string> _rawMarkdown = nil;
-         List<string> dataLines = [];
-
-         foreach (var line in textReplacements.Lines)
-         {
-            if (line.Matches(REGEX_SCALAR) is (true, var scalarResult))
-            {
-               var key = scalarResult.FirstGroup;
-               var value = scalarResult.SecondGroup;
-               scalarReplacements[key] = value;
-            }
-            else if (line.Matches(REGEX_MULTI_BEGIN) is (true, var beginResult))
-            {
-               var key = beginResult.FirstGroup;
-               string[] keyNames = [.. beginResult.SecondGroup.Split(',').Select(s => s.Trim())];
-               multiLineReplacements.Begin(key, keyNames);
-            }
-            else if (line.Matches(REGEX_MULTI_END))
-            {
-               multiLineReplacements.Commit();
-            }
-            else if (line.Matches(REGEX_RAW_MARKDOWN_BEGIN) is (true, var rawMarkdownBeginResult))
-            {
-               _rawMarkdown = rawMarkdownBeginResult.FirstGroup;
-               dataLines.Clear();
-            }
-            else if (line.Matches(REGEX_RAW_MARKDOWN_END))
-            {
-               if (_rawMarkdown is (true, var rawMarkdownKey))
-               {
-                  scalarReplacements[rawMarkdownKey] = dataLines.ToString(Environment.NewLine);
-                  dataLines.Clear();
-               }
-
-               _rawMarkdown = nil;
-            }
-            else if (multiLineReplacements.Transacting)
-            {
-               multiLineReplacements.CurrentReplacements.Begin();
-               foreach (var (key, value) in multiLineReplacements.CurrentReplacements.Keys.Zip(line.Split(',')))
-               {
-                  multiLineReplacements.CurrentReplacements[key] = value;
-               }
-
-               multiLineReplacements.CurrentReplacements.Commit();
-            }
-            else if (_rawMarkdown)
-            {
-               dataLines.Add(line);
-            }
          }
       }
    }

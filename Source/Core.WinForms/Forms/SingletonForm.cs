@@ -1,5 +1,4 @@
-﻿
-using Core.Applications.Messaging;
+﻿using Core.Applications.Messaging;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
 
@@ -42,6 +41,35 @@ public class SingletonForm<T>(Func<T> initializer) where T : Form
          reference = initializer();
          _reference = reference;
          reference.Show();
+         AfterShow.Invoke();
+      }
+   }
+
+   public void Show(Form parentForm)
+   {
+      var uninitialized = !_reference;
+      (var reference, _reference) = _reference.Create(initializer);
+      if (uninitialized)
+      {
+         reference.FormClosing += (_, _) => Reset();
+         Created.Invoke();
+      }
+
+      if (reference.Visible)
+      {
+         reference.Focus();
+         AfterFocus.Invoke();
+      }
+      else if (!reference.IsDisposed)
+      {
+         reference.Show(parentForm);
+         AfterShow.Invoke();
+      }
+      else
+      {
+         reference = initializer();
+         _reference = reference;
+         reference.Show(parentForm);
          AfterShow.Invoke();
       }
    }
