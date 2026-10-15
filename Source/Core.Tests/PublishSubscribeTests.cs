@@ -22,9 +22,9 @@ public class PublishSubscribeTests
          Console.WriteLine($"charlie: {payload}");
       }
 
-      public void OnDelta(Func<string> payload)
+      public void OnDelta(string payload)
       {
-         Console.WriteLine($"delta: {payload()}");
+         Console.WriteLine($"delta: {payload}");
       }
 
       public void PublishAlpha(string payload) => Send("Alpha", payload);
@@ -39,17 +39,7 @@ public class PublishSubscribeTests
    [TestMethod]
    public void SubscriberServerTest()
    {
-      /*using var subscriberServer = new AlphabetSubscriberServer();
-      //subscriberServer.OnDelta(()=>Console.WriteLine($"delta: {payload()}"));
-      subscriberServer.Start();
-
-      var center = new AlphabetPublishingCenter();
-      center.PublishAlpha("A");
-      center.PublishBeta("B");
-      center.PublishCharlie("C");
-      center.PublishDelta("D");*/
       using var center = new AlphabetSubscriberServer();
-      center.Start();
       center.PublishAlpha("A");
       center.PublishBeta("B");
       center.PublishCharlie("C");
@@ -102,13 +92,11 @@ public class PublishSubscribeTests
    public void ChannelTest()
    {
       using var alphabetChannel = new AlphabetChannel();
-      alphabetChannel.Start();
       alphabetChannel.SendA("A");
       alphabetChannel.SendB("B");
       alphabetChannel.SendC("C");
 
       using var stringToIntChannel = new StringToIntChannel();
-      stringToIntChannel.Start();
       stringToIntChannel.Length("Hello");
       stringToIntChannel.LengthOfLength("Hello");
       stringToIntChannel.Parse("123");
@@ -148,7 +136,6 @@ public class PublishSubscribeTests
    public void SubTypeTest()
    {
       using var argumentsChannel = new ArgumentsChannel();
-      argumentsChannel.Start();
       argumentsChannel.SendInteger(1);
       argumentsChannel.SendDouble(2.0);
       argumentsChannel.SendStr("hello");

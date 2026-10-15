@@ -4,16 +4,28 @@ using System.Reflection;
 
 namespace Core.Applications.Messaging;
 
-public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe = true) : IDisposable where TQuery : notnull
-   where TResponse : notnull
+public abstract class Channel<TQuery, TResponse> : IDisposable where TQuery : notnull where TResponse : notnull
 {
    protected const string QUERY = "Query";
    protected const string ON = "On";
    protected const string RESPONSE = "Response";
 
-   protected Subscriber<TQuery> subscriberQuery = new($"query-{name}", autoSubscribe);
-   protected Subscriber<TResponse> subscriberResponse = new($"response-{name}", autoSubscribe);
-   protected Publisher<TQuery> publisherQuery = new($"query-{name}");
+   protected readonly Subscriber<TQuery> subscriberQuery;
+   protected readonly Subscriber<TResponse> subscriberResponse;
+   protected readonly Publisher<TQuery> publisherQuery;
+   protected bool autoStarted;
+
+   protected Channel(string name, bool autoStart = true, bool autoSubscribe = true)
+   {
+      subscriberQuery = new Subscriber<TQuery>($"query-{name}", autoSubscribe);
+      subscriberResponse = new Subscriber<TResponse>($"response-{name}", autoSubscribe);
+      publisherQuery = new Publisher<TQuery>($"query-{name}");
+
+      if (autoStart)
+      {
+         Start();
+      }
+   }
 
    public void Subscribe()
    {
@@ -64,10 +76,6 @@ public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe
             {
                subscriberQuery.SetTopic(topic, (TQuery query) => methodInfo.Invoke(this, [query]));
             }
-            else if (typeof(Func<TQuery>).IsAssignableTo(parameterType))
-            {
-               subscriberQuery.SetTopic(topic, func => methodInfo.Invoke(this, [func()]));
-            }
          }
       }
    }
@@ -88,11 +96,18 @@ public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe
 
    public void Send(string topic, TQuery query) => publisherQuery.Publish(topic, query);
 
-   public virtual void Start()
+   public void Start()
    {
+      if (autoStarted)
+      {
+         return;
+      }
+
       var type = GetType();
       setUpQuery(type);
       setUpResponse(type);
+
+      autoStarted = true;
    }
 
    public void QuerySuspend() => subscriberQuery.Suspend();
@@ -119,9 +134,13 @@ public abstract class Channel<TQuery, TResponse>(string name, bool autoSubscribe
    {
       subscriberQuery.Unsubscribe();
       subscriberResponse.Unsubscribe();
+      GC.SuppressFinalize(this);
    }
+
+   ~Channel() => Dispose();
 }
 
-public class Channel<T>(string name) : Channel<T, T>(name) where T : notnull
+public class Channel<T>(string name, bool autoStart = true, bool autoSubscribe = true)
+   : Channel<T, T>(name, autoStart, autoSubscribe) where T : notnull
 {
 }
