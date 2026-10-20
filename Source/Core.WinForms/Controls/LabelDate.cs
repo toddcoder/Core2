@@ -14,12 +14,12 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
    public event EventHandler? ValueChanged;
    public event EventHandler<LabelActionMessageArgs>? MessageReceived;
 
-   public LabelDate(string label, bool isMenuAction = false)
+   public LabelDate()
    {
       InitializeComponent();
 
-      uiLabel = isMenuAction ? new UiMenuAction() : new UiAction();
-      uiLabel.Divider(label);
+      uiLabel = new UiAction();
+      uiLabel.Divider(Label);
 
       dateTimePicker.Format = DateTimePickerFormat.Short;
       dateTimePicker.Value = DateTime.Now;
@@ -42,6 +42,23 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
 
       host = new LabelUiActionHost<CoreDateTimePicker>(tableLayoutPanel, uiLabel, dateTimePicker, b => b.Row * 2 * 50f);
       CustomFormat = nil;
+   }
+
+   public string Label
+   {
+      get => uiLabel.NonNullText;
+      set => uiLabel.Divider(value);
+   }
+
+   public bool IsMenuAction
+   {
+      get;
+      set
+      {
+         field = value;
+         uiLabel = value ? new UiMenuAction() : new UiAction();
+         uiLabel.Divider(Label);
+      }
    }
 
    public DateTime Value
@@ -89,7 +106,7 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
       }
    }
 
-   public UiAction Label => uiLabel;
+   public UiAction UiLabel => uiLabel;
 
    public string LabelString
    {

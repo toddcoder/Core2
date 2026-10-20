@@ -10,7 +10,7 @@ public partial class Form6 : Form
 {
    protected Image image;
    protected PictureBox pictureBox = new();
-   protected LabelText ltText = new("text") { CanDirty = false };
+   protected LabelText ltText = new() { Label = "text", CanDirty = false };
    protected CoreDateTimePicker picker = new();
    protected UiAction uiAlternates = new();
    protected UiAction uiReadOnlyAlternates = new() { AutoSizeText = true, UseEmojis = false };
@@ -38,11 +38,11 @@ public partial class Form6 : Form
          }
          else
          {
-            ltText.Label.DividerValidation = new DividerValidation.None();
-            _ = ltText.Label & (text.IsNotEmpty(), "text is empty") & (text is "alfa" or "bravo", "Expected alfa or bravo");
+            ltText.UiLabel.DividerValidation = new DividerValidation.None();
+            _ = ltText.UiLabel & (text.IsNotEmpty(), "text is empty") & (text is "alfa" or "bravo", "Expected alfa or bravo");
          }
       };
-      ltText.Label.Click += (_, _) => ltText.TextEnabled = !ltText.TextEnabled;
+      ltText.UiLabel.Click += (_, _) => ltText.TextEnabled = !ltText.TextEnabled;
 
       var uiAlfa = new UiAction();
       uiAlfa.Button("alfa");

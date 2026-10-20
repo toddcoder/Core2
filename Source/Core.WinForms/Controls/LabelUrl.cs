@@ -26,7 +26,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
    public event EventHandler? Accepted;
    public event EventHandler? Cancelled;
 
-   public LabelUrl(string label, bool isMenuAction = false)
+   public LabelUrl()
    {
       var resources = new Resources<LabelUrl>();
       var copyImage = resources.Image("Copy.png");
@@ -36,8 +36,8 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
 
       InitializeComponent();
 
-      uiLabel = isMenuAction ? new UiMenuAction() : new UiAction();
-      uiLabel.Divider(label);
+      uiLabel = new UiAction();
+      uiLabel.Divider(Label);
 
       uiUrl.Font = new Font("Consolas", 1f, FontStyle.Underline);
       uiUrl.DoubleClick += (_, _) =>
@@ -280,7 +280,24 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
       host = new LabelUiActionHost<UiAction>(tableLayoutPanel, uiLabel, uiUrl, b => b.Row * 2 * 50f);
    }
 
-   public UiAction Label => uiLabel;
+   public string Label
+   {
+      get => uiLabel.NonNullText;
+      set => uiLabel.Divider(value);
+   }
+
+   public bool IsMenuAction
+   {
+      get;
+      set
+      {
+         field = value;
+         uiLabel = value ? new UiMenuAction() : new UiAction();
+         uiLabel.Divider(Label);
+      }
+   }
+
+   public UiAction UiLabel => uiLabel;
 
    public ExTextBox TextBox => textBox;
 

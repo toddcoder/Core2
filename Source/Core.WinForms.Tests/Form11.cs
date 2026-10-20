@@ -21,7 +21,7 @@ public partial class Form11 : Form
    protected UiAction uiUserInfoSubscribe = new();
    protected UiAction uiStatePublish = new();
    protected UiAction uiXPublish = new();
-   protected LabelText ltStateSubscribe = new(STATE_INFO);
+   protected LabelText ltStateSubscribe = new() { Label = STATE_INFO };
    protected Subscriber<Topic, string> userInfoSubscriber = new(USER_INFO);
    protected Subscriber<Topic, string> stateSubscriber = new(STATE_INFO);
    protected Publisher<Topic, string> userInfoPublisher = new(USER_INFO);

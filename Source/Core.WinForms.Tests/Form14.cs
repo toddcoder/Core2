@@ -15,7 +15,7 @@ public partial class Form14 : Form
       labelTexts.HorizontalCount = 5;
       foreach (var i in 5.Range())
       {
-         labelTexts.Add(new LabelText($"Edit {i + 1}"));
+         labelTexts.Add(new LabelText { Label = $"Edit {i + 1}" });
       }
 
       labelTexts.ControlHeight = labelTexts[0].Map(c => c.Height);

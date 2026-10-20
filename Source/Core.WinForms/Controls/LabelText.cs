@@ -14,12 +14,12 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
    public new event EventHandler? TextChanged;
    public event EventHandler<LabelActionMessageArgs>? MessageReceived;
 
-   public LabelText(string label, bool isMenuAction = false)
+   public LabelText()
    {
       InitializeComponent();
 
-      uiLabel = isMenuAction ? new UiMenuAction() : new UiAction();
-      uiLabel.Divider(label);
+      uiLabel = new UiAction();
+      uiLabel.Divider(Label);
       uiLabel.TabStop = true;
 
       textBox.Text = "";
@@ -43,6 +43,24 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
       (builder + textBox).Row();
 
       host = new LabelUiActionHost<ExTextBox>(tableLayoutPanel, uiLabel, textBox, b => b.Row * 2 * 50f);
+   }
+
+   public string Label
+   {
+      get => uiLabel.NonNullText;
+      set => uiLabel.Divider(value);
+   }
+
+   public bool IsMenuAction
+   {
+      get;
+      set
+      {
+         field = value;
+         uiLabel = value ? new UiMenuAction() : new UiAction();
+         uiLabel.Divider(Label);
+         uiLabel.TabStop = true;
+      }
    }
 
    public new string Text
@@ -83,7 +101,7 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
       }
    }
 
-   public UiAction Label => uiLabel;
+   public UiAction UiLabel => uiLabel;
 
    public string LabelString
    {

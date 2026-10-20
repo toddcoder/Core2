@@ -6,10 +6,10 @@ namespace Core.WinForms.Tests;
 
 public partial class Form12 : Form
 {
-   protected LabelText ltLeft = new("left");
-   protected LabelText ltRight = new("right");
+   protected LabelText ltLeft = new() { Label = "left" };
+   protected LabelText ltRight = new() { Label = "right" };
    protected UiAction uiSend = new();
-   protected LabelText ltResult = new("result");
+   protected LabelText ltResult = new() { Label = "result" };
    protected UiAction uiReceive = new();
 
    public Form12()

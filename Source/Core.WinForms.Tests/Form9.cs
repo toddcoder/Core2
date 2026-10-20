@@ -7,7 +7,7 @@ namespace Core.WinForms.Tests;
 
 public partial class Form9 : Form
 {
-   protected LabelUrl luUrl1 = new("url 1");
+   protected LabelUrl luUrl1 = new(){Label = "url 1"};
    protected UrlEdit luUrl2 = new();
 
    public Form9()
