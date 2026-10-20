@@ -7,6 +7,7 @@ using Core.Matching;
 using Core.Strings;
 using Core.WinForms.Controls;
 using Core.WinForms.Documents;
+using Core.WinForms.Forms;
 using Core.WinForms.TableLayoutPanels;
 
 namespace Core.WinForms.Tests;
@@ -328,22 +329,7 @@ public partial class Form1 : Form
       var uiButton9 = new UiAction { ChooserGlyph = true };
       (builder + uiButton9).Row();
       uiButton9.Button("Update Choices");
-      /*var chooser = uiButton9.Choose("Update").AutoClose(false).Choices(choices).Chooser();
-      uiButton9.Click += (_, _) => chooser.Open();
-      uiButton9.ClickText = "Update choices";
-      uiButton9.KeyDownCaption = new KeyDownCapture.ControlKey("Clear Choices");
-      uiButton9.ChosenItemSelected += (_, _) =>
-      {
-         if (uiButton9.IsKeyDown)
-         {
-            chooser.ClearChoices();
-         }
-         else
-         {
-            chooser.Update(alternateChoices);
-         }
-      };*/
-
+      uiButton9.Click += (_, _) => Response.Ask("title", "Column A[b,f:white,b:green]|or|Column B?[b,f:black,b:gold]", "Column A", "Column B");
       (builder + uiDivider).SpanCol(2).Row();
       uiDivider.Divider("part 2");
 

@@ -8,18 +8,17 @@ namespace Core.WinForms.Controls;
 
 public class UiActionTextCanvas : UserControl
 {
-   protected string fontName;
-   protected float fontSize;
    protected List<TextItem> textItems = [];
    protected int padding = 2;
 
-   public UiActionTextCanvas(string fontName = "Consolas", float fontSize = 12f)
+   public UiActionTextCanvas()
    {
-      this.fontName = fontName;
-      this.fontSize = fontSize;
-
       Resize += (_, _) => Refresh();
    }
+
+   public string FontName { get; set; } = "Consolas";
+
+   public float FontSize { get; set; } = 12f;
 
    public void Clear() => textItems.Clear();
 
@@ -79,7 +78,7 @@ public class UiActionTextCanvas : UserControl
             segment = segment.Drop(-(specifierList.Length + 2));
          }
 
-         var textItem = new TextItem(segment, fontName, fontSize, fontStyle, foreColor, backColor, DrawOutline);
+         var textItem = new TextItem(segment, FontName, FontSize, fontStyle, foreColor, backColor, DrawOutline);
          textItems.Add(textItem);
       }
    }
