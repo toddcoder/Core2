@@ -21,11 +21,11 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
    public new event EventHandler? TextChanged;
    public event EventHandler<LabelActionMessageArgs>? MessageReceived;
 
-   public LabelRichText(string label, bool isMenuAction = false)
+   public LabelRichText()
    {
       InitializeComponent();
 
-      uiLabel = isMenuAction ? new UiMenuAction() : new UiAction();
+      uiLabel = new UiAction();
       uiLabel.TabStop = true;
 
       textBox.Text = "";
@@ -55,6 +55,24 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
       (builder + textBox).Row();
 
       host = new LabelUiActionHost<ExRichTextBox>(tableLayoutPanel, uiLabel, textBox, b => b.Row + 40 + 100f);
+   }
+
+   public string Label
+   {
+      get => uiLabel.NonNullText;
+      set => uiLabel.Divider(value);
+   }
+
+   public bool IsMenuAction
+   {
+      get;
+      set
+      {
+         field = value;
+         uiLabel = value ? new UiMenuAction() : new UiAction();
+         uiLabel.Divider(Label);
+         uiLabel.TabStop = true;
+      }
    }
 
    public new string Text
@@ -114,7 +132,7 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
       }
    }
 
-   public UiAction Label => uiLabel;
+   public UiAction UiLabel => uiLabel;
 
    public string LabelString
    {
