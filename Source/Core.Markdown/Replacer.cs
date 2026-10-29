@@ -14,6 +14,8 @@ public abstract record Replacer
 
    public sealed record Inclusion(string Key) : Replacer;
 
+   public sealed record InclusionIf(string Key, string Included) : Replacer;
+
    public sealed record InclusionNegative(string Key) : Replacer;
 
    public sealed record InclusionEnd : Replacer;

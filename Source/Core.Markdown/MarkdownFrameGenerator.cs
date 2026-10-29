@@ -31,6 +31,14 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                case Replacer.Inclusion:
                   includeLine = false;
                   break;
+               case Replacer.InclusionIf inclusionIf when keyExists(inclusionIf.Key) is (true, var key):
+               {
+                  includeLine = valueExists(key);
+                  break;
+               }
+               case Replacer.InclusionIf:
+                  includeLine = false;
+                  break;
                case Replacer.InclusionNegative inclusionNegative when !keyExists(inclusionNegative.Key):
                {
                   includeLine = true;
@@ -112,6 +120,11 @@ public class MarkdownFrameGenerator(Replacer[] replacers, IMarkdownFrameOptions 
                case Replacer.Template template:
                {
                   templateLines.Add(template.Line);
+                  break;
+               }
+               case Replacer.InclusionIf inclusionIf:
+               {
+                  templateLines.Add(scalarReplacements.Replace(inclusionIf.Included));
                   break;
                }
             }
