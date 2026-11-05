@@ -80,4 +80,6 @@ public class TableLayoutBuilder(TableLayoutPanel tableLayoutPanel)
       currentRow += count;
       return this;
    }
+
+   public static TableLayoutBuilder Builder() => new(new TableLayoutPanel());
 }

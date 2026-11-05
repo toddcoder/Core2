@@ -132,7 +132,11 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
       }
    }
 
-   public UiAction UiLabel => uiLabel;
+   public UiAction UiLabel
+   {
+      get => uiLabel;
+      set => uiLabel = value;
+   }
 
    public string LabelString
    {

@@ -297,7 +297,11 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
       }
    }
 
-   public UiAction UiLabel => uiLabel;
+   public UiAction UiLabel
+   {
+      get => uiLabel;
+      set => uiLabel = value;
+   }
 
    public ExTextBox TextBox => textBox;
 
