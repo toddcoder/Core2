@@ -101,7 +101,11 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
       }
    }
 
-   public UiAction UiLabel => uiLabel;
+   public UiAction UiLabel
+   {
+      get => uiLabel;
+      set => uiLabel = value;
+   }
 
    public string LabelString
    {
