@@ -1,4 +1,5 @@
-﻿using System.Drawing.Drawing2D;
+﻿using System.ComponentModel;
+using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 using Core.Applications;
 using Core.Applications.Messaging;
@@ -190,6 +191,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId, ITextProperty
       return newIdle;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public bool Waiting
    {
       get => waiting;
@@ -206,6 +208,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId, ITextProperty
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool AutoSelectAll { get; set; }
 
    protected void validateText()
@@ -259,6 +262,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId, ITextProperty
       Trending?.Invoke(this, new TrendArgs(Text, IsTrending));
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ValidateMessages
    {
       get => validatesMessages;
@@ -269,18 +273,21 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId, ITextProperty
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<Func<string, bool>> Allow
    {
       get => _allow;
       set => _allow = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<Func<string, bool>> Trend
    {
       get => _trend;
       set => _trend = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<Func<string, bool>> Deny
    {
       get => _deny;
@@ -310,24 +317,28 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId, ITextProperty
 
    public bool IsTrending => _trend.Map(trend => trend(Text)) | false;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string AllowMessage
    {
       get => allowMessage;
       set => allowMessage = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string TrendMessage
    {
       get => trendMessage;
       set => trendMessage = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string DenyMessage
    {
       get => denyMessage;
       set => denyMessage = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<int> LeftMargin
    {
       get => _leftMargin;
@@ -420,8 +431,10 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId, ITextProperty
       Refresh();
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<string> ShadowText { get; set; } = nil;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool RefreshOnTextChange { get; set; }
 
    public void StopUpdating()
@@ -444,6 +457,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId, ITextProperty
 
    public void ResetUpdating() => updatingCount = 0;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public (int start, int length) Selection
    {
       get => (SelectionStart, SelectionLength);
@@ -458,6 +472,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId, ITextProperty
       base.Dispose(disposing);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string CueBanner
    {
       get => cueBanner;
@@ -873,6 +888,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId, ITextProperty
 
    public bool UseEmojis => false;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public long ObjectId { get; set; }
 
    public ExTextBox Shortcut(Keys keys, Action<KeyEventArgs> action)
@@ -881,6 +897,7 @@ public class ExTextBox : TextBox, ISubTextHost, IHasObjectId, ITextProperty
       return this;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<int> Idle
    {
       get;

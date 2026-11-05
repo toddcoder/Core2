@@ -2,13 +2,13 @@ Push-Location "C:\Users\toddc\source\repos\Core2\Source"
 
 $target = "C:\Users\toddc\source\repos\Core2\Assemblies"
 
-robocopy "Core\bin\Debug\net8.0-windows" $target Core.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Internet\bin\Debug\net8.0-windows" $target Core.Internet.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Data\bin\Debug\net8.0-windows" $target Core.Data.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.WinForms\bin\Debug\net8.0-windows" $target Core.WinForms.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Markup\bin\Debug\net8.0-windows" $target Core.Markup.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Json\bin\Debug\net8.0-windows" $target Core.Json.dll Newtonsoft.Json.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Services\bin\Debug\net8.0-windows" $target Core.Services.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Zip\bin\Debug\net8.0-windows" $target Core.Zip.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Io\bin\Debug\net8.0-windows" $target Core.Io.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core\bin\Debug\net10.0-windows7" $target Core.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Internet\bin\Debug\net10.0-windows7" $target Core.Internet.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Data\bin\Debug\net10.0-windows7" $target Core.Data.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.WinForms\bin\Debug\net10.0-windows7" $target Core.WinForms.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Markup\bin\Debug\net10.0-windows7" $target Core.Markup.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Json\bin\Debug\net10.0-windows7" $target Core.Json.dll Newtonsoft.Json.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Services\bin\Debug\net10.0-windows7" $target Core.Services.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Zip\bin\Debug\net10.0-windows7" $target Core.Zip.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
+robocopy "Core.Io\bin\Debug\net10.0-windows7" $target Core.Io.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
 Pop-Location

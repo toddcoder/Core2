@@ -1,4 +1,5 @@
-﻿using Core.Lists;
+﻿using System.ComponentModel;
+using Core.Lists;
 using Core.Matching;
 using Core.Numbers;
 using Core.Strings;
@@ -16,12 +17,15 @@ public class UiActionTextCanvas : UserControl
       Resize += (_, _) => Refresh();
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string FontName { get; set; } = "Consolas";
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public float FontSize { get; set; } = 12f;
 
    public void Clear() => textItems.Clear();
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public new int Padding
    {
       get => padding;
@@ -92,6 +96,7 @@ public class UiActionTextCanvas : UserControl
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool DrawOutline { get; set; }
 
    protected override void OnPaint(PaintEventArgs e)

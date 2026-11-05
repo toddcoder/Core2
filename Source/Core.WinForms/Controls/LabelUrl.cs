@@ -1,4 +1,5 @@
-﻿using Core.Monads;
+﻿using System.ComponentModel;
+using Core.Monads;
 using Core.Strings;
 using Core.WinForms.TableLayoutPanels;
 using System.Diagnostics;
@@ -280,12 +281,14 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
       host = new LabelUiActionHost<UiAction>(tableLayoutPanel, uiLabel, uiUrl, b => b.Row * 2 * 50f);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string Label
    {
       get => uiLabel.NonNullText;
       set => uiLabel.Divider(value);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool IsMenuAction
    {
       get;
@@ -297,6 +300,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public UiAction UiLabel
    {
       get => uiLabel;
@@ -305,12 +309,14 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
 
    public ExTextBox TextBox => textBox;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string LabelString
    {
       get => uiLabel.NonNullText;
       set => uiLabel.Divider(value);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string Url
    {
       get => uiUrl.NonNullText;
@@ -330,6 +336,7 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string Branch { get; set; } = "";
 
    protected void display(string url)
@@ -366,12 +373,14 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
 
    public void ClearActions() => host.ClearActions();
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ActionsVisible
    {
       get => host.ActionsVisible;
       set => host.ActionsVisible = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public StatusType Status
    {
       get => uiLabel.Status;
@@ -384,12 +393,14 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
 
    public void ShowStatus(Optional<Unit> _optional, Either<string, Func<string>> failureFunc) => uiLabel.ShowStatus(_optional, failureFunc);
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool IsDirty
    {
       get => uiLabel.IsDirty;
       set => uiLabel.IsDirty = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool CanDirty { get; set; }
 
    public void HookMessageReceived()
@@ -424,5 +435,6 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public long ObjectId { get; set; }
 }

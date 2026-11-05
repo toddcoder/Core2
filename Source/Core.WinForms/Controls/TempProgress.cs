@@ -1,5 +1,6 @@
 ﻿using Core.Monads;
 using Core.Strings;
+using System.ComponentModel;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -8,6 +9,7 @@ public class TempProgress : TempMessage
 {
    protected int value = -1;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<int> Maximum { get; set; } = nil;
 
    public void Progress(string message)

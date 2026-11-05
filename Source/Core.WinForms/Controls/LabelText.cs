@@ -1,6 +1,7 @@
 ﻿using Core.Monads;
 using Core.Objects;
 using Core.WinForms.TableLayoutPanels;
+using System.ComponentModel;
 
 namespace Core.WinForms.Controls;
 
@@ -45,12 +46,14 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
       host = new LabelUiActionHost<ExTextBox>(tableLayoutPanel, uiLabel, textBox, b => b.Row * 2 * 50f);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string Label
    {
       get => uiLabel.NonNullText;
       set => uiLabel.Divider(value);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool IsMenuAction
    {
       get;
@@ -63,12 +66,14 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public new string Text
    {
       get => textBox.Get(() => textBox.Text);
       set => textBox.Do(() => textBox.Text = value);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public long Long
    {
       get => textBox.Get(() => textBox.Text.Maybe().Int64() | 0L);
@@ -101,12 +106,14 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public UiAction UiLabel
    {
       get => uiLabel;
       set => uiLabel = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string LabelString
    {
       get => uiLabel.NonNullText;
@@ -115,6 +122,7 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
 
    public ExTextBox TextBox => textBox;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public StatusType Status
    {
       get => uiLabel.Status;
@@ -127,12 +135,14 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
 
    public void ShowStatus(Optional<Unit> _optional, Either<string, Func<string>> failureFunc) => uiLabel.ShowStatus(_optional, failureFunc);
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool IsDirty
    {
       get => uiLabel.IsDirty;
       set => uiLabel.IsDirty = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool CanDirty { get; set; }
 
    public void AddUiAction(UiAction action) => host.AddUiAction(action);
@@ -147,6 +157,7 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ActionsVisible
    {
       get => host.ActionsVisible;
@@ -179,8 +190,10 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public long ObjectId { get; set; }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool TextEnabled
    {
       get => !textBox.ReadOnly;

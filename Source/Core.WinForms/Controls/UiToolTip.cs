@@ -1,6 +1,7 @@
 ﻿using Core.Monads;
 using Core.Strings;
 using Core.Strings.Emojis;
+using System.ComponentModel;
 using static Core.Monads.MonadFunctions;
 using Timer = System.Timers.Timer;
 
@@ -38,20 +39,24 @@ public class UiToolTip : ToolTip
       Draw += onDraw;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public Font Font
    {
       get => font;
       set => font = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<Action<object, DrawToolTipEventArgs>> Action
    {
       get => _action;
       set => _action = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ToolTipBox { get; set; }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string Text { get; set; }
 
    protected void onPopUp(object? sender, PopupEventArgs e)

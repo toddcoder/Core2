@@ -1,6 +1,7 @@
 ﻿using Core.Applications;
 using Core.Strings;
 using Core.WinForms.TableLayoutPanels;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace Core.WinForms.Controls;
@@ -213,8 +214,10 @@ public partial class UrlEdit : UserControl, IHasObjectId
       (builder + textLayoutPanel + (0, 0)).Row();
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public long ObjectId { get; set; }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string Url
    {
       get => uiUrl.NonNullText;
@@ -234,6 +237,7 @@ public partial class UrlEdit : UserControl, IHasObjectId
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string Branch { get; set; } = "";
 
    protected void display(string url)

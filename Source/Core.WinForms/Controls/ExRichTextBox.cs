@@ -1,12 +1,13 @@
-﻿using System.Drawing.Drawing2D;
-using System.Drawing.Text;
-using Core.Applications;
+﻿using Core.Applications;
 using Core.Assertions;
 using Core.Collections;
 using Core.Matching;
 using Core.Monads;
 using Core.Numbers;
 using Core.Strings;
+using System.ComponentModel;
+using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -151,12 +152,16 @@ public class ExRichTextBox : RichTextBox, IHasObjectId, ITextProperty
       };
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public Color ModifiedGlyphColor { get; set; } = Color.Gold;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public Color SavedGlyphColor { get; set; } = Color.Green;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public float ModificationGlyphWidth { get; set; } = 4f;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public int ModificationGlyphLeftMargin { get; set; } = 2;
 
    public int LeftMargin => leftMargin;
@@ -249,8 +254,10 @@ public class ExRichTextBox : RichTextBox, IHasObjectId, ITextProperty
 
    public void SetTabs(params int[] tabs) => SelectionTabs = tabs;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public Font AnnotationFont { get; set; } = new("Calibri", 12f, FontStyle.Bold);
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ModificationLocked { get; set; }
 
    public bool UpdateLocked => updateLocked;
@@ -308,6 +315,7 @@ public class ExRichTextBox : RichTextBox, IHasObjectId, ITextProperty
 
    public void ResetUpdating() => updatingCount = 0;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public (int start, int length) Selection
    {
       get => (SelectionStart, SelectionLength);
@@ -494,7 +502,7 @@ public class ExRichTextBox : RichTextBox, IHasObjectId, ITextProperty
       else
       {
          var size = graphics.MeasureString(text, font);
-         CharacterRange[] ranges = [new CharacterRange(0, text.Length)];
+         CharacterRange[] ranges = [new(0, text.Length)];
          var format = new StringFormat();
          format.SetMeasurableCharacterRanges(ranges);
          var regions = graphics.MeasureCharacterRanges(text, font, new RectangleF(0, 0, size.Width, size.Height), format);
@@ -868,6 +876,7 @@ public class ExRichTextBox : RichTextBox, IHasObjectId, ITextProperty
       drawLineNumber(graphics, lineNumber, point, lineSize, brush, backColor);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public long ObjectId { get; set; }
 
    public ExRichTextBox Shortcut(Keys keys, Action<KeyEventArgs> action)

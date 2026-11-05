@@ -1,9 +1,10 @@
-﻿using System.Collections;
-using System.Drawing.Drawing2D;
-using Core.Applications.Messaging;
+﻿using Core.Applications.Messaging;
 using Core.Collections;
 using Core.Monads;
 using Core.Numbers;
+using System.Collections;
+using System.ComponentModel;
+using System.Drawing.Drawing2D;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -143,8 +144,10 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<int> ControlHeight { get; set; } = nil;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<int> ControlWidth { get; set; } = nil;
 
    public void Rearrange()
@@ -301,6 +304,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<TControl> this[int index]
    {
       get => getControl(index);
@@ -327,6 +331,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public new int Padding
    {
       get => padding;
@@ -344,6 +349,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public ControlDirection Direction
    {
       get => direction;
@@ -354,6 +360,7 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ShowLastFocus
    {
       get => showLastFocus;
@@ -369,12 +376,14 @@ public class ControlContainer<TControl> : UserControl, IEnumerable<TControl> whe
 
    public int Count => Controls.Count;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public int HorizontalCount
    {
       get => horizontalCount;
       set => horizontalCount = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public int VerticalCount
    {
       get => verticalCount;

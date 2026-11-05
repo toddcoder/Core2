@@ -1,4 +1,5 @@
-﻿using Core.Monads;
+﻿using System.ComponentModel;
+using Core.Monads;
 using Core.WinForms.TableLayoutPanels;
 using static Core.Monads.MonadFunctions;
 
@@ -57,12 +58,14 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
       host = new LabelUiActionHost<ExRichTextBox>(tableLayoutPanel, uiLabel, textBox, b => b.Row + 40 + 100f);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string Label
    {
       get => uiLabel.NonNullText;
       set => uiLabel.Divider(value);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool IsMenuAction
    {
       get;
@@ -75,18 +78,21 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public new string Text
    {
       get => textBox.Text;
       set => textBox.Text = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string Rtf
    {
       get => textBox.Rtf ?? "";
       set => textBox.Rtf = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string[] Lines
    {
       get => textBox.Lines;
@@ -132,12 +138,14 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public UiAction UiLabel
    {
       get => uiLabel;
       set => uiLabel = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string LabelString
    {
       get => uiLabel.NonNullText;
@@ -146,6 +154,7 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
 
    public ExRichTextBox TextBox => textBox;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public StatusType Status
    {
       get => uiLabel.Status;
@@ -158,12 +167,14 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
 
    public void ShowStatus(Optional<Unit> _optional, Either<string, Func<string>> failureFunc) => uiLabel.ShowStatus(_optional, failureFunc);
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool IsDirty
    {
       get => uiLabel.IsDirty;
       set => uiLabel.IsDirty = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool CanDirty { get; set; }
 
    public void AddUiAction(UiAction action) => host.AddUiAction(action);
@@ -178,6 +189,7 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ActionsVisible
    {
       get => host.ActionsVisible;
@@ -210,5 +222,6 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public long ObjectId { get; set; }
 }

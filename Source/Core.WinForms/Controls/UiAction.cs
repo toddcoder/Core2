@@ -561,8 +561,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       control.Resize += (_, _) => Refresh();
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool AutoSizeText { get; set; }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool Locked
    {
       get => locked;
@@ -616,6 +618,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
 
    public Guid Id => id;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public bool Cancelled
    {
       get => cancelled;
@@ -628,6 +631,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       return new SubText(this, workingText, 0, 0, ClientSize, ClickGlyph, ChooserGlyph).Set.MiniInverted(workingAlignment, false, false).SubText;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public UiActionType Type
    {
       get => type;
@@ -639,6 +643,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ClickToCancel
    {
       get => clickToCancel;
@@ -649,14 +654,17 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool TaskBarProgress { get; set; }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool Checked
    {
       get => CheckStyle == CheckStyle.Checked;
       set => CheckStyle = value ? CheckStyle.Checked : CheckStyle.Unchecked;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public CheckStyle CheckStyle
    {
       get => checkStyle;
@@ -669,8 +677,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public CardinalAlignment MessageAlignment { get; set; } = CardinalAlignment.Center;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool IsPath { get; set; }
 
    internal void SetCheckStyle(CheckStyle checkStyle)
@@ -703,6 +713,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public Font NonNullFont
    {
       get => font;
@@ -718,6 +729,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
 
    protected string withEmojis(string text) => UseEmojis ? text.EmojiSubstitutions() : text;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public Maybe<string> Title
    {
       get => _title;
@@ -927,6 +939,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string NonNullText
    {
       get => text;
@@ -938,6 +951,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool Is3D { get; set; }
 
    public Memo<UiActionType, Color> ForeColors => foreColors;
@@ -946,6 +960,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
 
    public Memo<UiActionType, MessageStyle> Styles => styles;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public Image Image
    {
       set
@@ -961,8 +976,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       refresh();
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool StretchImage { get; set; }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public CardinalAlignment CardinalAlignment { get; set; } = CardinalAlignment.Center;
 
    protected Font getFont() => getStyle() switch
@@ -1324,6 +1341,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string ClickText
    {
       get => _clickText | text;
@@ -1334,6 +1352,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public int Minimum { get; set; } = 1;
 
    protected Optional<IntPtr> getHandle()
@@ -1366,6 +1385,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       return getTaskBarProgress(0).OnJust(t => t.State = WinForms.Controls.TaskBarProgress.TaskBarState.Indeterminate);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public int Maximum
    {
       get => maximum;
@@ -1384,10 +1404,13 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool Stopwatch { get; set; }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool StopwatchInverted { get; set; } = true;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ShowToGo
    {
       get => showToGo;
@@ -1456,6 +1479,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       refresh();
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ProgressStripe { get; set; }
 
    public void Progress()
@@ -1561,8 +1585,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       return isMouseDown() ? rectangle.Reposition(1, 1).Resize(-2, -2) : rectangle;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ClickGlyph { get; set; } = true;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ChooserGlyph { get; set; }
 
    protected override void OnPaint(PaintEventArgs e)
@@ -2453,6 +2479,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       Button(text);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public KeyDownCapture KeyDownCaption
    {
       get;
@@ -2796,6 +2823,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
 
    public bool IsBusy => backgroundWorker.Value.IsBusy;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool WorkReportsProgress
    {
       get => backgroundWorker.Value.WorkerReportsProgress;
@@ -2836,6 +2864,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
 
    public void PerformClick() => OnClick(EventArgs.Empty);
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public DialogResult DialogResult { get; set; }
 
    public bool TimerEnabled => timer.Enabled;
@@ -3189,6 +3218,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
 
    public Maybe<SubText> CurrentLegend => legends.Peek();
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<string> Working
    {
       get => _workingText;
@@ -3200,6 +3230,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public CardinalAlignment WorkingAlignment
    {
       get => workingAlignment;
@@ -3213,8 +3244,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       ShowMessage(text, args.Type);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ShowFocus { get; set; }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<string> EmptyTextTitle { get; set; } = nil;
 
    public async Task<Completion<TResult>> ExecuteAsync<TArgument, TResult>(TArgument argument, Func<TArgument, Completion<TResult>> func,
@@ -3277,6 +3310,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
 
    public async Task<Completion<Unit>> ExecuteAsync(Func<Completion<Unit>> func) => await Task.Run(func);
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool IsDirty
    {
       get => isDirty;
@@ -3309,6 +3343,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
 
    public void OnChooserClosed() => ChooserClosed?.Invoke(this, EventArgs.Empty);
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool Arrow { get; set; }
 
    public void ControlLabel(string text) => ShowMessage(text, UiActionType.ControlLabel);
@@ -3396,18 +3431,21 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<string> SuccessToolTip
    {
       get => _successToolTip;
       set => _successToolTip = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<string> FailureToolTip
    {
       get => _failureToolTip;
       set => _failureToolTip = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<string> NoStatusToolTip
    {
       get => _noStatusToolTip;
@@ -3440,8 +3478,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool FlipFlop { get; set; }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<string> ExceptionToolTip
    {
       get => _exceptionToolTip;
@@ -3459,6 +3499,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       setToolTip();
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string ToolTipTitle
    {
       get => toolTip.ToolTipTitle;
@@ -3469,6 +3510,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ToolTipBox
    {
       get => toolTip.ToolTipBox;
@@ -3479,6 +3521,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<SubText> ProgressSubText
    {
       get => _progressSubText;
@@ -3516,6 +3559,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public virtual int RectangleCount
    {
       get => rectangles.Length;
@@ -3540,6 +3584,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public Rectangle[] Rectangles
    {
       get => rectangles;
@@ -3588,6 +3633,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       Symbol(symbol, foreColor, backColor);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public UiActionButtonType ButtonType
    {
       get => buttonType;
@@ -3685,6 +3731,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       Text = message;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public int SelectedIndex
    {
       get => _alternateWriter.Map(w => w.SelectedIndex) | -1;
@@ -3705,6 +3752,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public string SelectedAlternate
    {
       get => _alternateWriter.Map(w => w.Alternate);
@@ -3721,6 +3769,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public int DisabledIndex
    {
       get => _alternateWriter.Map(w => w.DisabledIndex) | -1;
@@ -3734,6 +3783,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool BoxChecked
    {
       get => _alternateWriter.Map(w => ((CheckBoxWriter)w).BoxChecked) | false;
@@ -3909,6 +3959,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       Refresh();
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool Required { get; set; }
 
    public void Divider(string message) => ShowMessage(message, UiActionType.Divider);
@@ -3982,6 +4033,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       return rectangle;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public StatusType Status
    {
       get => status;
@@ -4120,6 +4172,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       return getClientRectangle().OffsetWidth(clickGlyph).OffsetWidth(chooserGlyph);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool UseEmojis { get; set; } = true;
 
    public void ShowStatus<T>(Maybe<T> _maybe, Either<string, Func<string>> failureMessage) where T : notnull
@@ -4178,8 +4231,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public long ObjectId { get; set; }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public DividerValidation DividerValidation
    {
       get => dividerValidation;
@@ -4230,10 +4285,13 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
 
    public void SendMessage(string message) => SendMessage(message, nil);
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool HostCanSizeToText { get; set; } = true;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public int HostCanSizeToTextPadding { get; set; } = 40;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<DashStyle> LeftStripe
    {
       get;
@@ -4244,6 +4302,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<Background> Background { get; set; } = nil;
 
    public void RunBackground()
@@ -4254,6 +4313,7 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<int> Count
    {
       get;
@@ -4264,8 +4324,10 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    } = nil;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public Color CountForeColor { get; set; } = Color.White;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public Color CountBackColor { get; set; } = Color.Blue;
 
    public void Ghost(string message) => ShowMessage(message, UiActionType.Ghost);
@@ -4383,11 +4445,13 @@ public class UiAction : UserControl, ISubTextHost, IButtonControl, IHasObjectId,
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public UiActionState State
    {
       get => getState();
       set => loadState(value);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool DrawNot { get; set; } = true;
 }

@@ -1,4 +1,5 @@
-﻿using Core.Strings;
+﻿using System.ComponentModel;
+using Core.Strings;
 using Core.WinForms.Controls;
 
 namespace Core.WinForms.Forms;
@@ -50,6 +51,7 @@ public partial class Response : Form
       uiNegative.ClickText = negative;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public ResponseType ResponseType { get; set; } = new ResponseType.Cancel();
 
    protected void Response_MouseDown(object sender, MouseEventArgs e)

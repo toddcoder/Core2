@@ -1,4 +1,5 @@
-﻿using Core.Applications.Messaging;
+﻿using System.ComponentModel;
+using Core.Applications.Messaging;
 using Core.Collections;
 using Core.Monads;
 using Core.Strings;
@@ -28,6 +29,7 @@ public class UiMenuAction : UiAction
       ClickText = "Open menu";
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool MenuEnabled { get; set; } = true;
 
    protected UiMenu menuFactory()

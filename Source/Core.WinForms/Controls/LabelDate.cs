@@ -1,5 +1,6 @@
 ﻿using Core.Monads;
 using Core.WinForms.TableLayoutPanels;
+using System.ComponentModel;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -44,12 +45,14 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
       CustomFormat = nil;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string Label
    {
       get => uiLabel.NonNullText;
       set => uiLabel.Divider(value);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool IsMenuAction
    {
       get;
@@ -61,12 +64,14 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public DateTime Value
    {
       get => dateTimePicker.Value;
       set => dateTimePicker.Value = value == DateTime.MinValue ? DateTime.Today : value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<string> CustomFormat
    {
       get;
@@ -87,6 +92,7 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ShowUpDown
    {
       get => dateTimePicker.ShowUpDown;
@@ -107,7 +113,8 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
    }
 
    public UiAction UiLabel => uiLabel;
-
+   
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string LabelString
    {
       get => uiLabel.NonNullText;
@@ -116,6 +123,7 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
 
    public DateTimePicker DateTimePicker => dateTimePicker;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public StatusType Status
    {
       get => uiLabel.Status;
@@ -128,12 +136,14 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
 
    public void ShowStatus(Optional<Unit> _optional, Either<string, Func<string>> failureFunc) => uiLabel.ShowStatus(_optional, failureFunc);
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool IsDirty
    {
       get => uiLabel.IsDirty;
       set => uiLabel.IsDirty = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool CanDirty { get; set; }
 
    public void AddUiAction(UiAction action) => host.AddUiAction(action);
@@ -148,6 +158,7 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ActionsVisible
    {
       get => host.ActionsVisible;
@@ -180,5 +191,6 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public long ObjectId { get; set; }
 }

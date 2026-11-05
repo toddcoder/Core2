@@ -1,5 +1,6 @@
-﻿using System.Drawing.Drawing2D;
-using Core.Monads;
+﻿using Core.Monads;
+using System.ComponentModel;
+using System.Drawing.Drawing2D;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Notification;
@@ -15,6 +16,7 @@ public class ImagePanel : Panel
       _image = nil;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public Image Image
    {
       get => _image.Required("Image not set");

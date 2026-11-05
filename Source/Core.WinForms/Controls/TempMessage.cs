@@ -1,4 +1,5 @@
-﻿using System.Drawing.Drawing2D;
+﻿using System.ComponentModel;
+using System.Drawing.Drawing2D;
 using Core.Applications.Messaging;
 using Core.Monads;
 using static Core.Monads.MonadFunctions;
@@ -38,10 +39,13 @@ public partial class TempMessage : UserControl
       PaintStatusChanged.Invoke(paintStatus);
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool AutoSizeText { get; set; } = true;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool UseEmojis { get; set; } = true;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public bool IsBusy
    {
       get => paintStatus == PaintStatus.Busy;

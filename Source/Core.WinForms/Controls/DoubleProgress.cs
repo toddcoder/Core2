@@ -1,4 +1,6 @@
-﻿namespace Core.WinForms.Controls
+﻿using System.ComponentModel;
+
+namespace Core.WinForms.Controls
 {
    public partial class DoubleProgress : UserControl
    {
@@ -9,6 +11,7 @@
          InitializeComponent();
       }
 
+      [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
       public int OuterMaximum
       {
          get => writer.OuterMaximum;

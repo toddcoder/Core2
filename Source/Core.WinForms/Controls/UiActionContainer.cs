@@ -1,8 +1,9 @@
-﻿using System.Collections;
-using System.Drawing.Drawing2D;
-using Core.Collections;
+﻿using Core.Collections;
 using Core.Monads;
 using Core.Numbers;
+using System.Collections;
+using System.ComponentModel;
+using System.Drawing.Drawing2D;
 using static Core.Monads.MonadFunctions;
 
 namespace Core.WinForms.Controls;
@@ -242,6 +243,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
       arrangeUiActions();
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<UiAction> this[int index]
    {
       get => getUiAction(index);
@@ -256,6 +258,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
 
    public Maybe<UiAction> this[string caption] => uiActions.Maybe[caption.ToUpper()];
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public new int Padding
    {
       get => padding;
@@ -273,6 +276,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public UiActionDirection Direction
    {
       get => direction;
@@ -283,6 +287,7 @@ public class UiActionContainer(string fontName = "Consolas", float fontSize = 12
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool ShowLastClicked
    {
       get => showLastClicked;

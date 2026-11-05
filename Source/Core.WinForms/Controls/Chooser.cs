@@ -7,6 +7,7 @@ using Core.Strings;
 using Core.Strings.Emojis;
 using Core.WinForms.Drawing;
 using static Core.Monads.MonadFunctions;
+using System.ComponentModel;
 
 namespace Core.WinForms.Controls;
 
@@ -88,12 +89,14 @@ public partial class Chooser : Form
 
    public ChooserSet Set => new(this);
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public string Title
    {
       get => title;
       set => title = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public StringHash Choices
    {
       get => choices;
@@ -102,72 +105,84 @@ public partial class Chooser : Form
 
    public Set<Chosen> ChosenSet => chosenSet;
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Color ChoiceForeColor
    {
       get => _foreColor | Color.Black;
       set => _foreColor = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Color ChoiceBackColor
    {
       get => _backColor | Color.Gold;
       set => _backColor = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<string> NilItem
    {
       get => _nilItem;
       set => _nilItem = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public bool ModifyTitle
    {
       get => modifyTitle;
       set => modifyTitle = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public string EmptyTitle
    {
       get => emptyTitle;
       set => emptyTitle = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public bool SizeToText
    {
       get => sizeToText;
       set => sizeToText = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public bool Working
    {
       get => working;
       set => working = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public ChooserSorting Sorting
    {
       get => sorting;
       set => sorting = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<Func<string, string>> CustomKeySorter
    {
       get => _customKeySorter;
       set => _customKeySorter = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<Func<string, string>> CustomValueSorter
    {
       get => _customValueSorter;
       set => _customValueSorter = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public bool AutoSizeText
    {
       get => autoSizeText;
       set => autoSizeText = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public bool MultiChoice
    {
       get => multiChoice;
@@ -178,28 +193,33 @@ public partial class Chooser : Form
       }
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public bool AutoClose
    {
       get => autoClose;
       set => autoClose = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Guid ChoicesGuid
    {
       get => choicesGuid;
       set => choicesGuid = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
    public Maybe<Chosen> Choice { get; set; } = nil;
 
    public IEnumerable<Chosen> AllChosen => listViewItems.AllCheckedItems().Select(getChosen).WhereIsSome();
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool CheckBoxes
    {
       get => listViewItems.CheckBoxes;
       set => listViewItems.CheckBoxes = value;
    }
 
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool FlyUp { get; set; }
 
    protected string withEmojis(string text) => useEmojis ? text.EmojiSubstitutions() : text;
