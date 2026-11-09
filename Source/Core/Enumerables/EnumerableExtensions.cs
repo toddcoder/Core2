@@ -483,10 +483,48 @@ public static class EnumerableExtensions
          return nil;
       }
 
+      public Maybe<int> FindLast(T item, int startIndex = -1)
+      {
+         T[] array = [.. enumerable];
+         if (startIndex == -1)
+         {
+            startIndex = array.Length - 1;
+         }
+
+         for (var i = startIndex; i >= 0; i--)
+         {
+            if (array[i]!.Equals(item))
+            {
+               return i;
+            }
+         }
+
+         return nil;
+      }
+
       public Maybe<int> Find(Func<T, bool> predicate, int startIndex = 0)
       {
          T[] array = [.. enumerable];
          for (var i = startIndex; i < array.Length; i++)
+         {
+            if (predicate(array[i]))
+            {
+               return i;
+            }
+         }
+
+         return nil;
+      }
+
+      public Maybe<int> FindLast(Func<T, bool> predicate, int startIndex = -1)
+      {
+         T[] array = [.. enumerable];
+         if (startIndex == -1)
+         {
+            startIndex = array.Length - 1;
+         }
+
+         for (var i = startIndex; i >= 0; i--)
          {
             if (predicate(array[i]))
             {

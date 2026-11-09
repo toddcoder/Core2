@@ -1,14 +1,11 @@
-Push-Location "C:\Users\toddc\source\repos\Core2\Source"
+$target = ".\Assemblies"
 
-$target = "C:\Users\toddc\source\repos\Core2\Assemblies"
-
-robocopy "Core\bin\Debug\net10.0-windows7.0" $target Core.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Internet\bin\Debug\net10.0-windows7.0" $target Core.Internet.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Data\bin\Debug\net10.0-windows7.0" $target Core.Data.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.WinForms\bin\Debug\net10.0-windows7.0" $target Core.WinForms.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Markup\bin\Debug\net10.0-windows7.0" $target Core.Markup.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Json\bin\Debug\net10.0-windows7.0" $target Core.Json.dll Newtonsoft.Json.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Services\bin\Debug\net10.0-windows7.0" $target Core.Services.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Zip\bin\Debug\net10.0-windows7.0" $target Core.Zip.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-robocopy "Core.Io\bin\Debug\net10.0-windows7.0" $target Core.Io.dll /xf *.xml *.config *.pdb /NDL /NJH /NJS /nc /ns
-Pop-Location
+robocopy ".\Source\Core\bin\Debug\net10.0-windows7.0" "$target" Core.dll 
+robocopy ".\Source\Core.Internet\bin\Debug\net10.0-windows7.0" "$target" Core.Internet.dll
+robocopy ".\Source\Core.Data\bin\Debug\net10.0-windows7.0" "$target" Core.Data.dll
+robocopy ".\Source\Core.WinForms\bin\Debug\net10.0-windows7.0" "$target" Core.WinForms.dll
+robocopy ".\Source\Core.Markup\bin\Debug\net10.0-windows7.0" "$target" Core.Markup.dll
+robocopy ".\Source\Core.Json\bin\Debug\net10.0-windows7.0" "$target" Core.Json.dll
+robocopy ".\Source\Core.Services\bin\Debug\net10.0-windows7.0" "$target" Core.Services.dll
+robocopy ".\Source\Core.Zip\bin\Debug\net10.0-windows7.0" "$target" Core.Zip.dll
+robocopy ".\Source\Core.Io\bin\Debug\net10.0-windows7.0" "$target" Core.Io.dll
