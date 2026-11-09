@@ -25,11 +25,21 @@ public class UiMenuAction : UiAction
    public UiMenuAction()
    {
       menu = new Lazy<UiMenu>(menuFactory);
-      ChooserGlyph = true;
-      ClickGlyph = true;
-      Click += (_, _) => { };
-      ClickText = "Open menu";
       Host = this;
+   }
+
+   public void SetMenu(bool set)
+   {
+      if (set)
+      {
+         ChooserGlyph = true;
+         ClickText = "Open menu";
+      }
+      else
+      {
+         ChooserGlyph = false;
+         ClickText = "";
+      }
    }
 
    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

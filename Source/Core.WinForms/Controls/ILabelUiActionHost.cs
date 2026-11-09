@@ -9,4 +9,6 @@ public interface ILabelUiActionHost
    public bool ActionsVisible { get; set; }
 
    public void ClearActions();
+
+   public UiMenuAction UiLabel { get; }
 }
