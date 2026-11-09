@@ -7,7 +7,7 @@ namespace Core.WinForms.Controls;
 
 public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
 {
-   protected UiAction uiLabel;
+   protected UiMenuAction uiLabel = new() { TabStop = true };
    protected bool isLocked;
    protected LabelUiActionHost<CoreDateTimePicker> host;
    protected Maybe<DateTimePickerFormat> _lastFormat = nil;
@@ -19,7 +19,6 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
    {
       InitializeComponent();
 
-      uiLabel = new UiAction();
       uiLabel.Divider(Label);
 
       dateTimePicker.Format = DateTimePickerFormat.Short;
@@ -50,18 +49,6 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
    {
       get => uiLabel.NonNullText;
       set => uiLabel.Divider(value);
-   }
-
-   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-   public bool IsMenuAction
-   {
-      get;
-      set
-      {
-         field = value;
-         uiLabel = value ? new UiMenuAction() : new UiAction();
-         uiLabel.Divider(Label);
-      }
    }
 
    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -112,8 +99,8 @@ public partial class LabelDate : UserControl, ILabelUiActionHost, IHasObjectId
       }
    }
 
-   public UiAction UiLabel => uiLabel;
-   
+   public UiMenuAction UiLabel => uiLabel;
+
    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string LabelString
    {

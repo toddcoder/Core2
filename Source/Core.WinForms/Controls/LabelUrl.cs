@@ -9,7 +9,7 @@ namespace Core.WinForms.Controls;
 
 public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
 {
-   protected UiAction uiLabel;
+   protected UiMenuAction uiLabel = new() { TabStop = true };
    protected UiAction uiUrl = new() { UseEmojis = false, AutoSizeText = true, AllowDrop = true };
    protected TableLayoutPanel textLayoutPanel = new() { Visible = false };
    protected ExTextBox textBox = new() { TextAlign = HorizontalAlignment.Center, ForeColor = Color.Blue };
@@ -37,7 +37,6 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
 
       InitializeComponent();
 
-      uiLabel = new UiAction();
       uiLabel.Divider(Label);
 
       uiUrl.Font = new Font("Consolas", 1f, FontStyle.Underline);
@@ -288,33 +287,10 @@ public partial class LabelUrl : UserControl, ILabelUiActionHost, IHasObjectId
       set => uiLabel.Divider(value);
    }
 
-   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-   public bool IsMenuAction
-   {
-      get;
-      set
-      {
-         field = value;
-         uiLabel = value ? new UiMenuAction() : new UiAction();
-         uiLabel.Divider(Label);
-      }
-   }
-
    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-   public UiAction UiLabel
-   {
-      get => uiLabel;
-      set => uiLabel = value;
-   }
+   public UiMenuAction UiLabel => uiLabel;
 
    public ExTextBox TextBox => textBox;
-
-   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-   public string LabelString
-   {
-      get => uiLabel.NonNullText;
-      set => uiLabel.Divider(value);
-   }
 
    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string Url

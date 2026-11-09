@@ -7,7 +7,7 @@ namespace Core.WinForms.Controls;
 
 public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, ITextProperty
 {
-   protected UiAction uiLabel = new() { TabStop = true };
+   protected UiMenuAction uiLabel = new() { TabStop = true };
    protected ExTextBox textBox = new() { BorderStyle = BorderStyle.None, Font = new Font("Consolas", 12f) };
    protected bool isLocked;
    protected LabelUiActionHost<ExTextBox> host;
@@ -19,9 +19,7 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
    {
       InitializeComponent();
 
-      uiLabel = new UiAction();
       uiLabel.Divider(Label);
-      uiLabel.TabStop = true;
 
       textBox.Text = "";
       textBox.TextChanged += (_, _) =>
@@ -51,19 +49,6 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
    {
       get => uiLabel.NonNullText;
       set => uiLabel.Divider(value);
-   }
-
-   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-   public bool IsMenuAction
-   {
-      get;
-      set
-      {
-         field = value;
-         uiLabel = value ? new UiMenuAction() : new UiAction();
-         uiLabel.Divider(Label);
-         uiLabel.TabStop = true;
-      }
    }
 
    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -107,11 +92,7 @@ public partial class LabelText : UserControl, ILabelUiActionHost, IHasObjectId, 
    }
 
    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-   public UiAction UiLabel
-   {
-      get => uiLabel;
-      set => uiLabel = value;
-   }
+   public UiMenuAction UiLabel => uiLabel;
 
    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public string LabelString

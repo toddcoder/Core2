@@ -15,7 +15,7 @@ namespace Core.WinForms.Tests;
 public partial class Form1 : Form
 {
    protected Panel panel1;
-   protected ExTextBox textBox;
+   protected LabelText ltText = new() { Label = "text", CanDirty = false };
    protected ExRichTextBox richTextBox;
    protected UiAction uiButton6 = new();
    protected UiAction uiDirty = new();
@@ -23,8 +23,6 @@ public partial class Form1 : Form
    public Form1()
    {
       InitializeComponent();
-
-      var uiDivider = new UiAction();
 
       var menus = new FreeMenus { Form = this };
       menus.Menu("File");
@@ -131,7 +129,7 @@ public partial class Form1 : Form
 
       var builder = new TableLayoutBuilder(tableLayoutPanel);
       _ = builder.Col + 80f + 20f;
-      _ = builder.Row * 11 * 60 + 100f;
+      _ = builder.Row * 10 * 60 + 100f;
       builder.SetUp();
 
       var uiAlternates = new UiAction { AutoSizeText = true };
@@ -213,7 +211,7 @@ public partial class Form1 : Form
       uiButton6.Button("Dirty");
       uiButton6.Click += (_, _) =>
       {
-         uiDivider.IsDirty = !uiDivider.IsDirty;
+         ltText.UiLabel.IsDirty = !ltText.UiLabel.IsDirty;
          uiDirty.IsDirty = !uiDirty.IsDirty;
          uiButton6.Status = uiDirty.IsDirty ? StatusType.Success : StatusType.Busy;
       };
@@ -231,7 +229,7 @@ public partial class Form1 : Form
             var timeSpan = 3.Seconds();
             foreach (var file in folder.Files)
             {
-               uiDivider.Message(file.NameExtension);
+               ltText.UiLabel.Message(file.NameExtension);
                Thread.Sleep(timeSpan);
             }
          }
@@ -330,12 +328,13 @@ public partial class Form1 : Form
       (builder + uiButton9).Row();
       uiButton9.Button("Update Choices");
       uiButton9.Click += (_, _) => Response.Ask("title", "Column A[b,f:white,b:green]|or|Column B?[b,f:black,b:gold]", "Column A", "Column B");
-      (builder + uiDivider).SpanCol(2).Row();
-      uiDivider.Divider("part 2");
+      (builder + ltText).SpanCol(2).Row();
+      //ltText.UiLabel.Divider("part 2");
+      ltText.UiLabel.RequestMenuItems.Handler = () => ltText.UiLabel.Choose("a", "b", "c").Then(s => ltText.Text = s);
 
-      textBox = new ExTextBox(this) { BorderStyle = BorderStyle.None, AutoSelectAll = true };
+      /*textBox = new ExTextBox(this) { BorderStyle = BorderStyle.None, AutoSelectAll = true };
       (builder + textBox).SpanCol(2).Row();
-      textBox.Text = "test text";
+      textBox.Text = "test text";*/
 
       richTextBox = new ExRichTextBox();
       richTextBox.Shortcut(Keys.Control | Keys.D, _ => richTextBox.DuplicateCurrentLine());
@@ -343,7 +342,7 @@ public partial class Form1 : Form
       richTextBox.Text = "test text";
 
       var textBoxMenu = new Menus();
-      (textBoxMenu + textBox + "Open" + (() => { })).ContextMenu();
+      (textBoxMenu + ltText + "Open" + (() => { })).ContextMenu();
       textBoxMenu.ContextMenuSeparator();
       textBoxMenu.StandardContextEdit();
       textBoxMenu.CreateContextMenu();
@@ -355,19 +354,19 @@ public partial class Form1 : Form
       richTextBoxMenu.CreateContextMenu();
 
       var dragDrop = new DragDrop<ExRichTextBox>(richTextBox) + DataFormats.Text + DataFormats.UnicodeText + "System.String";
-      dragDrop.DraggedOver.Handler = p => textBox.Text = p.dataFormat;
+      dragDrop.DraggedOver.Handler = p => ltText.TextBox.Text = p.dataFormat;
       dragDrop.DragDropped.Handler = p => p.control.Text = p.presentData.Text;
-      dragDrop.NotDraggedOver.Handler = p => textBox.Text = p.dataFormats.ToString(", ");
+      dragDrop.NotDraggedOver.Handler = p => ltText.TextBox.Text = p.dataFormats.ToString(", ");
       dragDrop.Wire();
    }
 
    protected void retrieveJson()
    {
-      var url = textBox.Text;
+      var url = ltText.TextBox.Text;
       if (url.Matches("^ /(.+) '//_workitems//edit//' /(/d+)").Map(r => (prefix: r.FirstGroup, id: r.SecondGroup)) is (true, var (prefix, id)))
       {
          url = $"{prefix}/_apis/wit/workitems/{id}?$expand=all";
-         textBox.Text = url;
+         ltText.TextBox.Text = url;
       }
 
       richTextBox.Clear();

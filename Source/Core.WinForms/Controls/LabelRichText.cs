@@ -7,7 +7,7 @@ namespace Core.WinForms.Controls;
 
 public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObjectId, ITextProperty
 {
-   protected UiAction uiLabel;
+   protected UiMenuAction uiLabel = new() { TabStop = true };
    protected ExRichTextBox textBox = new() { BorderStyle = BorderStyle.None, Font = new Font("Consolas", 12f) };
    protected UiAction uiCopy = new();
    protected UiAction uiPaste = new();
@@ -26,7 +26,7 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
    {
       InitializeComponent();
 
-      uiLabel = new UiAction();
+      uiLabel.Divider(Label);
       uiLabel.TabStop = true;
 
       textBox.Text = "";
@@ -63,19 +63,6 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
    {
       get => uiLabel.NonNullText;
       set => uiLabel.Divider(value);
-   }
-
-   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-   public bool IsMenuAction
-   {
-      get;
-      set
-      {
-         field = value;
-         uiLabel = value ? new UiMenuAction() : new UiAction();
-         uiLabel.Divider(Label);
-         uiLabel.TabStop = true;
-      }
    }
 
    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
@@ -139,18 +126,7 @@ public partial class LabelRichText : UserControl, ILabelUiActionHost, IHasObject
    }
 
    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-   public UiAction UiLabel
-   {
-      get => uiLabel;
-      set => uiLabel = value;
-   }
-
-   [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-   public string LabelString
-   {
-      get => uiLabel.NonNullText;
-      set => uiLabel.Divider(value);
-   }
+   public UiMenuAction UiLabel => uiLabel;
 
    public ExRichTextBox TextBox => textBox;
 

@@ -19,6 +19,7 @@ public class UiMenuAction : UiAction
    protected Maybe<(string key, string value)> _chosenValues = nil;
    public readonly MessageEvent RequestMenuItems = new();
    public MessageEvent<int>[] RequestAlternateMenuItems = [];
+   public readonly MessageEvent MenuAboutToOpen = new();
    public readonly MessageEvent MenuClosed = new();
 
    public UiMenuAction()
@@ -26,8 +27,13 @@ public class UiMenuAction : UiAction
       menu = new Lazy<UiMenu>(menuFactory);
       ChooserGlyph = true;
       ClickGlyph = true;
+      Click += (_, _) => { };
       ClickText = "Open menu";
+      Host = this;
    }
+
+   [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+   public Control Host { get; set; }
 
    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
    public bool MenuEnabled { get; set; } = true;
@@ -235,7 +241,9 @@ public class UiMenuAction : UiAction
             menuOpen = true;
             var location = Cursor.Position;
             location = PointToClient(location);
-            menu.Value.Show(this, location);
+            MenuAboutToOpen.Invoke();
+            Host.Focus();
+            menu.Value.Show(Host, location);
             menu.Value.Focus();
             //Focus();
          }
