@@ -81,5 +81,11 @@ public class TableLayoutBuilder(TableLayoutPanel tableLayoutPanel)
       return this;
    }
 
-   public static TableLayoutBuilder Builder() => new(new TableLayoutPanel());
+   public static TableLayoutBuilder Builder(Control control)
+   {
+      var panel = new TableLayoutPanel();
+      control.Controls.Add(panel);
+
+      return new TableLayoutBuilder(panel);
+   }
 }
