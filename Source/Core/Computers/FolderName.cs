@@ -144,7 +144,7 @@ public class FolderName : IComparable, IComparable<FolderName>, IEquatable<Folde
    public FolderName()
    {
       root = "";
-      subfolders = new string[] { };
+      subfolders = [];
       fullPath = "";
       Valid = false;
       Encoding = Encoding.ASCII;

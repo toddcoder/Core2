@@ -1,4 +1,5 @@
-﻿using Core.Collections;
+﻿using Core.Assertions;
+using Core.Collections;
 using static Core.Markdown.ReplacementFunctions;
 
 namespace Core.Markdown;
@@ -21,11 +22,9 @@ public class Replacements(params string[] keys)
 
    public void Commit()
    {
-      if (hash.Keys.Count == keys.Length)
-      {
-         replacements.Add(hash);
-      }
+      hash.Keys.Count.Must().Equal(keys.Length).OrThrow("Not all keys have been set.");
 
+      replacements.Add(hash);
       hash = [];
       transacting = false;
    }
