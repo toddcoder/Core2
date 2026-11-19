@@ -83,7 +83,7 @@ public class TableLayoutBuilder(TableLayoutPanel tableLayoutPanel)
 
    public static TableLayoutBuilder Builder(Control control)
    {
-      var panel = new TableLayoutPanel();
+      var panel = new TableLayoutPanel { Dock = DockStyle.Fill };
       control.Controls.Add(panel);
 
       return new TableLayoutBuilder(panel);
