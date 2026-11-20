@@ -72,6 +72,8 @@ public class ControlWriter
 
    public required Color Color { get; set; }
 
+   public Maybe<Color> BackColor { get; set; } = nil;
+
    public required Rectangle Rectangle { get; set; }
 
    public bool AutoSizeText { get; set; }
@@ -124,6 +126,12 @@ public class ControlWriter
       {
          g.HighQuality();
          g.TextRenderingHint = TextRenderingHint.ClearTypeGridFit;
+
+         if (BackColor is (true, var backColor))
+         {
+            using var brush = new SolidBrush(backColor);
+            g.FillRectangle(brush, Rectangle);
+         }
 
          if (AutoSizeText)
          {
