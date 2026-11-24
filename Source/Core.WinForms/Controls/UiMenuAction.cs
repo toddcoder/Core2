@@ -210,6 +210,22 @@ public class UiMenuAction : UiAction
       return item;
    }
 
+   public UiMenuItemData TextWithSubmenu(string text)
+   {
+      var item = UiMenuItemData.TextWithSubmenu(text);
+      items.Add(item);
+
+      return item;
+   }
+
+   public UiMenuItemData TextWithImageAndSubmenu(string text, Image image)
+   {
+      var item = UiMenuItemData.TextWithImageAndSubmenu(text, image);
+      items.Add(item);
+
+      return item;
+   }
+
    public UiMenuItemData Separator()
    {
       var item = UiMenuItemData.Separator();

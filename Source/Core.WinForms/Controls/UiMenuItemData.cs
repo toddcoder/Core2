@@ -38,6 +38,27 @@ public class UiMenuItemData
       IsSeparator = true
    };
 
+   public static UiMenuItemData TextWithSubmenu(string text)
+   {
+      var item = new UiMenuItemData
+      {
+         Text = text,
+         HasSubmenu = true
+      };
+      return item;
+   }
+
+   public static UiMenuItemData TextWithImageAndSubmenu(string text, Image image)
+   {
+      var item = new UiMenuItemData
+      {
+         Text = text,
+         Image = image,
+         HasSubmenu = true
+      };
+      return item;
+   }
+
    public string Text { get; set; } = "";
 
    public Maybe<Image> Image { get; set; } = nil;
@@ -65,4 +86,6 @@ public class UiMenuItemData
    public bool IsBold { get; set; }
 
    public bool IsItalic { get; set; }
+
+   public bool HasSubmenu { get; set; }
 }
